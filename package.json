@@ -13,8 +13,10 @@
     "@types/react-router-dom": "^5.1.5",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-draggable": "^4.4.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
+    "regexp-tree": "^0.1.21",
     "typescript": "~3.7.2"
   },
   "scripts": {
