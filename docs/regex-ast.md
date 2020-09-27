@@ -1336,8 +1336,7 @@ A node is similar, just `negative` flag is added:
 ###### Positive lookbehind assertion
 ###### 正向后行断言
 
-Matches `b` only if it's preceded by `a`:
-只在 `a` 在 `b` 前时匹配
+只在 `a` 在 `b` 前时匹配:
 
 ```
 (?<=a)b
@@ -1374,8 +1373,7 @@ A node:
 ###### Negative lookbehind assertion
 ###### 负向后行断言
 
-Matches `b` only if it's _not_ preceded by `a`:
-只在 `a` 不在 `b` 前时匹配
+只在 `a` 不在 `b` 前时匹配:
 
 
 ```
