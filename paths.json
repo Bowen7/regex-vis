@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@modules/*": ["modules/*"],
+      "@parser": ["parser"],
+      "@parser/*": ["parser/*"],
+      "@types": ["types.ts"],
+      "@components/*": ["components/*"],
+      "@assets/*": ["assets/*"]
+    }
+  }
+}
