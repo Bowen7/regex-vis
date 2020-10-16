@@ -3,7 +3,6 @@ import produce from "immer"
 import { Node, DragEvent, BasicNode, RootNode } from "@types"
 import RegexFlow from "../regexFlow"
 import { start } from "repl"
-import { getArrow } from "perfect-arrows"
 
 const _id_seed_ = 0
 const defaultNodeMap = new Map<number, Node>()
