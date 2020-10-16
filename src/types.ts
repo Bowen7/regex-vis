@@ -1,11 +1,13 @@
 export type Char = {
   type: "simple" | "escaped"
   value: String
+  text: string
 }
 
 export type CharCollection = {
   from: Char
   to: Char
+  text: string
 }
 
 export type Pos = {
@@ -15,27 +17,38 @@ export type Pos = {
 
 export type BasicNode = {
   type: "basic"
-  prev: number[]
-  next: number[]
-  body: CharCollection | Char
   id: number
-  origin: Pos
-  width: number
-  height: number
+  body: CharCollection | Char
+  prev: number | RootNode
+  next: number | RootNode
 }
 
+// (xx)
 export type GroupNode = {
   type: "group"
-  prev: number[]
-  next: number[]
-  node: BasicNode[]
   id: number
-  origin: Pos
-  width: number
-  height: number
+  head: number
+  prev: number | RootNode
+  next: number | RootNode
 }
 
-export type Node = BasicNode | GroupNode
+// a|b
+export type ChoiceNode = {
+  type: "choice"
+  id: number
+  branches: number[]
+  prev: number | RootNode
+  next: number | RootNode
+}
+// export type
+
+export type RootNode = {
+  type: "root"
+  prev: null | number | RootNode
+  next: null | number | RootNode
+}
+
+export type Node = BasicNode | GroupNode | ChoiceNode
 
 export type DragEvent = {
   id: number

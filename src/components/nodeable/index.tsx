@@ -121,6 +121,8 @@ const Nodeable: React.FC<NodeableProps> = props => {
       addVisible && (
         <>
           <foreignObject x={origin.x - 25} {...foreignObjectProps}>
+            {/* Property 'xmlns' does not exist on 'div' */}
+            {/* so, use React.createElement to support full svg properties */}
             {React.createElement(
               "div",
               {

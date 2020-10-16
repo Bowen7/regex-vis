@@ -9,7 +9,13 @@ type SingleProps = {
 }
 const Single: React.FC<SingleProps> = props => {
   const node = props.node
-  const { origin, width, height, id } = node
+  const { id } = node
+  const origin = {
+    x: 300,
+    y: 300,
+  }
+  const width = 200
+  const height = 300
   function onDrag(e: DragEvent) {
     props.onDarg && props.onDarg(e)
   }
