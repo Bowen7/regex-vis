@@ -1,2 +1,7 @@
-export const MIN_INTERVAL = 50
-export const SVG_PADDING_LEFT = 50
+export const FLOW_NODE_MARGIN_LEFT = 20
+export const FLOW_NODE_MARGIN_TOP = 20
+export const FLOW_NODE_PADDING_TOP = 10
+export const FLOW_NODE_PADDING_LEFT = 20
+export const FLOWCHART_PADDING_LEFT = 20
+export const FLOWCHART_PADDING_TOP = 20
+export const FLOW_NODE_BORDER_RADIUS = 5

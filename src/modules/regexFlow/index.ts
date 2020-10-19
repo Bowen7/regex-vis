@@ -1,15 +1,19 @@
 import addSvg from "@assets/add.svg"
 import { RootNode, Pos, Node, ChoiceNode } from "@types"
-import { MIN_INTERVAL, SVG_PADDING_LEFT } from "./config"
-import Raphael, { RaphaelPaper, RaphaelElement } from "raphael"
+import {
+  FLOWCHART_PADDING_LEFT,
+  FLOWCHART_PADDING_TOP,
+  FLOW_NODE_PADDING_LEFT,
+  FLOW_NODE_PADDING_TOP,
+  FLOW_NODE_BORDER_RADIUS,
+  FLOW_NODE_MARGIN_TOP,
+  FLOW_NODE_MARGIN_LEFT,
+} from "./config"
+import Svgx, { SvgxElement } from "../svgx"
+import SvgxBaseElement from "../svgx/element"
 type Box = {
   x: number
   y: number
-  width: number
-  height: number
-}
-type RegexFlowConfigs = {
-  origin: Pos
   width: number
   height: number
 }
@@ -23,24 +27,22 @@ type PreRender = {
   y: number
   width: number
   height: number
+  text: string
+  connectPoint?: Pos
 }
 class RegexFlow {
-  configs: RegexFlowConfigs
-  paper: RaphaelPaper
-  standardText: RaphaelElement | null = null
+  svgx: Svgx
+  standardText: SvgxElement | null = null
   root: RootNode
   nodeMap: Map<number, Node>
   preRenderElements: PreRender[] = []
   cachedSizeMap: Map<number, Size> = new Map()
   constructor(
+    selectorQuery: string,
     root: RootNode,
-    nodeMap: Map<number, Node>,
-    configs: RegexFlowConfigs
+    nodeMap: Map<number, Node>
   ) {
-    this.configs = configs
-    const { origin, width, height } = this.configs
-    const paper = Raphael(origin.x, origin.y, width, height)
-    this.paper = paper
+    this.svgx = new Svgx(selectorQuery)
     this.root = root
     this.nodeMap = nodeMap
 
@@ -60,22 +62,41 @@ class RegexFlow {
       }
       cur = curNode.next
     }
-    this.traverseConcatenation(concatenation, 50, 0)
+    let { width, height } = this.traverseConcatenation(
+      concatenation,
+      FLOWCHART_PADDING_LEFT,
+      FLOWCHART_PADDING_TOP
+    )
+    width += FLOWCHART_PADDING_LEFT
+    height += FLOWCHART_PADDING_TOP
+    this.svgx.setSize(width, height)
     this.renderElements()
   }
   renderElements() {
     this.preRenderElements.forEach(el => {
-      const { x, y, width, height, id } = el
+      const { x, y, width, height, connectPoint, text } = el
+      const actualX = x + FLOW_NODE_MARGIN_LEFT
+      const actualY = y + FLOW_NODE_MARGIN_TOP
+      const actualWidth = width - FLOW_NODE_MARGIN_LEFT * 2
+      const actualHeight = height - FLOW_NODE_MARGIN_TOP * 2
       new Rect(
-        this.paper,
+        this.svgx,
         {
-          x,
-          y,
-          width,
-          height,
+          x: actualX,
+          y: actualY,
+          width: actualWidth,
+          height: actualHeight,
         },
-        `${id}${id}${id}`
+        text
       )
+
+      if (connectPoint) {
+        const endPoint = {
+          x: x + FLOW_NODE_MARGIN_LEFT,
+          y: y + height / 2,
+        }
+        new Line(this.svgx, connectPoint, endPoint)
+      }
     })
   }
   // get single node size
@@ -88,8 +109,14 @@ class RegexFlow {
     let width = 0
     let height = 0
     if (node.type === "basic") {
-      width = this.measureTextWidth(node.body.text)
-      height = 50
+      width =
+        this.measureText(node.body.text).width +
+        2 * FLOW_NODE_PADDING_LEFT +
+        2 * FLOW_NODE_MARGIN_LEFT
+      height =
+        this.measureText(node.body.text).height +
+        2 * FLOW_NODE_PADDING_TOP +
+        2 * FLOW_NODE_MARGIN_LEFT
     } else if (node.type === "choice") {
       const { branches } = node
       branches.forEach(branch => {
@@ -124,22 +151,29 @@ class RegexFlow {
     this.cachedSizeMap.set(id, size)
     return size
   }
-  traverseUnknownType(id: number, x: number, y: number) {
+  traverseUnknownType(id: number, x: number, y: number, connectPoint?: Pos) {
     const node = this.nodeMap.get(id) as Node
     if (node.type === "choice") {
-      this.traverseChoice(id, x, y)
+      this.traverseChoice(id, x, y, connectPoint)
     } else if (node.type === "basic") {
+      const { body } = node
       const size = this.getSize(id)
+      let text = ""
+      if (body.type === "simple") {
+        text = body.text
+      }
       this.preRenderElements.push({
         id,
         x,
         y,
         width: size.width,
         height: size.height,
+        text,
+        connectPoint,
       })
     }
   }
-  traverseChoice(id: number, x: number, y: number) {
+  traverseChoice(id: number, x: number, y: number, endPoint?: Pos) {
     const node = this.nodeMap.get(id) as ChoiceNode
     const { branches } = node
     const maxWidth = this.getSize(id).width
@@ -154,11 +188,22 @@ class RegexFlow {
         cur = curNode.next as number
       }
       const deltaX = (maxWidth - width) / 2
-      const height = this.traverseConcatenation(concatenation, x + deltaX, y)
+      const height = this.traverseConcatenation(
+        concatenation,
+        x + deltaX,
+        y,
+        endPoint
+      ).height
       y += height
     })
   }
-  traverseConcatenation(concatenation: number[], x: number, y: number) {
+  traverseConcatenation(
+    concatenation: number[],
+    x: number,
+    y: number,
+    connectPoint?: Pos
+  ): Size {
+    const originX = x
     let height = 0
     concatenation.forEach(id => {
       const size = this.getSize(id)
@@ -167,21 +212,25 @@ class RegexFlow {
     concatenation.forEach(id => {
       const size = this.getSize(id)
       const deltaY = (height - size.height) / 2
-      this.traverseUnknownType(id, x, y + deltaY)
+      this.traverseUnknownType(id, x, y + deltaY, connectPoint)
       x += size.width
+      connectPoint = {
+        x: x - FLOW_NODE_MARGIN_LEFT,
+        y: y + height / 2,
+      }
     })
-    return height
+    return { width: x - originX, height }
   }
   createStandardText() {
-    this.standardText = this.paper.text(-9999, -9999, "")
+    this.standardText = this.svgx.text(-9999, -9999, "")
   }
-  measureTextWidth(text: string, fontSize: number = 12) {
+  measureText(text: string, fontSize: number = 16) {
     this.standardText?.attr({
       text,
       "font-size": fontSize,
     })
     const box = this.standardText?.getBBox()
-    return box ? box.width : 0
+    return { width: box ? box.width : 0, height: box ? box.height : 0 }
   }
   insertBefore(): void {}
   insertAfter(): void {}
@@ -189,10 +238,10 @@ class RegexFlow {
 }
 
 class Circle {
-  paper: RaphaelPaper
-  elements: RaphaelElement[] = []
-  constructor(paper: RaphaelPaper, box: Box, text: string) {
-    this.paper = paper
+  svgx: Svgx
+  elements: SvgxElement[] = []
+  constructor(svgx: Svgx, box: Box, text: string) {
+    this.svgx = svgx
     const { x, y, width, height } = box
     if (width !== height) {
       console.warn("This is a circle, the width should be equal to height")
@@ -201,25 +250,65 @@ class Circle {
       x: x + width / 2,
       y: y + width / 2,
     }
-    const circleEl = paper.circle(center.x, center.y, width / 2)
-    const textEl = paper.text(center.x, center.y, text)
+    const circleEl = svgx.circle(center.x, center.y, width / 2)
+    const textEl = svgx.text(center.x, center.y, text)
     this.elements.push(circleEl, textEl)
   }
 }
 
 class Rect {
-  paper: RaphaelPaper
-  elements: RaphaelElement[] = []
-  constructor(paper: RaphaelPaper, box: Box, text: string) {
-    this.paper = paper
+  svgx: Svgx
+  elements: SvgxElement[] = []
+  images: SvgxElement[] = []
+  constructor(svgx: Svgx, box: Box, text: string) {
+    this.svgx = svgx
     const { x, y, width, height } = box
-    const rectEl = paper.rect(x, y, width, height)
+    const rectEl = svgx
+      .rect(x, y, width, height, FLOW_NODE_BORDER_RADIUS)
+      .attr({
+        fill: "#fff",
+      })
+    // rectEl.node.addEventListener("mouseenter", () => {
+    //   console.log(123)
+    //   const add1 = svgx.image(addSvg, x, y, 10, 10)
+    //   this.images = [add1]
+    // })
+    // rectEl.node.addEventListener("mouseleave", () => {
+    //   this.images.forEach(image => image.remove())
+    //   this.images = []
+    // })
     const center = {
       x: x + width / 2,
       y: y + height / 2,
     }
-    const textEl = paper.text(center.x, center.y, text)
+    const textEl = svgx.text(center.x, center.y, text).attr({
+      "font-size": 16,
+    })
     this.elements.push(rectEl, textEl)
+  }
+}
+
+class Line {
+  svgx: Svgx
+  elements: SvgxElement[] = []
+  constructor(svgx: Svgx, start: Pos, end: Pos) {
+    this.svgx = svgx
+    const M = `M${start.x},${start.y}`
+    const L1 = `L${start.x + 10},${start.y}`
+    const A1 =
+      end.y > start.y
+        ? `A5 5 0 0 1, ${start.x + 15},${start.y + 5}`
+        : `A5 5 0 0 0, ${start.x + 15},${start.y - 5}`
+    const L2 =
+      end.y > start.y
+        ? `L${start.x + 15},${end.y - 5} `
+        : `L${start.x + 15},${end.y + 5} `
+    const A2 =
+      end.y > start.y
+        ? `A5 5 0 0 0, ${start.x + 20},${end.y}`
+        : `A5 5 0 0 1, ${start.x + 20},${end.y}`
+    const L3 = `L${end.x},${end.y}`
+    this.svgx.path(M + L1 + A1 + L2 + A2 + L3)
   }
 }
 export default RegexFlow

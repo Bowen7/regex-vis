@@ -5,6 +5,7 @@ export type Char = {
 }
 
 export type CharCollection = {
+  type: "collection"
   from: Char
   to: Char
   text: string

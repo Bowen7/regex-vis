@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import produce from "immer"
 import { Node, DragEvent, BasicNode, RootNode } from "@types"
 import RegexFlow from "../regexFlow"
+import Svgx from "../svgx"
 import { start } from "repl"
 
 const _id_seed_ = 0
@@ -46,7 +47,7 @@ defaultNodeMap.set(3, {
   body: {
     type: "simple",
     value: "333",
-    text: "444",
+    text: "333",
   },
   prev: 6,
   next: 6,
@@ -68,7 +69,7 @@ defaultNodeMap.set(5, {
   body: {
     type: "simple",
     value: "555",
-    text: "555",
+    text: "55555",
   },
   prev: 7,
   next: 7,
@@ -89,18 +90,20 @@ defaultNodeMap.set(7, {
 })
 const Home: React.FC<{}> = () => {
   useEffect(() => {
-    const regexFlow = new RegexFlow(startRoot, defaultNodeMap, {
-      origin: {
-        x: 0,
-        y: 20,
-      },
-      width: 500,
-      height: 500,
-    })
+    // const regexFlow = new RegexFlow(startRoot, defaultNodeMap, {
+    //   origin: {
+    //     x: 0,
+    //     y: 20,
+    //   },
+    //   width: 500,
+    //   height: 500,
+    // })
+    // regexFlow.render()
+    const regexFlow = new RegexFlow("#svg", startRoot, defaultNodeMap)
     regexFlow.render()
   }, [])
 
-  return <></>
+  return <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
 }
 
 export default Home
