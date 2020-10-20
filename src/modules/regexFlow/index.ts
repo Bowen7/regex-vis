@@ -10,7 +10,6 @@ import {
   FLOW_NODE_MARGIN_LEFT,
 } from "./config"
 import Svgx, { SvgxElement } from "../svgx"
-import SvgxBaseElement from "../svgx/element"
 type Box = {
   x: number
   y: number
@@ -263,25 +262,13 @@ class Rect {
   constructor(svgx: Svgx, box: Box, text: string) {
     this.svgx = svgx
     const { x, y, width, height } = box
-    const rectEl = svgx
-      .rect(x, y, width, height, FLOW_NODE_BORDER_RADIUS)
-      .attr({
-        fill: "#fff",
-      })
-    // rectEl.node.addEventListener("mouseenter", () => {
-    //   console.log(123)
-    //   const add1 = svgx.image(addSvg, x, y, 10, 10)
-    //   this.images = [add1]
-    // })
-    // rectEl.node.addEventListener("mouseleave", () => {
-    //   this.images.forEach(image => image.remove())
-    //   this.images = []
-    // })
+    const g = svgx.g()
+    const rectEl = g.rect(x, y, width, height, FLOW_NODE_BORDER_RADIUS)
     const center = {
       x: x + width / 2,
       y: y + height / 2,
     }
-    const textEl = svgx.text(center.x, center.y, text).attr({
+    const textEl = g.text(center.x, center.y, text).attr({
       "font-size": 16,
     })
     this.elements.push(rectEl, textEl)

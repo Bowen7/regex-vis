@@ -1,27 +1,28 @@
 import SvgxElement from "./element"
-import { baseTextAttr } from "./config"
-class Text extends SvgxElement {
+class Image extends SvgxElement {
   constructor(
     container: SVGSVGElement | SVGGElement,
+    src: string,
     x: number,
     y: number,
-    text: string
+    width: number,
+    height: number
   ) {
     super()
     this.type = "text"
     this.container = container
     this.target = document.createElementNS(
       "http://www.w3.org/2000/svg",
-      "text"
-    ) as SVGTextElement
+      "image"
+    ) as SVGImageElement
     this.attr({
       x,
       y,
-      text,
-      ...baseTextAttr,
-      dy: baseTextAttr["font-size"] * 0.35,
+      width,
+      height,
+      src,
     })
     this.append()
   }
 }
-export default Text
+export default Image

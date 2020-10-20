@@ -1,8 +1,8 @@
-import SvgxBaseElement from "./element"
+import SvgxElement from "./element"
 import { baseAttr } from "./config"
-class Rect extends SvgxBaseElement {
+class Rect extends SvgxElement {
   constructor(
-    container: SVGSVGElement,
+    container: SVGSVGElement | SVGGElement,
     x: number,
     y: number,
     width: number,
@@ -11,7 +11,7 @@ class Rect extends SvgxBaseElement {
   ) {
     super()
     this.container = container
-    this.el = document.createElementNS(
+    this.target = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "rect"
     ) as SVGRectElement

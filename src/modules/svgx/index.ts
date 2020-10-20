@@ -1,6 +1,4 @@
 import Svgx from "./svgx"
-import PathElement from "./path"
-import RectElement from "./rect"
-import CircleElement from "./circle"
-export type SvgxElement = PathElement | RectElement | CircleElement
+import SvgxElement from "./element"
+export { SvgxElement }
 export default Svgx

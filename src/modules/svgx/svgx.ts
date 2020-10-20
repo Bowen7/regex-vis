@@ -2,26 +2,72 @@ import Path from "./path"
 import Rect from "./rect"
 import Circle from "./circle"
 import Text from "./text"
-class Svgx {
-  svgDOM: SVGSVGElement
-  constructor(query: string) {
-    this.svgDOM = document.querySelector(query) as SVGSVGElement
-  }
-  setSize(width: number, height: number) {
-    this.svgDOM.setAttribute("width", width.toString())
-    this.svgDOM.setAttribute("height", height.toString())
-  }
+import Image from "./image"
+
+class BaseSvgx {
+  target!: SVGSVGElement | SVGGElement
   text(x: number, y: number, text: string) {
-    return new Text(this.svgDOM, x, y, text)
+    return new Text(this.target, x, y, text)
   }
   rect(x: number, y: number, width: number, height: number, r: number) {
-    return new Rect(this.svgDOM, x, y, width, height, r)
+    return new Rect(this.target, x, y, width, height, r)
   }
   path(pathString: string) {
-    return new Path(this.svgDOM, pathString)
+    return new Path(this.target, pathString)
   }
   circle(cx: number, cy: number, r: number) {
-    return new Circle(this.svgDOM, cx, cx, r)
+    return new Circle(this.target, cx, cx, r)
+  }
+  image(src: string, x: number, y: number, width: number, height: number) {
+    return new Image(this.target, src, x, y, width, height)
   }
 }
+
+class G extends BaseSvgx {
+  target: SVGGElement
+  svgDOM: SVGSVGElement
+  constructor(svgDOM: SVGSVGElement) {
+    super()
+    this.svgDOM = svgDOM
+    this.target = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "g"
+    ) as SVGGElement
+    this.svgDOM.appendChild(this.target)
+  }
+  remove() {
+    this.svgDOM.removeChild(this.target)
+  }
+  hover(
+    inHandler: (e: MouseEvent) => void,
+    outHandler: (e: MouseEvent) => void
+  ) {
+    this.target.addEventListener("mouseenter", inHandler)
+    this.target.addEventListener("mouseleave", outHandler)
+    return () => {
+      this.target.removeEventListener("mouseenter", inHandler)
+      this.target.removeEventListener("mouseleave", outHandler)
+    }
+  }
+  click(handler: (e: MouseEvent) => void) {
+    this.target.addEventListener("click", handler)
+    return () => this.target.removeEventListener("click", handler)
+  }
+}
+
+class Svgx extends BaseSvgx {
+  target: SVGSVGElement
+  constructor(query: string) {
+    super()
+    this.target = document.querySelector(query) as SVGSVGElement
+  }
+  setSize(width: number, height: number) {
+    this.target.setAttribute("width", width.toString())
+    this.target.setAttribute("height", height.toString())
+  }
+  g() {
+    return new G(this.target)
+  }
+}
+
 export default Svgx

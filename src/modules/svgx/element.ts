@@ -16,58 +16,58 @@ type AttrMap = {
   text?: string
   "font-size"?: number
   style?: string
+  src?: string
 }
+
 type AttrKey = keyof AttrMap
 type ElementType = "rect" | "circle" | "path" | "text" | ""
-class SvgxBaseElement {
-  container: SVGSVGElement | null = null
-  el: SVGElement | null = null
+class SvgxElement {
+  container!: SVGSVGElement | SVGGElement
+  target!: SVGElement
   events: Function[] = []
   type: ElementType = ""
   append() {
-    if (this.container && this.el) {
-      this.container.appendChild(this.el)
-    }
+    this.container.appendChild(this.target)
   }
   remove() {
-    if (this.container && this.el) {
-      this.container.removeChild(this.el)
-    }
+    this.container.removeChild(this.target)
   }
   attr(attrs: AttrMap) {
-    if (!this.el) {
-      return this
-    }
     for (let name in attrs) {
       switch (name) {
         case "text":
-          while (this.el.firstChild) {
-            this.el.removeChild(this.el.firstChild)
+          while (this.target.firstChild) {
+            this.target.removeChild(this.target.firstChild)
           }
-          // const tspan = document.createElementNS(
-          //   "http://www.w3.org/2000/svg",
-          //   "tspan"
-          // ) as SVGTSpanElement
-          this.el.appendChild(document.createTextNode(attrs[name] as string))
+          this.target.appendChild(
+            document.createTextNode(attrs[name] as string)
+          )
           break
         case "font-size":
           if (this.type === "text") {
-            this.el.setAttribute(
+            this.target.setAttribute(
               "dy",
               0.35 * (attrs["font-size"] as number) + ""
             )
           }
-          this.el.setAttribute(name, attrs[name as AttrKey] + "")
+          this.target.setAttribute(name, attrs[name as AttrKey] + "")
+          break
+        case "src":
+          this.target.setAttributeNS(
+            "http://www.w3.org/1999/xlink",
+            "xlink:href",
+            attrs[name as AttrKey] + ""
+          )
           break
         default:
-          this.el.setAttribute(name, attrs[name as AttrKey] + "")
+          this.target.setAttribute(name, attrs[name as AttrKey] + "")
           break
       }
     }
     return this
   }
   getBBox() {
-    return (this.el as SVGGraphicsElement).getBBox()
+    return (this.target as SVGGraphicsElement).getBBox()
   }
 }
-export default SvgxBaseElement
+export default SvgxElement
