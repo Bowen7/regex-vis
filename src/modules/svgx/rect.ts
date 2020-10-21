@@ -7,7 +7,7 @@ class Rect extends SvgxElement {
     y: number,
     width: number,
     height: number,
-    r: number
+    r?: number
   ) {
     super()
     this.container = container
@@ -15,6 +15,7 @@ class Rect extends SvgxElement {
       "http://www.w3.org/2000/svg",
       "rect"
     ) as SVGRectElement
+    r = r ? r : 0
     this.attr({
       x,
       y,

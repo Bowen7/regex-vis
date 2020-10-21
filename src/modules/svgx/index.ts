@@ -1,4 +1,4 @@
-import Svgx from "./svgx"
+import Svgx, { G as SvgxG } from "./svgx"
 import SvgxElement from "./element"
-export { SvgxElement }
+export { SvgxElement, SvgxG }
 export default Svgx

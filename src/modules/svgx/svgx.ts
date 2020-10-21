@@ -9,7 +9,7 @@ class BaseSvgx {
   text(x: number, y: number, text: string) {
     return new Text(this.target, x, y, text)
   }
-  rect(x: number, y: number, width: number, height: number, r: number) {
+  rect(x: number, y: number, width: number, height: number, r?: number) {
     return new Rect(this.target, x, y, width, height, r)
   }
   path(pathString: string) {
@@ -23,7 +23,7 @@ class BaseSvgx {
   }
 }
 
-class G extends BaseSvgx {
+export class G extends BaseSvgx {
   target: SVGGElement
   svgDOM: SVGSVGElement
   constructor(svgDOM: SVGSVGElement) {
@@ -38,15 +38,16 @@ class G extends BaseSvgx {
   remove() {
     this.svgDOM.removeChild(this.target)
   }
-  hover(
-    inHandler: (e: MouseEvent) => void,
-    outHandler: (e: MouseEvent) => void
-  ) {
-    this.target.addEventListener("mouseenter", inHandler)
-    this.target.addEventListener("mouseleave", outHandler)
+  enter(handler: (e: MouseEvent) => void) {
+    this.target.addEventListener("mouseenter", handler)
     return () => {
-      this.target.removeEventListener("mouseenter", inHandler)
-      this.target.removeEventListener("mouseleave", outHandler)
+      this.target.removeEventListener("mouseenter", handler)
+    }
+  }
+  leave(handler: (e: MouseEvent) => void) {
+    this.target.addEventListener("mouseleave", handler)
+    return () => {
+      this.target.removeEventListener("mouseleave", handler)
     }
   }
   click(handler: (e: MouseEvent) => void) {

@@ -17,6 +17,7 @@ type AttrMap = {
   "font-size"?: number
   style?: string
   src?: string
+  "stroke-width"?: number
 }
 
 type AttrKey = keyof AttrMap
@@ -68,6 +69,10 @@ class SvgxElement {
   }
   getBBox() {
     return (this.target as SVGGraphicsElement).getBBox()
+  }
+  click(handler: (e: MouseEvent) => void) {
+    this.target.addEventListener("click", handler)
+    return () => this.target.removeEventListener("click", handler)
   }
 }
 export default SvgxElement

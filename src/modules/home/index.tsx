@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import produce from "immer"
-import { Node, DragEvent, BasicNode, RootNode } from "@types"
+import { Node, DragEvent, BasicNode, RootNode, startId, endId } from "@types"
 import RegexFlow from "../regexFlow"
 import Svgx from "../svgx"
 import addSvg from "@assets/add.svg"
@@ -8,17 +8,20 @@ import addSvg from "@assets/add.svg"
 const _id_seed_ = 0
 const defaultNodeMap = new Map<number, Node>()
 
-const startRoot: RootNode = {
+defaultNodeMap.set(startId, {
+  id: startId,
   type: "root",
   prev: null,
   next: 1,
-}
-
-const endRoot: RootNode = {
+  text: "start",
+})
+defaultNodeMap.set(endId, {
+  id: endId,
   type: "root",
   prev: 7,
   next: null,
-}
+  text: "end",
+})
 defaultNodeMap.set(1, {
   type: "basic",
   id: 1,
@@ -27,7 +30,7 @@ defaultNodeMap.set(1, {
     value: "111",
     text: "111",
   },
-  prev: startRoot,
+  prev: startId,
   next: 6,
 })
 defaultNodeMap.set(2, {
@@ -78,7 +81,7 @@ defaultNodeMap.set(6, {
   type: "choice",
   id: 6,
   prev: 1,
-  next: endRoot,
+  next: endId,
   branches: [2, 3],
 })
 defaultNodeMap.set(7, {
@@ -99,7 +102,7 @@ const Home: React.FC<{}> = () => {
     //   height: 500,
     // })
     // regexFlow.render()
-    const regexFlow = new RegexFlow("#svg", startRoot, defaultNodeMap)
+    const regexFlow = new RegexFlow("#svg", startId, defaultNodeMap)
     regexFlow.render()
   }, [])
 
