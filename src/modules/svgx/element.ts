@@ -18,6 +18,7 @@ type AttrMap = {
   style?: string
   src?: string
   "stroke-width"?: number
+  "stroke-dasharray"?: string
 }
 
 type AttrKey = keyof AttrMap

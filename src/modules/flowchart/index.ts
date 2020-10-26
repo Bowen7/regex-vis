@@ -1,5 +1,5 @@
 import addSvg from "@assets/add.svg"
-import { RootNode, Pos, Node, ChoiceNode, startId, endId } from "@types"
+import { RootNode, Pos, Node, ChoiceNode, GroupNode } from "@types"
 import {
   FLOWCHART_PADDING_HORIZONTAL,
   FLOWCHART_PADDING_VERTICAL,
@@ -30,7 +30,7 @@ type RenderNode = {
   text: string
 }
 type RenderLine = {
-  type: "combine" | "split"
+  type: "combine" | "split" | "straight"
   start: Pos
   end: Pos
 }
@@ -177,11 +177,12 @@ class RegexFlow {
       const { head } = node
       let cur = head
       while (cur !== id) {
+        console.log(cur)
         const size = this.getSize(cur)
         width += size.width
         height = Math.max(size.height, height)
         const curNode = this.nodeMap.get(cur) as Node
-        cur = curNode.id
+        cur = curNode.next as number
       }
     }
     const size: Size = {
@@ -195,19 +196,10 @@ class RegexFlow {
     const node = this.nodeMap.get(id) as Node
     if (node.type === "choice") {
       this.traverseChoice(id, x, y, connectPoint)
+    } else if (node.type === "group") {
+      this.traverseGroup(id, x, y, connectPoint)
     } else if (node.type === "basic" || node.type === "root") {
       const size = this.getSize(id)
-
-      // if (connectPoint) {
-      //   this.preRenderLines.push({
-      //     start: connectPoint,
-      //     end: {
-      //       x: x + FLOW_NODE_MARGIN_HORIZONTAL,
-      //       y: y + size.height / 2,
-      //     },
-      //     type: "split",
-      //   })
-      // }
 
       let text = ""
       if (node.type === "basic") {
@@ -227,6 +219,29 @@ class RegexFlow {
         text,
       })
     }
+  }
+  traverseGroup(id: number, x: number, y: number, connectPoint?: Pos) {
+    const node = this.nodeMap.get(id) as GroupNode
+    const groupSize = this.getSize(id)
+    const { head } = node
+    const concatenation: number[] = []
+    let cur = head
+    // let width = 0
+    while (cur !== id) {
+      concatenation.push(cur)
+      // width += this.getSize(cur).width
+      const curNode = this.nodeMap.get(cur) as Node
+      cur = curNode.next as number
+    }
+    this.preRenderNodes.push({
+      id,
+      x,
+      y,
+      width: groupSize.width,
+      height: groupSize.height,
+      text: "",
+    })
+    this.traverseConcatenation(concatenation, x, y, connectPoint)
   }
   traverseChoice(id: number, x: number, y: number, endPoint?: Pos) {
     const node = this.nodeMap.get(id) as ChoiceNode
@@ -297,7 +312,7 @@ class RegexFlow {
 
       if (connectPoint) {
         this.preRenderLines.push({
-          type: "split",
+          type: "straight",
           start: { ...connectPoint },
           end: {
             x,
@@ -366,62 +381,71 @@ class Rect {
     this.id = id
     const { x, y, width, height } = box
     this.g = svgx.g()
-    this.g.rect(x, y, width, height, FLOW_NODE_BORDER_RADIUS)
+    this.g.rect(x, y, width, height, FLOW_NODE_BORDER_RADIUS).attr({
+      fill: "transparent",
+    })
 
     const center = {
       x: x + width / 2,
       y: y + height / 2,
     }
 
-    this.g.text(center.x, center.y, text).attr({
-      "font-size": 16,
-    })
+    if (text) {
+      this.g.text(center.x, center.y, text).attr({
+        "font-size": 16,
+      })
+    }
 
-    let tmpEls: SvgxElement[] = []
-    const addHandler = handler && handler.add
-    this.g.enter(e => {
-      const rect1 = this.g.rect(x - 21.5, y, 21.5, height).attr({
-        stroke: "none",
-        fill: "transparent",
-      })
-      const rect2 = this.g.rect(x + width, y, 21.5, height).attr({
-        stroke: "none",
-        fill: "transparent",
-      })
-      const image1 = this.g.image(addSvg, x - 21.5, y + height / 2 - 10, 20, 20)
-      const image2 = this.g.image(
-        addSvg,
-        x + width + 1.5,
-        y + height / 2 - 10,
-        20,
-        20
-      )
-      image1.click(() => {
-        addHandler && addHandler(id, "prev")
-      })
-      image2.click(() => {
-        addHandler && addHandler(id, "next")
-      })
-      tmpEls = [rect1, rect2, image1, image2]
-    })
-    this.g.leave(() => {
-      tmpEls.forEach(tmpEl => tmpEl.remove())
-      tmpEls = []
-    })
+    // let tmpEls: SvgxElement[] = []
+    // const addHandler = handler && handler.add
+    // this.g.enter(e => {
+    //   const rect1 = this.g.rect(x - 21.5, y, 21.5, height).attr({
+    //     stroke: "none",
+    //     fill: "transparent",
+    //   })
+    //   const rect2 = this.g.rect(x + width, y, 21.5, height).attr({
+    //     stroke: "none",
+    //     fill: "transparent",
+    //   })
+    //   const image1 = this.g.image(addSvg, x - 21.5, y + height / 2 - 10, 20, 20)
+    //   const image2 = this.g.image(
+    //     addSvg,
+    //     x + width + 1.5,
+    //     y + height / 2 - 10,
+    //     20,
+    //     20
+    //   )
+    //   image1.click(() => {
+    //     addHandler && addHandler(id, "prev")
+    //   })
+    //   image2.click(() => {
+    //     addHandler && addHandler(id, "next")
+    //   })
+    //   tmpEls = [rect1, rect2, image1, image2]
+    // })
+    // this.g.leave(() => {
+    //   tmpEls.forEach(tmpEl => tmpEl.remove())
+    //   tmpEls = []
+    // })
   }
 }
 
 class Line {
   g: SvgxG
   elements: SvgxElement[] = []
-  constructor(g: SvgxG, start: Pos, end: Pos, type?: "combine" | "split") {
+  constructor(
+    g: SvgxG,
+    start: Pos,
+    end: Pos,
+    type: "combine" | "split" | "straight"
+  ) {
     this.g = g
-    if (Math.abs(start.y - end.y) < 0.5) {
+    if (type === "straight" || Math.abs(start.y - end.y) < 0.5) {
       console.log(start, end)
       this.g.path(`M${start.x},${start.y}L${end.x},${end.y}`)
       return
     }
-    type = type || "split"
+
     let M = ""
     let L1 = ""
     let A1 = ""

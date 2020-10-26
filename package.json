@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@geist-ui/react": "^2.1.0-canary.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -14,7 +15,6 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "immer": "^7.0.9",
-    "raphael": "^2.3.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
@@ -22,6 +22,7 @@
     "react-scripts": "3.4.3",
     "redux": "^4.0.5",
     "regexp-tree": "^0.1.21",
+    "regexpp": "^3.1.0",
     "typescript": "~3.7.2"
   },
   "scripts": {
