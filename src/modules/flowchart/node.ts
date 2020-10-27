@@ -76,21 +76,24 @@ class FlowNode {
         // )
       }
       if (max > 1) {
-        let maxText = "0 - "
-        if (max === Infinity) {
-          maxText += "∞"
-        } else {
-          maxText += max
+        let maxText = min + ""
+        if (max !== min) {
+          maxText += " - "
+          if (max === Infinity) {
+            maxText += "∞"
+          } else {
+            maxText += max
+          }
         }
-        maxText += "次"
+        maxText += " 次"
         this.g.path(
           `M${center.x - 7.5},${y + height}` +
             `A10 10 0 1 0,${center.x + 7.5},${y + height}`
         )
         this.g.path(
-          `M${center.x - 6.5},${y + height + 7}` +
-            `L${center.x - 10},${y + height + 10.5}` +
-            `L${center.x - 13.5},${y + height + 7}`
+          `M${center.x + 6.5},${y + height + 7}` +
+            `L${center.x + 10},${y + height + 10.5}` +
+            `L${center.x + 13.5},${y + height + 7}`
         )
         this.g.text(center.x, y + height + 25, maxText).attr({
           "font-size": 14,

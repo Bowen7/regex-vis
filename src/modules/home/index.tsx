@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Radio, Input, Button } from "@geist-ui/react"
-import { Node, DragEvent, BasicNode, RootNode } from "@types"
+import { Node, DragEvent, BasicNode, RootNode, NodeMap } from "@types"
 import RegexFlow from "../flowchart"
 import parser from "@parser"
 function noop() {
@@ -92,20 +92,25 @@ function noop() {
 //   next: 6,
 //   branches: [4, 5],
 // })
+const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 const Home: React.FC<{}> = () => {
-  const [regex, setRegex] = useState<string>(
-    `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
-  )
+  const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
+  const [nodeMap, setNodeMap] = useState<NodeMap>(parser.parse(DEFAULT_REGEX))
   const [regexFlow, setRegexFlow] = useState<RegexFlow>()
   useEffect(() => {
+    regexFlow?.render(nodeMap)
+  }, [nodeMap, regexFlow])
+
+  useEffect(() => {
     setRegexFlow(new RegexFlow("#svg", 0))
-  }, [setRegexFlow])
+  }, [])
+
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
   }
   function handleRenderClick() {
     const nodeMap = parser.parse(regex)
-    regexFlow?.render(nodeMap)
+    setNodeMap(nodeMap)
   }
   return (
     <>
