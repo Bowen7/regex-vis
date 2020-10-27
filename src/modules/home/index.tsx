@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Radio, Input } from "@geist-ui/react"
+import { Radio, Input, Button } from "@geist-ui/react"
 import { Node, DragEvent, BasicNode, RootNode } from "@types"
 import RegexFlow from "../flowchart"
 import parser from "@parser"
@@ -93,30 +93,53 @@ function noop() {
 //   branches: [4, 5],
 // })
 const Home: React.FC<{}> = () => {
+  const [regex, setRegex] = useState<string>(
+    `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
+  )
+  const [regexFlow, setRegexFlow] = useState<RegexFlow>()
   useEffect(() => {
-    // const regexFlow = new RegexFlow(startRoot, defaultNodeMap, {
-    //   origin: {
-    //     x: 0,
-    //     y: 20,
-    //   },
-    //   width: 500,
-    //   height: 500,
-    // })
-    // regexFlow.render()
-    const nodeMap = parser.parse(/http:\/\//)
-    console.log(nodeMap)
-    const regexFlow = new RegexFlow("#svg", 0, nodeMap)
-    regexFlow.render()
-  }, [])
-
+    setRegexFlow(new RegexFlow("#svg", 0))
+  }, [setRegexFlow])
+  function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setRegex(e.target.value)
+  }
+  function handleRenderClick() {
+    const nodeMap = parser.parse(regex)
+    regexFlow?.render(nodeMap)
+  }
   return (
     <>
-      <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
-      <Radio.Group value="1" useRow size="small">
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      {/* <Radio.Group value="1" useRow size="small">
         <Radio value="1">字符串</Radio>
         <Radio value="2">字符范围</Radio>
-      </Radio.Group>
-      <Input placeholder="一个基础示例" />
+      </Radio.Group> */}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Input
+          placeholder="输入正则"
+          width="500px"
+          value={regex}
+          onChange={handleRegexChange}
+        />
+        <Button
+          auto
+          style={{
+            marginLeft: "20px",
+          }}
+          onClick={handleRenderClick}
+        >
+          Render
+        </Button>
+      </div>
     </>
   )
 }

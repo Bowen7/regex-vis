@@ -1,13 +1,16 @@
 export type Char = {
   type: "simple" | "escaped"
-  value: String
+  value: string
   text: string
 }
-
-export type CharCollection = {
-  type: "collection"
+export type CharRange = {
   from: Char
   to: Char
+  text: string
+}
+export type CharCollection = {
+  type: "collection"
+  body: (CharRange | Char)[]
   text: string
 }
 
@@ -47,6 +50,7 @@ export type ChoiceNode = {
   branches: number[]
   prev: number
   next: number
+  quantifier?: null
 }
 // export type
 

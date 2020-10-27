@@ -1,5 +1,13 @@
 import addSvg from "@assets/add.svg"
-import { RootNode, Pos, Node, ChoiceNode, GroupNode, Quantifier } from "@types"
+import {
+  RootNode,
+  Pos,
+  Node,
+  ChoiceNode,
+  GroupNode,
+  Quantifier,
+  NodeMap,
+} from "@types"
 import {
   FLOWCHART_PADDING_HORIZONTAL,
   FLOWCHART_PADDING_VERTICAL,
@@ -46,19 +54,21 @@ class RegexFlow {
   lineG!: SvgxG
   standardText: SvgxElement | null = null
   root: number
-  nodeMap: Map<number, Node>
+  nodeMap!: Map<number, Node>
   preRenderNodes: RenderNode[] = []
   preRenderLines: RenderLine[] = []
   cachedSizeMap: Map<number, Size> = new Map()
-  constructor(selectorQuery: string, root: number, nodeMap: Map<number, Node>) {
+  constructor(selectorQuery: string, root: number) {
     this.svgx = new Svgx(selectorQuery)
     this.root = root
-    this.nodeMap = nodeMap
   }
-  render(): void {
-    const { root, nodeMap } = this
+  render(nodeMap: NodeMap): void {
+    this.nodeMap = nodeMap
+    const { root } = this
     let cur: RootNode | null | number = root
     const concatenation: number[] = []
+
+    this.clear()
 
     this.lineG = this.svgx.g()
     this.createStandardText()
@@ -113,11 +123,11 @@ class RegexFlow {
     }
 
     this.clear()
-    this.cachedSizeMap = new Map()
-    this.render()
+    // this.render()
   }
   clear() {
     this.svgx.target.innerHTML = ""
+    this.cachedSizeMap = new Map()
   }
   renderElements() {
     this.preRenderNodes.forEach(el => {
@@ -169,15 +179,6 @@ class RegexFlow {
           const size = this.measureText(text)
           width = size.width + 2 * FLOW_NODE_PADDING_HORIZONTAL
           height = size.height + 2 * FLOW_NODE_PADDING_VERTICAL
-          const { quantifier } = node
-          if (quantifier) {
-            if (quantifier.min === 0) {
-              height += FLOW_QUANTIFIER_MARGIN_TOP
-            }
-            if (quantifier.max > 1) {
-              height += FLOW_QUANTIFIER_MARGIN_BOTTOM
-            }
-          }
         }
         break
 
@@ -189,7 +190,10 @@ class RegexFlow {
           let cur = branch
           while (cur !== id) {
             const size = this.getSize(cur)
-            _width += size.width + FLOW_NODE_MARGIN_HORIZONTAL
+            _width += size.width
+            if (cur !== branch) {
+              _width += FLOW_NODE_MARGIN_HORIZONTAL
+            }
             _height = Math.max(size.height, _height)
             const nextNode = this.nodeMap.get(cur) as Node
             cur = nextNode.next as number
@@ -205,9 +209,11 @@ class RegexFlow {
         const { head } = node
         let cur = head
         while (cur !== id) {
-          console.log(cur)
           const size = this.getSize(cur)
           width += size.width
+          if (cur !== head) {
+            width += FLOW_NODE_MARGIN_HORIZONTAL
+          }
           height = Math.max(size.height, height)
           const curNode = this.nodeMap.get(cur) as Node
           cur = curNode.next as number
@@ -217,6 +223,15 @@ class RegexFlow {
       default:
         break
     }
+    const { quantifier } = node
+    if (quantifier) {
+      if (quantifier.min === 0) {
+        height += FLOW_QUANTIFIER_MARGIN_TOP
+      }
+      if (quantifier.max > 1) {
+        height += FLOW_QUANTIFIER_MARGIN_BOTTOM
+      }
+    }
     const size: Size = {
       width,
       height,
@@ -224,7 +239,7 @@ class RegexFlow {
     this.cachedSizeMap.set(id, size)
     return size
   }
-  traverseUnknownType(id: number, x: number, y: number, connectPoint?: Pos) {
+  traverseUnknownType(id: number, x: number, y: number) {
     const node = this.nodeMap.get(id) as Node
     switch (node.type) {
       case "basic":
@@ -270,16 +285,16 @@ class RegexFlow {
         break
       }
       case "choice":
-        this.traverseChoice(id, x, y, connectPoint)
+        this.traverseChoice(id, x, y)
         break
       case "group":
-        this.traverseGroup(id, x, y, connectPoint)
+        this.traverseGroup(id, x, y)
         break
       default:
         break
     }
   }
-  traverseGroup(id: number, x: number, y: number, connectPoint?: Pos) {
+  traverseGroup(id: number, x: number, y: number) {
     const node = this.nodeMap.get(id) as GroupNode
     const groupSize = this.getSize(id)
     const { head, quantifier } = node
@@ -292,20 +307,32 @@ class RegexFlow {
       const curNode = this.nodeMap.get(cur) as Node
       cur = curNode.next as number
     }
-    this.preRenderNodes.push({
+    let { width, height } = groupSize
+    if (quantifier) {
+      if (quantifier.min === 0) {
+        y += FLOW_QUANTIFIER_MARGIN_TOP / 2
+        height -= FLOW_QUANTIFIER_MARGIN_TOP
+      }
+      if (quantifier.max > 1) {
+        y += FLOW_QUANTIFIER_MARGIN_BOTTOM / 2
+        height -= FLOW_QUANTIFIER_MARGIN_BOTTOM
+      }
+    }
+    const preRenderNode: RenderNode = {
       id,
       x,
       y,
-      width: groupSize.width,
-      height: groupSize.height,
+      width,
+      height,
       text: "",
       type: "group",
       quantifier,
-    })
+    }
+    this.preRenderNodes.push(preRenderNode)
     y += FLOW_GROUP_PADDING_VERTICAL
-    this.traverseConcatenation(concatenation, x, y, connectPoint)
+    this.traverseConcatenation(concatenation, x, y)
   }
-  traverseChoice(id: number, x: number, y: number, endPoint?: Pos) {
+  traverseChoice(id: number, x: number, y: number) {
     const node = this.nodeMap.get(id) as ChoiceNode
     const originY = y
     const { branches } = node
@@ -328,12 +355,8 @@ class RegexFlow {
         cur = curNode.next as number
       }
       const deltaX = (maxWidth - width) / 2
-      const height = this.traverseConcatenation(
-        concatenation,
-        x + deltaX,
-        y,
-        endPoint
-      ).height
+      const height = this.traverseConcatenation(concatenation, x + deltaX, y)
+        .height
       branchEndPoints.push({
         x: x + deltaX + width,
         y: y + height / 2,
@@ -353,12 +376,7 @@ class RegexFlow {
       })
     })
   }
-  traverseConcatenation(
-    concatenation: number[],
-    x: number,
-    y: number,
-    xx?: Pos
-  ): Size {
+  traverseConcatenation(concatenation: number[], x: number, y: number): Size {
     const originX = x
     let height = 0
     let connectPoint: Pos
@@ -369,7 +387,7 @@ class RegexFlow {
     concatenation.forEach(id => {
       const size = this.getSize(id)
       const deltaY = (height - size.height) / 2
-      this.traverseUnknownType(id, x, y + deltaY, xx)
+      this.traverseUnknownType(id, x, y + deltaY)
 
       if (connectPoint) {
         this.preRenderLines.push({

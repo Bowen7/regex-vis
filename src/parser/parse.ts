@@ -1,5 +1,14 @@
 import { parseRegExpLiteral, AST } from "regexpp"
-import { NodeMap, Node, RootNode, BasicNode, GroupNode } from "@types"
+import {
+  NodeMap,
+  Node,
+  RootNode,
+  BasicNode,
+  GroupNode,
+  CharCollection,
+  Char,
+  CharRange,
+} from "@types"
 function parse(regex: string | RegExp) {
   let __ID_SEED__ = 0
   const nodeMap: NodeMap = new Map()
@@ -84,6 +93,9 @@ function parse(regex: string | RegExp) {
           max,
         }
         break
+      case "CharacterClass":
+        parseCharacterClass(ast, prevId)
+        break
       default:
         break
     }
@@ -140,6 +152,56 @@ function parse(regex: string | RegExp) {
     }
     groupNode.next = __ID_SEED__
     nodeMap.set(groupId, groupNode)
+  }
+  function parseCharacterClass(ast: AST.CharacterClass, prevId: number) {
+    const id = __ID_SEED__++
+    const { elements } = ast
+    const charCollection: CharCollection = {
+      type: "collection",
+      body: [],
+      text: "",
+    }
+    elements.forEach(element => {
+      if (element.type === "Character") {
+        const text = String.fromCharCode(element.value)
+        const char: Char = {
+          type: "simple",
+          value: text,
+          text,
+        }
+        charCollection.body.push(char)
+      } else if (element.type === "CharacterClassRange") {
+        const { min, max } = element
+        const minText = String.fromCharCode(min.value)
+        const maxText = String.fromCharCode(max.value)
+        const from: Char = {
+          type: "simple",
+          value: minText,
+          text: minText,
+        }
+        const to: Char = {
+          type: "simple",
+          value: minText,
+          text: minText,
+        }
+        const charRange: CharRange = {
+          from,
+          to,
+          text: minText + "-" + maxText,
+        }
+        charCollection.body.push(charRange)
+      }
+    })
+    const text = charCollection.body.map(item => item.text).join(", ")
+    charCollection.text = text
+    const node: BasicNode = {
+      id,
+      type: "basic",
+      prev: prevId,
+      next: __ID_SEED__,
+      body: charCollection,
+    }
+    nodeMap.set(id, node)
   }
   function mergeElements(elements: AST.Element[]) {
     const result: AST.Element[] = []
