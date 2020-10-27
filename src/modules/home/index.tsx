@@ -1,165 +1,151 @@
-import React, { useState } from "react"
-import produce from "immer"
-import Line from "@modules/graph/line"
-import Single from "@modules/graph/single"
-import { Node, DragEvent, BasicNode } from "@types"
-import { JSXElement } from "@babel/types"
+import React, { useEffect, useState } from "react"
+import { Radio, Input, Button } from "@geist-ui/react"
+import { Node, DragEvent, BasicNode, RootNode, NodeMap } from "@types"
+import RegexFlow from "../flowchart"
+import parser from "@parser"
+function noop() {
+  console.log(parser)
+}
+// const _id_seed_ = 0
+// const defaultNodeMap = new Map<number, Node>()
 
-const defaultNodeMap = new Map<number, Node>()
-defaultNodeMap.set(0, {
-  type: "basic",
-  prev: [],
-  body: {
-    type: "simple",
-    value: "a",
-  },
-  origin: { x: 100, y: 100 },
-  width: 80,
-  height: 40,
-  next: [1],
-  id: 0,
-})
-defaultNodeMap.set(1, {
-  type: "basic",
-  prev: [0],
-  body: {
-    type: "simple",
-    value: "a",
-  },
-  origin: { x: 300, y: 100 },
-  width: 80,
-  height: 40,
-  next: [2],
-  id: 1,
-})
-defaultNodeMap.set(2, {
-  type: "basic",
-  prev: [1],
-  body: {
-    type: "simple",
-    value: "a",
-  },
-  origin: { x: 500, y: 100 },
-  width: 80,
-  height: 40,
-  next: [],
-  id: 2,
-})
-let _id = 3
+// defaultNodeMap.set(0, {
+//   id: 0,
+//   type: "root",
+//   prev: null,
+//   next: 1,
+//   text: "start",
+// })
+// defaultNodeMap.set(-1, {
+//   id: -1,
+//   type: "root",
+//   prev: 7,
+//   next: null,
+//   text: "end",
+// })
+// defaultNodeMap.set(1, {
+//   type: "basic",
+//   id: 1,
+//   body: {
+//     type: "simple",
+//     value: "111",
+//     text: "111",
+//   },
+//   prev: 0,
+//   next: 6,
+// })
+// defaultNodeMap.set(2, {
+//   type: "basic",
+//   id: 2,
+//   body: {
+//     type: "simple",
+//     value: "222",
+//     text: "222",
+//   },
+//   prev: 6,
+//   next: 7,
+// })
+// defaultNodeMap.set(3, {
+//   type: "basic",
+//   id: 3,
+//   body: {
+//     type: "simple",
+//     value: "333",
+//     text: "333",
+//   },
+//   prev: 6,
+//   next: 6,
+// })
+// defaultNodeMap.set(4, {
+//   type: "basic",
+//   id: 4,
+//   body: {
+//     type: "simple",
+//     value: "444",
+//     text: "444",
+//   },
+//   prev: 7,
+//   next: 7,
+// })
+// defaultNodeMap.set(5, {
+//   type: "basic",
+//   id: 5,
+//   body: {
+//     type: "simple",
+//     value: "555",
+//     text: "55555",
+//   },
+//   prev: 7,
+//   next: 7,
+// })
+// defaultNodeMap.set(6, {
+//   type: "choice",
+//   id: 6,
+//   prev: 1,
+//   next: -1,
+//   branches: [2, 3],
+// })
+// defaultNodeMap.set(7, {
+//   type: "choice",
+//   id: 7,
+//   prev: 2,
+//   next: 6,
+//   branches: [4, 5],
+// })
+const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 const Home: React.FC<{}> = () => {
-  const [nodeMap, setNodeMap] = useState<Map<number, Node>>(defaultNodeMap)
+  const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
+  const [nodeMap, setNodeMap] = useState<NodeMap>(parser.parse(DEFAULT_REGEX))
+  const [regexFlow, setRegexFlow] = useState<RegexFlow>()
+  useEffect(() => {
+    regexFlow?.render(nodeMap)
+  }, [nodeMap, regexFlow])
 
-  function onDrag(e: DragEvent) {
-    const { id, deltaX, deltaY } = e
-    const nextNodeMap = produce(nodeMap, draftNodeMap => {
-      const node = draftNodeMap.get(id)
-      if (node) {
-        const origin = node.origin
-        node.origin = {
-          x: origin.x + deltaX,
-          y: origin.y + deltaY,
-        }
-        draftNodeMap.set(id, node)
-      }
-    })
-    setNodeMap(nextNodeMap)
-  }
+  useEffect(() => {
+    setRegexFlow(new RegexFlow("#svg", 0))
+  }, [])
 
-  function onAddNode(id: number, direction: "prev" | "next") {
-    const nextNodeMap = produce(nodeMap, draftNodeMap => {
-      const node: BasicNode = {
-        type: "basic",
-        prev: [],
-        body: {
-          type: "simple",
-          value: "a",
-        },
-        origin: { x: 200, y: 200 },
-        width: 80,
-        height: 40,
-        next: [],
-        id: _id,
-      }
-      if (direction === "prev") {
-        node.next.push(id)
-      } else {
-        const curNode = draftNodeMap.get(id)
-        if (curNode) {
-          curNode.next.push(_id)
-          draftNodeMap.set(id, curNode)
-        }
-      }
-      draftNodeMap.set(_id++, node)
-    })
-    setNodeMap(nextNodeMap)
+  function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setRegex(e.target.value)
   }
-  function renderNodes(nodeMap: Map<number, Node>): JSX.Element[] {
-    const nodes: JSX.Element[] = []
-    nodeMap.forEach((node, id) => {
-      if (node?.type === "basic") {
-        nodes.push(
-          <Single node={node} key={id} onDarg={onDrag} onAddNode={onAddNode} />
-        )
-      }
-    })
-    return nodes
-  }
-  function renderLines(nodeMap: Map<number, Node>): JSX.Element[] {
-    const lines: JSX.Element[] = []
-    nodeMap.forEach((node, id) => {
-      if (node?.type === "basic" && node.next) {
-        const { origin, width, height, next } = node
-        const start = { x: origin.x + width, y: origin.y + height / 2 }
-        next.forEach(nextId => {
-          const nextNode = nodeMap.get(nextId)
-          if (nextNode?.type === "basic") {
-            const { origin: nextNodeOrigin, height: nextNodeHeight } = nextNode
-            const end = {
-              x: nextNodeOrigin.x,
-              y: nextNodeOrigin.y + nextNodeHeight / 2,
-            }
-            lines.push(<Line start={start} end={end} key={`${id}-${nextId}`} />)
-          }
-        })
-      }
-    })
-    return lines
+  function handleRenderClick() {
+    const nodeMap = parser.parse(regex)
+    setNodeMap(nodeMap)
   }
   return (
-    <svg
-      style={{ width: "900px", height: "500px" }}
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <defs>
-        <marker
-          id="triangle"
-          markerUnits="strokeWidth"
-          markerWidth="7"
-          markerHeight="7"
-          refX="0"
-          refY="3.5"
-          orient="auto"
+    <>
+      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+        <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
+      </div>
+      {/* <Radio.Group value="1" useRow size="small">
+        <Radio value="1">字符串</Radio>
+        <Radio value="2">字符范围</Radio>
+      </Radio.Group> */}
+      <div
+        style={{
+          width: "100%",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <Input
+          placeholder="输入正则"
+          width="500px"
+          value={regex}
+          onChange={handleRegexChange}
+        />
+        <Button
+          auto
+          style={{
+            marginLeft: "20px",
+          }}
+          onClick={handleRenderClick}
         >
-          <path d="M 0 0 L 7 3.5 L 0 7 z" />
-        </marker>
-
-        <marker
-          id="triangle-reverse"
-          markerUnits="strokeWidth"
-          markerWidth="7"
-          markerHeight="7"
-          refX="0"
-          refY="3.5"
-          orient="auto"
-        >
-          <path d="M 0 0 L 7 0 L 3.5 7 z" />
-        </marker>
-      </defs>
-      {/* lines should be rendered before nodes */}
-      {/* in svg, the rendering order is based on the document order, cant use z-index */}
-      {renderLines(nodeMap)}
-      {renderNodes(nodeMap)}
-    </svg>
+          Render
+        </Button>
+      </div>
+    </>
   )
 }
 
