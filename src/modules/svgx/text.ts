@@ -1,5 +1,4 @@
 import SvgxElement from "./element"
-import { baseTextAttr } from "./config"
 class Text extends SvgxElement {
   constructor(
     container: SVGSVGElement | SVGGElement,
@@ -18,8 +17,9 @@ class Text extends SvgxElement {
       x,
       y,
       text,
-      ...baseTextAttr,
-      dy: baseTextAttr["font-size"] * 0.35,
+      "text-anchor": "middle",
+      "font-size": 16,
+      dy: 16 * 0.35,
     })
     this.append()
   }

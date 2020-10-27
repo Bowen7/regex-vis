@@ -103,7 +103,7 @@ const Home: React.FC<{}> = () => {
     //   height: 500,
     // })
     // regexFlow.render()
-    const nodeMap = parser.parse("/(aa|a)|cc/")
+    const nodeMap = parser.parse(/http:\/\//)
     console.log(nodeMap)
     const regexFlow = new RegexFlow("#svg", 0, nodeMap)
     regexFlow.render()

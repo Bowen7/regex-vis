@@ -1,5 +1,4 @@
 import SvgxElement from "./element"
-import { baseAttr } from "./config"
 class Rect extends SvgxElement {
   constructor(
     container: SVGSVGElement | SVGGElement,
@@ -23,7 +22,9 @@ class Rect extends SvgxElement {
       height,
       rx: r,
       ry: r,
-      ...baseAttr,
+      stroke: "#000",
+      fill: "#fff",
+      "stroke-width": 1.5,
     })
     this.append()
   }

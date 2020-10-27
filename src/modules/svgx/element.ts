@@ -1,26 +1,27 @@
 type AttrMap = {
-  d?: string
-  cx?: number
-  cy?: number
-  r?: number
-  x?: number
-  y?: number
-  rx?: number
-  ry?: number
-  dx?: number
-  dy?: number
-  width?: number
-  height?: number
-  stroke?: string
-  fill?: string
-  text?: string
-  "font-size"?: number
-  style?: string
-  src?: string
-  "stroke-width"?: number
-  "stroke-dasharray"?: string
+  d: string
+  cx: number
+  cy: number
+  r: number
+  x: number
+  y: number
+  rx: number
+  ry: number
+  dx: number
+  dy: number
+  width: number
+  height: number
+  stroke: string
+  fill: string
+  text: string
+  "font-size": number
+  style: string
+  src: string
+  "text-anchor": string
+  "stroke-width": number
+  "stroke-dasharray": string
 }
-
+export type Attr = Partial<AttrMap>
 type AttrKey = keyof AttrMap
 type ElementType = "rect" | "circle" | "path" | "text" | ""
 class SvgxElement {
@@ -34,7 +35,7 @@ class SvgxElement {
   remove() {
     this.container.removeChild(this.target)
   }
-  attr(attrs: AttrMap) {
+  attr(attrs: Attr) {
     for (let name in attrs) {
       switch (name) {
         case "text":

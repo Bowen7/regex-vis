@@ -1,16 +1,20 @@
 import addSvg from "@assets/add.svg"
-import { RootNode, Pos, Node, ChoiceNode, GroupNode } from "@types"
+import { RootNode, Pos, Node, ChoiceNode, GroupNode, Quantifier } from "@types"
 import {
   FLOWCHART_PADDING_HORIZONTAL,
   FLOWCHART_PADDING_VERTICAL,
   FLOW_NODE_PADDING_HORIZONTAL,
   FLOW_NODE_PADDING_VERTICAL,
-  FLOW_NODE_BORDER_RADIUS,
   FLOW_NODE_MARGIN_VERTICAL,
   FLOW_NODE_MARGIN_HORIZONTAL,
   FLOW_CHOICE_PADDING_HORIZONTAL,
+  FLOW_ROOT_PADDING,
+  FLOW_GROUP_PADDING_VERTICAL,
+  FLOW_QUANTIFIER_MARGIN_TOP,
+  FLOW_QUANTIFIER_MARGIN_BOTTOM,
 } from "./config"
 import Svgx, { SvgxElement, SvgxG } from "../svgx"
+import FlowNode from "./node"
 type Box = {
   x: number
   y: number
@@ -28,6 +32,8 @@ type RenderNode = {
   width: number
   height: number
   text: string
+  type: "root" | "group" | "basic"
+  quantifier?: Quantifier
 }
 type RenderLine = {
   type: "combine" | "split" | "straight"
@@ -115,18 +121,22 @@ class RegexFlow {
   }
   renderElements() {
     this.preRenderNodes.forEach(el => {
-      const { x, y, width, height, text, id } = el
-      new Rect(
+      const { x, y, width, height, text, id, type, quantifier } = el
+      new FlowNode(
         this.svgx,
         {
-          x,
-          y,
-          width,
-          height,
+          box: {
+            x,
+            y,
+            width,
+            height,
+          },
+          text,
+          id,
+          handlers: { add: this.add.bind(this) },
+          type,
         },
-        text,
-        id,
-        { add: this.add.bind(this) }
+        quantifier
       )
     })
     this.preRenderLines.forEach(({ start, end, type }) => {
@@ -144,46 +154,68 @@ class RegexFlow {
     const node = this.nodeMap.get(id) as Node
     let width = 0
     let height = 0
-    if (node.type === "basic" || node.type === "root") {
-      let text = ""
-      if (node.type === "basic") {
-        text = node.body.text
-      } else {
-        text = node.text
+    switch (node.type) {
+      case "root": {
+        const text = node.text
+        const size = this.measureText(text)
+        width = size.width + 2 * FLOW_ROOT_PADDING
+        height = width
+        break
       }
-      const size = this.measureText(text)
 
-      width = size.width + 2 * FLOW_NODE_PADDING_HORIZONTAL
-      height = size.height + 2 * FLOW_NODE_PADDING_VERTICAL
-    } else if (node.type === "choice") {
-      const { branches } = node
-      branches.forEach((branch, index) => {
-        let _width = 0
-        let _height = 0
-        let cur = branch
-        while (cur !== id) {
-          const size = this.getSize(cur)
-          _width += size.width + FLOW_NODE_MARGIN_HORIZONTAL
-          _height = Math.max(size.height, _height)
-          const nextNode = this.nodeMap.get(cur) as Node
-          cur = nextNode.next as number
+      case "basic":
+        {
+          const text = node.body.text
+          const size = this.measureText(text)
+          width = size.width + 2 * FLOW_NODE_PADDING_HORIZONTAL
+          height = size.height + 2 * FLOW_NODE_PADDING_VERTICAL
+          const { quantifier } = node
+          if (quantifier) {
+            if (quantifier.min === 0) {
+              height += FLOW_QUANTIFIER_MARGIN_TOP
+            }
+            if (quantifier.max > 1) {
+              height += FLOW_QUANTIFIER_MARGIN_BOTTOM
+            }
+          }
         }
-        height += _height
-        index > 0 && (height += FLOW_NODE_MARGIN_VERTICAL)
-        width = Math.max(width, _width)
-      })
-      width += FLOW_CHOICE_PADDING_HORIZONTAL * 2
-    } else if (node.type === "group") {
-      const { head } = node
-      let cur = head
-      while (cur !== id) {
-        console.log(cur)
-        const size = this.getSize(cur)
-        width += size.width
-        height = Math.max(size.height, height)
-        const curNode = this.nodeMap.get(cur) as Node
-        cur = curNode.next as number
-      }
+        break
+
+      case "choice":
+        const { branches } = node
+        branches.forEach((branch, index) => {
+          let _width = 0
+          let _height = 0
+          let cur = branch
+          while (cur !== id) {
+            const size = this.getSize(cur)
+            _width += size.width + FLOW_NODE_MARGIN_HORIZONTAL
+            _height = Math.max(size.height, _height)
+            const nextNode = this.nodeMap.get(cur) as Node
+            cur = nextNode.next as number
+          }
+          height += _height
+          index > 0 && (height += FLOW_NODE_MARGIN_VERTICAL)
+          width = Math.max(width, _width)
+        })
+        width += FLOW_CHOICE_PADDING_HORIZONTAL * 2
+        break
+
+      case "group":
+        const { head } = node
+        let cur = head
+        while (cur !== id) {
+          console.log(cur)
+          const size = this.getSize(cur)
+          width += size.width
+          height = Math.max(size.height, height)
+          const curNode = this.nodeMap.get(cur) as Node
+          cur = curNode.next as number
+        }
+        height += 2 * FLOW_GROUP_PADDING_VERTICAL
+        break
+      default:
+        break
     }
     const size: Size = {
       width,
@@ -194,36 +226,63 @@ class RegexFlow {
   }
   traverseUnknownType(id: number, x: number, y: number, connectPoint?: Pos) {
     const node = this.nodeMap.get(id) as Node
-    if (node.type === "choice") {
-      this.traverseChoice(id, x, y, connectPoint)
-    } else if (node.type === "group") {
-      this.traverseGroup(id, x, y, connectPoint)
-    } else if (node.type === "basic" || node.type === "root") {
-      const size = this.getSize(id)
-
-      let text = ""
-      if (node.type === "basic") {
-        const { body } = node
-        if (body.type === "simple") {
-          text = body.text
+    switch (node.type) {
+      case "basic":
+        {
+          const size = this.getSize(id)
+          const text = node.body.text
+          const { quantifier } = node
+          const preRenderNode: RenderNode = {
+            id,
+            x,
+            y,
+            width: size.width,
+            height: size.height,
+            text,
+            type: "basic",
+            quantifier,
+          }
+          if (quantifier) {
+            if (quantifier.min === 0) {
+              preRenderNode.y += FLOW_QUANTIFIER_MARGIN_TOP / 2
+              preRenderNode.height -= FLOW_QUANTIFIER_MARGIN_TOP
+            }
+            if (quantifier.max > 1) {
+              preRenderNode.y += FLOW_QUANTIFIER_MARGIN_BOTTOM / 2
+              preRenderNode.height -= FLOW_QUANTIFIER_MARGIN_BOTTOM
+            }
+          }
+          this.preRenderNodes.push(preRenderNode)
         }
-      } else {
-        text = node.text
+        break
+      case "root": {
+        const size = this.getSize(id)
+        const text = node.text
+        this.preRenderNodes.push({
+          id,
+          x,
+          y,
+          width: size.width,
+          height: size.height,
+          text,
+          type: "root",
+        })
+        break
       }
-      this.preRenderNodes.push({
-        id,
-        x,
-        y,
-        width: size.width,
-        height: size.height,
-        text,
-      })
+      case "choice":
+        this.traverseChoice(id, x, y, connectPoint)
+        break
+      case "group":
+        this.traverseGroup(id, x, y, connectPoint)
+        break
+      default:
+        break
     }
   }
   traverseGroup(id: number, x: number, y: number, connectPoint?: Pos) {
     const node = this.nodeMap.get(id) as GroupNode
     const groupSize = this.getSize(id)
-    const { head } = node
+    const { head, quantifier } = node
     const concatenation: number[] = []
     let cur = head
     // let width = 0
@@ -240,7 +299,10 @@ class RegexFlow {
       width: groupSize.width,
       height: groupSize.height,
       text: "",
+      type: "group",
+      quantifier,
     })
+    y += FLOW_GROUP_PADDING_VERTICAL
     this.traverseConcatenation(concatenation, x, y, connectPoint)
   }
   traverseChoice(id: number, x: number, y: number, endPoint?: Pos) {
@@ -306,7 +368,6 @@ class RegexFlow {
     })
     concatenation.forEach(id => {
       const size = this.getSize(id)
-      const node = this.nodeMap.get(id) as Node
       const deltaY = (height - size.height) / 2
       this.traverseUnknownType(id, x, y + deltaY, xx)
 
@@ -342,92 +403,6 @@ class RegexFlow {
   insertBefore(): void {}
   insertAfter(): void {}
   remove(): void {}
-}
-
-class Circle {
-  svgx: Svgx
-  elements: SvgxElement[] = []
-  constructor(svgx: Svgx, box: Box, text: string) {
-    this.svgx = svgx
-    const { x, y, width, height } = box
-    if (width !== height) {
-      console.warn("This is a circle, the width should be equal to height")
-    }
-    const center = {
-      x: x + width / 2,
-      y: y + width / 2,
-    }
-    const circleEl = svgx.circle(center.x, center.y, width / 2)
-    const textEl = svgx.text(center.x, center.y, text)
-    this.elements.push(circleEl, textEl)
-  }
-}
-
-type RectHandlers = {
-  add: (id: number, direction: "prev" | "next") => void
-}
-class Rect {
-  svgx: Svgx
-  g: SvgxG
-  id: number
-  constructor(
-    svgx: Svgx,
-    box: Box,
-    text: string,
-    id: number,
-    handler?: RectHandlers
-  ) {
-    this.svgx = svgx
-    this.id = id
-    const { x, y, width, height } = box
-    this.g = svgx.g()
-    this.g.rect(x, y, width, height, FLOW_NODE_BORDER_RADIUS).attr({
-      fill: "transparent",
-    })
-
-    const center = {
-      x: x + width / 2,
-      y: y + height / 2,
-    }
-
-    if (text) {
-      this.g.text(center.x, center.y, text).attr({
-        "font-size": 16,
-      })
-    }
-
-    // let tmpEls: SvgxElement[] = []
-    // const addHandler = handler && handler.add
-    // this.g.enter(e => {
-    //   const rect1 = this.g.rect(x - 21.5, y, 21.5, height).attr({
-    //     stroke: "none",
-    //     fill: "transparent",
-    //   })
-    //   const rect2 = this.g.rect(x + width, y, 21.5, height).attr({
-    //     stroke: "none",
-    //     fill: "transparent",
-    //   })
-    //   const image1 = this.g.image(addSvg, x - 21.5, y + height / 2 - 10, 20, 20)
-    //   const image2 = this.g.image(
-    //     addSvg,
-    //     x + width + 1.5,
-    //     y + height / 2 - 10,
-    //     20,
-    //     20
-    //   )
-    //   image1.click(() => {
-    //     addHandler && addHandler(id, "prev")
-    //   })
-    //   image2.click(() => {
-    //     addHandler && addHandler(id, "next")
-    //   })
-    //   tmpEls = [rect1, rect2, image1, image2]
-    // })
-    // this.g.leave(() => {
-    //   tmpEls.forEach(tmpEl => tmpEl.remove())
-    //   tmpEls = []
-    // })
-  }
 }
 
 class Line {

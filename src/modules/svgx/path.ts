@@ -1,5 +1,4 @@
 import SvgxElement from "./element"
-import { baseAttr } from "./config"
 class Path extends SvgxElement {
   constructor(container: SVGSVGElement | SVGGElement, pathString: string) {
     super()
@@ -8,7 +7,12 @@ class Path extends SvgxElement {
       "http://www.w3.org/2000/svg",
       "path"
     ) as SVGPathElement
-    this.attr({ d: pathString, ...baseAttr })
+    this.attr({
+      d: pathString,
+      stroke: "#000",
+      fill: "none",
+      "stroke-width": 1.5,
+    })
     this.append()
   }
 }
