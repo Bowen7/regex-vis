@@ -20,6 +20,7 @@ type AttrMap = {
   "text-anchor": string
   "stroke-width": number
   "stroke-dasharray": string
+  "pointer-events": string
 }
 export type Attr = Partial<AttrMap>
 type AttrKey = keyof AttrMap

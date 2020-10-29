@@ -20,6 +20,7 @@ class Text extends SvgxElement {
       "text-anchor": "middle",
       "font-size": 16,
       dy: 16 * 0.35,
+      "pointer-events": "none",
     })
     this.append()
   }
