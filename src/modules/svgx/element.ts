@@ -21,6 +21,7 @@ type AttrMap = {
   "stroke-width": number
   "stroke-dasharray": string
   "pointer-events": string
+  "fill-opacity": number
 }
 export type Attr = Partial<AttrMap>
 type AttrKey = keyof AttrMap

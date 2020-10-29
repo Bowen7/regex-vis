@@ -5,25 +5,31 @@ import FlowNode from "./node"
 import { RenderNode, RenderConnect } from "./types"
 import Connect from "./connect"
 import Traverse from "./traverse"
+import Handler from "./handler"
 class RegexFlow {
   svgx: Svgx
   lineG!: SvgxG
+  nodeMap!: NodeMap
   root: number
-  traverser!: Traverse
+  traverser: Traverse
+  handler: Handler
   constructor(selectorQuery: string, root: number) {
     this.svgx = new Svgx(selectorQuery)
     this.root = root
     this.traverser = new Traverse(this.svgx)
+    this.handler = new Handler()
   }
-  render(nodeMap: NodeMap): void {
-    const { root } = this
+  render(nodeMap?: NodeMap): void {
+    if (nodeMap) {
+      this.nodeMap = nodeMap
+    }
 
     this.clear()
     this.lineG = this.svgx.g()
 
     const { width, height, renderNodes, renderConnects } = this.traverser.t(
-      nodeMap,
-      root
+      this.nodeMap,
+      this.root
     )
 
     this.svgx.setSize(width, height)
@@ -44,7 +50,7 @@ class RegexFlow {
         },
         text,
         id,
-        handlers: {},
+        handler: this.handler.h(),
         type,
         quantifier,
       })

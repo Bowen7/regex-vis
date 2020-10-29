@@ -61,6 +61,7 @@ class Svgx extends BaseSvgx {
   constructor(query: string) {
     super()
     this.target = document.querySelector(query) as SVGSVGElement
+    this.bindDragSelect()
   }
   setSize(width: number, height: number) {
     this.target.setAttribute("width", width.toString())
@@ -68,6 +69,46 @@ class Svgx extends BaseSvgx {
   }
   g() {
     return new G(this.target)
+  }
+  bindDragSelect() {
+    const { target } = this
+    let select: Rect | null = null
+    let startX = 0
+    let startY = 0
+    target.addEventListener("mousedown", (e: MouseEvent) => {
+      const { offsetX, offsetY } = e
+      startX = offsetX
+      startY = offsetY
+
+      select = this.rect(-999, -999, 0, 0).attr({
+        fill: "#50E3C2",
+        "fill-opacity": 0.5,
+        stroke: "none",
+      })
+      target.addEventListener("mousemove", mousemove)
+    })
+    target.addEventListener("mouseup", mouseup)
+    target.addEventListener("mouseleave", mouseup)
+    function mousemove(e: MouseEvent) {
+      const { offsetX, offsetY } = e
+      const x = offsetX > startX ? startX : offsetX
+      const y = offsetY > startY ? startY : offsetY
+      const width = Math.abs(offsetX - startX)
+      const height = Math.abs(offsetY - startY)
+      select?.attr({
+        x,
+        y,
+        width,
+        height,
+      })
+    }
+    function mouseup() {
+      if (select) {
+        target.removeEventListener("mousemove", mousemove)
+        select.remove()
+        select = null
+      }
+    }
   }
 }
 

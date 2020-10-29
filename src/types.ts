@@ -65,6 +65,8 @@ export type RootNode = {
 
 export type Node = BasicNode | GroupNode | ChoiceNode | RootNode
 
+export type BodyNode = BasicNode | GroupNode | ChoiceNode
+
 export type NodeMap = Map<number, Node>
 
 export type DragEvent = {

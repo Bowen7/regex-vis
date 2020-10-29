@@ -5,7 +5,7 @@ import Rect from "../svgx/rect"
 import {
   FLOW_NODE_BORDER_RADIUS,
   FLOW_GROUP_PADDING_HORIZONTAL,
-} from "./config"
+} from "./consts"
 import { Box } from "./types"
 type RectHandlers = {
   insert?: (id: number, direction: "prev" | "next") => void
@@ -15,7 +15,7 @@ type NodeConfigs = {
   box: Box
   text: string
   id: number
-  handlers?: RectHandlers
+  handler?: RectHandlers
   type: "root" | "basic" | "group"
   quantifier?: Quantifier
 }
@@ -28,7 +28,7 @@ class FlowNode {
   configs: NodeConfigs
   constructor(svgx: Svgx, configs: NodeConfigs) {
     this.configs = configs
-    const { box, text, id, handlers, type } = configs
+    const { box, text, id, handler, type } = configs
     this.svgx = svgx
     this.id = id
     let { x, y, width, height } = box

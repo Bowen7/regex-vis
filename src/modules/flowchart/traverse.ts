@@ -14,7 +14,8 @@ import {
   FLOW_QUANTIFIER_MARGIN_TOP,
   FLOW_QUANTIFIER_MARGIN_BOTTOM,
   FLOW_GROUP_PADDING_VERTICAL,
-} from "./config"
+} from "./consts"
+
 class Traverse {
   svgx: Svgx
   nodeMap!: NodeMap
