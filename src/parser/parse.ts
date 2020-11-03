@@ -26,6 +26,7 @@ function parse(regex: string | RegExp) {
       prev: null,
       next: startId + 1,
       text: "start",
+      quantifier: null,
     }
     nodeMap.set(startId, startNode)
 
@@ -50,6 +51,7 @@ function parse(regex: string | RegExp) {
       prev: lastId,
       next: null,
       text: "end",
+      quantifier: null,
     }
     nodeMap.set(endId, endNode)
   }
@@ -117,6 +119,7 @@ function parse(regex: string | RegExp) {
       prev: prevId,
       next: wrap ? prevId : __ID_SEED__,
       branches,
+      quantifier: null,
     })
     return choiceId
   }
@@ -132,6 +135,7 @@ function parse(regex: string | RegExp) {
       },
       prev: prevId,
       next: __ID_SEED__,
+      quantifier: null,
     }
     nodeMap.set(id, node)
   }
@@ -144,6 +148,7 @@ function parse(regex: string | RegExp) {
       prev: prevId,
       next: __ID_SEED__,
       head: __ID_SEED__,
+      quantifier: null,
     }
     if (alternatives.length === 1) {
       parseAlternative(alternatives[0], groupId, true)
@@ -200,6 +205,7 @@ function parse(regex: string | RegExp) {
       prev: prevId,
       next: __ID_SEED__,
       body: charCollection,
+      quantifier: null,
     }
     nodeMap.set(id, node)
   }

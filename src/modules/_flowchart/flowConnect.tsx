@@ -1,20 +1,16 @@
-import Svgx, { SvgxElement, SvgxG } from "../svgx"
+import React from "react"
 import { Pos } from "@types"
-class Connect {
-  g: SvgxG
-  elements: SvgxElement[] = []
-  constructor(
-    g: SvgxG,
-    start: Pos,
-    end: Pos,
-    type: "combine" | "split" | "straight"
-  ) {
-    this.g = g
-    if (type === "straight" || Math.abs(start.y - end.y) < 0.5) {
-      this.g.path(`M${start.x},${start.y}L${end.x},${end.y}`)
-      return
-    }
-
+type Props = {
+  type: "combine" | "split" | "straight"
+  start: Pos
+  end: Pos
+}
+const FlowConnect: React.FC<Props> = React.memo(props => {
+  const { type, start, end } = props
+  let path = ""
+  if (type === "straight" || Math.abs(start.y - end.y) < 0.5) {
+    path = `M${start.x},${start.y}L${end.x},${end.y}`
+  } else {
     let M = ""
     let L1 = ""
     let A1 = ""
@@ -49,7 +45,9 @@ class Connect {
         A2 = `A5 5 0 0 1, ${end.x - 20},${start.y}`
       }
     }
-    this.g.path(M + L1 + A1 + L2 + A2 + L3)
+    path = M + L1 + A1 + L2 + A2 + L3
   }
-}
-export default Connect
+  return <path d={path} stroke="#000" fill="none"></path>
+})
+
+export default FlowConnect

@@ -22,6 +22,7 @@ export type RenderNode = {
 }
 
 export type RenderConnect = {
+  id: string
   type: "combine" | "split" | "straight"
   start: Pos
   end: Pos

@@ -22,7 +22,7 @@ export type Pos = {
 export type Quantifier = {
   min: number
   max: number
-}
+} | null
 
 export type BasicNode = {
   type: "basic"
@@ -30,7 +30,7 @@ export type BasicNode = {
   body: CharCollection | Char
   prev: number
   next: number
-  quantifier?: Quantifier
+  quantifier: Quantifier
 }
 
 // (xx)
@@ -40,7 +40,7 @@ export type GroupNode = {
   head: number
   prev: number
   next: number
-  quantifier?: Quantifier
+  quantifier: Quantifier
 }
 
 // a|b
@@ -50,7 +50,7 @@ export type ChoiceNode = {
   branches: number[]
   prev: number
   next: number
-  quantifier?: null
+  quantifier: null
 }
 // export type
 
@@ -60,17 +60,13 @@ export type RootNode = {
   prev: null | number
   next: null | number
   text: string
-  quantifier?: Quantifier
+  quantifier: Quantifier
 }
 
 export type Node = BasicNode | GroupNode | ChoiceNode | RootNode
 
+export type NodeType = "basic" | "root" | "choice" | "group"
+
 export type BodyNode = BasicNode | GroupNode | ChoiceNode
 
 export type NodeMap = Map<number, Node>
-
-export type DragEvent = {
-  id: number
-  deltaX: number
-  deltaY: number
-}

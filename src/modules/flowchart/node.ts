@@ -1,4 +1,4 @@
-import { Quantifier } from "@types"
+import { Quantifier, NodeType } from "@types"
 import Svgx, { SvgxElement, SvgxG, Attr } from "../svgx"
 import addSvg from "@assets/add.svg"
 import Rect from "../svgx/rect"
@@ -16,8 +16,8 @@ type NodeConfigs = {
   text: string
   id: number
   handler?: RectHandlers
-  type: "root" | "basic" | "group"
-  quantifier?: Quantifier
+  type: NodeType
+  quantifier: Quantifier | null
 }
 class FlowNode {
   svgx: Svgx
@@ -44,6 +44,9 @@ class FlowNode {
       attr.fill = "transparent"
       x -= FLOW_GROUP_PADDING_HORIZONTAL
       width += FLOW_GROUP_PADDING_HORIZONTAL * 2
+    }
+    if (type === "choice") {
+      attr.fill = "none"
     }
 
     this.rect = this.g.rect(x, y, width, height, radius).attr(attr)

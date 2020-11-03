@@ -1,6 +1,5 @@
 import { NodeMap, Node, ChoiceNode, GroupNode, Pos } from "@types"
-import { Size, RenderNode, RenderConnect, Box } from "./types"
-import Svgx, { SvgxElement } from "../svgx"
+import { Size, RenderNode, RenderConnect } from "./types"
 
 import {
   FLOWCHART_PADDING_HORIZONTAL,
@@ -17,18 +16,16 @@ import {
   FLOW_CHOICE_PADDING_VERTICAL,
 } from "./consts"
 class Traverse {
-  svgx: Svgx
   nodeMap!: NodeMap
   cachedSizeMap: Map<number, Size> = new Map()
-  standardText!: SvgxElement
+  canvasRef: React.RefObject<HTMLCanvasElement>
   renderNodes: RenderNode[] = []
   renderConnects: RenderConnect[] = []
   concatenations: number[][] = []
-  constructor(svgx: Svgx) {
-    this.svgx = svgx
+  constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
+    this.canvasRef = canvasRef
   }
   t(nodeMap: NodeMap, root: number) {
-    this.standardText = this.svgx.text(-9999, -9999, "")
     this.renderNodes = []
     this.renderConnects = []
     this.cachedSizeMap = new Map()
@@ -61,12 +58,14 @@ class Traverse {
     }
   }
   measureText(text: string, fontSize: number = 16) {
-    this.standardText.attr({
-      text,
-      "font-size": fontSize,
-    })
-    const box = this.standardText.getBBox()
-    return { width: box ? box.width : 0, height: box ? box.height : 0 }
+    const context = this.canvasRef.current?.getContext("2d")
+    if (!context) {
+      return { width: 0, height: 0 }
+    }
+    // todo
+    context.font = fontSize + "px Arial"
+    const metrics = context.measureText(text)
+    return { width: metrics.width, height: fontSize }
   }
   getSize(id: number) {
     const cachedSize = this.cachedSizeMap.get(id)
@@ -194,15 +193,17 @@ class Traverse {
     const { branches } = node
     const choiceSize = this.getSize(id)
     const maxWidth = choiceSize.width
-    const branchEndPoints: Pos[] = []
+    const branchEndPoints: (Pos & { id: number })[] = []
 
     y += FLOW_CHOICE_PADDING_VERTICAL
     branches.forEach((branch, index) => {
       index > 0 && (y += FLOW_NODE_MARGIN_VERTICAL)
       let width = 0
       let cur = branch
+      let lastId = 0
       const concatenation: number[] = []
       while (cur !== id) {
+        lastId = cur
         concatenation.push(cur)
         width += this.getSize(cur).width
         if (cur !== branch) {
@@ -215,10 +216,12 @@ class Traverse {
       const height = this.traverseConcatenation(concatenation, x + deltaX, y)
         .height
       branchEndPoints.push({
+        id: lastId,
         x: x + deltaX + width,
         y: y + height / 2,
       })
       this.renderConnects.push({
+        id: branch + "split",
         start: { x: x, y: originY + choiceSize.height / 2 },
         end: { x: x + deltaX, y: y + height / 2 },
         type: "split",
@@ -227,7 +230,8 @@ class Traverse {
     })
     branchEndPoints.forEach(branchEndPoint => {
       this.renderConnects.push({
-        start: { ...branchEndPoint },
+        id: branchEndPoint.id + "combine",
+        start: { x: branchEndPoint.x, y: branchEndPoint.y },
         end: { x: x + choiceSize.width, y: y - choiceSize.height / 2 },
         type: "combine",
       })
@@ -248,6 +252,7 @@ class Traverse {
 
       if (connectPoint) {
         this.renderConnects.push({
+          id: id + "straight",
           type: "straight",
           start: { ...connectPoint },
           end: {

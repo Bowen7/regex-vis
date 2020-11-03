@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from "react"
 import { Radio, Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, DragEvent, BasicNode, RootNode, NodeMap } from "@types"
-import RegexFlow from "../flowchart"
+import { Node, BasicNode, RootNode, NodeMap } from "@types"
+import { remove } from "../_flowchart/handler"
+import Flowchart from "../_flowchart"
 import parser from "@parser"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
+// const DEFAULT_REGEX = `/a|b/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
   const [nodeMap, setNodeMap] = useState<NodeMap>(parser.parse(DEFAULT_REGEX))
-  const [regexFlow, setRegexFlow] = useState<RegexFlow>()
-  useEffect(() => {
-    regexFlow?.render(nodeMap)
-  }, [nodeMap, regexFlow])
-
-  useEffect(() => {
-    setRegexFlow(new RegexFlow("#svg", 0))
-  }, [])
 
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
@@ -24,10 +18,14 @@ const Home: React.FC<{}> = () => {
     const nodeMap = parser.parse(regex)
     setNodeMap(nodeMap)
   }
+  function onRemove(ids: Set<number>) {
+    setNodeMap(remove(nodeMap, Array.from(ids)))
+  }
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg>
+        {/* <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg> */}
+        <Flowchart nodeMap={nodeMap} root={0} onRemove={onRemove} />
       </div>
       <div
         style={{

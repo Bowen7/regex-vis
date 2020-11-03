@@ -56,8 +56,20 @@ export class G extends BaseSvgx {
   }
 }
 
+type OnSelect = ({
+  x,
+  y,
+  width,
+  height,
+}: {
+  x: number
+  y: number
+  width: number
+  height: number
+}) => void
 class Svgx extends BaseSvgx {
   target: SVGSVGElement
+  _onSelect: OnSelect | null = null
   constructor(query: string) {
     super()
     this.target = document.querySelector(query) as SVGSVGElement
@@ -69,6 +81,9 @@ class Svgx extends BaseSvgx {
   }
   g() {
     return new G(this.target)
+  }
+  onSelect(fn: OnSelect) {
+    this._onSelect = fn
   }
   bindDragSelect() {
     const { target } = this
@@ -87,8 +102,7 @@ class Svgx extends BaseSvgx {
       })
       target.addEventListener("mousemove", mousemove)
     })
-    target.addEventListener("mouseup", mouseup)
-    target.addEventListener("mouseleave", mouseup)
+
     function mousemove(e: MouseEvent) {
       const { offsetX, offsetY } = e
       const x = offsetX > startX ? startX : offsetX
@@ -102,13 +116,23 @@ class Svgx extends BaseSvgx {
         height,
       })
     }
-    function mouseup() {
+    const mouseup = (e: MouseEvent) => {
       if (select) {
+        const { offsetX, offsetY } = e
+        const x = offsetX > startX ? startX : offsetX
+        const y = offsetY > startY ? startY : offsetY
+        const width = Math.abs(offsetX - startX)
+        const height = Math.abs(offsetY - startY)
+        if (width > 5 && height > 5) {
+          this._onSelect && this._onSelect({ x, y, width, height })
+        }
         target.removeEventListener("mousemove", mousemove)
         select.remove()
         select = null
       }
     }
+    target.addEventListener("mouseup", mouseup)
+    target.addEventListener("mouseleave", mouseup)
   }
 }
 
