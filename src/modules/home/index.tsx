@@ -1,16 +1,31 @@
 import React, { useEffect, useState } from "react"
 import { Radio, Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, BasicNode, RootNode, NodeMap } from "@types"
-import { remove } from "../_flowchart/handler"
-import Flowchart from "../_flowchart"
+import { Node, SingleNode, RootNode, NodeMap } from "@types"
+import EditPanel from "../editPanel"
+import { remove } from "../flowchart/handler"
+import Flowchart from "../flowchart"
 import parser from "@parser"
+import gen from "../../parser/gen"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
-// const DEFAULT_REGEX = `/a|b/`
+// const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
+// const DEFAULT_REGEX = `/a|\\b/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
+  const [value, setValue] = useState<string>("")
   const [nodeMap, setNodeMap] = useState<NodeMap>(parser.parse(DEFAULT_REGEX))
 
+  useEffect(() => {
+    let cur: number | null = 0
+    let nodes: number[] = []
+    while (cur !== null) {
+      nodes.push(cur)
+      const node = nodeMap.get(cur) as Node
+      cur = node.next
+    }
+    setValue(gen(nodeMap, nodes))
+    console.log(nodeMap)
+  }, [nodeMap])
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
   }
@@ -24,9 +39,11 @@ const Home: React.FC<{}> = () => {
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        {/* <svg id="svg" version="1.1" xmlns="http://www.w3.org/2000/svg"></svg> */}
         <Flowchart nodeMap={nodeMap} root={0} onRemove={onRemove} />
       </div>
+
+      <EditPanel />
+      <div>{value}</div>
       <div
         style={{
           width: "100%",

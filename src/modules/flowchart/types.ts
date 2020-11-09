@@ -1,4 +1,4 @@
-import { Quantifier, Pos } from "@types"
+import { Pos, Node } from "@types"
 export type Box = {
   x: number
   y: number
@@ -8,21 +8,21 @@ export type Box = {
 export type Size = {
   width: number
   height: number
+  offsetWidth: number
+  offsetHeight: number
 }
 
 export type RenderNode = {
-  id: number
   x: number
   y: number
   width: number
   height: number
-  text: string
-  type: "root" | "group" | "basic" | "choice"
-  quantifier: Quantifier | null
+  node: Node
 }
 
 export type RenderConnect = {
-  type: "combine" | "split" | "straight"
+  id: string
+  type: "combine" | "split"
   start: Pos
   end: Pos
 }

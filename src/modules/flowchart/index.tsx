@@ -30,6 +30,7 @@ const Flowchart: React.FC<Props> = props => {
     setHeight(height)
     setRenderNodes(renderNodes)
     setRenderConnects(renderConnects)
+    setSelectIds(new Set())
   }, [nodeMap, root, traverse])
   function onDragSelect(box: Box) {
     const { x: _x, y: _y, width: _width, height: _height } = box
@@ -37,15 +38,15 @@ const Flowchart: React.FC<Props> = props => {
     const concatenations = traverse.concatenations
     const ids = renderNodes
       .filter(renderNode => {
-        const { type, x, y, width, height } = renderNode
-        if (type === "root") {
+        const { node, x, y, width, height } = renderNode
+        if (node.type === "root") {
           return false
         }
         const overlapX = _x < x && _x + _width > x + width
         const overlapY = _y < y && _y + _height > y + height
         return overlapX && overlapY
       })
-      .map(renderNode => renderNode.id)
+      .map(renderNode => renderNode.node.id)
     for (let i = 0; i < concatenations.length; i++) {
       if (concatenations[i].some(item => ids.indexOf(item) > -1)) {
         const selectIds = concatenations[i].filter(
@@ -57,6 +58,13 @@ const Flowchart: React.FC<Props> = props => {
         break
       }
     }
+  }
+  function onClick(id: number) {
+    if (selectIds.size === 1 && selectIds.has(id)) {
+      setSelectIds(new Set())
+      return
+    }
+    setSelectIds(new Set([id]))
   }
   useEventListener("keydown", (e: Event) => {
     const { key } = e as KeyboardEvent
@@ -72,18 +80,17 @@ const Flowchart: React.FC<Props> = props => {
       ></canvas>
       <SvgContainer width={width} height={height} onDragSelect={onDragSelect}>
         {renderNodes.map(renderNode => {
-          const { x, y, width, height, id, text, type, quantifier } = renderNode
+          const { x, y, width, height, node } = renderNode
+          const { id } = node
           return (
             <FlowNode
-              id={id}
-              text={text}
-              type={type}
               x={x}
               y={y}
               width={width}
               height={height}
-              quantifier={quantifier}
+              node={node}
               selected={selectIds.has(id)}
+              onClick={onClick}
               key={id}
             />
           )

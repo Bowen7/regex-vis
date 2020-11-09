@@ -1,6 +1,9 @@
 import { NodeMap, BodyNode, Node } from "@types"
 import produce from "immer"
 function _remove(nodeMap: NodeMap, ids: number[]) {
+  if (ids.length === 0) {
+    return
+  }
   const head = ids[0]
   const tail = ids[ids.length - 1]
   const headNode = nodeMap.get(head) as BodyNode
