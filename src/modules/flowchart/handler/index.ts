@@ -1,2 +1,3 @@
 import remove from "./remove"
-export { remove }
+import insert from "./insert"
+export { remove, insert }

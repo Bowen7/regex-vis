@@ -74,12 +74,9 @@ function _remove(nodeMap: NodeMap, ids: number[]) {
   }
   ids.forEach(id => nodeMap.delete(id))
 }
-const remove = (nodeMap: NodeMap, id: number | number[]) => {
+const remove = (nodeMap: NodeMap, ids: number[]) => {
   return produce(nodeMap, draft => {
-    if (typeof id === "number") {
-      id = [id]
-    }
-    _remove(draft, id)
+    _remove(draft, ids)
   })
 }
 export default remove

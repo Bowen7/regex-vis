@@ -216,6 +216,7 @@ class Traverse {
     const { branches } = node
     const choiceSize = this.getSize(id)
     const maxWidth = choiceSize.offsetWidth
+    const centerY = y + choiceSize.offsetHeight / 2
 
     branches.forEach(branch => {
       let cur = branch
@@ -235,7 +236,7 @@ class Traverse {
         y,
         maxWidth,
         maxHeight,
-        y + maxHeight / 2
+        centerY
       )
       y += maxHeight
     })

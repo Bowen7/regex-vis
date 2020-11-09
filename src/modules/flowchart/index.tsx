@@ -9,8 +9,8 @@ import { useEventListener } from "../../utils/hooks"
 type Props = {
   nodeMap: NodeMap
   root: number
-  onSelect?: (ids: Set<number>) => void
-  onRemove?: (ids: Set<number>) => void
+  onSelect?: (ids: number[]) => void
+  onRemove?: (ids: number[]) => void
 }
 const Flowchart: React.FC<Props> = props => {
   const { nodeMap, root, onRemove, onSelect } = props
@@ -20,7 +20,7 @@ const Flowchart: React.FC<Props> = props => {
   const [height, setHeight] = useState(0)
   const [renderNodes, setRenderNodes] = useState<RenderNode[]>([])
   const [renderConnects, setRenderConnects] = useState<RenderConnect[]>([])
-  const [selectIds, setSelectIds] = useState<Set<number>>(new Set())
+  const [selectIds, setSelectIds] = useState<number[]>([])
   useEffect(() => {
     const { width, height, renderNodes, renderConnects } = traverse.t(
       nodeMap,
@@ -30,7 +30,7 @@ const Flowchart: React.FC<Props> = props => {
     setHeight(height)
     setRenderNodes(renderNodes)
     setRenderConnects(renderConnects)
-    setSelectIds(new Set())
+    setSelectIds([])
   }, [nodeMap, root, traverse])
   function onDragSelect(box: Box) {
     const { x: _x, y: _y, width: _width, height: _height } = box
@@ -52,23 +52,26 @@ const Flowchart: React.FC<Props> = props => {
         const selectIds = concatenations[i].filter(
           item => ids.indexOf(item) > -1
         )
-        const newSelectIds = new Set(selectIds)
-        setSelectIds(newSelectIds)
-        onSelect && onSelect(newSelectIds)
+        setSelectIds(selectIds)
+        onSelect && onSelect(selectIds)
         break
       }
     }
   }
   function onClick(id: number) {
-    if (selectIds.size === 1 && selectIds.has(id)) {
-      setSelectIds(new Set())
-      return
+    let ids = [id]
+    if (selectIds.length === 1 && selectIds.includes(id)) {
+      ids = []
     }
-    setSelectIds(new Set([id]))
+    setSelectIds(ids)
+    onSelect && onSelect(ids)
   }
   useEventListener("keydown", (e: Event) => {
     const { key } = e as KeyboardEvent
     if (key === "Backspace") {
+      const ids: number[] = []
+      setSelectIds(ids)
+      onSelect && onSelect(ids)
       onRemove && onRemove(selectIds)
     }
   })
@@ -89,7 +92,7 @@ const Flowchart: React.FC<Props> = props => {
               width={width}
               height={height}
               node={node}
-              selected={selectIds.has(id)}
+              selected={selectIds.includes(id)}
               onClick={onClick}
               key={id}
             />
