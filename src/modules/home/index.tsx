@@ -6,9 +6,9 @@ import EditPanel from "../editPanel"
 import { remove, insert } from "../flowchart/handler"
 import Flowchart from "../flowchart"
 import parser from "@parser"
-const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
+// const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
-// const DEFAULT_REGEX = `/a|\\b/`
+const DEFAULT_REGEX = `/a|\\b/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
   const [root, setRoot] = useState<RootNode>(parser.parse(DEFAULT_REGEX))

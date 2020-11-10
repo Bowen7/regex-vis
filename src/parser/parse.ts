@@ -74,7 +74,7 @@ function parseAlternative(
     const _prev = parseElement(element, prev, parent)
     if (prev === null && parent) {
       if (parent.type === "choice") {
-        parent.chains.push(prev)
+        parent.chains.push(_prev)
       } else {
         parent.chain = _prev
       }
@@ -146,6 +146,7 @@ function parseAlternatives(
   ast.forEach(alternative => {
     parseAlternative(alternative, null, node)
   })
+  prev && (prev.next = node)
   return node
 }
 function parseCharacter(

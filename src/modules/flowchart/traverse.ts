@@ -217,6 +217,7 @@ class Traverse {
     chains.forEach(chain => {
       let maxHeight = this.getChainHeight(chain as Node)
       maxHeight += FLOW_NODE_MARGIN_VERTICAL * 2
+      console.log(maxHeight)
       this.traverseChain(chain as Node, x, y, maxWidth, maxHeight, centerY)
       y += maxHeight
     })
