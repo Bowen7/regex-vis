@@ -9,10 +9,10 @@ export type CharRange = {
   to: Char
   text: string
 }
-export type CharAny = {
+export type SpecialChar = {
   kind: "any"
-  text: "any character"
-  raw: "."
+  text: string
+  raw: string
 }
 export type CharCollection = {
   kind: "collection"
@@ -21,7 +21,7 @@ export type CharCollection = {
   text: string
 }
 
-export type CharContent = Char | CharCollection | CharAny
+export type CharContent = Char | CharCollection | SpecialChar
 
 export type Pos = {
   x: number
@@ -34,63 +34,58 @@ export type Quantifier = {
   text: string
 }
 
-export type SingleNode = {
+export type NodePrev = Node | null
+export type Chain = Node | null
+export type NodeParent = GroupNode | ChoiceNode | LookaroundAssertionNode | null
+export type NodeQuantifier = SingleNode | GroupNode
+
+export interface NodeBase {
+  id: string
+  type: string
+  prev: Node | null
+  next: Node | null
+  parent: NodeParent
+}
+
+export interface SingleNode extends NodeBase {
   type: "single"
-  id: number
   content: CharContent
-  prev: number
-  next: number
   text: string
   name?: string
   quantifier?: Quantifier
 }
 
 // (xx)
-export type GroupNode = {
+export interface GroupNode extends NodeBase {
   type: "group"
-  id: number
-  head: number
-  prev: number
-  next: number
+  chain: Chain
+  name?: string
   quantifier?: Quantifier
-  name: string | null
 }
 
 // a|b
-export type ChoiceNode = {
+export interface ChoiceNode extends NodeBase {
   type: "choice"
-  id: number
-  branches: number[]
-  prev: number
-  next: number
+  chains: Chain[]
 }
 
-export type BoundaryAssertionNode = {
+export interface BoundaryAssertionNode extends NodeBase {
   type: "boundaryAssertion"
-  id: number
+  text: string
   kind: "start" | "end" | "word"
   negate?: boolean
-  text: string
-  prev: number
-  next: number
 }
 
-export type LookaroundAssertionNode = {
+export interface LookaroundAssertionNode extends NodeBase {
   type: "lookaroundAssertion"
-  id: number
+  chain: Chain
+  name: string
   kind: "lookahead" | "lookbehind"
   negate: boolean
-  prev: number
-  next: number
-  name: string
-  head: number
 }
 
-export type RootNode = {
-  id: number
+export interface RootNode extends NodeBase {
   type: "root"
-  prev: null | number
-  next: null | number
   text: string
 }
 
@@ -116,5 +111,3 @@ export type BodyNode =
   | ChoiceNode
   | BoundaryAssertionNode
   | LookaroundAssertionNode
-
-export type NodeMap = Map<number, Node>

@@ -2,27 +2,22 @@ import {
   Node,
   ChoiceNode,
   GroupNode,
-  NodeMap,
   Char,
   Quantifier,
-  BodyNode,
   SingleNode,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
 } from "@types"
 import { hasQuantifier } from "../utils"
 
-function gen(nodeMap: NodeMap, ids: number[]) {
-  if (ids.length === 0) {
-    return ""
-  }
+function gen(start: Node, end: Node | null = null) {
   let reStr = ""
-  const isSingleChoice = judgeSingleChoice(nodeMap, ids)
-  ids.forEach(id => {
-    const node = nodeMap.get(id) as Node
-    switch (node.type) {
+  const isSingleChoice = judgeSingleChoice(start, end)
+  let cur: Node | null = start
+  while (cur !== end)
+    switch (cur.type) {
       case "choice":
-        const r = genChoice(nodeMap, node)
+        const r = genChoice(cur)
         if (isSingleChoice) {
           reStr = r
         } else {
@@ -30,68 +25,51 @@ function gen(nodeMap: NodeMap, ids: number[]) {
         }
         break
       case "group":
-        reStr += genGroup(nodeMap, node)
+        reStr += genGroup(cur)
         break
       case "single":
-        reStr += genSingle(node)
+        reStr += genSingle(cur)
         break
       case "boundaryAssertion":
-        reStr += genBoundaryAssertionNode(node)
+        reStr += genBoundaryAssertionNode(cur)
         break
       case "lookaroundAssertion":
-        reStr += genLookaroundAssertionNode(nodeMap, node)
+        reStr += genLookaroundAssertionNode(cur)
         break
       default:
         break
     }
-    if (hasQuantifier(node) && node.quantifier) {
-      reStr += genQuantifier(node as GroupNode | SingleNode)
-    }
-  })
+  if (hasQuantifier(cur) && cur.quantifier) {
+    reStr += genQuantifier(cur)
+  }
+  cur = cur.next
   return reStr
 }
-function judgeSingleChoice(nodeMap: NodeMap, ids: number[]) {
+function judgeSingleChoice(start: Node, end: Node | null) {
+  let cur: Node | null = start
   let flag = false
-  return !ids.some(id => {
-    const node = nodeMap.get(id) as Node
-    if (["root"].includes(node.type)) {
-      return false
-    } else if (node.type === "choice") {
+  while (cur !== null && cur !== end) {
+    if (cur.type !== "root") {
       if (flag) {
-        return true
+        return false
       }
       flag = true
-      return false
-    } else {
-      return true
     }
-  })
-}
-function genChoice(nodeMap: NodeMap, node: ChoiceNode) {
-  const { branches, id } = node
-  const branchRes: string[] = []
-  branches.forEach(branch => {
-    const ids = []
-    let cur = branch
-    while (cur !== id) {
-      ids.push(cur)
-      const node = nodeMap.get(cur) as BodyNode
-      cur = node.next
-    }
-    branchRes.push(gen(nodeMap, ids))
-  })
-  return branchRes.join("|")
-}
-function genGroup(nodeMap: NodeMap, node: GroupNode) {
-  const { head, id } = node
-  let cur = head
-  const ids = []
-  while (cur !== id) {
-    ids.push(cur)
-    const node = nodeMap.get(cur) as BodyNode
-    cur = node.next
+    cur = cur.next
   }
-  return "(" + gen(nodeMap, ids) + ")"
+}
+function genChoice(node: ChoiceNode) {
+  const { chains } = node
+  const chainsRes: string[] = []
+  chains.forEach(chain => {
+    chainsRes.push(gen(chain as Node))
+  })
+  return chainsRes.join("|")
+}
+
+function genGroup(node: GroupNode) {
+  const { chain } = node
+  return "(" + gen(chain as Node) + ")"
 }
 function genChar(node: Char, prefix: boolean) {
   if (prefix) {
@@ -157,18 +135,8 @@ const LookaroundMap = {
   lookahead: ["(?=", "(?!"],
   lookbehind: ["(?=<", "(?<!"],
 }
-function genLookaroundAssertionNode(
-  nodeMap: NodeMap,
-  node: LookaroundAssertionNode
-) {
-  const { head, id, kind, negate } = node
-  let cur = head
-  const ids = []
-  while (cur !== id) {
-    ids.push(cur)
-    const node = nodeMap.get(cur) as BodyNode
-    cur = node.next
-  }
-  return LookaroundMap[kind][negate ? 1 : 0] + gen(nodeMap, ids) + ")"
+function genLookaroundAssertionNode(node: LookaroundAssertionNode) {
+  const { chain, kind, negate } = node
+  return LookaroundMap[kind][negate ? 1 : 0] + gen(chain as Node) + ")"
 }
 export default gen

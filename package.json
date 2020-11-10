@@ -16,6 +16,7 @@
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-components": "^5.1.4",
     "immer": "^7.0.9",
+    "nanoid": "^3.1.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",

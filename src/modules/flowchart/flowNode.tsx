@@ -157,7 +157,7 @@ const FlowNode: React.FC<Props> = props => {
     }
   }
   function onClick() {
-    props.onClick && props.onClick(id)
+    // props.onClick && props.onClick(id)
   }
   return (
     <g>

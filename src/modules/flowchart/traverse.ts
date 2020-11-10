@@ -1,4 +1,12 @@
-import { NodeMap, Node, ChoiceNode, GroupNode, Pos, SingleNode } from "@types"
+import {
+  Node,
+  ChoiceNode,
+  GroupNode,
+  Pos,
+  SingleNode,
+  RootNode,
+  LookaroundAssertionNode,
+} from "@types"
 import { Size, RenderNode, RenderConnect } from "./types"
 import { hasName, hasQuantifier } from "../../utils"
 
@@ -16,34 +24,21 @@ import {
   FLOW_NAME_HEIGHT,
 } from "./consts"
 class Traverse {
-  nodeMap!: NodeMap
-  cachedSizeMap: Map<number, Size> = new Map()
+  cachedSizeMap: Map<string, Size> = new Map()
   canvasRef: React.RefObject<HTMLCanvasElement>
   renderNodes: RenderNode[] = []
   renderConnects: RenderConnect[] = []
-  concatenations: number[][] = []
+  chainIds: string[][] = []
   constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
     this.canvasRef = canvasRef
   }
-  t(nodeMap: NodeMap, root: number) {
+  t(root: RootNode) {
     this.renderNodes = []
     this.renderConnects = []
     this.cachedSizeMap = new Map()
-    this.nodeMap = nodeMap
-    const concatenation: number[] = []
-    let cur: number | null = root
-    while (cur !== null) {
-      let curNode: Node
-      if (typeof cur === "number") {
-        concatenation.push(cur)
-        curNode = nodeMap.get(cur) as Node
-      } else {
-        curNode = cur
-      }
-      cur = curNode.next
-    }
-    let { width, height } = this.traverseConcatenation(
-      concatenation,
+    this.chainIds = []
+    let { width, height } = this.traverseChain(
+      root,
       FLOWCHART_PADDING_HORIZONTAL,
       FLOWCHART_PADDING_VERTICAL
     )
@@ -67,12 +62,11 @@ class Traverse {
     const metrics = context.measureText(text)
     return { width: metrics.width, height: fontSize }
   }
-  getSize(id: number) {
-    const cachedSize = this.cachedSizeMap.get(id)
+  getSize(node: Node) {
+    const cachedSize = this.cachedSizeMap.get(node.id)
     if (cachedSize) {
       return cachedSize
     }
-    const node = this.nodeMap.get(id) as Node
     let width = 0
     let height = 0
     let offsetWidth = 0
@@ -96,18 +90,17 @@ class Traverse {
         break
 
       case "choice":
-        const { branches } = node
-        branches.forEach(branch => {
+        const { chains } = node
+        chains.forEach(chain => {
           let _width = 0
           let _height = 0
-          let cur = branch
-          while (cur !== id) {
+          let cur = chain
+          while (cur !== null) {
             const size = this.getSize(cur)
             _width += size.offsetWidth
             _width += FLOW_NODE_MARGIN_HORIZONTAL * 2
             _height = Math.max(size.offsetHeight, _height)
-            const nextNode = this.nodeMap.get(cur) as Node
-            cur = nextNode.next as number
+            cur = cur.next
           }
           height += _height
           height += FLOW_NODE_MARGIN_VERTICAL * 2
@@ -118,15 +111,14 @@ class Traverse {
 
       case "group":
       case "lookaroundAssertion":
-        const { head } = node
-        let cur = head
-        while (cur !== id) {
+        const { chain } = node
+        let cur = chain
+        while (cur !== null) {
           const size = this.getSize(cur)
           width += size.offsetWidth
           width += FLOW_NODE_MARGIN_HORIZONTAL * 2
           height = size.offsetHeight
-          const curNode = this.nodeMap.get(cur) as Node
-          cur = curNode.next as number
+          cur = cur.next
         }
 
         height += 2 * FLOW_GROUP_PADDING_VERTICAL
@@ -174,36 +166,41 @@ class Traverse {
       offsetWidth,
       offsetHeight,
     }
-    this.cachedSizeMap.set(id, size)
+    this.cachedSizeMap.set(node.id, size)
     return size
   }
-  traverseUnknownType(id: number, x: number, y: number) {
-    const node = this.nodeMap.get(id) as Node
+  getChainHeight(start: Node) {
+    let cur: Node | null = start
+    let height = 0
+    while (cur !== null) {
+      const size = this.getSize(cur)
+      height = Math.max(height, size.offsetHeight)
+      cur = cur.next
+    }
+    return height
+  }
+  traverseNode(node: Node, x: number, y: number) {
     switch (node.type) {
       case "choice":
-        this.traverseChoice(id, x, y)
+        this.traverseChoice(node, x, y)
         break
       case "group":
       case "lookaroundAssertion":
-        this.traverseGroup(id, x, y)
+        this.traverseGroup(node, x, y)
         break
       default:
         break
     }
   }
-  traverseGroup(id: number, x: number, y: number) {
-    const node = this.nodeMap.get(id) as GroupNode
-    const { offsetWidth, offsetHeight } = this.getSize(id)
-    const { head } = node
-    const concatenation: number[] = []
-    let cur = head
-    while (cur !== id) {
-      concatenation.push(cur)
-      const curNode = this.nodeMap.get(cur) as Node
-      cur = curNode.next as number
-    }
-    this.traverseConcatenation(
-      concatenation,
+  traverseGroup(
+    node: GroupNode | LookaroundAssertionNode,
+    x: number,
+    y: number
+  ) {
+    const { offsetWidth, offsetHeight } = this.getSize(node)
+    const { chain } = node
+    this.traverseChain(
+      chain as Node,
       x,
       y,
       offsetWidth,
@@ -211,38 +208,21 @@ class Traverse {
       y + offsetHeight / 2
     )
   }
-  traverseChoice(id: number, x: number, y: number) {
-    const node = this.nodeMap.get(id) as ChoiceNode
-    const { branches } = node
-    const choiceSize = this.getSize(id)
+  traverseChoice(node: ChoiceNode, x: number, y: number) {
+    const { chains } = node
+    const choiceSize = this.getSize(node)
     const maxWidth = choiceSize.offsetWidth
     const centerY = y + choiceSize.offsetHeight / 2
 
-    branches.forEach(branch => {
-      let cur = branch
-      let maxHeight = 0
-      const concatenation: number[] = []
-      while (cur !== id) {
-        concatenation.push(cur)
-        const curNode = this.nodeMap.get(cur) as Node
-        const size = this.getSize(cur)
-        maxHeight = Math.max(maxHeight, size.offsetHeight)
-        cur = curNode.next as number
-      }
+    chains.forEach(chain => {
+      let maxHeight = this.getChainHeight(chain as Node)
       maxHeight += FLOW_NODE_MARGIN_VERTICAL * 2
-      this.traverseConcatenation(
-        concatenation,
-        x,
-        y,
-        maxWidth,
-        maxHeight,
-        centerY
-      )
+      this.traverseChain(chain as Node, x, y, maxWidth, maxHeight, centerY)
       y += maxHeight
     })
   }
-  traverseConcatenation(
-    concatenation: number[],
+  traverseChain(
+    chain: Node,
     x: number,
     y: number,
     width?: number,
@@ -252,11 +232,15 @@ class Traverse {
     const originX = x
     let concatenationHeight = 0
     let concatenationWidth = 0
-    concatenation.forEach(id => {
-      const size = this.getSize(id)
+    let cur: null | Node = chain
+    let ids = []
+    while (cur !== null) {
+      const size = this.getSize(cur)
       concatenationHeight = Math.max(concatenationHeight, size.offsetHeight)
       concatenationWidth += size.offsetWidth + FLOW_NODE_MARGIN_HORIZONTAL * 2
-    })
+      ids.push(cur.id)
+      cur = cur.next
+    }
 
     concatenationWidth -= FLOW_NODE_MARGIN_HORIZONTAL * 2
 
@@ -275,15 +259,17 @@ class Traverse {
         y: connectY,
       }
     }
-    concatenation.forEach((id, index) => {
-      const size = this.getSize(id)
+
+    cur = chain
+    while (cur !== null) {
+      const size = this.getSize(cur)
       const deltaY = (concatenationHeight - size.offsetHeight) / 2
-      this.traverseUnknownType(id, x, y + deltaY)
+      this.traverseNode(cur, x, y + deltaY)
 
       // head connect and body connect
       if (connect) {
         this.renderConnects.push({
-          id: id + "split",
+          id: cur.id + "split",
           type: "split",
           start: { ...connect },
           end: {
@@ -296,15 +282,15 @@ class Traverse {
         x: x + (size.offsetWidth + size.width) / 2,
         y: centerY,
       }
-      this.preRenderNode(id, x, y + deltaY)
+      this.preRenderNode(cur, x, y + deltaY)
 
       x += size.offsetWidth
       x += FLOW_NODE_MARGIN_HORIZONTAL * 2
 
       // tail connect
-      if (width && connectY && index === concatenation.length - 1) {
+      if (width && connectY && cur.next === null) {
         this.renderConnects.push({
-          id: id + "combine",
+          id: cur.id + "combine",
           type: "combine",
           start: { ...connect },
           end: {
@@ -313,16 +299,16 @@ class Traverse {
           },
         })
       }
-    })
-    this.concatenations.unshift(concatenation)
+      cur = cur.next
+    }
+    this.chainIds.unshift(ids)
     return {
       width: x - originX,
       height: concatenationHeight,
     }
   }
-  preRenderNode(id: number, x: number, y: number) {
-    const node = this.nodeMap.get(id) as Node
-    const size = this.getSize(id)
+  preRenderNode(node: Node, x: number, y: number) {
+    const size = this.getSize(node)
     let { width, height, offsetWidth, offsetHeight } = size
     x += (offsetWidth - width) / 2
     y += (offsetHeight - height) / 2

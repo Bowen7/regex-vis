@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Radio, Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, SingleNode, RootNode, NodeMap } from "@types"
+import { Node, SingleNode, RootNode } from "@types"
 import EditPanel from "../editPanel"
 import { remove, insert } from "../flowchart/handler"
 import Flowchart from "../flowchart"
@@ -11,18 +11,19 @@ const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 // const DEFAULT_REGEX = `/a|\\b/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
-  const [nodeMap, setNodeMap] = useState<NodeMap>(parser.parse(DEFAULT_REGEX))
+  const [root, setRoot] = useState<RootNode>(parser.parse(DEFAULT_REGEX))
+  console.log(root)
   const [selectedIds, setSelectedIds] = useState<number[]>([])
 
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
   }
   function handleRenderClick() {
-    const nodeMap = parser.parse(regex)
-    setNodeMap(nodeMap)
+    const root = parser.parse(regex)
+    setRoot(root)
   }
   function onRemove(ids: number[]) {
-    setNodeMap(remove(nodeMap, ids))
+    // setRoot(remove(nodeMap, ids))
   }
   function onSelect(ids: number[]) {
     setSelectedIds(ids)
@@ -31,20 +32,19 @@ const Home: React.FC<{}> = () => {
     direction: "prev" | "next",
     type: "simple" | "choice" | "group"
   ) {
-    setNodeMap(insert(nodeMap, selectedIds, direction, type))
+    // setNodeMap(insert(nodeMap, selectedIds, direction, type))
   }
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
         <Flowchart
-          nodeMap={nodeMap}
-          root={0}
-          onRemove={onRemove}
-          onSelect={onSelect}
+          root={root}
+          // onRemove={onRemove}
+          // onSelect={onSelect}
         />
       </div>
 
-      <EditPanel nodeMap={nodeMap} ids={selectedIds} onInsert={onInsert} />
+      <EditPanel ids={selectedIds} onInsert={onInsert} />
       <div
         style={{
           width: "100%",

@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import { Tabs, Radio, Button } from "@geist-ui/react"
-import { Node, NodeMap } from "@types"
+import { Node } from "@types"
 import parser from "@parser"
 import InsertItem, { InsertDirection, InsertType } from "./insertItem"
 import PatternItem from "./patternItem"
 import { insert } from "../flowchart/handler"
 type Props = {
   ids: number[]
-  nodeMap: NodeMap
   onInsert?: (direction: InsertDirection, type: InsertType) => void
 }
 const Wrapper = styled.div`
@@ -20,21 +19,21 @@ const Content = styled.div`
   width: 500px;
 `
 const EditPanel: React.FC<Props> = props => {
-  const { ids, nodeMap, onInsert } = props
+  const { ids, onInsert } = props
   const [regex, setRegex] = useState<string>("")
   const [isRoot, setIsRoot] = useState<boolean>(false)
-  useEffect(() => {
-    if (ids.length === 1) {
-      const id = ids[0]
-      const node = nodeMap.get(id) as Node
-      if (node.type === "root") {
-        setIsRoot(true)
-        return
-      }
-    }
-    setIsRoot(false)
-    setRegex(parser.gen(nodeMap, ids))
-  }, [ids, nodeMap])
+  // useEffect(() => {
+  //   if (ids.length === 1) {
+  //     const id = ids[0]
+  //     const node = nodeMap.get(id) as Node
+  //     if (node.type === "root") {
+  //       setIsRoot(true)
+  //       return
+  //     }
+  //   }
+  //   setIsRoot(false)
+  //   setRegex(parser.gen(ids))
+  // }, [ids, nodeMap])
   function handleInsert(direction: InsertDirection, type: InsertType) {
     onInsert && onInsert(direction, type)
   }
