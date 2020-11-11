@@ -14,7 +14,7 @@ function gen(start: Node, end: Node | null = null) {
   let reStr = ""
   const isSingleChoice = judgeSingleChoice(start, end)
   let cur: Node | null = start
-  while (cur !== end)
+  while (cur !== null && cur !== end?.next) {
     switch (cur.type) {
       case "choice":
         const r = genChoice(cur)
@@ -39,16 +39,17 @@ function gen(start: Node, end: Node | null = null) {
       default:
         break
     }
-  if (hasQuantifier(cur) && cur.quantifier) {
-    reStr += genQuantifier(cur)
+    if (hasQuantifier(cur) && cur.quantifier) {
+      reStr += genQuantifier(cur)
+    }
+    cur = cur.next
   }
-  cur = cur.next
   return reStr
 }
 function judgeSingleChoice(start: Node, end: Node | null) {
   let cur: Node | null = start
   let flag = false
-  while (cur !== null && cur !== end) {
+  while (cur !== null && cur !== end?.next) {
     if (cur.type !== "root") {
       if (flag) {
         return false
@@ -73,7 +74,7 @@ function genGroup(node: GroupNode) {
 }
 function genChar(node: Char, prefix: boolean) {
   if (prefix) {
-    node.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    return node.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
   }
   return node.text
 }

@@ -7,7 +7,7 @@ import InsertItem, { InsertDirection, InsertType } from "./insertItem"
 import PatternItem from "./patternItem"
 import { insert } from "../flowchart/handler"
 type Props = {
-  ids: number[]
+  nodes: Node[]
   onInsert?: (direction: InsertDirection, type: InsertType) => void
 }
 const Wrapper = styled.div`
@@ -19,28 +19,31 @@ const Content = styled.div`
   width: 500px;
 `
 const EditPanel: React.FC<Props> = props => {
-  const { ids, onInsert } = props
+  const { nodes, onInsert } = props
   const [regex, setRegex] = useState<string>("")
   const [isRoot, setIsRoot] = useState<boolean>(false)
-  // useEffect(() => {
-  //   if (ids.length === 1) {
-  //     const id = ids[0]
-  //     const node = nodeMap.get(id) as Node
-  //     if (node.type === "root") {
-  //       setIsRoot(true)
-  //       return
-  //     }
-  //   }
-  //   setIsRoot(false)
-  //   setRegex(parser.gen(ids))
-  // }, [ids, nodeMap])
+  useEffect(() => {
+    if (nodes.length === 1) {
+      const node = nodes[0]
+      if (node.type === "root") {
+        setIsRoot(true)
+        return
+      }
+    }
+    setIsRoot(false)
+    if (nodes.length > 0) {
+      const start = nodes[0]
+      const end = nodes[nodes.length - 1]
+      setRegex(parser.gen(start, end))
+    }
+  }, [nodes])
   function handleInsert(direction: InsertDirection, type: InsertType) {
     onInsert && onInsert(direction, type)
   }
   function renderTabs() {
     return (
       <Content>
-        <Tabs initialValue="insert" hideDivider>
+        <Tabs initialValue="pattern" hideDivider>
           <Tabs.Item label="Pattern" value="pattern" disabled={isRoot}>
             <PatternItem regex={regex} />
           </Tabs.Item>
@@ -59,7 +62,7 @@ const EditPanel: React.FC<Props> = props => {
   }
   return (
     <Wrapper>
-      {ids.length > 0 ? (
+      {nodes.length > 0 ? (
         renderTabs()
       ) : (
         <p>You can select nodes on this diagram</p>

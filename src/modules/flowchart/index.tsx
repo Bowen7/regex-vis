@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react"
-import { RootNode } from "@types"
+import { RootNode, Node } from "@types"
 import { RenderNode, RenderConnect, Box } from "./types"
 import Traverse from "./traverse"
 import FlowNode from "./flowNode"
@@ -8,8 +8,8 @@ import SvgContainer from "./svgContainer"
 import { useEventListener } from "../../utils/hooks"
 type Props = {
   root: RootNode
-  onSelect?: (ids: string[]) => void
-  onRemove?: (ids: string[]) => void
+  onSelect?: (ids: Node[]) => void
+  onRemove?: (ids: Node[]) => void
 }
 const Flowchart: React.FC<Props> = props => {
   const { root, onRemove, onSelect } = props
@@ -19,20 +19,20 @@ const Flowchart: React.FC<Props> = props => {
   const [height, setHeight] = useState(0)
   const [renderNodes, setRenderNodes] = useState<RenderNode[]>([])
   const [renderConnects, setRenderConnects] = useState<RenderConnect[]>([])
-  const [selectIds, setSelectIds] = useState<string[]>([])
+  const [selectNodes, setSelectNodes] = useState<Node[]>([])
   useEffect(() => {
     const { width, height, renderNodes, renderConnects } = traverse.t(root)
     setWidth(width)
     setHeight(height)
     setRenderNodes(renderNodes)
     setRenderConnects(renderConnects)
-    setSelectIds([])
+    setSelectNodes([])
   }, [root, traverse])
   function onDragSelect(box: Box) {
     const { x: _x, y: _y, width: _width, height: _height } = box
     const renderNodes = traverse.renderNodes
-    const chainIds = traverse.chainIds
-    const ids = renderNodes
+    const chainNodes = traverse.chainNodes
+    const nodes = renderNodes
       .filter(renderNode => {
         const { node, x, y, width, height } = renderNode
         if (node.type === "root") {
@@ -42,31 +42,33 @@ const Flowchart: React.FC<Props> = props => {
         const overlapY = _y < y && _y + _height > y + height
         return overlapX && overlapY
       })
-      .map(renderNode => renderNode.node.id)
-    for (let i = 0; i < chainIds.length; i++) {
-      if (chainIds[i].some(item => ids.indexOf(item) > -1)) {
-        const selectIds = chainIds[i].filter(item => ids.indexOf(item) > -1)
-        setSelectIds(selectIds)
-        onSelect && onSelect(selectIds)
+      .map(renderNode => renderNode.node)
+    for (let i = 0; i < chainNodes.length; i++) {
+      if (chainNodes[i].some(item => nodes.some(node => node === item))) {
+        const selectNodes = chainNodes[i].filter(item =>
+          nodes.some(node => node === item)
+        )
+        setSelectNodes(selectNodes)
+        onSelect && onSelect(selectNodes)
         break
       }
     }
   }
-  function onClick(id: string) {
-    let ids = [id]
-    if (selectIds.length === 1 && selectIds.includes(id)) {
-      ids = []
+  function onClick(node: Node) {
+    let nodes = [node]
+    if (selectNodes.length === 1 && selectNodes.includes(node)) {
+      nodes = []
     }
-    setSelectIds(ids)
-    onSelect && onSelect(ids)
+    setSelectNodes(nodes)
+    onSelect && onSelect(nodes)
   }
   useEventListener("keydown", (e: Event) => {
     const { key } = e as KeyboardEvent
     if (key === "Backspace") {
-      const ids: string[] = []
-      setSelectIds(ids)
-      onSelect && onSelect(ids)
-      onRemove && onRemove(selectIds)
+      const nodes: Node[] = []
+      setSelectNodes(nodes)
+      onSelect && onSelect(nodes)
+      onRemove && onRemove(selectNodes)
     }
   })
   return (
@@ -86,8 +88,8 @@ const Flowchart: React.FC<Props> = props => {
               width={width}
               height={height}
               node={node}
-              selected={selectIds.includes(id)}
-              // onClick={onClick}
+              selected={selectNodes.includes(node)}
+              onClick={onClick}
               key={id}
             />
           )

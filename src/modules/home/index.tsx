@@ -12,8 +12,7 @@ const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
   const [root, setRoot] = useState<RootNode>(parser.parse(DEFAULT_REGEX))
-  console.log(root)
-  const [selectedIds, setSelectedIds] = useState<number[]>([])
+  const [selectedNodes, setSelectedNodes] = useState<Node[]>([])
 
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
@@ -22,11 +21,11 @@ const Home: React.FC<{}> = () => {
     const root = parser.parse(regex)
     setRoot(root)
   }
-  function onRemove(ids: number[]) {
+  function onRemove(nodes: Node[]) {
     // setRoot(remove(nodeMap, ids))
   }
-  function onSelect(ids: number[]) {
-    setSelectedIds(ids)
+  function onSelect(nodes: Node[]) {
+    setSelectedNodes(nodes)
   }
   function onInsert(
     direction: "prev" | "next",
@@ -37,14 +36,10 @@ const Home: React.FC<{}> = () => {
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <Flowchart
-          root={root}
-          // onRemove={onRemove}
-          // onSelect={onSelect}
-        />
+        <Flowchart root={root} onRemove={onRemove} onSelect={onSelect} />
       </div>
 
-      <EditPanel ids={selectedIds} onInsert={onInsert} />
+      <EditPanel nodes={selectedNodes} onInsert={onInsert} />
       <div
         style={{
           width: "100%",

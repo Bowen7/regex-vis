@@ -3,9 +3,9 @@ import {
   ChoiceNode,
   GroupNode,
   Pos,
-  SingleNode,
   RootNode,
   LookaroundAssertionNode,
+  Chain,
 } from "@types"
 import { Size, RenderNode, RenderConnect } from "./types"
 import { hasName, hasQuantifier } from "../../utils"
@@ -22,28 +22,33 @@ import {
   FLOW_QUANTIFIER_HEIGHT,
   FLOW_GROUP_PADDING_VERTICAL,
   FLOW_NAME_HEIGHT,
-} from "./consts"
+} from "./constants"
 class Traverse {
   cachedSizeMap: Map<string, Size> = new Map()
   canvasRef: React.RefObject<HTMLCanvasElement>
   renderNodes: RenderNode[] = []
   renderConnects: RenderConnect[] = []
-  chainIds: string[][] = []
+  chainNodes: Node[][] = []
   constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
+    // the `measureText` method use canvas.measureText
     this.canvasRef = canvasRef
   }
   t(root: RootNode) {
     this.renderNodes = []
     this.renderConnects = []
-    this.cachedSizeMap = new Map()
-    this.chainIds = []
-    let { width, height } = this.traverseChain(
+    this.chainNodes = []
+    this.cachedSizeMap.clear()
+
+    let { width, height } = this.getChainSize(root, FLOW_NODE_MARGIN_HORIZONTAL)
+    width += FLOWCHART_PADDING_HORIZONTAL * 2
+    height += FLOWCHART_PADDING_VERTICAL * 2
+
+    this.traverseChain(
       root,
       FLOWCHART_PADDING_HORIZONTAL,
       FLOWCHART_PADDING_VERTICAL
     )
-    width += FLOWCHART_PADDING_HORIZONTAL * 2
-    height += FLOWCHART_PADDING_VERTICAL * 2
+
     const { renderNodes, renderConnects } = this
     return {
       width,
@@ -57,7 +62,7 @@ class Traverse {
     if (!context) {
       return { width: 0, height: 0 }
     }
-    // todo
+    // todo: handle font-family
     context.font = fontSize + "px Arial"
     const metrics = context.measureText(text)
     return { width: metrics.width, height: fontSize }
@@ -98,12 +103,12 @@ class Traverse {
           while (cur !== null) {
             const size = this.getSize(cur)
             _width += size.offsetWidth
-            _width += FLOW_NODE_MARGIN_HORIZONTAL * 2
+            _width += FLOW_NODE_MARGIN_HORIZONTAL
             _height = Math.max(size.offsetHeight, _height)
             cur = cur.next
           }
           height += _height
-          height += FLOW_NODE_MARGIN_VERTICAL * 2
+          height += FLOW_NODE_MARGIN_VERTICAL
           width = Math.max(width, _width)
         })
         width += FLOW_CHOICE_PADDING_HORIZONTAL * 2
@@ -116,7 +121,7 @@ class Traverse {
         while (cur !== null) {
           const size = this.getSize(cur)
           width += size.offsetWidth
-          width += FLOW_NODE_MARGIN_HORIZONTAL * 2
+          width += FLOW_NODE_MARGIN_HORIZONTAL
           height = size.offsetHeight
           cur = cur.next
         }
@@ -127,7 +132,7 @@ class Traverse {
       default:
         break
     }
-    // quantifier
+    // handle quantifier
     if (hasQuantifier(node) && node.quantifier) {
       const { quantifier } = node
       const { max, min, text } = quantifier
@@ -139,7 +144,7 @@ class Traverse {
         paddingBottom += FLOW_QUANTIFIER_HEIGHT
       }
 
-      // times text
+      // handle times text
       if (text) {
         paddingBottom += FLOW_NAME_HEIGHT
         const textWidth =
@@ -148,7 +153,7 @@ class Traverse {
       }
     }
 
-    // name
+    // handle name
     if (hasName(node) && node.name) {
       const { name } = node
       const nameWidth =
@@ -169,16 +174,29 @@ class Traverse {
     this.cachedSizeMap.set(node.id, size)
     return size
   }
-  getChainHeight(start: Node) {
+  getChainSize(start: Chain, paddingHorizontal: number = 0) {
     let cur: Node | null = start
     let height = 0
+    let width = 0
     while (cur !== null) {
       const size = this.getSize(cur)
       height = Math.max(height, size.offsetHeight)
+      width += size.offsetWidth
+      cur !== start && (width += paddingHorizontal)
       cur = cur.next
     }
-    return height
+    return { width, height }
   }
+  getNodesByChain(start: Chain) {
+    const nodes: Node[] = []
+    let cur: Node | null = start
+    while (cur !== null) {
+      nodes.push(cur)
+      cur = cur.next
+    }
+    return nodes
+  }
+  // traverse complex Node, ChoiceNode, GroupNode, LookaroundAssertionNode
   traverseNode(node: Node, x: number, y: number) {
     switch (node.type) {
       case "choice":
@@ -200,7 +218,7 @@ class Traverse {
     const { offsetWidth, offsetHeight } = this.getSize(node)
     const { chain } = node
     this.traverseChain(
-      chain as Node,
+      chain,
       x,
       y,
       offsetWidth,
@@ -215,15 +233,15 @@ class Traverse {
     const centerY = y + choiceSize.offsetHeight / 2
 
     chains.forEach(chain => {
-      let maxHeight = this.getChainHeight(chain as Node)
-      maxHeight += FLOW_NODE_MARGIN_VERTICAL * 2
-      console.log(maxHeight)
+      let maxHeight = this.getChainSize(chain).height
+      maxHeight += FLOW_NODE_MARGIN_VERTICAL
       this.traverseChain(chain as Node, x, y, maxWidth, maxHeight, centerY)
       y += maxHeight
     })
   }
+
   traverseChain(
-    chain: Node,
+    chain: Chain,
     x: number,
     y: number,
     width?: number,
@@ -231,27 +249,20 @@ class Traverse {
     connectY?: number
   ) {
     const originX = x
-    let concatenationHeight = 0
-    let concatenationWidth = 0
-    let cur: null | Node = chain
-    let ids = []
-    while (cur !== null) {
-      const size = this.getSize(cur)
-      concatenationHeight = Math.max(concatenationHeight, size.offsetHeight)
-      concatenationWidth += size.offsetWidth + FLOW_NODE_MARGIN_HORIZONTAL * 2
-      ids.push(cur.id)
-      cur = cur.next
-    }
 
-    concatenationWidth -= FLOW_NODE_MARGIN_HORIZONTAL * 2
+    let { width: chainWidth, height: chainHeight } = this.getChainSize(
+      chain,
+      FLOW_NODE_MARGIN_HORIZONTAL
+    )
+    const nodes = this.getNodesByChain(chain)
 
     if (width) {
-      x += (width - concatenationWidth) / 2
+      x += (width - chainWidth) / 2
     }
     if (height) {
-      y += (height - concatenationHeight) / 2
+      y += (height - chainHeight) / 2
     }
-    const centerY = y + concatenationHeight / 2
+    const centerY = y + chainHeight / 2
 
     let connect: Pos | null = null
     if (connectY) {
@@ -261,16 +272,15 @@ class Traverse {
       }
     }
 
-    cur = chain
-    while (cur !== null) {
-      const size = this.getSize(cur)
-      const deltaY = (concatenationHeight - size.offsetHeight) / 2
-      this.traverseNode(cur, x, y + deltaY)
+    nodes.forEach(node => {
+      const size = this.getSize(node)
+      const deltaY = (chainHeight - size.offsetHeight) / 2
+      this.traverseNode(node, x, y + deltaY)
 
-      // head connect and body connect
+      // push head connect and body connect
       if (connect) {
         this.renderConnects.push({
-          id: cur.id + "split",
+          id: node.id + "split",
           type: "split",
           start: { ...connect },
           end: {
@@ -283,15 +293,15 @@ class Traverse {
         x: x + (size.offsetWidth + size.width) / 2,
         y: centerY,
       }
-      this.preRenderNode(cur, x, y + deltaY)
+      this.preRenderNode(node, x, y + deltaY)
 
       x += size.offsetWidth
-      x += FLOW_NODE_MARGIN_HORIZONTAL * 2
+      x += FLOW_NODE_MARGIN_HORIZONTAL
 
-      // tail connect
-      if (width && connectY && cur.next === null) {
+      // push tail connect
+      if (width && connectY && node.next === null) {
         this.renderConnects.push({
-          id: cur.id + "combine",
+          id: node.id + "combine",
           type: "combine",
           start: { ...connect },
           end: {
@@ -300,13 +310,9 @@ class Traverse {
           },
         })
       }
-      cur = cur.next
-    }
-    this.chainIds.unshift(ids)
-    return {
-      width: x - originX,
-      height: concatenationHeight,
-    }
+    })
+
+    this.chainNodes.unshift(nodes)
   }
   preRenderNode(node: Node, x: number, y: number) {
     const size = this.getSize(node)
@@ -321,6 +327,7 @@ class Traverse {
       height,
       node,
     }
+    // make sure parent nodes are front of their children nodes
     this.renderNodes.unshift(preRenderNode)
   }
 }

@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react"
-import { FLOW_NODE_BORDER_RADIUS, FLOW_NAME_HEIGHT } from "./consts"
+import { FLOW_NODE_BORDER_RADIUS } from "./constants"
 import { NodeType, Quantifier, Node } from "@types"
 import { hasQuantifier, hasText, hasName } from "../../utils"
 const FONT = 16
@@ -10,11 +10,11 @@ type Props = {
   width: number
   height: number
   selected: boolean
-  onClick?: (id: number) => void
+  onClick?: (node: Node) => void
 }
 const FlowNode: React.FC<Props> = props => {
   let { x, y, width, height, selected, node } = props
-  const { type, id } = node
+  const { type } = node
   const rectAttrs = useMemo<React.SVGProps<SVGRectElement>>(() => {
     const attrs: React.SVGProps<SVGRectElement> = {
       fill: "#fff",
@@ -157,7 +157,7 @@ const FlowNode: React.FC<Props> = props => {
     }
   }
   function onClick() {
-    // props.onClick && props.onClick(id)
+    props.onClick && props.onClick(node)
   }
   return (
     <g>
