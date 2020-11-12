@@ -4,7 +4,7 @@ import Repeat from "@geist-ui/react-icons/repeat"
 import { Node, SingleNode, RootNode } from "@types"
 import EditPanel from "../editPanel"
 import { remove, insert } from "../railroad/handler"
-import Flowchart from "../railroad"
+import Railroad from "../railroad"
 import parser from "@parser"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
@@ -22,7 +22,7 @@ const Home: React.FC<{}> = () => {
     setRoot(root)
   }
   function onRemove(nodes: Node[]) {
-    // setRoot(remove(nodeMap, ids))
+    setRoot(remove(root, nodes))
   }
   function onSelect(nodes: Node[]) {
     setSelectedNodes(nodes)
@@ -36,7 +36,7 @@ const Home: React.FC<{}> = () => {
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <Flowchart root={root} onRemove={onRemove} onSelect={onSelect} />
+        <Railroad root={root} onRemove={onRemove} onSelect={onSelect} />
       </div>
 
       <EditPanel nodes={selectedNodes} onInsert={onInsert} />
