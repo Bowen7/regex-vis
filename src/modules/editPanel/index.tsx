@@ -5,7 +5,7 @@ import { Node } from "@types"
 import parser from "@parser"
 import InsertItem, { InsertDirection, InsertType } from "./insertItem"
 import PatternItem from "./patternItem"
-import { insert } from "../flowchart/handler"
+import { insert } from "../railroad/handler"
 type Props = {
   nodes: Node[]
   onInsert?: (direction: InsertDirection, type: InsertType) => void

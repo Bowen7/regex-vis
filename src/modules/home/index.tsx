@@ -3,8 +3,8 @@ import { Radio, Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
 import { Node, SingleNode, RootNode } from "@types"
 import EditPanel from "../editPanel"
-import { remove, insert } from "../flowchart/handler"
-import Flowchart from "../flowchart"
+import { remove, insert } from "../railroad/handler"
+import Flowchart from "../railroad"
 import parser from "@parser"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`

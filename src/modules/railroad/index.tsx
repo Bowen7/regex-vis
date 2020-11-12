@@ -2,8 +2,8 @@ import React, { useRef, useState, useEffect } from "react"
 import { RootNode, Node } from "@types"
 import { RenderNode, RenderConnect, Box } from "./types"
 import Traverse from "./traverse"
-import FlowNode from "./flowNode"
-import FlowConnect from "./flowConnect"
+import RailNode from "./node"
+import Connect from "./connect"
 import SvgContainer from "./svgContainer"
 import { useEventListener } from "../../utils/hooks"
 type Props = {
@@ -82,7 +82,7 @@ const Flowchart: React.FC<Props> = props => {
           const { x, y, width, height, node } = renderNode
           const { id } = node
           return (
-            <FlowNode
+            <RailNode
               x={x}
               y={y}
               width={width}
@@ -96,7 +96,7 @@ const Flowchart: React.FC<Props> = props => {
         })}
         {renderConnects.map(renderConnect => {
           const { type, start, end, id } = renderConnect
-          return <FlowConnect type={type} start={start} end={end} key={id} />
+          return <Connect type={type} start={start} end={end} key={id} />
         })}
       </SvgContainer>
     </>
