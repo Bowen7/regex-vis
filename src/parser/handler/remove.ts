@@ -1,4 +1,5 @@
 import { Node, RootNode } from "@types"
+import { getChainTail } from "../helper"
 function remove(root: RootNode, nodes: Node[]) {
   if (nodes.length === 0) {
     return
@@ -44,23 +45,19 @@ function removeChain(root: RootNode, start: Node) {
     // aliveChain will replace parent
     if (parent.chains.length === 2) {
       const aliveChain = parent.chains.filter(chain => chain !== start)[0]
-      let cur = aliveChain
-      let aliveChainTail = cur
-      while (cur!.next !== null) {
-        cur = (cur as Node).next
-        aliveChainTail = cur
-      }
+      let aliveChainTail = getChainTail(aliveChain as Node)
 
+      let cur: Node | null = aliveChain
       cur = aliveChain
       while (cur !== aliveChainTail!.next) {
         cur!.parent = parent.parent
         cur = cur!.next
       }
 
-      aliveChain!.prev = parent!.prev
-      parent.prev!.next = aliveChain
-      aliveChainTail!.next = parent.next
-      parent.next!.prev = aliveChainTail
+      aliveChain.prev = parent!.prev
+      parent.prev && (parent.prev.next = aliveChain)
+      aliveChainTail.next = parent.next
+      parent.next && (parent.next.prev = aliveChainTail)
     } else {
       // remove the chain
       parent.chains = parent.chains.filter(chain => chain !== start)

@@ -1,9 +1,9 @@
 import React, { useState } from "react"
 import { Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, RootNode, Root } from "@types"
+import { Node, RootNode, Root, GroupKind } from "@types"
 import EditPanel from "../editPanel"
-import { remove, insert } from "../../parser/handler"
+import { remove, insert, group } from "../../parser/handler"
 import Railroad from "../railroad"
 import parser from "@parser"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
@@ -38,6 +38,13 @@ const Home: React.FC<{}> = () => {
     insert(root.r, selectedNodes, direction)
     setRoot(root.r)
   }
+  function onGroup(type: string, name: string) {
+    group(root.r, selectedNodes, type as GroupKind | "nonGroup", name)
+    setRoot(root.r)
+  }
+  function onKeyDown(e: React.KeyboardEvent) {
+    e.stopPropagation()
+  }
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
@@ -52,6 +59,7 @@ const Home: React.FC<{}> = () => {
         nodes={selectedNodes}
         onInsert={onInsert}
         onRemove={onRemove}
+        onGroup={onGroup}
       />
       <div
         style={{
@@ -61,7 +69,7 @@ const Home: React.FC<{}> = () => {
           alignItems: "center",
         }}
       >
-        <Repeat transform="rotate(90)" />
+        {/* <Repeat transform="rotate(90)" /> */}
       </div>
       <div
         style={{
@@ -76,6 +84,7 @@ const Home: React.FC<{}> = () => {
           width="500px"
           value={regex}
           onChange={handleRegexChange}
+          onKeyDown={onKeyDown}
         />
         <Button
           auto

@@ -34,7 +34,7 @@ export type Quantifier = {
 }
 
 export type NodePrev = Node | null
-export type Chain = Node | null
+export type Chain = Node
 export type NodeParent = GroupNode | ChoiceNode | LookaroundAssertionNode | null
 export type NodeQuantifier = SingleNode | GroupNode
 
@@ -54,10 +54,13 @@ export interface SingleNode extends NodeBase {
   quantifier?: Quantifier
 }
 
+export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"
 // (xx)
 export interface GroupNode extends NodeBase {
   type: "group"
   chain: Chain
+  kind: GroupKind
+  rawName?: string
   name?: string
   quantifier?: Quantifier
 }
@@ -88,6 +91,10 @@ export interface RootNode extends NodeBase {
   text: string
 }
 
+export interface PlaceholderNode extends NodeBase {
+  type: "placeholder"
+}
+
 export type Node =
   | SingleNode
   | GroupNode
@@ -95,6 +102,7 @@ export type Node =
   | RootNode
   | BoundaryAssertionNode
   | LookaroundAssertionNode
+  | PlaceholderNode
 
 export type NodeType =
   | "single"

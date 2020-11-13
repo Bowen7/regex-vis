@@ -69,8 +69,19 @@ function genChoice(node: ChoiceNode) {
 }
 
 function genGroup(node: GroupNode) {
-  const { chain } = node
-  return "(" + gen(chain as Node) + ")"
+  const { chain, kind, rawName } = node
+  const content = gen(chain)
+  switch (kind) {
+    case "capturing":
+      return "(" + content + ")"
+    case "namedCapturing":
+      return "(?<" + rawName + ">" + content + ")"
+    case "nonCapturing":
+      return "(?:" + content + ")"
+
+    default:
+      break
+  }
 }
 function genChar(node: Char, prefix: boolean) {
   if (prefix) {

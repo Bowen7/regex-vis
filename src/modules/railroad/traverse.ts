@@ -99,7 +99,7 @@ class Traverse {
         chains.forEach(chain => {
           let _width = 0
           let _height = 0
-          let cur = chain
+          let cur: Node | null = chain
           while (cur !== null) {
             const size = this.getSize(cur)
             _width += size.offsetWidth
@@ -117,7 +117,7 @@ class Traverse {
       case "group":
       case "lookaroundAssertion":
         const { chain } = node
-        let cur = chain
+        let cur: Node | null = chain
         while (cur !== null) {
           const size = this.getSize(cur)
           width += size.offsetWidth

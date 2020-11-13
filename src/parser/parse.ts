@@ -16,6 +16,7 @@ import {
   BoundaryAssertionNode,
   LookaroundAssertionNode,
 } from "@types"
+import { genPlaceholderNode } from "./helper"
 const AssertionNameMap = {
   start: "Start of line",
   end: "End of line",
@@ -233,7 +234,7 @@ function parseLookaroundAssertion(
     prev: prev,
     next: null,
     parent,
-    chain: null,
+    chain: genPlaceholderNode(),
     kind,
     negate,
     name,
@@ -289,13 +290,18 @@ function parseGroup(
     type: "group",
     prev,
     next: null,
+    chain: genPlaceholderNode(),
     parent,
-    chain: null,
+    kind: "nonCapturing",
   }
   if (ast.type === "CapturingGroup") {
     if (ast.name) {
+      node.kind = "namedCapturing"
+      node.rawName = ast.name
       node.name = "Group #" + ast.name
     } else {
+      node.kind = "capturing"
+      node.rawName = groupName.toString()
       node.name = "Group #" + groupName++
     }
   }

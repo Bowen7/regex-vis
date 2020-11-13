@@ -84,7 +84,7 @@ function genChoiceNode(): ChoiceNode {
   }
 }
 
-function insertHead(newChain: Node, oldChain: Node, parent: NodeParent) {
+export function insertHead(newChain: Node, oldChain: Node, parent: NodeParent) {
   if (!parent) {
     return
   }
