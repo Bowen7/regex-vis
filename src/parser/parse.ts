@@ -163,7 +163,6 @@ function parseCharacter(
     parent,
     content: {
       kind: "simple",
-      value: character.raw,
       text: character.raw,
     },
   }
@@ -324,7 +323,6 @@ function parseCharacterClass(
       const text = String.fromCharCode(element.value)
       const char: Char = {
         kind: "simple",
-        value: text,
         text,
       }
       charCollection.collections.push(char)
@@ -334,12 +332,10 @@ function parseCharacterClass(
       const maxText = String.fromCharCode(max.value)
       const from: Char = {
         kind: "simple",
-        value: minText,
         text: minText,
       }
       const to: Char = {
         kind: "simple",
-        value: maxText,
         text: maxText,
       }
       const charRange: CharRange = {

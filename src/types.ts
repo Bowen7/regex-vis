@@ -1,6 +1,5 @@
 export type Char = {
   kind: "simple"
-  value: string
   text: string
 }
 export type CharRange = {
@@ -111,3 +110,7 @@ export type BodyNode =
   | ChoiceNode
   | BoundaryAssertionNode
   | LookaroundAssertionNode
+
+export type Root = {
+  r: RootNode
+}

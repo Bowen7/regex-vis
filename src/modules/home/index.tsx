@@ -1,19 +1,24 @@
-import React, { useEffect, useState } from "react"
-import { Radio, Input, Button } from "@geist-ui/react"
+import React, { useState } from "react"
+import { Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, SingleNode, RootNode } from "@types"
+import { Node, RootNode, Root } from "@types"
 import EditPanel from "../editPanel"
-import { remove, insert } from "../railroad/handler"
+import { remove, insert } from "../../parser/handler"
 import Railroad from "../railroad"
 import parser from "@parser"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
-// const DEFAULT_REGEX = `/a|\\b/`
+// const DEFAULT_REGEX = `/a/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
-  const [root, setRoot] = useState<RootNode>(parser.parse(DEFAULT_REGEX))
+  const [root, _setRoot] = useState<Root>({ r: parser.parse(DEFAULT_REGEX) })
   const [selectedNodes, setSelectedNodes] = useState<Node[]>([])
 
+  function setRoot(r: RootNode) {
+    _setRoot({
+      r,
+    })
+  }
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
   }
@@ -21,25 +26,33 @@ const Home: React.FC<{}> = () => {
     const root = parser.parse(regex)
     setRoot(root)
   }
-  function onRemove(nodes: Node[]) {
-    setRoot(remove(root, nodes))
+  function onRemove() {
+    remove(root.r, selectedNodes)
+    setRoot(root.r)
+    onSelect([])
   }
   function onSelect(nodes: Node[]) {
     setSelectedNodes(nodes)
   }
-  function onInsert(
-    direction: "prev" | "next",
-    type: "simple" | "choice" | "group"
-  ) {
-    // setNodeMap(insert(nodeMap, selectedIds, direction, type))
+  function onInsert(direction: "prev" | "next" | "parallel") {
+    insert(root.r, selectedNodes, direction)
+    setRoot(root.r)
   }
   return (
     <>
       <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <Railroad root={root} onRemove={onRemove} onSelect={onSelect} />
+        <Railroad
+          root={root}
+          onSelect={onSelect}
+          selectedNodes={selectedNodes}
+        />
       </div>
 
-      <EditPanel nodes={selectedNodes} onInsert={onInsert} />
+      <EditPanel
+        nodes={selectedNodes}
+        onInsert={onInsert}
+        onRemove={onRemove}
+      />
       <div
         style={{
           width: "100%",

@@ -1,32 +1,29 @@
 import React, { useRef, useState, useEffect } from "react"
-import { RootNode, Node } from "@types"
+import { Node, Root } from "@types"
 import { RenderNode, RenderConnect, Box } from "./types"
 import Traverse from "./traverse"
 import RailNode from "./node"
 import Connect from "./connect"
 import SvgContainer from "./svgContainer"
-import { useEventListener } from "../../utils/hooks"
 type Props = {
-  root: RootNode
+  root: Root
+  selectedNodes: Node[]
   onSelect?: (ids: Node[]) => void
-  onRemove?: (ids: Node[]) => void
 }
 const Flowchart: React.FC<Props> = props => {
-  const { root, onRemove, onSelect } = props
+  const { root, onSelect, selectedNodes } = props
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [traverse] = useState<Traverse>(new Traverse(canvasRef))
   const [width, setWidth] = useState(0)
   const [height, setHeight] = useState(0)
   const [renderNodes, setRenderNodes] = useState<RenderNode[]>([])
   const [renderConnects, setRenderConnects] = useState<RenderConnect[]>([])
-  const [selectNodes, setSelectNodes] = useState<Node[]>([])
   useEffect(() => {
-    const { width, height, renderNodes, renderConnects } = traverse.t(root)
+    const { width, height, renderNodes, renderConnects } = traverse.t(root.r)
     setWidth(width)
     setHeight(height)
     setRenderNodes(renderNodes)
     setRenderConnects(renderConnects)
-    setSelectNodes([])
   }, [root, traverse])
   function onDragSelect(box: Box) {
     const { x: _x, y: _y, width: _width, height: _height } = box
@@ -45,10 +42,9 @@ const Flowchart: React.FC<Props> = props => {
       .map(renderNode => renderNode.node)
     for (let i = 0; i < chainNodes.length; i++) {
       if (chainNodes[i].some(item => nodes.some(node => node === item))) {
-        const selectNodes = chainNodes[i].filter(item =>
+        let selectNodes = chainNodes[i].filter(item =>
           nodes.some(node => node === item)
         )
-        setSelectNodes(selectNodes)
         onSelect && onSelect(selectNodes)
         break
       }
@@ -56,21 +52,11 @@ const Flowchart: React.FC<Props> = props => {
   }
   function onClick(node: Node) {
     let nodes = [node]
-    if (selectNodes.length === 1 && selectNodes.includes(node)) {
+    if (selectedNodes.length === 1 && selectedNodes.includes(node)) {
       nodes = []
     }
-    setSelectNodes(nodes)
     onSelect && onSelect(nodes)
   }
-  useEventListener("keydown", (e: Event) => {
-    const { key } = e as KeyboardEvent
-    if (key === "Backspace") {
-      const nodes: Node[] = []
-      setSelectNodes(nodes)
-      onSelect && onSelect(nodes)
-      onRemove && onRemove(selectNodes)
-    }
-  })
   return (
     <>
       <canvas
@@ -88,7 +74,7 @@ const Flowchart: React.FC<Props> = props => {
               width={width}
               height={height}
               node={node}
-              selected={selectNodes.includes(node)}
+              selected={selectedNodes.includes(node)}
               onClick={onClick}
               key={id}
             />

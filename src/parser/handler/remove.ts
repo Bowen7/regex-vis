@@ -1,7 +1,7 @@
 import { Node, RootNode } from "@types"
-function remove(root: RootNode, nodes: Node[]): RootNode {
+function remove(root: RootNode, nodes: Node[]) {
   if (nodes.length === 0) {
-    return root
+    return
   }
   const start = nodes[0]
   const end = nodes[nodes.length - 1]
@@ -10,11 +10,12 @@ function remove(root: RootNode, nodes: Node[]): RootNode {
   if (start.prev === null) {
     // parent must not be null. if parent was null, start.prev wound be RootNode
     if (!parent) {
-      return root
+      return
     }
     // remove the chain
     if (end.next === null) {
-      return removeChain(root, start)
+      removeChain(root, start)
+      return
     }
 
     const newChain = end.next
@@ -32,13 +33,12 @@ function remove(root: RootNode, nodes: Node[]): RootNode {
       end.next.prev = start.prev
     }
   }
-  return { ...root }
 }
 
-function removeChain(root: RootNode, start: Node): RootNode {
+function removeChain(root: RootNode, start: Node) {
   const { parent } = start
   if (!parent) {
-    return root
+    return
   }
   if (parent.type === "choice") {
     // aliveChain will replace parent
@@ -50,6 +50,13 @@ function removeChain(root: RootNode, start: Node): RootNode {
         cur = (cur as Node).next
         aliveChainTail = cur
       }
+
+      cur = aliveChain
+      while (cur !== aliveChainTail!.next) {
+        cur!.parent = parent.parent
+        cur = cur!.next
+      }
+
       aliveChain!.prev = parent!.prev
       parent.prev!.next = aliveChain
       aliveChainTail!.next = parent.next
@@ -58,10 +65,10 @@ function removeChain(root: RootNode, start: Node): RootNode {
       // remove the chain
       parent.chains = parent.chains.filter(chain => chain !== start)
     }
-    return { ...root }
+    return
   } else {
     // remove parent
-    return remove(root, [parent as Node])
+    remove(root, [parent as Node])
   }
 }
 export default remove
