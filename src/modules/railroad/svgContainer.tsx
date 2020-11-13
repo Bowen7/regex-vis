@@ -1,19 +1,35 @@
 import React, { useState, useRef } from "react"
 import { Box } from "./types"
 import { useEventListener } from "../../utils/hooks"
+import { RenderNode, RenderConnect } from "./types"
+import { Node } from "@types"
+import RailNode from "./node"
+import Connect from "./connect"
 import styled from "styled-components"
 type Props = {
   width: number
   height: number
+  nodes: RenderNode[]
+  connects: RenderConnect[]
+  selectedNodes: Node[]
   onDragSelect?: (box: Box) => void
+  onClick?: (node: Node) => void
 }
 const Svg = styled.svg`
   border: 0.5px solid #999;
   border-radius: 5px;
 `
 const SvgContainer: React.FC<Props> = React.memo(props => {
-  const { width, height, children, onDragSelect } = props
-  const draging = useRef<boolean>(false)
+  const {
+    width,
+    height,
+    nodes,
+    connects,
+    onDragSelect,
+    selectedNodes,
+    onClick,
+  } = props
+  const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
   const startX = useRef<number>(0)
   const startY = useRef<number>(0)
@@ -22,12 +38,12 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
   const [rect, setRect] = useState<Box>({ x: 0, y: 0, width: 0, height: 0 })
   function onMouseDown(e: React.MouseEvent<SVGSVGElement>) {
     const { offsetX, offsetY } = e.nativeEvent
-    draging.current = true
+    dragging.current = true
     startX.current = offsetX
     startY.current = offsetY
   }
   function onMouseMove(e: React.MouseEvent<SVGSVGElement>) {
-    if (!draging.current) {
+    if (!dragging.current) {
       return
     }
     moving.current = true
@@ -45,12 +61,13 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       height,
     })
   }
-  function onMouseUp() {
-    if (!draging.current) {
+  function onMouseUp(e: Event) {
+    if (!dragging.current) {
       return
     }
+    // should execute onMouseMove at least once
     if (!moving.current) {
-      draging.current = false
+      dragging.current = false
       return
     }
     const offsetX = endX.current
@@ -60,12 +77,25 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
     const width = Math.abs(offsetX - startX.current)
     const height = Math.abs(offsetY - startY.current)
     if (width > 5 && height > 5) {
+      // prevent click event on node
+      window.addEventListener("click", captureClick, true)
       onDragSelect && onDragSelect({ x, y, width, height })
     }
-    draging.current = false
+    dragging.current = false
     moving.current = false
     setRect({ x: 0, y: 0, width: 0, height: 0 })
   }
+  function handleClick(node: Node) {
+    if (!moving.current) {
+      onClick && onClick(node)
+    }
+  }
+
+  function captureClick(e: MouseEvent) {
+    e.stopPropagation()
+    window.removeEventListener("click", captureClick, true)
+  }
+
   useEventListener("mouseup", onMouseUp)
   return (
     <Svg
@@ -76,7 +106,26 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       onMouseDown={onMouseDown}
       onMouseMove={onMouseMove}
     >
-      {children}
+      {nodes.map(renderNode => {
+        const { x, y, width, height, node } = renderNode
+        const { id } = node
+        return (
+          <RailNode
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            node={node}
+            selected={selectedNodes.includes(node)}
+            onClick={handleClick}
+            key={id}
+          />
+        )
+      })}
+      {connects.map(connect => {
+        const { type, start, end, id } = connect
+        return <Connect type={type} start={start} end={end} key={id} />
+      })}
       <rect
         x={rect.x}
         y={rect.y}

@@ -99,6 +99,7 @@ const FlowNode: React.FC<Props> = props => {
           `L${center.x + 10},${y + height + 10.5}` +
           `L${center.x + 13.5},${y + height + 7}`
       }
+      // todo: optimize
       return (
         <>
           {path1 && (

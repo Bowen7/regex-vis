@@ -2,13 +2,11 @@ import React, { useRef, useState, useEffect } from "react"
 import { Node, Root } from "@types"
 import { RenderNode, RenderConnect, Box } from "./types"
 import Traverse from "./traverse"
-import RailNode from "./node"
-import Connect from "./connect"
 import SvgContainer from "./svgContainer"
 type Props = {
   root: Root
   selectedNodes: Node[]
-  onSelect?: (ids: Node[]) => void
+  onSelect?: (nodes: Node[]) => void
 }
 const Flowchart: React.FC<Props> = props => {
   const { root, onSelect, selectedNodes } = props
@@ -63,28 +61,15 @@ const Flowchart: React.FC<Props> = props => {
         ref={canvasRef}
         style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
       ></canvas>
-      <SvgContainer width={width} height={height} onDragSelect={onDragSelect}>
-        {renderNodes.map(renderNode => {
-          const { x, y, width, height, node } = renderNode
-          const { id } = node
-          return (
-            <RailNode
-              x={x}
-              y={y}
-              width={width}
-              height={height}
-              node={node}
-              selected={selectedNodes.includes(node)}
-              onClick={onClick}
-              key={id}
-            />
-          )
-        })}
-        {renderConnects.map(renderConnect => {
-          const { type, start, end, id } = renderConnect
-          return <Connect type={type} start={start} end={end} key={id} />
-        })}
-      </SvgContainer>
+      <SvgContainer
+        width={width}
+        height={height}
+        nodes={renderNodes}
+        connects={renderConnects}
+        selectedNodes={selectedNodes}
+        onDragSelect={onDragSelect}
+        onClick={onClick}
+      ></SvgContainer>
     </>
   )
 }
