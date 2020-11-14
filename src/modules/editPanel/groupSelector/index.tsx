@@ -50,9 +50,15 @@ const GroupSelector: React.FC<GroupSelectorProps> = props => {
         {groupData.map(item => (
           <Radio key={item.value} value={item.value}>
             <span>{item.label}</span>
-            <Tooltip text={item.tip}>
-              <QuestionCircle size={18} onClick={onTipClick} cursor="pointer" />
-            </Tooltip>
+            {item.tip && (
+              <Tooltip text={item.tip}>
+                <QuestionCircle
+                  size={18}
+                  onClick={onTipClick}
+                  cursor="pointer"
+                />
+              </Tooltip>
+            )}
           </Radio>
         ))}
       </Radio.Group>

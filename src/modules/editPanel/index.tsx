@@ -48,7 +48,7 @@ const EditPanel: React.FC<Props> = props => {
   }
   return (
     <Wrapper>
-      {nodes.length > -1 ? (
+      {nodes.length > 0 ? (
         renderTabs()
       ) : (
         <p>You can select nodes on this diagram</p>
