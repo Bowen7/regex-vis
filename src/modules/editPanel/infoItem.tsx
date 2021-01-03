@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { Button, Collapse, Text } from "@geist-ui/react"
 import parser from "@parser"
 import { Node } from "@types"
 import styled from "styled-components"
-import GroupSelector from "./groupSelector"
+import GroupSelector from "./groupSelect"
+import Cell from "@/components/cell"
 const Expression = styled.span`
   color: #50e3c2;
 `
@@ -34,10 +34,12 @@ const InfoItem: React.FC<Props> = props => {
   }
   return (
     <>
-      <p>
-        Selected expression: <Expression>{expression}</Expression>
-      </p>
-      <GroupSelector nodes={nodes} onApply={onApply} />
+      <Cell label="Expression:">
+        <Expression>{expression}</Expression>
+      </Cell>
+      <Cell label="Group:">
+        <GroupSelector nodes={nodes} />
+      </Cell>
     </>
   )
 }

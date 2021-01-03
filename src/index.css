@@ -5,3 +5,7 @@ body {
 svg {
   user-select: none;
 }
+
+.max-z-index {
+  z-index: 1200 !important;
+}
