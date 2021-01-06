@@ -4,6 +4,7 @@ import { Node } from "@types"
 import styled from "styled-components"
 import GroupSelector from "./groupSelect"
 import Cell from "@/components/cell"
+import Quantifier from "./quantifier"
 const Expression = styled.span`
   color: #50e3c2;
 `
@@ -39,6 +40,9 @@ const InfoItem: React.FC<Props> = props => {
       </Cell>
       <Cell label="Group:">
         <GroupSelector nodes={nodes} />
+      </Cell>
+      <Cell label="Quantifier:">
+        <Quantifier />
       </Cell>
     </>
   )
