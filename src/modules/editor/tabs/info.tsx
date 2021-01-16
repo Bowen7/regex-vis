@@ -1,13 +1,9 @@
 import React, { useEffect, useState, useCallback } from "react"
 import parser from "@parser"
 import { Node } from "@types"
-import styled from "styled-components"
 import GroupSelector from "../features/group"
 import Cell from "@/components/cell"
 import Quantifier from "../features/quantifier"
-const Expression = styled.span`
-  color: #50e3c2;
-`
 type Props = {
   nodes: Node[]
   onGroup: (type: string, name: string) => void
@@ -36,7 +32,7 @@ const InfoItem: React.FC<Props> = props => {
   return (
     <>
       <Cell label="Expression:">
-        <Expression>{expression}</Expression>
+        <span className="expression">{expression}</span>
       </Cell>
       <Cell label="Group:">
         <GroupSelector nodes={nodes} />
@@ -44,6 +40,11 @@ const InfoItem: React.FC<Props> = props => {
       <Cell label="Quantifier:">
         <Quantifier />
       </Cell>
+      <style jsx>{`
+        .expression {
+          color: #50e3c2;
+        }
+      `}</style>
     </>
   )
 }

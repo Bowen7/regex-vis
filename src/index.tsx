@@ -1,11 +1,9 @@
 import React from "react"
 import ReactDOM from "react-dom"
-import { enableMapSet } from "immer"
 import { GeistProvider, CssBaseline } from "@geist-ui/react"
 import "./index.css"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
-enableMapSet()
 ReactDOM.render(
   <GeistProvider>
     <CssBaseline />

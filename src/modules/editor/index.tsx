@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react"
-import styled from "styled-components"
 import { Fieldset } from "@geist-ui/react"
 import { Node } from "@types"
 import InsertTab, { InsertDirection } from "./tabs/insert"
 import InfoTab from "./tabs/info"
+import GuideTab from "./tabs/guide"
 import { useEventListener } from "../../utils/hooks"
 type Props = {
   nodes: Node[]
@@ -13,15 +13,6 @@ type Props = {
 }
 
 type Tab = "guide" | "info" | "insert"
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-  overflow-x: auto;
-  margin: 24px 0;
-`
-const Content = styled.div`
-  width: 800px;
-`
 
 const Editor: React.FC<Props> = props => {
   const { nodes, onInsert, onRemove, onGroup } = props
@@ -41,13 +32,16 @@ const Editor: React.FC<Props> = props => {
   function handleInsert(direction: InsertDirection) {
     onInsert && onInsert(direction)
   }
-  function renderTabs() {
-    return (
-      <Content>
+  return (
+    <>
+      <div className="container">
         <Fieldset.Group
           value={tabValue}
           onChange={(value: string) => setTabValue(value as Tab)}
         >
+          <Fieldset value="guide" label="Guide">
+            <GuideTab />
+          </Fieldset>
           <Fieldset value="info" label="Information">
             <InfoTab nodes={nodes} onGroup={onGroup} />
           </Fieldset>
@@ -55,17 +49,14 @@ const Editor: React.FC<Props> = props => {
             <InsertTab onInert={handleInsert} />
           </Fieldset>
         </Fieldset.Group>
-      </Content>
-    )
-  }
-  return (
-    <Wrapper>
-      {nodes.length > 0 ? (
-        renderTabs()
-      ) : (
-        <p>You can select nodes on this diagram</p>
-      )}
-    </Wrapper>
+      </div>
+      <style jsx>{`
+        .container {
+          width: 800px;
+          margin: 24px auto;
+        }
+      `}</style>
+    </>
   )
 }
 

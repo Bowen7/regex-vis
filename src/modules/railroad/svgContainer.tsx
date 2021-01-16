@@ -5,7 +5,6 @@ import { RenderNode, RenderConnect } from "./types"
 import { Node } from "@types"
 import RailNode from "./node"
 import Connect from "./connect"
-import styled from "styled-components"
 type Props = {
   width: number
   height: number
@@ -15,10 +14,6 @@ type Props = {
   onDragSelect?: (box: Box) => void
   onClick?: (node: Node) => void
 }
-const Svg = styled.svg`
-  border: 0.5px solid #999;
-  border-radius: 5px;
-`
 const SvgContainer: React.FC<Props> = React.memo(props => {
   const {
     width,
@@ -98,43 +93,51 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
 
   useEventListener("mouseup", onMouseUp)
   return (
-    <Svg
-      version="1.1"
-      xmlns="http://www.w3.org/2000/svg"
-      width={width}
-      height={height}
-      onMouseDown={onMouseDown}
-      onMouseMove={onMouseMove}
-    >
-      {nodes.map(renderNode => {
-        const { x, y, width, height, node } = renderNode
-        const { id } = node
-        return (
-          <RailNode
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            node={node}
-            selected={selectedNodes.includes(node)}
-            onClick={handleClick}
-            key={id}
-          />
-        )
-      })}
-      {connects.map(connect => {
-        const { type, start, end, id } = connect
-        return <Connect type={type} start={start} end={end} key={id} />
-      })}
-      <rect
-        x={rect.x}
-        y={rect.y}
-        width={rect.width}
-        height={rect.height}
-        fill="#50E3C2"
-        fillOpacity={0.5}
-      ></rect>
-    </Svg>
+    <>
+      <svg
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        width={width}
+        height={height}
+        onMouseDown={onMouseDown}
+        onMouseMove={onMouseMove}
+      >
+        {nodes.map(renderNode => {
+          const { x, y, width, height, node } = renderNode
+          const { id } = node
+          return (
+            <RailNode
+              x={x}
+              y={y}
+              width={width}
+              height={height}
+              node={node}
+              selected={selectedNodes.includes(node)}
+              onClick={handleClick}
+              key={id}
+            />
+          )
+        })}
+        {connects.map(connect => {
+          const { type, start, end, id } = connect
+          return <Connect type={type} start={start} end={end} key={id} />
+        })}
+        <rect
+          x={rect.x}
+          y={rect.y}
+          width={rect.width}
+          height={rect.height}
+          fill="#50E3C2"
+          fillOpacity={0.5}
+        ></rect>
+      </svg>
+      <style jsx>{`
+        svg {
+          border: 0.5px solid #999;
+          border-radius: 5px;
+        }
+      `}</style>
+    </>
   )
 })
 

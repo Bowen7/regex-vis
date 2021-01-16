@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import styled from "styled-components"
 import { Tooltip, Input, Select, Spacer } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
 import { Node } from "@types"
@@ -8,10 +7,6 @@ type GroupSelectProps = {
   nodes: Node[]
 }
 
-const StyledQuestionCircle = styled(QuestionCircle)`
-  vertical-align: middle;
-  margin-left: 5px;
-`
 const GroupSelect: React.FC<GroupSelectProps> = props => {
   const { nodes } = props
   const [groupType, setGroupType] = useState<string>("")
@@ -46,11 +41,13 @@ const GroupSelect: React.FC<GroupSelectProps> = props => {
                 placement="right"
                 portalClassName="max-z-index"
               >
-                <StyledQuestionCircle
-                  size={16}
-                  onClick={onTipClick}
-                  cursor="pointer"
-                />
+                <span className="question-circle">
+                  <QuestionCircle
+                    size={16}
+                    onClick={onTipClick}
+                    cursor="pointer"
+                  />
+                </span>
               </Tooltip>
             )}
           </Select.Option>
@@ -67,6 +64,12 @@ const GroupSelect: React.FC<GroupSelectProps> = props => {
           />
         </>
       )}
+      <style jsx>{`
+        .question-circle {
+          vertical-align: middle;
+          margin-left: 5px;
+        }
+      `}</style>
     </>
   )
 }
