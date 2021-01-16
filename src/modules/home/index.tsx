@@ -2,7 +2,7 @@ import React, { useState } from "react"
 import { Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
 import { Node, RootNode, Root, GroupKind } from "@types"
-import EditPanel from "../editPanel"
+import Editor from "../editor"
 import { remove, insert, group } from "../../parser/handler"
 import Railroad from "../railroad"
 import parser from "@parser"
@@ -55,7 +55,7 @@ const Home: React.FC<{}> = () => {
         />
       </div>
 
-      <EditPanel
+      <Editor
         nodes={selectedNodes}
         onInsert={onInsert}
         onRemove={onRemove}

@@ -1,6 +1,7 @@
 import React from "react"
 import { Radio } from "@geist-ui/react"
 import styled from "styled-components"
+import Divide from "@/components/divide"
 import { quantifierData } from "./helper"
 const StyleRadioText = styled.span`
   font-weight: normal;
@@ -20,7 +21,7 @@ const Quantifier: React.FC<{}> = () => {
           </Radio>
         ))}
       </Radio.Group>
-      <span>|</span>
+      <Divide />
     </Wrap>
   )
 }

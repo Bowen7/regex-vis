@@ -2,8 +2,8 @@ import React, { useState, useEffect } from "react"
 import styled from "styled-components"
 import { Fieldset } from "@geist-ui/react"
 import { Node } from "@types"
-import InsertItem, { InsertDirection } from "./insertItem"
-import InfoItem from "./infoItem"
+import InsertTab, { InsertDirection } from "./tabs/insert"
+import InfoTab from "./tabs/info"
 import { useEventListener } from "../../utils/hooks"
 type Props = {
   nodes: Node[]
@@ -11,6 +11,8 @@ type Props = {
   onRemove?: () => void
   onGroup: (type: string, name: string) => void
 }
+
+type Tab = "guide" | "info" | "insert"
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
@@ -20,8 +22,15 @@ const Wrapper = styled.div`
 const Content = styled.div`
   width: 800px;
 `
-const EditPanel: React.FC<Props> = props => {
+
+const Editor: React.FC<Props> = props => {
   const { nodes, onInsert, onRemove, onGroup } = props
+
+  const [tabValue, setTabValue] = useState<Tab>("guide")
+
+  if (nodes.length === 0 && tabValue !== "guide") {
+    setTabValue("guide")
+  }
 
   useEventListener("keydown", (e: Event) => {
     const { key } = e as KeyboardEvent
@@ -35,12 +44,15 @@ const EditPanel: React.FC<Props> = props => {
   function renderTabs() {
     return (
       <Content>
-        <Fieldset.Group value="info">
+        <Fieldset.Group
+          value={tabValue}
+          onChange={(value: string) => setTabValue(value as Tab)}
+        >
           <Fieldset value="info" label="Information">
-            <InfoItem nodes={nodes} onGroup={onGroup} />
+            <InfoTab nodes={nodes} onGroup={onGroup} />
           </Fieldset>
           <Fieldset value="insert" label="Insert Node">
-            <InsertItem onInert={handleInsert} />
+            <InsertTab onInert={handleInsert} />
           </Fieldset>
         </Fieldset.Group>
       </Content>
@@ -57,4 +69,4 @@ const EditPanel: React.FC<Props> = props => {
   )
 }
 
-export default EditPanel
+export default Editor

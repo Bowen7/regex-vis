@@ -2,9 +2,9 @@ import React, { useEffect, useState, useCallback } from "react"
 import parser from "@parser"
 import { Node } from "@types"
 import styled from "styled-components"
-import GroupSelector from "./groupSelect"
+import GroupSelector from "../features/group"
 import Cell from "@/components/cell"
-import Quantifier from "./quantifier"
+import Quantifier from "../features/quantifier"
 const Expression = styled.span`
   color: #50e3c2;
 `
