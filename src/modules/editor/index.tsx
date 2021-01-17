@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react"
-import { Fieldset } from "@geist-ui/react"
+import { Tabs } from "@geist-ui/react"
 import { Node } from "@types"
-import InsertTab, { InsertDirection } from "./tabs/insert"
-import InfoTab from "./tabs/info"
+import EditTab, { InsertDirection } from "./tabs/edit"
 import GuideTab from "./tabs/guide"
 import { useEventListener } from "../../utils/hooks"
 type Props = {
@@ -12,16 +11,21 @@ type Props = {
   onGroup: (type: string, name: string) => void
 }
 
-type Tab = "guide" | "info" | "insert"
+type Tab = "guide" | "edit"
 
 const Editor: React.FC<Props> = props => {
-  const { nodes, onInsert, onRemove, onGroup } = props
+  const { nodes, onInsert = () => {}, onRemove, onGroup } = props
 
   const [tabValue, setTabValue] = useState<Tab>("guide")
 
-  if (nodes.length === 0 && tabValue !== "guide") {
-    setTabValue("guide")
-  }
+  useEffect(() => {
+    if (nodes.length === 0) {
+      setTabValue("guide")
+    } else {
+      setTabValue("edit")
+    }
+  }, [nodes])
+  const editDisabled = nodes.length === 0
 
   useEventListener("keydown", (e: Event) => {
     const { key } = e as KeyboardEvent
@@ -29,26 +33,21 @@ const Editor: React.FC<Props> = props => {
       onRemove && onRemove()
     }
   })
-  function handleInsert(direction: InsertDirection) {
-    onInsert && onInsert(direction)
-  }
   return (
     <>
       <div className="container">
-        <Fieldset.Group
+        <Tabs
           value={tabValue}
           onChange={(value: string) => setTabValue(value as Tab)}
+          hideDivider
         >
-          <Fieldset value="guide" label="Guide">
+          <Tabs.Item value="guide" label="Guide">
             <GuideTab />
-          </Fieldset>
-          <Fieldset value="info" label="Information">
-            <InfoTab nodes={nodes} onGroup={onGroup} />
-          </Fieldset>
-          <Fieldset value="insert" label="Insert Node">
-            <InsertTab onInert={handleInsert} />
-          </Fieldset>
-        </Fieldset.Group>
+          </Tabs.Item>
+          <Tabs.Item value="edit" label="Selected" disabled={editDisabled}>
+            <EditTab nodes={nodes} onGroup={onGroup} onInert={onInsert} />
+          </Tabs.Item>
+        </Tabs>
       </div>
       <style jsx>{`
         .container {

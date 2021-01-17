@@ -1,20 +1,21 @@
 import React from "react"
 import { Radio } from "@geist-ui/react"
-import Divide from "@/components/divide"
+import Cell from "@/components/cell"
 import { quantifierData } from "./helper"
 const Quantifier: React.FC<{}> = () => {
   return (
     <>
-      <div className="container">
-        <Radio.Group size="mini" useRow>
-          {quantifierData.map(({ value, label }) => (
-            <Radio value={value} key={value}>
-              <span className="radio-text">{label}</span>
-            </Radio>
-          ))}
-        </Radio.Group>
-        <Divide />
-      </div>
+      <Cell label="Quantifier times:">
+        <div className="container">
+          <Radio.Group size="mini" useRow>
+            {quantifierData.map(({ value, label }) => (
+              <Radio value={value} key={value}>
+                <span className="radio-text">{label}</span>
+              </Radio>
+            ))}
+          </Radio.Group>
+        </div>
+      </Cell>
       <style jsx>{`
         .container {
           display: flex;

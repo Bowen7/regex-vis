@@ -1,15 +1,21 @@
 import React, { useEffect, useState, useCallback } from "react"
 import parser from "@parser"
 import { Node } from "@types"
-import GroupSelector from "../features/group"
+import { Divider, Button, ButtonGroup } from "@geist-ui/react"
+import Group from "../features/group"
 import Cell from "@/components/cell"
+import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
+
+export type InsertDirection = "prev" | "next" | "parallel"
+
 type Props = {
   nodes: Node[]
   onGroup: (type: string, name: string) => void
+  onInert: (direction: InsertDirection) => void
 }
 const InfoItem: React.FC<Props> = props => {
-  const { nodes, onGroup } = props
+  const { nodes, onGroup, onInert } = props
 
   const [expression, setExpression] = useState<string>("")
 
@@ -31,20 +37,16 @@ const InfoItem: React.FC<Props> = props => {
   }
   return (
     <>
-      <Cell label="Expression:">
-        <span className="expression">{expression}</span>
-      </Cell>
-      <Cell label="Group:">
-        <GroupSelector nodes={nodes} />
-      </Cell>
-      <Cell label="Quantifier:">
-        <Quantifier />
-      </Cell>
-      <style jsx>{`
-        .expression {
-          color: #50e3c2;
-        }
-      `}</style>
+      <Divider align="start">Insert</Divider>
+      <ButtonGroup size="small">
+        <Button onClick={() => onInert("prev")}>Insert before</Button>
+        <Button onClick={() => onInert("next")}>Insert after</Button>
+        <Button onClick={() => onInert("parallel")}>Insert parallel</Button>
+      </ButtonGroup>
+      <Divider align="start">Edit</Divider>
+      <Expression expression={expression} />
+      <Group nodes={nodes} />
+      <Quantifier />
     </>
   )
 }
