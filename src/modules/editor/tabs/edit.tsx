@@ -1,9 +1,8 @@
 import React, { useEffect, useState, useCallback } from "react"
-import parser from "@parser"
-import { Node } from "@types"
+import parser from "@/parser"
+import { Node } from "@/types"
 import { Divider, Button, ButtonGroup } from "@geist-ui/react"
 import Group from "../features/group"
-import Cell from "@/components/cell"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
 

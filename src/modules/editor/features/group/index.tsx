@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Tooltip, Input, Select, Spacer } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
-import { Node } from "@types"
+import { Node } from "@/types"
 import { groupData, getGroupType, getGroupName } from "./helper"
 import Cell from "@/components/cell"
 type GroupSelectProps = {

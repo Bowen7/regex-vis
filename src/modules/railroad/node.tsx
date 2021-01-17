@@ -1,6 +1,6 @@
 import React, { useMemo } from "react"
 import { FLOW_NODE_BORDER_RADIUS } from "./constants"
-import { Node } from "@types"
+import { Node } from "@/types"
 import { hasQuantifier, hasText, hasName } from "../../utils"
 const FONT = 16
 type Props = {

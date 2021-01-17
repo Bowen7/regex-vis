@@ -7,7 +7,7 @@ import {
   SingleNode,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
-} from "@types"
+} from "@/types"
 import { hasQuantifier } from "../utils"
 
 function gen(start: Node, end: Node | null = null) {

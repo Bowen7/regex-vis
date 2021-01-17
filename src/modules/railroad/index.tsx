@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Node, Root } from "@types"
+import { Node, Root } from "@/types"
 import { RenderNode, RenderConnect, Box } from "./types"
 import Traverse from "./traverse"
 import SvgContainer from "./svgContainer"

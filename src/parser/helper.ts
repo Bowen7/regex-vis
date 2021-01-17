@@ -1,4 +1,4 @@
-import { Node, PlaceholderNode, Chain } from "@types"
+import { Node, PlaceholderNode, Chain } from "@/types"
 export function getChainTail(chain: Chain) {
   let tail!: Node
   let cur: Node | null = chain

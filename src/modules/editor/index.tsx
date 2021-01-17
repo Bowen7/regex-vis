@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react"
 import { Tabs } from "@geist-ui/react"
-import { Node } from "@types"
+import { Node } from "@/types"
 import EditTab, { InsertDirection } from "./tabs/edit"
 import GuideTab from "./tabs/guide"
 import { useEventListener } from "../../utils/hooks"

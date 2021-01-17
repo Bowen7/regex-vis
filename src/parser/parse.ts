@@ -15,7 +15,7 @@ import {
   NodeQuantifier,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
-} from "@types"
+} from "@/types"
 import { genPlaceholderNode } from "./helper"
 const AssertionNameMap = {
   start: "Start of line",

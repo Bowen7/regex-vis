@@ -2,7 +2,7 @@ import React, { useState, useRef } from "react"
 import { Box } from "./types"
 import { useEventListener } from "../../utils/hooks"
 import { RenderNode, RenderConnect } from "./types"
-import { Node } from "@types"
+import { Node } from "@/types"
 import RailNode from "./node"
 import Connect from "./connect"
 type Props = {

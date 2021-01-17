@@ -1,4 +1,4 @@
-import { Pos, Node } from "@types"
+import { Pos, Node } from "@/types"
 export type Box = {
   x: number
   y: number

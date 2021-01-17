@@ -6,7 +6,7 @@ import {
   RootNode,
   LookaroundAssertionNode,
   Chain,
-} from "@types"
+} from "@/types"
 import { Size, RenderNode, RenderConnect } from "./types"
 import { hasName, hasQuantifier } from "../../utils"
 

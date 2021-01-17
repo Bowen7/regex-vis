@@ -1,4 +1,4 @@
-import { Node, RootNode } from "@types"
+import { Node, RootNode } from "@/types"
 import { getChainTail } from "../helper"
 function remove(root: RootNode, nodes: Node[]) {
   if (nodes.length === 0) {

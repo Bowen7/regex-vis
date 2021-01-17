@@ -1,11 +1,11 @@
 import React, { useState } from "react"
 import { Input, Button } from "@geist-ui/react"
 import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, RootNode, Root, GroupKind } from "@types"
+import { Node, RootNode, Root, GroupKind } from "@/types"
 import Editor from "../editor"
 import { remove, insert, group } from "../../parser/handler"
 import Railroad from "../railroad"
-import parser from "@parser"
+import parser from "@/parser"
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
 // const DEFAULT_REGEX = `/a/`

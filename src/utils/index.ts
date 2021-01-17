@@ -5,7 +5,7 @@ import {
   BoundaryAssertionNode,
   LookaroundAssertionNode,
   RootNode,
-} from "@types"
+} from "@/types"
 
 type Quantifier = GroupNode | SingleNode
 export function hasQuantifier(node: Node): node is Quantifier {

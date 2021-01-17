@@ -1,4 +1,4 @@
-import { RootNode, SingleNode, ChoiceNode, Node, NodeParent } from "@types"
+import { RootNode, SingleNode, ChoiceNode, Node, NodeParent } from "@/types"
 import { nanoid } from "nanoid"
 type InsertDirection = "prev" | "next" | "parallel"
 function insert(root: RootNode, nodes: Node[], direction: InsertDirection) {

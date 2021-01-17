@@ -1,4 +1,4 @@
-import { RootNode, Node } from "@types"
+import { RootNode, Node } from "@/types"
 type Handler = (node: Node) => void | boolean
 function traverse(root: RootNode, handler: Handler) {
   traverseChain(root, handler)

@@ -1,5 +1,5 @@
 import React from "react"
-import { Pos } from "@types"
+import { Pos } from "@/types"
 type Props = {
   type: "combine" | "split" | "straight"
   start: Pos

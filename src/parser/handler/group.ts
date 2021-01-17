@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { Node, GroupNode, RootNode, GroupKind } from "@types"
+import { Node, GroupNode, RootNode, GroupKind } from "@/types"
 import traverse from "../traverse"
 import { getChainTail, mapChain } from "../helper"
 import { insertHead } from "./insert"
