@@ -36,16 +36,23 @@ const InfoItem: React.FC<Props> = props => {
   }
   return (
     <>
-      <Divider align="start">Insert</Divider>
-      <ButtonGroup size="small">
-        <Button onClick={() => onInert("prev")}>Insert before</Button>
-        <Button onClick={() => onInert("next")}>Insert after</Button>
-        <Button onClick={() => onInert("parallel")}>Insert parallel</Button>
-      </ButtonGroup>
-      <Divider align="start">Edit</Divider>
-      <Expression expression={expression} />
-      <Group nodes={nodes} />
-      <Quantifier />
+      <div className="container">
+        <Divider align="start">Insert</Divider>
+        <ButtonGroup size="small">
+          <Button onClick={() => onInert("prev")}>Insert before</Button>
+          <Button onClick={() => onInert("next")}>Insert after</Button>
+          <Button onClick={() => onInert("parallel")}>Insert parallel</Button>
+        </ButtonGroup>
+        <Divider align="start">Edit</Divider>
+        <Expression expression={expression} />
+        <Group nodes={nodes} />
+        <Quantifier />
+      </div>
+      <style jsx>{`
+        .container {
+          margin-top: 12px;
+        }
+      `}</style>
     </>
   )
 }

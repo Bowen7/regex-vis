@@ -68,7 +68,7 @@ const GroupSelect: React.FC<GroupSelectProps> = props => {
         )}
       </Cell>
       <style jsx>{`
-        .question-circle {
+        .question-circle > :global(svg) {
           vertical-align: middle;
           margin-left: 5px;
         }

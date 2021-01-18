@@ -1,5 +1,5 @@
 import React from "react"
-import { Radio } from "@geist-ui/react"
+import { Radio, Checkbox } from "@geist-ui/react"
 import Cell from "@/components/cell"
 import { quantifierData } from "./helper"
 const Quantifier: React.FC<{}> = () => {
@@ -15,6 +15,9 @@ const Quantifier: React.FC<{}> = () => {
             ))}
           </Radio.Group>
         </div>
+      </Cell>
+      <Cell label="Quantifier greedy:">
+        <Checkbox initialChecked={true}>Greedy</Checkbox>
       </Cell>
       <style jsx>{`
         .container {
