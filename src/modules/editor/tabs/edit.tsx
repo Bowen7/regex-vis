@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from "react"
 import parser from "@/parser"
 import { Node } from "@/types"
 import { Divider, Button, ButtonGroup } from "@geist-ui/react"
+import Characters from "../features/characters"
 import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
@@ -44,6 +45,7 @@ const InfoItem: React.FC<Props> = props => {
           <Button onClick={() => onInert("parallel")}>Insert parallel</Button>
         </ButtonGroup>
         <Divider align="start">Edit</Divider>
+        <Characters />
         <Expression expression={expression} />
         <Group nodes={nodes} />
         <Quantifier />

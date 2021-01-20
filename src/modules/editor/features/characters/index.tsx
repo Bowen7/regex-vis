@@ -1,21 +1,18 @@
 import React from "react"
 import { Checkbox } from "@geist-ui/react"
 import Cell from "@/components/cell"
-import { quantifierData } from "./helper"
-const Quantifier: React.FC<{}> = () => {
+import { charactersData } from "./helper"
+const Characters: React.FC<{}> = () => {
   return (
     <>
-      <Cell label="Quantifier times:">
+      <Cell label="Characters:">
         <div className="checkboxes">
-          {quantifierData.map(({ value, label }) => (
+          {charactersData.map(({ value, label }) => (
             <Checkbox checked={false} key={value}>
               {label}
             </Checkbox>
           ))}
         </div>
-      </Cell>
-      <Cell label="Quantifier greedy:">
-        <Checkbox initialChecked={true}>Greedy</Checkbox>
       </Cell>
       <style jsx>{`
         .checkboxes :global(label:not(:last-child)) {
@@ -26,4 +23,4 @@ const Quantifier: React.FC<{}> = () => {
   )
 }
 
-export default Quantifier
+export default Characters

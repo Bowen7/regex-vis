@@ -20,7 +20,6 @@ const Cell: React.FC<Props> = ({ label, children }) => {
         .label {
           font-size: 12px;
           font-weight: 500;
-          user-select: none;
           cursor: default;
           margin-right: 10px;
         }
