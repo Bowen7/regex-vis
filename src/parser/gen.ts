@@ -46,6 +46,7 @@ function gen(start: Node, end: Node | null = null) {
   }
   return reStr
 }
+
 function judgeSingleChoice(start: Node, end: Node | null) {
   let cur: Node | null = start
   let flag = false
@@ -58,7 +59,9 @@ function judgeSingleChoice(start: Node, end: Node | null) {
     }
     cur = cur.next
   }
+  return flag
 }
+
 function genChoice(node: ChoiceNode) {
   const { chains } = node
   const chainsRes: string[] = []

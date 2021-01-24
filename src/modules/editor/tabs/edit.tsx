@@ -6,6 +6,7 @@ import Characters from "../features/characters"
 import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
+import { getInfoFromNodes, NodesInfo } from "./helper"
 
 export type InsertDirection = "prev" | "next" | "parallel"
 
@@ -17,24 +18,21 @@ type Props = {
 const InfoItem: React.FC<Props> = props => {
   const { nodes, onGroup, onInert } = props
 
-  const [expression, setExpression] = useState<string>("")
+  const [nodesInfo, setNodesInfo] = useState<NodesInfo>({
+    expression: "",
+    groupName: "",
+    groupType: "",
+  })
+  const { expression, groupType, groupName } = nodesInfo as NodesInfo
 
-  const updateExpression = useCallback(() => {
-    if (nodes.length > 0) {
-      const start = nodes[0]
-      const end = nodes[nodes.length - 1]
-      setExpression(parser.gen(start, end))
-    } else {
-      setExpression("")
-    }
+  const updateNodesInfo = useCallback(() => {
+    const nodesInfo = getInfoFromNodes(nodes)
+    setNodesInfo(nodesInfo)
   }, [nodes])
+
   useEffect(() => {
-    updateExpression()
-  }, [updateExpression])
-  function onApply(type: string, name: string) {
-    onGroup && onGroup(type, name)
-    updateExpression()
-  }
+    updateNodesInfo()
+  }, [updateNodesInfo])
   return (
     <>
       <div className="container">
@@ -45,9 +43,13 @@ const InfoItem: React.FC<Props> = props => {
           <Button onClick={() => onInert("parallel")}>Insert parallel</Button>
         </ButtonGroup>
         <Divider align="start">Edit</Divider>
-        <Characters />
         <Expression expression={expression} />
-        <Group nodes={nodes} />
+        <Characters />
+        <Group
+          groupType={groupType}
+          groupName={groupName}
+          onGroupChange={onGroup}
+        />
         <Quantifier />
       </div>
       <style jsx>{`

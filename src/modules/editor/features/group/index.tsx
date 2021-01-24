@@ -1,35 +1,35 @@
-import React, { useState, useEffect } from "react"
+import React from "react"
 import { Tooltip, Input, Select, Spacer } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
-import { Node } from "@/types"
-import { groupData, getGroupType, getGroupName } from "./helper"
+import { groupData } from "./helper"
 import Cell from "@/components/cell"
 type GroupSelectProps = {
-  nodes: Node[]
+  groupType: string
+  groupName: string
+  onGroupChange: (groupType: string, groupName: string) => void
 }
 
-const GroupSelect: React.FC<GroupSelectProps> = props => {
-  const { nodes } = props
-  const [groupType, setGroupType] = useState<string>("")
-  const [name, setName] = useState<string>("")
-  useEffect(() => {
-    setGroupType(getGroupType(nodes))
-    setName(getGroupName(nodes))
-  }, [nodes])
-
+const GroupSelect: React.FC<GroupSelectProps> = ({
+  groupType,
+  groupName,
+  onGroupChange,
+}) => {
   function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
     e.stopPropagation()
-    setName(e.target.value)
+    onGroupChange(groupType, e.target.value)
   }
+
   function onSelectChange(value: string | string[]) {
-    setGroupType(value as string)
+    onGroupChange(value as string, groupName)
   }
+
   function onKeyDown(e: React.KeyboardEvent) {
     e.stopPropagation()
   }
   function onTipClick(e: React.MouseEvent) {
     e.preventDefault()
   }
+
   return (
     <>
       <Cell label="Group:">
@@ -60,7 +60,7 @@ const GroupSelect: React.FC<GroupSelectProps> = props => {
             <Spacer x={1} inline />
             <Input
               label="The capture group's name"
-              value={name}
+              value={groupName}
               onChange={onInputChange}
               onKeyDown={onKeyDown}
             />

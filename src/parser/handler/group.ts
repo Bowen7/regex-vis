@@ -44,7 +44,6 @@ function changeGroupType(
   type: GroupKind | "nonGroup",
   name?: string
 ) {
-  console.log(type)
   switch (type) {
     case "nonGroup":
       removeGroupWrap(node)

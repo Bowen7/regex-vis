@@ -133,7 +133,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       </svg>
       <style jsx>{`
         svg {
-          border: 0.5px solid #999;
+          border: 0.5px dashed #999;
           border-radius: 5px;
         }
       `}</style>

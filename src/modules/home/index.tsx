@@ -40,7 +40,7 @@ const Home: React.FC<{}> = () => {
   }
   function onGroup(type: string, name: string) {
     group(root.r, selectedNodes, type as GroupKind | "nonGroup", name)
-    setRoot(root.r)
+    // setRoot(root.r)
   }
   function onKeyDown(e: React.KeyboardEvent) {
     e.stopPropagation()

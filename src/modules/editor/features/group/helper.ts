@@ -1,4 +1,3 @@
-import { Node } from "@/types"
 export const groupData = [
   {
     value: "nonGroup",
@@ -20,22 +19,3 @@ export const groupData = [
     tip: `(?<Name>x): Matches "x" and stores it on the groups property of the returned matches under the name specified by <Name>`,
   },
 ]
-
-export function getGroupType(nodes: Node[]) {
-  if (nodes.length === 1 && nodes[0].type === "group") {
-    const node = nodes[0]
-    return node.kind
-  }
-  return "nonGroup"
-}
-
-export function getGroupName(nodes: Node[]) {
-  if (
-    nodes.length === 1 &&
-    nodes[0].type === "group" &&
-    nodes[0].kind === "namedCapturing"
-  ) {
-    return nodes[0].rawName as string
-  }
-  return ""
-}
