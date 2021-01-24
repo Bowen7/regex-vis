@@ -33,66 +33,61 @@ export type Quantifier = {
   text: string
 }
 
-export type NodePrev = Node | null
-export type Chain = Node
-export type NodeParent = GroupNode | ChoiceNode | LookaroundAssertionNode | null
-export type NodeQuantifier = SingleNode | GroupNode
+export type NodeChildren = Node[]
 
 export interface NodeBase {
   id: string
   type: string
-  prev: Node | null
-  next: Node | null
-  parent: NodeParent
+  quantifier?: Quantifier
+  children?: Node[]
+  branches?: NodeChildren[]
+  val?: any
 }
 
 export interface SingleNode extends NodeBase {
   type: "single"
-  content: CharContent
-  text: string
-  name?: string
-  quantifier?: Quantifier
+  val: {
+    content: CharContent
+    text: string
+    name?: string
+  }
 }
 
 export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"
-// (xx)
+
 export interface GroupNode extends NodeBase {
   type: "group"
-  chain: Chain
-  kind: GroupKind
-  rawName?: string
-  name?: string
-  quantifier?: Quantifier
+  val: {
+    kind: GroupKind
+    name?: string
+    namePrefix: "Group #"
+  }
 }
 
-// a|b
 export interface ChoiceNode extends NodeBase {
   type: "choice"
-  chains: Chain[]
 }
 
 export interface BoundaryAssertionNode extends NodeBase {
   type: "boundaryAssertion"
-  text: string
-  kind: "start" | "end" | "word"
-  negate?: boolean
+  val: {
+    text: string
+    kind: "start" | "end" | "word"
+    negate?: boolean
+  }
 }
 
 export interface LookaroundAssertionNode extends NodeBase {
   type: "lookaroundAssertion"
-  chain: Chain
-  name: string
-  kind: "lookahead" | "lookbehind"
-  negate: boolean
+  val: {
+    name: string
+    kind: "lookahead" | "lookbehind"
+    negate: boolean
+  }
 }
 
 export interface RootNode extends NodeBase {
   type: "root"
-  text: string
-}
-
-export interface PlaceholderNode extends NodeBase {
-  type: "placeholder"
 }
 
 export type Node =
@@ -102,7 +97,6 @@ export type Node =
   | RootNode
   | BoundaryAssertionNode
   | LookaroundAssertionNode
-  | PlaceholderNode
 
 export type NodeType =
   | "single"
@@ -118,7 +112,3 @@ export type BodyNode =
   | ChoiceNode
   | BoundaryAssertionNode
   | LookaroundAssertionNode
-
-export type Root = {
-  r: RootNode
-}

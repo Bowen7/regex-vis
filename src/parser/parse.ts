@@ -9,14 +9,11 @@ import {
   Char,
   CharRange,
   CharContent,
-  NodeParent,
-  NodePrev,
   ChoiceNode,
-  NodeQuantifier,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
 } from "@/types"
-import { genPlaceholderNode } from "./helper"
+
 const AssertionNameMap = {
   start: "Start of line",
   end: "End of line",
@@ -25,82 +22,52 @@ const AssertionNameMap = {
   word: "",
 }
 let groupName = 1
+
 function parse(regex: string | RegExp) {
+  const nodes: Node[] = []
   groupName = 1
   const ast = parseRegExpLiteral(regex)
-  const startNode = genStartNode()
-  const lastNode = genBodyNode(ast, startNode, null)
-  genEndNode(lastNode)
-  return startNode
+  nodes.push(genRootNode())
+  nodes.push(...genBodyNode(ast))
+  nodes.push(genRootNode())
+  return nodes
 }
-function genStartNode() {
-  const node: RootNode = {
+
+function genRootNode(): RootNode {
+  return {
     id: nanoid(),
     type: "root",
-    prev: null,
-    next: null,
-    parent: null,
-    text: "start",
   }
-  return node
 }
-function genBodyNode(ast: AST.RegExpLiteral, prev: Node, parent: NodeParent) {
+
+function genBodyNode(ast: AST.RegExpLiteral) {
   const alternatives = ast.pattern.alternatives
   if (alternatives.length === 1) {
-    return parseAlternative(alternatives[0], prev, null)
+    return parseAlternative(alternatives[0])
   } else {
-    return parseAlternatives(alternatives, prev, null)
+    return [parseAlternatives(alternatives)]
   }
 }
-function genEndNode(lastNode: NodePrev) {
-  const node: RootNode = {
-    id: nanoid(),
-    type: "root",
-    prev: lastNode,
-    next: null,
-    parent: null,
-    text: "end",
-  }
-  lastNode && (lastNode.next = node)
-  return node
-}
-function parseAlternative(
-  ast: AST.Alternative,
-  prev: NodePrev,
-  parent: NodeParent
-) {
+
+function parseAlternative(ast: AST.Alternative) {
   const elements = mergeElements(ast.elements)
 
-  elements.forEach((element, index) => {
-    const _prev = parseElement(element, prev, parent)
-    if (prev === null && parent) {
-      if (parent.type === "choice") {
-        parent.chains.push(_prev)
-      } else {
-        parent.chain = _prev
-      }
-    }
-    prev = _prev
-  })
-  return prev
+  return elements.map(element => parseElement(element))
 }
-function parseElement(
-  ast: AST.Element,
-  prev: NodePrev,
-  parent: NodeParent
-): Node {
+
+function parseElement(ast: AST.Element): Node {
   let node!: Node
   switch (ast.type) {
     case "Character":
-      node = parseCharacter(ast, prev, parent)
+      node = parseCharacter(ast)
       break
     case "CapturingGroup":
     case "Group":
-      node = parseGroup(ast, prev, parent)
+      node = parseGroup(ast)
       break
     case "Quantifier":
       const { min, max, element } = ast
-      node = parseElement(element, prev, parent) as NodeQuantifier
+      node = parseElement(element)
       let text = ""
       if (max !== Infinity) {
         text += Math.max(0, min - 1)
@@ -117,62 +84,48 @@ function parseElement(
       }
       break
     case "CharacterClass":
-      node = parseCharacterClass(ast, prev, parent)
+      node = parseCharacterClass(ast)
       break
     case "Assertion":
-      node = parseAssertion(ast, prev, parent)
+      node = parseAssertion(ast)
       break
     case "CharacterSet":
-      node = parseCharacterSet(ast, prev, parent)
+      node = parseCharacterSet(ast)
       break
     default:
       break
   }
-  prev && (prev.next = node)
   return node
 }
-function parseAlternatives(
-  ast: AST.Alternative[],
-  prev: NodePrev,
-  parent: NodeParent
-) {
+
+function parseAlternatives(ast: AST.Alternative[]) {
   const node: ChoiceNode = {
     id: nanoid(),
     type: "choice",
-    prev,
-    next: null,
-    parent,
-    chains: [],
+    branches: [],
   }
-  ast.forEach(alternative => {
-    parseAlternative(alternative, null, node)
+
+  ast.forEach((alternative, index) => {
+    node.branches![index] = parseAlternative(alternative)
   })
-  prev && (prev.next = node)
   return node
 }
-function parseCharacter(
-  character: AST.Character,
-  prev: NodePrev,
-  parent: NodeParent
-): Node {
+
+function parseCharacter(character: AST.Character): Node {
   return {
     id: nanoid(),
     type: "single",
-    text: character.raw,
-    prev,
-    next: null,
-    parent,
-    content: {
-      kind: "simple",
+    val: {
       text: character.raw,
+      content: {
+        kind: "simple",
+        text: character.raw,
+      },
     },
   }
 }
-function parseCharacterSet(
-  characterSet: AST.CharacterSet,
-  prev: NodePrev,
-  parent: NodeParent
-): SingleNode {
+
+function parseCharacterSet(characterSet: AST.CharacterSet): SingleNode {
   let content!: CharContent
   switch (characterSet.kind) {
     case "any":
@@ -189,134 +142,117 @@ function parseCharacterSet(
   return {
     id: nanoid(),
     type: "single",
-    prev,
-    next: null,
-    parent,
-    content: content,
-    text: content.text,
+    val: {
+      content: content,
+      text: content.text,
+    },
   }
 }
+
 // EdgeAssertion will convert to EdgeAssertionNode
 // LookaroundAssertion assertions will convert to GroupNode
-function parseAssertion(
-  assertion: AST.Assertion,
-  prev: NodePrev,
-  parent: NodeParent
-) {
+function parseAssertion(assertion: AST.Assertion) {
   let node!: Node
   switch (assertion.kind) {
     case "start":
     case "end":
-      node = parseEdgeAssertion(assertion, prev, parent)
+      node = parseEdgeAssertion(assertion)
       break
     case "lookahead":
     case "lookbehind":
-      node = parseLookaroundAssertion(assertion, prev, parent)
+      node = parseLookaroundAssertion(assertion)
       break
     case "word":
-      node = parseWordBoundaryAssertion(assertion, prev, parent)
+      node = parseWordBoundaryAssertion(assertion)
       break
     default:
       break
   }
   return node
 }
+
 function parseLookaroundAssertion(
-  assertion: AST.LookaroundAssertion,
-  prev: NodePrev,
-  parent: NodeParent
+  assertion: AST.LookaroundAssertion
 ): LookaroundAssertionNode {
   const { alternatives, negate, kind } = assertion
   const name = AssertionNameMap[assertion.kind][negate ? 1 : 0]
   const node: LookaroundAssertionNode = {
     id: nanoid(),
     type: "lookaroundAssertion",
-    prev: prev,
-    next: null,
-    parent,
-    chain: genPlaceholderNode(),
-    kind,
-    negate,
-    name,
+    children: [],
+    val: {
+      kind,
+      negate,
+      name,
+    },
   }
   if (alternatives.length === 1) {
-    parseAlternative(alternatives[0], null, node)
+    parseAlternative(alternatives[0])
   } else {
-    parseAlternatives(alternatives, null, node)
+    parseAlternatives(alternatives)
   }
   return node
 }
+
 function parseWordBoundaryAssertion(
-  assertion: AST.WordBoundaryAssertion,
-  prev: NodePrev,
-  parent: NodeParent
+  assertion: AST.WordBoundaryAssertion
 ): BoundaryAssertionNode {
   const { kind, negate } = assertion
   return {
     id: nanoid(),
     type: "boundaryAssertion",
-    text: negate ? "NonWordBoundary" : "WordBoundary",
-    prev,
-    next: null,
-    parent,
-    kind,
-    negate,
+    val: {
+      text: negate ? "NonWordBoundary" : "WordBoundary",
+      kind,
+      negate,
+    },
   }
 }
+
 function parseEdgeAssertion(
-  assertion: AST.EdgeAssertion,
-  prev: NodePrev,
-  parent: NodeParent
+  assertion: AST.EdgeAssertion
 ): BoundaryAssertionNode {
   const text = assertion.kind === "start" ? "Start of line" : "End of line"
   return {
     id: nanoid(),
     type: "boundaryAssertion",
-    text: text,
-    prev: prev,
-    next: null,
-    parent,
-    kind: assertion.kind,
+    val: {
+      text: text,
+      kind: assertion.kind,
+    },
   }
 }
-function parseGroup(
-  ast: AST.CapturingGroup | AST.Group,
-  prev: NodePrev,
-  parent: NodeParent
-) {
+
+function parseGroup(ast: AST.CapturingGroup | AST.Group) {
   const alternatives = ast.alternatives
   const node: GroupNode = {
     id: nanoid(),
     type: "group",
-    prev,
-    next: null,
-    chain: genPlaceholderNode(),
-    parent,
-    kind: "nonCapturing",
+    children: [],
+    val: {
+      kind: "nonCapturing",
+      namePrefix: "Group #",
+    },
   }
+  const val = node.val
   if (ast.type === "CapturingGroup") {
     if (ast.name) {
-      node.kind = "namedCapturing"
-      node.rawName = ast.name
-      node.name = "Group #" + ast.name
+      val.kind = "namedCapturing"
+      val.name = ast.name
     } else {
-      node.kind = "capturing"
-      node.rawName = groupName.toString()
-      node.name = "Group #" + groupName++
+      val.kind = "capturing"
+      val.name = groupName++ + ""
     }
   }
   if (alternatives.length === 1) {
-    parseAlternative(alternatives[0], null, node)
+    node.children = parseAlternative(alternatives[0])
   } else {
-    parseAlternatives(alternatives, null, node)
+    node.children = [parseAlternatives(alternatives)]
   }
   return node
 }
-function parseCharacterClass(
-  ast: AST.CharacterClass,
-  prev: NodePrev,
-  parent: NodeParent
-): SingleNode {
+
+function parseCharacterClass(ast: AST.CharacterClass): SingleNode {
   const { elements, negate } = ast
   const charCollection: CharCollection = {
     kind: "collection",
@@ -359,14 +295,14 @@ function parseCharacterClass(
   return {
     id: nanoid(),
     type: "single",
-    prev: prev,
-    next: null,
-    parent,
-    content: charCollection,
-    text: charCollection.text,
-    name,
+    val: {
+      content: charCollection,
+      text: charCollection.text,
+      name,
+    },
   }
 }
+
 function mergeElements(elements: AST.Element[]) {
   const result: AST.Element[] = []
   let lastElement: AST.Element | null = null
