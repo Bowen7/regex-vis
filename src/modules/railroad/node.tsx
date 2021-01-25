@@ -1,7 +1,6 @@
 import React, { useMemo } from "react"
-import { FLOW_NODE_BORDER_RADIUS } from "./constants"
+import { NODE_BORDER_RADIUS } from "./constants"
 import { Node } from "@/types"
-import { hasQuantifier, hasText, hasName } from "../../utils"
 const FONT = 16
 type Props = {
   node: Node
@@ -14,13 +13,13 @@ type Props = {
 }
 const FlowNode: React.FC<Props> = props => {
   let { x, y, width, height, selected, node } = props
-  const { type } = node
+  const { type, val } = node
   const rectAttrs = useMemo<React.SVGProps<SVGRectElement>>(() => {
     const attrs: React.SVGProps<SVGRectElement> = {
       fill: "#fff",
       stroke: "#000",
-      rx: FLOW_NODE_BORDER_RADIUS,
-      ry: FLOW_NODE_BORDER_RADIUS,
+      rx: NODE_BORDER_RADIUS,
+      ry: NODE_BORDER_RADIUS,
     }
     switch (type) {
       case "lookaroundAssertion":
@@ -51,7 +50,7 @@ const FlowNode: React.FC<Props> = props => {
   }
 
   function renderText() {
-    if (hasText(node)) {
+    if (val?.text) {
       return (
         <text
           x={center.x}
@@ -60,13 +59,14 @@ const FlowNode: React.FC<Props> = props => {
           dy={FONT * 0.35}
           textAnchor="middle"
         >
-          {node.text}
+          {val.text}
         </text>
       )
     }
   }
+
   function renderQuantifier() {
-    if (hasQuantifier(node) && node.quantifier) {
+    if (node.quantifier) {
       const { min, max, text } = node.quantifier
       let path1 = ""
       let path2 = ""
@@ -142,8 +142,10 @@ const FlowNode: React.FC<Props> = props => {
       )
     }
   }
+
   function renderName() {
-    if (hasName(node)) {
+    if (val?.name) {
+      const { namePrefix = "" } = val
       return (
         <text
           x={center.x}
@@ -152,26 +154,20 @@ const FlowNode: React.FC<Props> = props => {
           textAnchor="middle"
           dy={-0.5 * 12}
         >
-          {node.name}
+          {namePrefix + val.name}
         </text>
       )
     }
   }
+
   function onClick() {
     props.onClick && props.onClick(node)
   }
+
   return (
     <g>
       <g onClick={onClick}>
-        <rect
-          x={x}
-          y={y}
-          width={width}
-          height={height}
-          rx={FLOW_NODE_BORDER_RADIUS}
-          ry={FLOW_NODE_BORDER_RADIUS}
-          {...rectAttrs}
-        ></rect>
+        <rect x={x} y={y} width={width} height={height} {...rectAttrs}></rect>
         {renderText()}
         {renderName()}
       </g>

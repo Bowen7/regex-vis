@@ -8,77 +8,64 @@ import {
   BoundaryAssertionNode,
   LookaroundAssertionNode,
 } from "@/types"
-import { hasQuantifier } from "../utils"
 
-function gen(start: Node, end: Node | null = null) {
-  let reStr = ""
-  const isSingleChoice = judgeSingleChoice(start, end)
-  let cur: Node | null = start
-  while (cur !== null && cur !== end?.next) {
-    switch (cur.type) {
-      case "choice":
-        const r = genChoice(cur)
-        if (isSingleChoice) {
-          reStr = r
-        } else {
-          reStr += `(${r})`
-        }
-        break
-      case "group":
-        reStr += genGroup(cur)
-        break
-      case "single":
-        reStr += genSingle(cur)
-        break
-      case "boundaryAssertion":
-        reStr += genBoundaryAssertionNode(cur)
-        break
-      case "lookaroundAssertion":
-        reStr += genLookaroundAssertionNode(cur)
-        break
-      default:
-        break
-    }
-    if (hasQuantifier(cur) && cur.quantifier) {
-      reStr += genQuantifier(cur)
-    }
-    cur = cur.next
-  }
-  return reStr
+function gen(nodes: Node[]) {
+  const isSingleNode = judgeSingleNode(nodes)
+  return nodes
+    .map(node => {
+      let regex = ""
+      switch (node.type) {
+        case "choice":
+          regex = genChoice(node) as string
+          if (!isSingleNode) {
+            regex += `(${regex})`
+          }
+          break
+        case "group":
+          regex += genGroup(node)
+          break
+        case "single":
+          regex += genSingle(node)
+          break
+        case "boundaryAssertion":
+          regex += genBoundaryAssertionNode(node)
+          break
+        case "lookaroundAssertion":
+          regex += genLookaroundAssertionNode(node)
+          break
+        default:
+          break
+      }
+      if (node.quantifier) {
+        regex += genQuantifier(node)
+      }
+      return regex
+    })
+    .join("")
 }
 
-function judgeSingleChoice(start: Node, end: Node | null) {
-  let cur: Node | null = start
-  let flag = false
-  while (cur !== null && cur !== end?.next) {
-    if (cur.type !== "root") {
-      if (flag) {
-        return false
-      }
-      flag = true
-    }
-    cur = cur.next
-  }
-  return flag
+function judgeSingleNode(nodes: Node[]) {
+  return nodes.filter(node => node.type !== "root").length === 1
 }
 
 function genChoice(node: ChoiceNode) {
-  const { chains } = node
-  const chainsRes: string[] = []
-  chains.forEach(chain => {
-    chainsRes.push(gen(chain as Node))
-  })
-  return chainsRes.join("|")
+  const { branches } = node
+  return branches
+    ?.map(branch => {
+      return gen(branch as Node[])
+    })
+    .join("|")
 }
 
 function genGroup(node: GroupNode) {
-  const { chain, kind, rawName } = node
-  const content = gen(chain)
+  const { children, val } = node
+  const { kind, name } = val
+  const content = gen(children as Node[])
   switch (kind) {
     case "capturing":
       return "(" + content + ")"
     case "namedCapturing":
-      return "(?<" + rawName + ">" + content + ")"
+      return "(?<" + name + ">" + content + ")"
     case "nonCapturing":
       return "(?:" + content + ")"
 
@@ -86,14 +73,17 @@ function genGroup(node: GroupNode) {
       break
   }
 }
+
 function genChar(node: Char, prefix: boolean) {
   if (prefix) {
     return node.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
   }
   return node.text
 }
+
 function genSingle(node: SingleNode) {
-  const { content } = node
+  const { val } = node
+  const { content } = val
   switch (content.kind) {
     case "collection":
       const { negate } = content
@@ -117,8 +107,9 @@ function genSingle(node: SingleNode) {
       return ""
   }
 }
-function genQuantifier(node: GroupNode | SingleNode) {
-  const { quantifier } = node
+
+function genQuantifier(node: Node) {
+  const { quantifier } = node as { quantifier: Quantifier }
   const { min, max } = quantifier as Quantifier
   if (min === 0 && max === Infinity) {
     return "*"
@@ -134,24 +125,30 @@ function genQuantifier(node: GroupNode | SingleNode) {
     return "{" + min + "-" + max + "}"
   }
 }
+
 function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
-  switch (node.kind) {
+  const { val } = node
+  switch (val.kind) {
     case "start":
       return "^"
     case "end":
       return "$"
     case "word":
-      return node.negate ? "\\B" : "\\b"
+      return val.negate ? "\\B" : "\\b"
     default:
       return ""
   }
 }
+
 const LookaroundMap = {
   lookahead: ["(?=", "(?!"],
   lookbehind: ["(?=<", "(?<!"],
 }
+
 function genLookaroundAssertionNode(node: LookaroundAssertionNode) {
-  const { chain, kind, negate } = node
-  return LookaroundMap[kind][negate ? 1 : 0] + gen(chain as Node) + ")"
+  const { children, val } = node
+  const { kind, negate } = val
+  return LookaroundMap[kind][negate ? 1 : 0] + gen(children as Node[]) + ")"
 }
+
 export default gen

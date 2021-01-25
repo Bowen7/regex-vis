@@ -1,27 +1,16 @@
-import {
-  Node,
-  ChoiceNode,
-  GroupNode,
-  Pos,
-  RootNode,
-  LookaroundAssertionNode,
-  Chain,
-} from "@/types"
+import { Node, Pos } from "@/types"
 import { Size, RenderNode, RenderConnect } from "./types"
-import { hasName, hasQuantifier } from "../../utils"
 
 import {
-  FLOWCHART_PADDING_HORIZONTAL,
-  FLOWCHART_PADDING_VERTICAL,
-  FLOW_NODE_PADDING_HORIZONTAL,
-  FLOW_NODE_PADDING_VERTICAL,
-  FLOW_NODE_MARGIN_VERTICAL,
-  FLOW_NODE_MARGIN_HORIZONTAL,
-  FLOW_CHOICE_PADDING_HORIZONTAL,
-  FLOW_ROOT_PADDING,
-  FLOW_QUANTIFIER_HEIGHT,
-  FLOW_GROUP_PADDING_VERTICAL,
-  FLOW_NAME_HEIGHT,
+  CHART_PADDING_HORIZONTAL,
+  CHART_PADDING_VERTICAL,
+  NODE_PADDING_HORIZONTAL,
+  NODE_PADDING_VERTICAL,
+  NODE_MARGIN_VERTICAL,
+  NODE_MARGIN_HORIZONTAL,
+  ROOT_RADIUS,
+  QUANTIFIER_HEIGHT,
+  NAME_HEIGHT,
 } from "./constants"
 class Traverse {
   cachedSizeMap: Map<string, Size> = new Map()
@@ -33,21 +22,17 @@ class Traverse {
     // the `measureText` method use canvas.measureText
     this.canvasRef = canvasRef
   }
-  t(root: RootNode) {
+  t(nodes: Node[]) {
     this.renderNodes = []
     this.renderConnects = []
     this.chainNodes = []
     this.cachedSizeMap.clear()
 
-    let { width, height } = this.getChainSize(root, FLOW_NODE_MARGIN_HORIZONTAL)
-    width += FLOWCHART_PADDING_HORIZONTAL * 2
-    height += FLOWCHART_PADDING_VERTICAL * 2
+    let { width, height } = this.getNodesSize(nodes)
+    width += CHART_PADDING_HORIZONTAL * 2
+    height += CHART_PADDING_VERTICAL * 2
 
-    this.traverseChain(
-      root,
-      FLOWCHART_PADDING_HORIZONTAL,
-      FLOWCHART_PADDING_VERTICAL
-    )
+    this.traverseNodes(nodes, CHART_PADDING_HORIZONTAL, CHART_PADDING_VERTICAL)
 
     const { renderNodes, renderConnects } = this
     return {
@@ -67,6 +52,7 @@ class Traverse {
     const metrics = context.measureText(text)
     return { width: metrics.width, height: fontSize }
   }
+
   getSize(node: Node) {
     const cachedSize = this.cachedSizeMap.get(node.id)
     if (cachedSize) {
@@ -78,89 +64,59 @@ class Traverse {
     let offsetHeight = 0
     let paddingTop = 0
     let paddingBottom = 0
-    switch (node.type) {
-      case "root": {
-        const text = node.text
-        const size = this.measureText(text)
-        width = size.width + 2 * FLOW_ROOT_PADDING
-        height = width
-        break
-      }
-      case "single":
-      case "boundaryAssertion":
-        const text = node.text
-        const size = this.measureText(text)
-        width = size.width + 2 * FLOW_NODE_PADDING_HORIZONTAL
-        height = size.height + 2 * FLOW_NODE_PADDING_VERTICAL
-        break
 
-      case "choice":
-        const { chains } = node
-        chains.forEach(chain => {
-          let _width = 0
-          let _height = 0
-          let cur: Node | null = chain
-          while (cur !== null) {
-            const size = this.getSize(cur)
-            _width += size.offsetWidth
-            _width += FLOW_NODE_MARGIN_HORIZONTAL
-            _height = Math.max(size.offsetHeight, _height)
-            cur = cur.next
-          }
-          height += _height
-          height += FLOW_NODE_MARGIN_VERTICAL
-          width = Math.max(width, _width)
-        })
-        width += FLOW_CHOICE_PADDING_HORIZONTAL * 2
-        break
+    const { val, branches, children } = node
 
-      case "group":
-      case "lookaroundAssertion":
-        const { chain } = node
-        let cur: Node | null = chain
-        while (cur !== null) {
-          const size = this.getSize(cur)
-          width += size.offsetWidth
-          width += FLOW_NODE_MARGIN_HORIZONTAL
-          height = size.offsetHeight
-          cur = cur.next
-        }
-
-        height += 2 * FLOW_GROUP_PADDING_VERTICAL
-
-        break
-      default:
-        break
+    if (branches) {
+      branches.forEach(nodes => {
+        const { width: _width, height: _height } = this.getNodesSize(nodes)
+        width += height += _height
+        height += NODE_MARGIN_VERTICAL
+        width = Math.max(width, _width)
+      })
+    } else if (children) {
+      ;({ width, height } = this.getNodesSize(children))
+      height += 2 * NODE_MARGIN_VERTICAL
+      width += NODE_MARGIN_HORIZONTAL * 2
+    } else if (val?.text) {
+      const text = val.text
+      const size = this.measureText(text)
+      width = size.width + 2 * NODE_PADDING_HORIZONTAL
+      height = size.height + 2 * NODE_PADDING_VERTICAL
+    } else {
+      width = ROOT_RADIUS
+      height = ROOT_RADIUS
     }
-    // handle quantifier
-    if (hasQuantifier(node) && node.quantifier) {
+
+    if (node.quantifier) {
       const { quantifier } = node
       const { max, min, text } = quantifier
       // quantifier curve
       if (min === 0) {
-        paddingTop += FLOW_QUANTIFIER_HEIGHT
+        paddingTop += QUANTIFIER_HEIGHT
       }
       if (max > 1) {
-        paddingBottom += FLOW_QUANTIFIER_HEIGHT
+        paddingBottom += QUANTIFIER_HEIGHT
       }
 
       // handle times text
       if (text) {
-        paddingBottom += FLOW_NAME_HEIGHT
+        paddingBottom += NAME_HEIGHT
         const textWidth =
-          this.measureText(text, 12).width + FLOW_NODE_PADDING_VERTICAL * 2
+          this.measureText(text, 12).width + NODE_PADDING_VERTICAL * 2
         offsetWidth = Math.max(textWidth, width, offsetWidth)
       }
     }
 
     // handle name
-    if (hasName(node) && node.name) {
-      const { name } = node
+    if (val?.name) {
+      const { name, namePrefix = "" } = val
       const nameWidth =
-        this.measureText(name, 12).width + FLOW_NODE_PADDING_VERTICAL * 2
+        this.measureText(name + namePrefix, 12).width +
+        NODE_PADDING_VERTICAL * 2
 
       offsetWidth = Math.max(width, nameWidth, offsetWidth)
-      paddingTop += FLOW_NAME_HEIGHT
+      paddingTop += NAME_HEIGHT
     }
 
     offsetHeight = height + Math.max(paddingTop, paddingBottom) * 2
@@ -174,51 +130,35 @@ class Traverse {
     this.cachedSizeMap.set(node.id, size)
     return size
   }
-  getChainSize(start: Chain, paddingHorizontal: number = 0) {
-    let cur: Node | null = start
+
+  getNodesSize(nodes: Node[]) {
     let height = 0
     let width = 0
-    while (cur !== null) {
-      const size = this.getSize(cur)
+    nodes.forEach(node => {
+      const size = this.getSize(node)
       height = Math.max(height, size.offsetHeight)
       width += size.offsetWidth
-      cur !== start && (width += paddingHorizontal)
-      cur = cur.next
-    }
+    })
+
+    width += NODE_MARGIN_HORIZONTAL * (nodes.length - 1)
     return { width, height }
   }
-  getNodesByChain(start: Chain) {
-    const nodes: Node[] = []
-    let cur: Node | null = start
-    while (cur !== null) {
-      nodes.push(cur)
-      cur = cur.next
-    }
-    return nodes
-  }
+
   // traverse complex Node, ChoiceNode, GroupNode, LookaroundAssertionNode
   traverseNode(node: Node, x: number, y: number) {
-    switch (node.type) {
-      case "choice":
-        this.traverseChoice(node, x, y)
-        break
-      case "group":
-      case "lookaroundAssertion":
-        this.traverseGroup(node, x, y)
-        break
-      default:
-        break
+    if (node.branches) {
+      this.traverseBranches(node, x, y)
+    }
+    if (node.children) {
+      this.traverseChildren(node, x, y)
     }
   }
-  traverseGroup(
-    node: GroupNode | LookaroundAssertionNode,
-    x: number,
-    y: number
-  ) {
+
+  traverseChildren(node: Node, x: number, y: number) {
     const { offsetWidth, offsetHeight } = this.getSize(node)
-    const { chain } = node
-    this.traverseChain(
-      chain,
+    const { children = [] } = node
+    this.traverseNodes(
+      children,
       x,
       y,
       offsetWidth,
@@ -226,22 +166,23 @@ class Traverse {
       y + offsetHeight / 2
     )
   }
-  traverseChoice(node: ChoiceNode, x: number, y: number) {
-    const { chains } = node
+
+  traverseBranches(node: Node, x: number, y: number) {
+    const { branches = [] } = node
     const choiceSize = this.getSize(node)
     const maxWidth = choiceSize.offsetWidth
     const centerY = y + choiceSize.offsetHeight / 2
 
-    chains.forEach(chain => {
-      let maxHeight = this.getChainSize(chain).height
-      maxHeight += FLOW_NODE_MARGIN_VERTICAL
-      this.traverseChain(chain as Node, x, y, maxWidth, maxHeight, centerY)
+    branches.forEach(branch => {
+      let maxHeight = this.getNodesSize(branch).height
+      maxHeight += NODE_MARGIN_VERTICAL
+      this.traverseNodes(branch, x, y, maxWidth, maxHeight, centerY)
       y += maxHeight
     })
   }
 
-  traverseChain(
-    chain: Chain,
+  traverseNodes(
+    nodes: Node[],
     x: number,
     y: number,
     width?: number,
@@ -250,19 +191,15 @@ class Traverse {
   ) {
     const originX = x
 
-    let { width: chainWidth, height: chainHeight } = this.getChainSize(
-      chain,
-      FLOW_NODE_MARGIN_HORIZONTAL
-    )
-    const nodes = this.getNodesByChain(chain)
+    let { width: nodesWidth, height: nodesHeight } = this.getNodesSize(nodes)
 
     if (width) {
-      x += (width - chainWidth) / 2
+      x += (width - nodesWidth) / 2
     }
     if (height) {
-      y += (height - chainHeight) / 2
+      y += (height - nodesHeight) / 2
     }
-    const centerY = y + chainHeight / 2
+    const centerY = y + nodesHeight / 2
 
     let connect: Pos | null = null
     if (connectY) {
@@ -272,9 +209,9 @@ class Traverse {
       }
     }
 
-    nodes.forEach(node => {
+    nodes.forEach((node, index) => {
       const size = this.getSize(node)
-      const deltaY = (chainHeight - size.offsetHeight) / 2
+      const deltaY = (nodesHeight - size.offsetHeight) / 2
       this.traverseNode(node, x, y + deltaY)
 
       // push head connect and body connect
@@ -296,10 +233,10 @@ class Traverse {
       this.preRenderNode(node, x, y + deltaY)
 
       x += size.offsetWidth
-      x += FLOW_NODE_MARGIN_HORIZONTAL
+      x += NODE_MARGIN_HORIZONTAL
 
       // push tail connect
-      if (width && connectY && node.next === null) {
+      if (width && connectY && index === nodes.length - 1) {
         this.renderConnects.push({
           id: node.id + "combine",
           type: "combine",
@@ -314,6 +251,7 @@ class Traverse {
 
     this.chainNodes.unshift(nodes)
   }
+
   preRenderNode(node: Node, x: number, y: number) {
     const size = this.getSize(node)
     let { width, height, offsetWidth, offsetHeight } = size
