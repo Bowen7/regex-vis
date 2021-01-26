@@ -1,5 +1,5 @@
-import { Node, Pos } from "@/types"
-import { Size, RenderNode, RenderConnect } from "./types"
+import { Node, Pos } from '@/types'
+import { Size, RenderNode, RenderConnect } from './types'
 
 import {
   CHART_PADDING_HORIZONTAL,
@@ -11,7 +11,8 @@ import {
   ROOT_RADIUS,
   QUANTIFIER_HEIGHT,
   NAME_HEIGHT,
-} from "./constants"
+  BRANCH_PADDING_HORIZONTAL,
+} from './constants'
 class Traverse {
   cachedSizeMap: Map<string, Size> = new Map()
   canvasRef: React.RefObject<HTMLCanvasElement>
@@ -43,12 +44,12 @@ class Traverse {
     }
   }
   measureText(text: string, fontSize: number = 16) {
-    const context = this.canvasRef.current?.getContext("2d")
+    const context = this.canvasRef.current?.getContext('2d')
     if (!context) {
       return { width: 0, height: 0 }
     }
     // todo: handle font-family
-    context.font = fontSize + "px Arial"
+    context.font = fontSize + 'px Arial'
     const metrics = context.measureText(text)
     return { width: metrics.width, height: fontSize }
   }
@@ -69,16 +70,20 @@ class Traverse {
 
     if (branches) {
       branches.forEach(nodes => {
-        const { width: _width, height: _height } = this.getNodesSize(nodes)
-        width += height += _height
+        let { width: branchWidth, height: branchHeight } = this.getNodesSize(
+          nodes
+        )
+        height += branchHeight
         height += NODE_MARGIN_VERTICAL
-        width = Math.max(width, _width)
+        branchWidth +=
+          NODE_MARGIN_HORIZONTAL * 2 + BRANCH_PADDING_HORIZONTAL * 2
+        width = Math.max(width, branchWidth)
       })
     } else if (children) {
       ;({ width, height } = this.getNodesSize(children))
       height += 2 * NODE_MARGIN_VERTICAL
       width += NODE_MARGIN_HORIZONTAL * 2
-    } else if (val?.text) {
+    } else if (val?.text || val?.text === '') {
       const text = val.text
       const size = this.measureText(text)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
@@ -110,7 +115,7 @@ class Traverse {
 
     // handle name
     if (val?.name) {
-      const { name, namePrefix = "" } = val
+      const { name, namePrefix = '' } = val
       const nameWidth =
         this.measureText(name + namePrefix, 12).width +
         NODE_PADDING_VERTICAL * 2
@@ -217,8 +222,8 @@ class Traverse {
       // push head connect and body connect
       if (connect) {
         this.renderConnects.push({
-          id: node.id + "split",
-          type: "split",
+          id: node.id + 'split',
+          type: 'split',
           start: { ...connect },
           end: {
             x: x + (size.offsetWidth - size.width) / 2,
@@ -238,8 +243,8 @@ class Traverse {
       // push tail connect
       if (width && connectY && index === nodes.length - 1) {
         this.renderConnects.push({
-          id: node.id + "combine",
-          type: "combine",
+          id: node.id + 'combine',
+          type: 'combine',
           start: { ...connect },
           end: {
             x: originX + width,

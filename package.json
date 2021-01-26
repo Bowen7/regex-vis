@@ -15,6 +15,7 @@
     "@types/react-redux": "^7.1.9",
     "@types/react-router-dom": "^5.1.5",
     "@types/styled-jsx": "^2.2.8",
+    "immer": "^8.0.1",
     "nanoid": "^3.1.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",

@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import produce from 'immer'
 import { Node, GroupNode, GroupKind } from '@/types'
 import visit, { visitTree } from '@/parser/visit'
 import { replace } from './replace'
@@ -59,7 +60,10 @@ function changeGroupType(
 function removeGroupWrap(nodes: Node[], selectNode: GroupNode) {
   visit(nodes, selectNode.id, (_, nodeList) => {
     const { children } = selectNode as { children: Node[] }
-    const index = nodeList.indexOf(selectNode)
+    const index = nodeList.findIndex(({ id }) => id === selectNode.id)
+    if (index === -1) {
+      return
+    }
     nodeList.splice(index, 1, ...children)
   })
 }
@@ -72,4 +76,10 @@ function refreshGroupName(nodes: Node[]) {
     }
   })
 }
-export default group
+
+export default (
+  nodes: Node[],
+  selectNodes: Node[],
+  type: GroupKind | 'nonGroup',
+  name?: string
+) => produce(nodes, draft => group(draft, selectNodes, type, name))

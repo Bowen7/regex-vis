@@ -6,7 +6,10 @@ export function replaceFromLists(
   newNodes: Node[]
 ) {
   const start = oldNodes[0]
-  const startIndex = nodeList.indexOf(start)
+  const startIndex = nodeList.findIndex(({ id }) => id === start.id)
+  if (startIndex === -1) {
+    return
+  }
   nodeList.splice(startIndex, oldNodes.length, ...newNodes)
 }
 

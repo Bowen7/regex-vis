@@ -1,11 +1,11 @@
-import React, { useState } from "react"
-import { Input, Button } from "@geist-ui/react"
-import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, RootNode, GroupKind } from "@/types"
-import Editor from "../editor"
-import { remove, insert, group } from "../../parser/utils"
-import Railroad from "../railroad"
-import parser from "@/parser"
+import React, { useState } from 'react'
+import { Input, Button } from '@geist-ui/react'
+import Repeat from '@geist-ui/react-icons/repeat'
+import { Node } from '@/types'
+import Editor from '../editor'
+import { remove, insert, group } from '../../parser/utils'
+import Railroad from '../railroad'
+import parser from '@/parser'
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
 // const DEFAULT_REGEX = `/a/`
@@ -22,16 +22,16 @@ const Home: React.FC<{}> = () => {
     setNodes(nodes)
   }
   function onRemove() {
-    // remove(root.r, selectedNodes)
-    // setRoot(root.r)
+    if (selectedNodes.length > 0) {
+      setNodes(remove(nodes, selectedNodes))
+    }
     onSelect([])
   }
   function onSelect(nodes: Node[]) {
     setSelectedNodes(nodes)
   }
-  function onInsert(direction: "prev" | "next" | "parallel") {
-    // insert(root.r, selectedNodes, direction)
-    // setRoot(root.r)
+  function onInsert(direction: 'prev' | 'next' | 'parallel') {
+    setNodes(insert(nodes, selectedNodes, direction))
   }
   function onGroup(type: string, name: string) {
     // group(root.r, selectedNodes, type as GroupKind | "nonGroup", name)
@@ -42,7 +42,7 @@ const Home: React.FC<{}> = () => {
   }
   return (
     <>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Railroad
           nodes={nodes}
           onSelect={onSelect}
@@ -59,20 +59,20 @@ const Home: React.FC<{}> = () => {
 
       <div
         style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {/* <Repeat transform="rotate(90)" /> */}
       </div>
       <div
         style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <Input
@@ -85,7 +85,7 @@ const Home: React.FC<{}> = () => {
         <Button
           auto
           style={{
-            marginLeft: "20px",
+            marginLeft: '20px',
           }}
           onClick={handleRenderClick}
         >

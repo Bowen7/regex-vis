@@ -1,3 +1,4 @@
+import produce from 'immer'
 import { Node } from '@/types'
 import visit from '../visit'
 import { replaceFromLists } from './replace'
@@ -25,8 +26,12 @@ function remove(nodes: Node[], selectNodes: Node[]) {
 }
 
 function removeFromList(nodeList: Node[], nodes: Node[]) {
-  const index = nodeList.indexOf(nodes[0])
+  const index = nodeList.findIndex(({ id }) => id === nodes[0].id)
+  if (index === -1) {
+    return
+  }
   nodeList.splice(index, nodes.length)
 }
 
-export default remove
+export default (nodes: Node[], selectNodes: Node[]) =>
+  produce(nodes, draft => remove(draft, selectNodes))

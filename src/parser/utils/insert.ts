@@ -1,4 +1,5 @@
 import { nanoid } from 'nanoid'
+import produce from 'immer'
 import { SingleNode, ChoiceNode, Node } from '@/types'
 import visit from '@/parser/visit'
 import { replaceFromLists } from './replace'
@@ -13,8 +14,11 @@ function insert(
   }
   const start = selectNodes[0]
   visit(nodes, start.id, (_, nodeList) => {
-    const startIndex = nodeList.indexOf(start)
-    const endIndex = startIndex + nodeList.length - 1
+    const startIndex = nodeList.findIndex(({ id }) => id === start.id)
+    if (startIndex === -1) {
+      return
+    }
+    const endIndex = startIndex + selectNodes.length - 1
 
     const node = genNode()
     if (direction === 'prev') {
@@ -55,4 +59,9 @@ function genChoiceNode(): ChoiceNode {
     branches: [],
   }
 }
-export default insert
+
+export default (
+  nodes: Node[],
+  selectNodes: Node[],
+  direction: InsertDirection
+) => produce(nodes, draft => insert(draft, selectNodes, direction))

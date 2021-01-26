@@ -6,7 +6,8 @@ function visit(
   callback: (node: Node, nodeList: Node[], path: Path) => void,
   path: Path = []
 ): true | void {
-  nodes.forEach(node => {
+  for (let i = 0; i < nodes.length; i++) {
+    const node = nodes[i]
     if (node.id === id) {
       callback(node, nodes, path)
       return true
@@ -29,7 +30,7 @@ function visit(
       }
       path.pop()
     }
-  })
+  }
 }
 
 export function visitTree(nodes: Node[], callback: (node: Node) => void) {
