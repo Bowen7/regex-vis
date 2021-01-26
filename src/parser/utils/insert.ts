@@ -1,96 +1,58 @@
-import { RootNode, SingleNode, ChoiceNode, Node } from "@/types"
-import { nanoid } from "nanoid"
-type InsertDirection = "prev" | "next" | "parallel"
-function insert(root: RootNode, nodes: Node[], direction: InsertDirection) {
-  // if (nodes.length === 0) {
-  //   return
-  // }
-  // const start = nodes[0]
-  // const end = nodes[nodes.length - 1]
-  // const parent = start.parent
-  // const newNode = genNode()
-  // if (direction === "prev") {
-  //   if (start.prev) {
-  //     start.prev.next = newNode
-  //   } else {
-  //     insertHead(newNode, start, parent)
-  //   }
-  //   newNode.prev = start.prev
-  //   newNode.next = start
-  //   newNode.parent = parent
-  //   start.prev = newNode
-  // } else if (direction === "next") {
-  //   if (end.next) {
-  //     end.next.prev = newNode
-  //   }
-  //   newNode.prev = end
-  //   newNode.next = end.next
-  //   newNode.parent = parent
-  //   end.next = newNode
-  // } else {
-  //   if (start.prev === null && end.next === null && parent?.type === "choice") {
-  //     parent.chains.push(newNode)
-  //     return
-  //   }
-  //   const choice = genChoiceNode()
-  //   choice.prev = start.prev
-  //   if (start.prev) {
-  //     start.prev.next = choice
-  //   } else {
-  //     insertHead(choice, start, parent)
-  //   }
-  //   choice.next = end.next
-  //   if (end.next) {
-  //     end.next.prev = choice
-  //   }
-  //   choice.parent = parent
-  //   start.prev = null
-  //   end.next = null
-  //   let cur: Node | null = start
-  //   while (cur !== null) {
-  //     cur.parent = choice
-  //     cur = cur.next
-  //   }
-  //   newNode.parent = choice
-  //   choice.chains = [newNode, start]
-  // }
+import { nanoid } from 'nanoid'
+import { SingleNode, ChoiceNode, Node } from '@/types'
+import visit from '@/parser/visit'
+type InsertDirection = 'prev' | 'next' | 'parallel'
+function insert(
+  nodes: Node[],
+  selectNodes: Node[],
+  direction: InsertDirection
+) {
+  if (selectNodes.length === 0) {
+    return
+  }
+  const start = selectNodes[0]
+  const end = selectNodes[selectNodes.length - 1]
+  visit(nodes, start.id, (_, nodeList) => {
+    const startIndex = nodeList.indexOf(start)
+    const endIndex = nodeList.indexOf(end)
+
+    const node = genNode()
+    if (direction === 'prev') {
+      nodeList.splice(startIndex, 0, node)
+    } else if (direction === 'next') {
+      nodeList.splice(endIndex + 1, 0, node)
+    } else {
+      if (selectNodes.length === 1 && selectNodes[0].branches) {
+        selectNodes[0].branches.push([node])
+      } else {
+        const choiceNode = genChoiceNode()
+        node.branches = [[node], selectNodes]
+
+        nodeList.splice(startIndex, endIndex - startIndex + 1, choiceNode)
+      }
+    }
+  })
 }
 
-// function genNode(): SingleNode {
-//   return {
-//     id: nanoid(),
-//     type: "single",
-//     prev: null,
-//     next: null,
-//     parent: null,
-//     text: "",
-//     content: {
-//       kind: "simple",
-//       text: "",
-//     },
-//   }
-// }
+function genNode(): SingleNode {
+  return {
+    id: nanoid(),
+    type: 'single',
+    val: {
+      text: '',
+      content: {
+        kind: 'simple',
+        text: '',
+      },
+    },
+  }
+}
 
-// function genChoiceNode(): ChoiceNode {
-//   return {
-//     id: nanoid(),
-//     type: "choice",
-//     prev: null,
-//     next: null,
-//     parent: null,
-//     chains: [],
-//   }
-// }
-
-export function insertHead(newChain: Node, oldChain: Node) {
-  // if (!parent) {
-  //   return
-  // }
-  // if (parent.type === "choice") {
-  //   const { chains } = parent
-  //   parent.chains = chains.map(chain => (chain === oldChain ? newChain : chain))
-  // } else {
-  //   parent.chain = newChain
-  // }
+function genChoiceNode(): ChoiceNode {
+  return {
+    id: nanoid(),
+    type: 'choice',
+    branches: [],
+  }
 }
 export default insert

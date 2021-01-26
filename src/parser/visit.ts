@@ -1,14 +1,14 @@
-import { Node } from "@/types"
+import { Node } from '@/types'
 
 function visit(
   nodes: Node[],
   id: string,
-  callback: (node: Node, path: Node[]) => void,
+  callback: (node: Node, nodeList: Node[], path: Node[]) => void,
   path: Node[] = []
 ): true | void {
   nodes.forEach(node => {
     if (node.id === id) {
-      callback(node, path)
+      callback(node, nodes, path)
       return true
     }
 
@@ -32,4 +32,20 @@ function visit(
   })
 }
 
+export function visitTree(nodes: Node[], callback: (node: Node) => void) {
+  const stack = [...nodes]
+  while (stack.length !== 0) {
+    const cur = stack.shift()
+    callback(cur as Node)
+    if (cur?.children) {
+      stack.unshift(...cur.children.reverse())
+    }
+    if (cur?.branches) {
+      const branches = cur.branches
+      branches.reverse().forEach(branch => {
+        stack.unshift(...branch.reverse())
+      })
+    }
+  }
+}
 export default visit
