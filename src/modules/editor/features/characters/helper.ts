@@ -1,14 +1,14 @@
 export const charactersData = [
   {
-    label: "simple string",
+    label: "Simple string",
     value: "string",
   },
   {
-    label: "character range",
+    label: "Character range",
     value: "range",
   },
   {
-    label: "special character",
+    label: "Special character",
     value: "special",
   },
 ]

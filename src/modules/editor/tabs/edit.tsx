@@ -23,21 +23,18 @@ const InfoItem: React.FC<Props> = props => {
     groupName: "",
     groupType: "",
   })
+
   const { expression, groupType, groupName } = nodesInfo as NodesInfo
 
-  const updateNodesInfo = useCallback(() => {
+  useEffect(() => {
     const nodesInfo = getInfoFromNodes(nodes)
     setNodesInfo(nodesInfo)
   }, [nodes])
-
-  useEffect(() => {
-    updateNodesInfo()
-  }, [updateNodesInfo])
   return (
     <>
       <div className="container">
         <Divider align="start">Insert</Divider>
-        <ButtonGroup size="small">
+        <ButtonGroup>
           <Button onClick={() => onInert("prev")}>Insert before</Button>
           <Button onClick={() => onInert("next")}>Insert after</Button>
           <Button onClick={() => onInert("parallel")}>Insert parallel</Button>
@@ -55,6 +52,10 @@ const InfoItem: React.FC<Props> = props => {
       <style jsx>{`
         .container {
           margin-top: 12px;
+        }
+
+        .button {
+          text-align: center;
         }
       `}</style>
     </>

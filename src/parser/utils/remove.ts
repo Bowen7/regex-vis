@@ -1,14 +1,14 @@
-import produce from 'immer'
-import { Node } from '@/types'
-import visit from '../visit'
-import { replaceFromLists } from './replace'
-function remove(nodes: Node[], selectNodes: Node[]) {
-  if (selectNodes.length === 0) {
+import produce from "immer"
+import { Node } from "@/types"
+import visit from "../visit"
+import { replaceFromLists } from "./replace"
+function remove(nodes: Node[], selectedNodes: Node[]) {
+  if (selectedNodes.length === 0) {
     return
   }
 
-  visit(nodes, selectNodes[0].id, (_, nodeList, path) => {
-    removeFromList(nodeList, selectNodes)
+  visit(nodes, selectedNodes[0].id, (_, nodeList, path) => {
+    removeFromList(nodeList, selectedNodes)
     while (path.length !== 0) {
       const { node, nodeList } = path.pop() as { node: Node; nodeList: Node[] }
       if (node?.children && node.children.length === 0) {
@@ -33,5 +33,5 @@ function removeFromList(nodeList: Node[], nodes: Node[]) {
   nodeList.splice(index, nodes.length)
 }
 
-export default (nodes: Node[], selectNodes: Node[]) =>
-  produce(nodes, draft => remove(draft, selectNodes))
+export default (nodes: Node[], selectedNodes: Node[]) =>
+  produce(nodes, draft => remove(draft, selectedNodes))

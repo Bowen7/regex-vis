@@ -16,7 +16,7 @@ const Flowchart: React.FC<Props> = props => {
   const [height, setHeight] = useState(0)
   const [renderNodes, setRenderNodes] = useState<RenderNode[]>([])
   const [renderConnects, setRenderConnects] = useState<RenderConnect[]>([])
-  
+
   useEffect(() => {
     const { width, height, renderNodes, renderConnects } = traverse.t(nodes)
     setWidth(width)
@@ -42,14 +42,15 @@ const Flowchart: React.FC<Props> = props => {
       .map(renderNode => renderNode.node)
     for (let i = 0; i < chainNodes.length; i++) {
       if (chainNodes[i].some(item => nodes.some(node => node === item))) {
-        let selectNodes = chainNodes[i].filter(item =>
+        let selectedNodes = chainNodes[i].filter(item =>
           nodes.some(node => node === item)
         )
-        onSelect && onSelect(selectNodes)
+        onSelect && onSelect(selectedNodes)
         break
       }
     }
   }
+
   function onClick(node: Node) {
     let nodes = [node]
     if (selectedNodes.length === 1 && selectedNodes.includes(node)) {

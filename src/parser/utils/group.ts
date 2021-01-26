@@ -1,85 +1,103 @@
-import { nanoid } from 'nanoid'
-import produce from 'immer'
-import { Node, GroupNode, GroupKind } from '@/types'
-import visit, { visitTree } from '@/parser/visit'
-import { replace } from './replace'
+import { nanoid } from "nanoid"
+import produce from "immer"
+import { Node, GroupNode, GroupKind } from "@/types"
+import visit, { visitTree } from "@/parser/visit"
+import { replace } from "./replace"
 
 function group(
   nodes: Node[],
-  selectNodes: Node[],
-  type: GroupKind | 'nonGroup',
+  selectedNodes: Node[],
+  type: GroupKind | "nonGroup",
   name?: string
 ) {
-  if (selectNodes.length === 1 && selectNodes[0].type === 'group') {
-    changeGroupType(nodes, selectNodes[0], type, name)
+  let nextSelectedIds: string[] = []
+  if (selectedNodes.length === 1 && selectedNodes[0].type === "group") {
+    nextSelectedIds = changeGroupType(nodes, selectedNodes[0], type, name)
   } else {
     const groupNode: GroupNode = {
       id: nanoid(),
-      type: 'group',
+      type: "group",
       val: {
-        kind: 'capturing',
-        name: '',
-        namePrefix: 'Group #',
+        kind: "capturing",
+        name: "",
+        namePrefix: "Group #",
       },
-      children: selectNodes,
+      children: selectedNodes,
     }
 
-    replace(nodes, selectNodes, [groupNode])
-    changeGroupType(nodes, groupNode, type, name)
+    replace(nodes, selectedNodes, [groupNode])
+    nextSelectedIds = changeGroupType(nodes, groupNode, type, name)
   }
   refreshGroupName(nodes)
+  return nextSelectedIds
 }
 
 function changeGroupType(
   nodes: Node[],
   selectedNode: GroupNode,
-  type: GroupKind | 'nonGroup',
+  type: GroupKind | "nonGroup",
   name?: string
 ) {
   const { val } = selectedNode
   switch (type) {
-    case 'nonGroup':
-      removeGroupWrap(nodes, selectedNode)
+    case "nonGroup":
+      return removeGroupWrap(nodes, selectedNode)
+    case "capturing":
+      val.kind = "capturing"
       break
-    case 'capturing':
-      val.kind = 'capturing'
-      break
-    case 'namedCapturing':
-      val.kind = 'namedCapturing'
+    case "namedCapturing":
+      val.kind = "namedCapturing"
       val.name = name
       break
-    case 'nonCapturing':
-      val.kind = 'nonCapturing'
+    case "nonCapturing":
+      val.kind = "nonCapturing"
       delete val.name
       break
     default:
-      break
+      return []
   }
+  return [selectedNode.id]
 }
 
 function removeGroupWrap(nodes: Node[], selectNode: GroupNode) {
-  visit(nodes, selectNode.id, (_, nodeList) => {
-    const { children } = selectNode as { children: Node[] }
-    const index = nodeList.findIndex(({ id }) => id === selectNode.id)
-    if (index === -1) {
-      return
-    }
-    nodeList.splice(index, 1, ...children)
-  })
+  const { children } = selectNode
+  replace(nodes, [selectNode], children!)
+  return children!.map(({ id }) => id)
 }
 
 function refreshGroupName(nodes: Node[]) {
   let groupIndex = 1
   visitTree(nodes, (node: Node) => {
-    if (node.type === 'group' && node.val.kind === 'capturing') {
-      node.val.name = groupIndex++ + ''
+    if (node.type === "group" && node.val.kind === "capturing") {
+      node.val.name = groupIndex++ + ""
     }
   })
 }
 
 export default (
   nodes: Node[],
-  selectNodes: Node[],
-  type: GroupKind | 'nonGroup',
+  selectedNodes: Node[],
+  type: GroupKind | "nonGroup",
   name?: string
-) => produce(nodes, draft => group(draft, selectNodes, type, name))
+) => {
+  let nextSelectedIds: string[] = []
+  let nextSelectedNodes: Node[] = []
+  const nextNodes = produce(nodes, draft => {
+    nextSelectedIds = group(draft, selectedNodes, type, name)
+  })
+
+  if (nextSelectedIds.length > 0) {
+    const headId = nextSelectedIds[0]
+    visit(nextNodes, headId, (_, nodeList) => {
+      const startIndex = nodeList.findIndex(({ id }) => id === headId)
+      console.log(startIndex)
+      if (startIndex !== -1) {
+        nextSelectedNodes = nodeList.slice(
+          startIndex,
+          startIndex + nextSelectedIds.length
+        )
+      }
+    })
+  }
+  return { nextNodes, nextSelectedNodes }
+}
