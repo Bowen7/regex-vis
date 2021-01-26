@@ -1,67 +1,32 @@
-import { Node, RootNode } from "@/types"
-function remove(root: RootNode, nodes: Node[]) {
-  // if (nodes.length === 0) {
-  //   return
-  // }
-  // const start = nodes[0]
-  // const end = nodes[nodes.length - 1]
-  // const parent = start.parent
-  // // if start.prev === null, should change its parent.chain/chains
-  // if (start.prev === null) {
-  //   // parent must not be null. if parent was null, start.prev wound be RootNode
-  //   if (!parent) {
-  //     return
-  //   }
-  //   // remove the chain
-  //   if (end.next === null) {
-  //     removeChain(root, start)
-  //     return
-  //   }
-  //   const newChain = end.next
-  //   newChain!.prev = null
-  //   if (parent.type === "choice") {
-  //     parent.chains = parent.chains.filter(chain =>
-  //       chain === start ? newChain : chain
-  //     )
-  //   } else {
-  //     parent.chain = newChain
-  //   }
-  // } else {
-  //   start.prev.next = end.next
-  //   if (end.next) {
-  //     end.next.prev = start.prev
-  //   }
-  // }
+import { Node } from '@/types'
+import visit from '../visit'
+import { replaceFromLists } from './replace'
+function remove(nodes: Node[], selectNodes: Node[]) {
+  if (selectNodes.length === 0) {
+    return
+  }
+
+  visit(nodes, selectNodes[0].id, (_, nodeList, path) => {
+    removeFromList(nodeList, selectNodes)
+    while (path.length !== 0) {
+      const { node, nodeList } = path.pop() as { node: Node; nodeList: Node[] }
+      if (node?.children && node.children.length === 0) {
+        removeFromList(nodeList, [node])
+      }
+      if (node?.branches) {
+        node.branches = node.branches.filter(branch => branch.length > 0)
+        if (node.branches.length === 1) {
+          replaceFromLists(nodeList, [node], node.branches[0])
+        }
+        return
+      }
+    }
+  })
 }
 
-function removeChain(root: RootNode, start: Node) {
-  // const { parent } = start
-  // if (!parent) {
-  //   return
-  // }
-  // if (parent.type === "choice") {
-  //   // aliveChain will replace parent
-  //   if (parent.chains.length === 2) {
-  //     const aliveChain = parent.chains.filter(chain => chain !== start)[0]
-  //     let aliveChainTail = getChainTail(aliveChain as Node)
-  //     let cur: Node | null = aliveChain
-  //     cur = aliveChain
-  //     while (cur !== aliveChainTail!.next) {
-  //       cur!.parent = parent.parent
-  //       cur = cur!.next
-  //     }
-  //     aliveChain.prev = parent!.prev
-  //     parent.prev && (parent.prev.next = aliveChain)
-  //     aliveChainTail.next = parent.next
-  //     parent.next && (parent.next.prev = aliveChainTail)
-  //   } else {
-  //     // remove the chain
-  //     parent.chains = parent.chains.filter(chain => chain !== start)
-  //   }
-  //   return
-  // } else {
-  //   // remove parent
-  //   remove(root, [parent as Node])
-  // }
+function removeFromList(nodeList: Node[], nodes: Node[]) {
+  const index = nodeList.indexOf(nodes[0])
+  nodeList.splice(index, nodes.length)
 }
+
 export default remove

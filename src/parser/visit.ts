@@ -1,10 +1,10 @@
 import { Node } from '@/types'
-
+export type Path = { node: Node; nodeList: Node[] }[]
 function visit(
   nodes: Node[],
   id: string,
-  callback: (node: Node, nodeList: Node[], path: Node[]) => void,
-  path: Node[] = []
+  callback: (node: Node, nodeList: Node[], path: Path) => void,
+  path: Path = []
 ): true | void {
   nodes.forEach(node => {
     if (node.id === id) {
@@ -13,7 +13,7 @@ function visit(
     }
 
     if (node.children || node.branches) {
-      path.push(node)
+      path.push({ nodeList: nodes, node })
       if (node.children) {
         if (visit(node.children, id, callback, path)) {
           return true
