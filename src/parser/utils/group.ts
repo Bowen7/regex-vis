@@ -1,6 +1,8 @@
 import { nanoid } from 'nanoid'
-import { Node, GroupNode, RootNode, GroupKind } from '@/types'
+import { Node, GroupNode, GroupKind } from '@/types'
 import visit, { visitTree } from '@/parser/visit'
+import { replace } from './replace'
+
 function group(
   nodes: Node[],
   selectNodes: Node[],
@@ -10,9 +12,7 @@ function group(
   if (selectNodes.length === 1 && selectNodes[0].type === 'group') {
     changeGroupType(nodes, selectNodes[0], type, name)
   } else {
-    const head = nodes[0]
-    const tail = nodes[nodes.length - 1]
-    const node: GroupNode = {
+    const groupNode: GroupNode = {
       id: nanoid(),
       type: 'group',
       val: {
@@ -20,12 +20,15 @@ function group(
         name: '',
         namePrefix: 'Group #',
       },
-      children: [],
+      children: selectNodes,
     }
-    changeGroupType(nodes, node, type, name)
+
+    replace(nodes, selectNodes, [groupNode])
+    changeGroupType(nodes, groupNode, type, name)
   }
   refreshGroupName(nodes)
 }
+
 function changeGroupType(
   nodes: Node[],
   selectedNode: GroupNode,

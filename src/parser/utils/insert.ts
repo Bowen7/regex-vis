@@ -1,6 +1,7 @@
 import { nanoid } from 'nanoid'
 import { SingleNode, ChoiceNode, Node } from '@/types'
 import visit from '@/parser/visit'
+import { replaceFromLists } from './replace'
 type InsertDirection = 'prev' | 'next' | 'parallel'
 function insert(
   nodes: Node[],
@@ -11,10 +12,9 @@ function insert(
     return
   }
   const start = selectNodes[0]
-  const end = selectNodes[selectNodes.length - 1]
   visit(nodes, start.id, (_, nodeList) => {
     const startIndex = nodeList.indexOf(start)
-    const endIndex = nodeList.indexOf(end)
+    const endIndex = startIndex + nodeList.length - 1
 
     const node = genNode()
     if (direction === 'prev') {
@@ -26,9 +26,9 @@ function insert(
         selectNodes[0].branches.push([node])
       } else {
         const choiceNode = genChoiceNode()
-        node.branches = [[node], selectNodes]
+        choiceNode.branches = [[node], selectNodes]
 
-        nodeList.splice(startIndex, endIndex - startIndex + 1, choiceNode)
+        replaceFromLists(nodeList, selectNodes, [choiceNode])
       }
     }
   })
