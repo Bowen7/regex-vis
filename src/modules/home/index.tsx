@@ -25,7 +25,6 @@ const Home: React.FC<{}> = () => {
   const undo = () => {
     if (undoStack.length) {
       const nextNodes = undoStack.pop()
-      console.log(undoStack)
       redoStack.push(nodes)
       _setNodes(nextNodes!)
       setUndoStack(undoStack)
