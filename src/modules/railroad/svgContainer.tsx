@@ -80,6 +80,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
     moving.current = false
     setRect({ x: 0, y: 0, width: 0, height: 0 })
   }
+
   function handleClick(node: Node) {
     if (!moving.current) {
       onClick && onClick(node)

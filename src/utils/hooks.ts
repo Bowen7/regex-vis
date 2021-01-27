@@ -1,23 +1,25 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef } from 'react'
 
-type ListenerOptions = {
-  useCapture: boolean
-  passive: boolean
-  once: boolean
-}
-
-// handle global event
 export function useEventListener(
   eventName: string,
   handler: (e: Event) => void,
-  options: ListenerOptions | boolean = false
+  element: HTMLElement | Window = window
 ) {
-  const _handler = useRef<(e: Event) => void>()
+  const savedHandler = useRef<(e: Event) => void>()
   useEffect(() => {
-    _handler.current = handler
+    savedHandler.current = handler
   }, [handler])
+
   useEffect(() => {
-    const eventListener = (e: Event) => _handler.current && _handler.current(e)
-    global.addEventListener(eventName, eventListener, options)
-  }, [eventName, options])
+    const isSupported = element && element.addEventListener
+    if (!isSupported) return
+
+    const eventListener = (event: Event) => savedHandler.current!(event)
+
+    element.addEventListener(eventName, eventListener)
+
+    return () => {
+      element.removeEventListener(eventName, eventListener)
+    }
+  }, [eventName, element])
 }

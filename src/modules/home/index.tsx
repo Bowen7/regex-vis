@@ -1,18 +1,46 @@
-import React, { useState } from "react"
-import { Input, Button } from "@geist-ui/react"
-import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, GroupKind } from "@/types"
-import Editor from "../editor"
-import { remove, insert, group } from "../../parser/utils"
-import Railroad from "../railroad"
-import parser from "@/parser"
+import React, { useState } from 'react'
+import { Input, Button } from '@geist-ui/react'
+import Repeat from '@geist-ui/react-icons/repeat'
+import { Node, GroupKind } from '@/types'
+import Editor from '../editor'
+import { remove, insert, group } from '../../parser/utils'
+import Railroad from '../railroad'
+import parser from '@/parser'
 const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
 // const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
 // const DEFAULT_REGEX = `/a/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
-  const [nodes, setNodes] = useState<Node[]>(parser.parse(DEFAULT_REGEX))
+  const [nodes, _setNodes] = useState<Node[]>(parser.parse(DEFAULT_REGEX))
   const [selectedNodes, setSelectedNodes] = useState<Node[]>([])
+  const [undoStack, setUndoStack] = useState<Node[][]>([])
+  const [redoStack, setRedoStack] = useState<Node[][]>([])
+
+  const setNodes = (nextNodes: Node[]) => {
+    undoStack.push(nodes)
+    _setNodes(nextNodes)
+    setUndoStack(undoStack)
+  }
+
+  const undo = () => {
+    if (undoStack.length) {
+      const nextNodes = undoStack.pop()
+      redoStack.push(nodes)
+      _setNodes(nextNodes!)
+      setUndoStack(undoStack)
+      setUndoStack(redoStack)
+    }
+  }
+
+  const redo = () => {
+    if (redoStack.length) {
+      const nextNodes = redoStack.pop()
+      undoStack.push(nodes)
+      _setNodes(nextNodes!)
+      setUndoStack(undoStack)
+      setUndoStack(redoStack)
+    }
+  }
 
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     setRegex(e.target.value)
@@ -30,14 +58,14 @@ const Home: React.FC<{}> = () => {
   function onSelect(nodes: Node[]) {
     setSelectedNodes(nodes)
   }
-  function onInsert(direction: "prev" | "next" | "parallel") {
+  function onInsert(direction: 'prev' | 'next' | 'parallel') {
     setNodes(insert(nodes, selectedNodes, direction))
   }
   function onGroup(type: string, name: string) {
     const { nextNodes, nextSelectedNodes } = group(
       nodes,
       selectedNodes,
-      type as GroupKind | "nonGroup",
+      type as GroupKind | 'nonGroup',
       name
     )
     setNodes(nextNodes)
@@ -48,7 +76,7 @@ const Home: React.FC<{}> = () => {
   }
   return (
     <>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
+      <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
         <Railroad
           nodes={nodes}
           onSelect={onSelect}
@@ -61,24 +89,26 @@ const Home: React.FC<{}> = () => {
         onInsert={onInsert}
         onRemove={onRemove}
         onGroup={onGroup}
+        onRedo={redo}
+        onUndo={undo}
       />
 
       <div
         style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         {/* <Repeat transform="rotate(90)" /> */}
       </div>
       <div
         style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <Input
@@ -91,7 +121,7 @@ const Home: React.FC<{}> = () => {
         <Button
           auto
           style={{
-            marginLeft: "20px",
+            marginLeft: '20px',
           }}
           onClick={handleRenderClick}
         >
