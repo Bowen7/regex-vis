@@ -128,7 +128,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
           y={rect.y}
           width={rect.width}
           height={rect.height}
-          fill="#50E3C2"
+          fill="#3291FF"
           fillOpacity={0.5}
         ></rect>
       </svg>

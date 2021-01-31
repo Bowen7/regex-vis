@@ -11,7 +11,7 @@ const Expression: React.FC<Prop> = ({ expression }) => {
       </Cell>
       <style jsx>{`
         .expression {
-          color: #50e3c2;
+          color: #3291ff;
         }
       `}</style>
     </>

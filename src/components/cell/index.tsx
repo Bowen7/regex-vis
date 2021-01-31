@@ -7,12 +7,12 @@ const Cell: React.FC<Props> = ({ label, children }) => {
   return (
     <>
       <div className="container">
-        <h5 className="label">{label}</h5>
+        <h6 className="label">{label}</h6>
         <div>{children}</div>
       </div>
       <style jsx>{`
         .container {
-          margin-bottom: 25px;
+          margin-bottom: 30px;
         }
       `}</style>
     </>

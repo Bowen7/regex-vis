@@ -1,5 +1,5 @@
 import React from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 const activeStyle = {
   color: "#0070F3",
 }
@@ -21,6 +21,13 @@ function Header() {
           <NavLink to="/about" activeStyle={activeStyle}>
             About
           </NavLink>
+          <a
+            href="https://github.com/Bowen7/regex-vis"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Github
+          </a>
         </div>
       </header>
       <style jsx>{`
@@ -29,13 +36,13 @@ function Header() {
           flex-direction: row;
           justify-content: space-between;
           align-items: center;
-          padding: 12px 24px;
+          padding: 24px 36px;
         }
         .logo {
           font-weight: bold;
         }
         .nav :global(a:not(:last-child)) {
-          margin-right: 15px;
+          margin-right: 24px;
         }
         .nav :global(a) {
           color: rgb(102, 102, 102);

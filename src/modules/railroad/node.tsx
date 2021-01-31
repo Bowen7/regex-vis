@@ -9,15 +9,17 @@ type Props = {
   width: number
   height: number
   selected: boolean
-  onClick?: (node: Node) => void
+  onClick: (node: Node) => void
 }
 const FlowNode: React.FC<Props> = props => {
   let { x, y, width, height, selected, node } = props
   const { type, val } = node
+
+  const stroke = selected ? "#3291FF" : "#000"
+
   const rectAttrs = useMemo<React.SVGProps<SVGRectElement>>(() => {
     const attrs: React.SVGProps<SVGRectElement> = {
       fill: "#fff",
-      stroke: "#000",
       rx: NODE_BORDER_RADIUS,
       ry: NODE_BORDER_RADIUS,
     }
@@ -32,17 +34,16 @@ const FlowNode: React.FC<Props> = props => {
         attrs.ry = height
         break
       case "choice":
-        attrs.stroke = "none"
+        if (!selected) {
+          attrs.stroke = "none"
+        }
         attrs.fill = "transparent"
         break
       default:
         break
     }
-    if (selected) {
-      attrs.stroke = "#50E3C2"
-    }
     return attrs
-  }, [type, selected, width, height])
+  }, [type, width, height, selected])
 
   const center = {
     x: x + width / 2,
@@ -57,6 +58,7 @@ const FlowNode: React.FC<Props> = props => {
           y={center.y}
           fontSize={FONT}
           dy={FONT * 0.35}
+          fill={stroke}
           textAnchor="middle"
         >
           {val.text}
@@ -105,7 +107,7 @@ const FlowNode: React.FC<Props> = props => {
           {path1 && (
             <path
               d={path1}
-              stroke="#000"
+              stroke={stroke}
               fill="none"
               pointerEvents="none"
             ></path>
@@ -113,7 +115,7 @@ const FlowNode: React.FC<Props> = props => {
           {path2 && (
             <path
               d={path2}
-              stroke="#000"
+              stroke={stroke}
               fill="none"
               pointerEvents="none"
             ></path>
@@ -121,7 +123,7 @@ const FlowNode: React.FC<Props> = props => {
           {path3 && (
             <path
               d={path3}
-              stroke="#000"
+              stroke={stroke}
               fill="none"
               pointerEvents="none"
             ></path>
@@ -130,6 +132,7 @@ const FlowNode: React.FC<Props> = props => {
             <text
               x={center.x}
               y={y + height + 25}
+              fill={stroke}
               fontSize={14}
               dy={14 * 0.35}
               textAnchor="middle"
@@ -153,6 +156,7 @@ const FlowNode: React.FC<Props> = props => {
           fontSize={12}
           textAnchor="middle"
           dy={-0.5 * 12}
+          fill={stroke}
         >
           {namePrefix + val.name}
         </text>
@@ -167,7 +171,14 @@ const FlowNode: React.FC<Props> = props => {
   return (
     <g>
       <g onClick={onClick}>
-        <rect x={x} y={y} width={width} height={height} {...rectAttrs}></rect>
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          stroke={stroke}
+          {...rectAttrs}
+        ></rect>
         {renderText()}
         {renderName()}
       </g>
