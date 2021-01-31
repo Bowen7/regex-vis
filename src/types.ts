@@ -1,26 +1,20 @@
-export type Char = {
-  kind: "simple"
+export type Chars = {
   text: string
 }
 export type CharRange = {
-  kind: "range"
-  from: Char
-  to: Char
+  from: Chars
+  to: Chars
   text: string
 }
 export type SpecialChar = {
-  kind: "any"
   text: string
   raw: string
 }
-export type CharCollection = {
-  kind: "collection"
-  collections: (CharRange | Char)[]
+export type CharRanges = {
+  ranges: CharRange[]
   negate: boolean
   text: string
 }
-
-export type CharContent = Char | CharCollection | SpecialChar
 
 export type Pos = {
   x: number
@@ -44,13 +38,29 @@ export interface NodeBase {
   val?: any
 }
 
+type SingleNodeVal =
+  | {
+      kind: "string"
+      content: Chars
+      text: string
+      name?: string
+    }
+  | {
+      kind: "ranges"
+      content: CharRanges
+      text: string
+      name?: string
+    }
+  | {
+      kind: "special"
+      content: SpecialChar
+      text: string
+      name?: string
+    }
+
 export interface SingleNode extends NodeBase {
   type: "single"
-  val: {
-    content: CharContent
-    text: string
-    name?: string
-  }
+  val: SingleNodeVal
 }
 
 export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"

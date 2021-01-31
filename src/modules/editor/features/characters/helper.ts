@@ -5,7 +5,7 @@ export const charactersData = [
   },
   {
     label: "Character range",
-    value: "range",
+    value: "ranges",
   },
   {
     label: "Special character",

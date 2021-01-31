@@ -43,9 +43,9 @@ function genNode(): SingleNode {
     id: nanoid(),
     type: "single",
     val: {
+      kind: "string",
       text: "",
       content: {
-        kind: "simple",
         text: "",
       },
     },

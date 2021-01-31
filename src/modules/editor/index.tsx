@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Tabs } from '@geist-ui/react'
-import { Node } from '@/types'
-import EditTab, { InsertDirection } from './tabs/edit'
-import GuideTab from './tabs/guide'
-import { useEventListener } from '../../utils/hooks'
+import React, { useState, useEffect } from "react"
+import BookOpen from "@geist-ui/react-icons/bookOpen"
+import Edit from "@geist-ui/react-icons/edit"
+import { Tabs } from "@geist-ui/react"
+import { Node } from "@/types"
+import EditTab, { InsertDirection } from "./tabs/edit"
+import LegendTab from "./tabs/legend"
+import { useEventListener } from "../../utils/hooks"
 type Props = {
   nodes: Node[]
   onInsert?: (direction: InsertDirection) => void
@@ -13,7 +15,7 @@ type Props = {
   onRedo: () => void
 }
 
-type Tab = 'guide' | 'edit'
+type Tab = "legend" | "edit"
 
 const Editor: React.FC<Props> = props => {
   const {
@@ -25,28 +27,28 @@ const Editor: React.FC<Props> = props => {
     onUndo,
   } = props
 
-  const [tabValue, setTabValue] = useState<Tab>('guide')
+  const [tabValue, setTabValue] = useState<Tab>("legend")
 
   useEffect(() => {
     if (nodes.length === 0) {
-      setTabValue('guide')
+      setTabValue("legend")
     } else {
-      setTabValue('edit')
+      setTabValue("edit")
     }
   }, [nodes])
   const editDisabled = nodes.length === 0
 
-  useEventListener('keydown', (e: Event) => {
+  useEventListener("keydown", (e: Event) => {
     const event = e as KeyboardEvent
     const { key } = event
-    if (key === 'Backspace') {
+    if (key === "Backspace") {
       return onRemove && onRemove()
     }
     const metaKey = event.ctrlKey || event.metaKey
-    if (metaKey && key === 'z') {
+    if (metaKey && key === "z") {
       return onUndo()
     }
-    if (metaKey && event.shiftKey && key === 'z') {
+    if (metaKey && event.shiftKey && key === "z") {
       return onRedo()
     }
   })
@@ -58,10 +60,27 @@ const Editor: React.FC<Props> = props => {
           onChange={(value: string) => setTabValue(value as Tab)}
           hideDivider
         >
-          <Tabs.Item value="guide" label="Guide">
-            <GuideTab />
+          <Tabs.Item
+            value="legend"
+            label={
+              <>
+                <BookOpen />
+                Legend
+              </>
+            }
+          >
+            <LegendTab />
           </Tabs.Item>
-          <Tabs.Item value="edit" label="Selected" disabled={editDisabled}>
+          <Tabs.Item
+            value="edit"
+            label={
+              <>
+                <Edit />
+                Edit
+              </>
+            }
+            disabled={editDisabled}
+          >
             <EditTab nodes={nodes} onGroup={onGroup} onInert={onInsert} />
           </Tabs.Item>
         </Tabs>

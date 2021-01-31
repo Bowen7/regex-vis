@@ -5,10 +5,9 @@ import {
   RootNode,
   SingleNode,
   GroupNode,
-  CharCollection,
-  Char,
   CharRange,
-  CharContent,
+  CharRanges,
+  Chars,
   ChoiceNode,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
@@ -116,9 +115,9 @@ function parseCharacter(character: AST.Character): Node {
     id: nanoid(),
     type: "single",
     val: {
+      kind: "string",
       text: character.raw,
       content: {
-        kind: "simple",
         text: character.raw,
       },
     },
@@ -126,14 +125,12 @@ function parseCharacter(character: AST.Character): Node {
 }
 
 function parseCharacterSet(characterSet: AST.CharacterSet): SingleNode {
-  let content!: CharContent
+  let text = ""
+  let raw = ""
   switch (characterSet.kind) {
     case "any":
-      content = {
-        kind: "any",
-        text: "any character",
-        raw: ".",
-      }
+      text = "any character"
+      raw = "."
       break
 
     default:
@@ -143,8 +140,9 @@ function parseCharacterSet(characterSet: AST.CharacterSet): SingleNode {
     id: nanoid(),
     type: "single",
     val: {
-      content: content,
-      text: content.text,
+      kind: "special",
+      content: { text, raw },
+      text: text,
     },
   }
 }
@@ -254,50 +252,48 @@ function parseGroup(ast: AST.CapturingGroup | AST.Group) {
 
 function parseCharacterClass(ast: AST.CharacterClass): SingleNode {
   const { elements, negate } = ast
-  const charCollection: CharCollection = {
-    kind: "collection",
-    collections: [],
+  const charRanges: CharRanges = {
+    ranges: [],
     text: "",
     negate,
   }
   elements.forEach(element => {
     if (element.type === "Character") {
       const text = String.fromCharCode(element.value)
-      const char: Char = {
-        kind: "simple",
+      const range: CharRange = {
+        from: { text },
+        to: { text },
         text,
       }
-      charCollection.collections.push(char)
+      charRanges.ranges.push(range)
     } else if (element.type === "CharacterClassRange") {
       const { min, max } = element
       const minText = String.fromCharCode(min.value)
       const maxText = String.fromCharCode(max.value)
-      const from: Char = {
-        kind: "simple",
+      const from = {
         text: minText,
       }
-      const to: Char = {
-        kind: "simple",
+      const to = {
         text: maxText,
       }
-      const charRange: CharRange = {
-        kind: "range",
+      const range: CharRange = {
         from,
         to,
         text: minText + "-" + maxText,
       }
-      charCollection.collections.push(charRange)
+      charRanges.ranges.push(range)
     }
   })
-  const text = charCollection.collections.map(item => item.text).join(", ")
+  const text = charRanges.ranges.map(item => item.text).join(", ")
   const name = negate ? "None of " : "One of "
-  charCollection.text = text
+  charRanges.text = text
   return {
     id: nanoid(),
     type: "single",
     val: {
-      content: charCollection,
-      text: charCollection.text,
+      kind: "ranges",
+      content: charRanges,
+      text: charRanges.text,
       name,
     },
   }

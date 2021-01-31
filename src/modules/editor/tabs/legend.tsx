@@ -1,6 +1,6 @@
 import React from "react"
 
-function Guide() {
+function Legend() {
   return (
     <>
       <div className="container">Guide: todo</div>
@@ -13,4 +13,4 @@ function Guide() {
   )
 }
 
-export default Guide
+export default Legend

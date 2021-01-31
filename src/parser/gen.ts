@@ -1,8 +1,8 @@
 import {
+  Chars,
   Node,
   ChoiceNode,
   GroupNode,
-  Char,
   Quantifier,
   SingleNode,
   BoundaryAssertionNode,
@@ -50,8 +50,8 @@ function judgeSingleNode(nodes: Node[]) {
 
 function genChoice(node: ChoiceNode) {
   const { branches } = node
-  return branches
-    ?.map(branch => {
+  return branches!
+    .map(branch => {
       return gen(branch as Node[])
     })
     .join("|")
@@ -74,7 +74,7 @@ function genGroup(node: GroupNode) {
   }
 }
 
-function genChar(node: Char, prefix: boolean) {
+function genChar(node: Chars, prefix: boolean) {
   if (prefix) {
     return node.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
   }
@@ -83,26 +83,22 @@ function genChar(node: Char, prefix: boolean) {
 
 function genSingle(node: SingleNode) {
   const { val } = node
-  const { content } = val
-  switch (content.kind) {
-    case "collection":
-      const { negate } = content
+  switch (val.kind) {
+    case "ranges":
+      const { negate } = val.content
       let str = ""
-      content.collections.forEach(collection => {
-        if (collection.kind === "range") {
-          str +=
-            genChar(collection.from, false) +
-            "-" +
-            genChar(collection.to, false)
+      val.content.ranges.forEach(range => {
+        if (range.from.text !== range.to.text) {
+          str += genChar(range.from, false) + "-" + genChar(range.to, false)
         } else {
-          str += genChar(collection, false)
+          str += genChar(range.from, false)
         }
       })
       return (negate ? "[^" : "[") + str + "]"
-    case "simple":
-      return genChar(content, true)
-    case "any":
-      return content.raw
+    case "string":
+      return genChar(val.content, true)
+    case "special":
+      return val.content.raw
     default:
       return ""
   }

@@ -1,33 +1,48 @@
-import { Node } from "@/types"
+import { Node, SingleNode } from "@/types"
 import parser from "@/parser"
 export type NodesInfo = {
   expression: string
   groupType: string
   groupName: string
+  characterKind: string
 }
-function getGroupType(nodes: Node[]) {
-  if (nodes.length === 1 && nodes[0].type === "group") {
-    const node = nodes[0]
+
+export const genInitialNodesInfo = (): NodesInfo => ({
+  expression: "",
+  groupType: "nonGroup",
+  groupName: "",
+  characterKind: "",
+})
+function getGroupType(node: Node) {
+  if (node.type === "group") {
     return node.val.kind
   }
   return "nonGroup"
 }
 
-function getGroupName(nodes: Node[]) {
-  if (
-    nodes.length === 1 &&
-    nodes[0].type === "group" &&
-    nodes[0].val.kind === "namedCapturing"
-  ) {
-    return nodes[0].val.name as string
+function getGroupName(node: Node) {
+  if (node.type === "group" && node.val.kind === "namedCapturing") {
+    return node.val.name as string
   }
   return ""
 }
 
-export function getInfoFromNodes(nodes: Node[]): NodesInfo {
-  const expression = parser.gen(nodes)
+function getCharacterKind(node: SingleNode) {
+  const { val } = node
+  return val.kind
+}
 
-  const groupType = getGroupType(nodes)
-  const groupName = getGroupName(nodes)
-  return { expression, groupType, groupName }
+export function getInfoFromNodes(nodes: Node[]): NodesInfo {
+  const info = genInitialNodesInfo()
+  info.expression = parser.gen(nodes)
+
+  if (nodes.length === 1) {
+    info.groupType = getGroupType(nodes[0])
+    info.groupName = getGroupName(nodes[0])
+  }
+
+  if (nodes.length === 1 && nodes[0].type === "single") {
+    info.characterKind = getCharacterKind(nodes[0])
+  }
+  return info
 }
