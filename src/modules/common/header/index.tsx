@@ -1,5 +1,5 @@
 import React from "react"
-import { NavLink, Link } from "react-router-dom"
+import { NavLink } from "react-router-dom"
 const activeStyle = {
   color: "#0070F3",
 }
@@ -46,6 +46,7 @@ function Header() {
         }
         .nav :global(a) {
           color: rgb(102, 102, 102);
+          font-size: 14px;
         }
       `}</style>
     </>

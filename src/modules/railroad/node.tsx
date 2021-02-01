@@ -11,7 +11,7 @@ type Props = {
   selected: boolean
   onClick: (node: Node) => void
 }
-const FlowNode: React.FC<Props> = props => {
+const RailNode: React.FC<Props> = props => {
   let { x, y, width, height, selected, node } = props
   const { type, val } = node
 
@@ -187,4 +187,4 @@ const FlowNode: React.FC<Props> = props => {
   )
 }
 
-export default FlowNode
+export default RailNode
