@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react"
 import { useEventListener } from "../../utils/hooks"
-import { RenderNode, RenderConnect, Box } from "@/types"
+import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
 import RailNode from "./node"
 import Connect from "./connect"
 type Props = {
   width: number
   height: number
-  renderNodes: (RenderNode | RenderConnect)[]
+  rootRenderNode: RenderVirtualNode
   selectedNodes: Node[]
   onDragSelect?: (box: Box) => void
   onClick?: (node: Node) => void
@@ -16,7 +16,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
   const {
     width,
     height,
-    renderNodes,
+    rootRenderNode,
     onDragSelect,
     selectedNodes,
     onClick,
@@ -90,26 +90,44 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
   }
 
   function displayRenderNodes() {
-    return renderNodes.map(renderNode => {
-      if (renderNode.type === "node") {
-        const { id, x, y, width, height, target } = renderNode
-        return (
-          <RailNode
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            node={target}
-            selected={selectedNodes.includes(target)}
-            onClick={handleClick}
-            key={id}
-          />
-        )
-      } else if (renderNode.type === "connect") {
-        const { start, end, id } = renderNode
-        return <Connect type={"split"} start={start} end={end} key={id} />
+    const result: JSX.Element[] = []
+    function dfs(renderNode: RenderNode | RenderVirtualNode | RenderConnect) {
+      switch (renderNode.type) {
+        case "connect": {
+          const { start, end, id } = renderNode
+          result.push(
+            <Connect type={"split"} start={start} end={end} key={id} />
+          )
+          break
+        }
+        case "node": {
+          const { id, x, y, width, height, target, children } = renderNode
+          result.push(
+            <RailNode
+              x={x}
+              y={y}
+              width={width}
+              height={height}
+              node={target}
+              selected={selectedNodes.includes(target)}
+              onClick={handleClick}
+              key={id}
+            />
+          )
+          children.forEach(item => dfs(item))
+          break
+        }
+        case "virtual": {
+          const { children } = renderNode
+          children.forEach(item => dfs(item))
+          break
+        }
+        default:
+          break
       }
-    })
+    }
+    dfs(rootRenderNode)
+    return result
   }
   useEventListener("mouseup", onMouseUp)
   return (

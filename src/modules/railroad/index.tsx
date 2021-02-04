@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react"
-import { Node, RenderNode, RenderConnect, Box } from "@/types"
+import { Node, Box, RenderVirtualNode } from "@/types"
 import Traverse from "./traverse"
 import SvgContainer from "./svgContainer"
 type Props = {
@@ -13,15 +13,21 @@ const Flowchart: React.FC<Props> = props => {
   const [traverse] = useState<Traverse>(new Traverse(canvasRef))
   const [width, setWidth] = useState(0)
   const [height, setHeight] = useState(0)
-  const [renderNodes, setRenderNodes] = useState<
-    (RenderNode | RenderConnect)[]
-  >([])
+  const [rootRenderNode, setRootRenderNode] = useState<RenderVirtualNode>({
+    type: "virtual",
+    x: 0,
+    y: 0,
+    width: 0,
+    height: 0,
+    children: [],
+  })
 
   useEffect(() => {
-    const { width, height, children } = traverse.render(nodes)
+    const rootRenderNode = traverse.render(nodes)
+    const { width, height } = rootRenderNode
     setWidth(width)
     setHeight(height)
-    console.log(children)
+    setRootRenderNode(rootRenderNode)
   }, [nodes, traverse])
 
   function onDragSelect(box: Box) {
@@ -66,7 +72,7 @@ const Flowchart: React.FC<Props> = props => {
       <SvgContainer
         width={width}
         height={height}
-        renderNodes={renderNodes}
+        rootRenderNode={rootRenderNode}
         selectedNodes={selectedNodes}
         onDragSelect={onDragSelect}
         onClick={onClick}

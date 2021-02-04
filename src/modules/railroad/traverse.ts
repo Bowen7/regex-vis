@@ -29,6 +29,8 @@ class Traverse {
       children: [],
     }
     this.renderNodes(rootRenderNode, nodes)
+    rootRenderNode.width += CHART_PADDING_HORIZONTAL * 2
+    rootRenderNode.height += CHART_PADDING_VERTICAL * 2
     return rootRenderNode
   }
   renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {
@@ -59,7 +61,7 @@ class Traverse {
           type: "connect",
           id: nanoid(),
           start: { x, y: connectY },
-          end: { x: (x += deltaX), y: connectY },
+          end: { x: (x += NODE_MARGIN_HORIZONTAL), y: connectY },
         })
       }
       const size = this.getSize(node)
@@ -73,26 +75,25 @@ class Traverse {
         target: node,
         children: [],
       }
-      this.renderNode(parentRenderNode, renderNode)
+      children.push(renderNode)
+      x += size.offsetWidth
+      this.renderNode(renderNode)
     })
     if (tail.type !== "root") {
       children.push({
         type: "connect",
         id: nanoid(),
         start: { x, y: connectY },
-        end: { x: (x += NODE_MARGIN_HORIZONTAL), y: connectY },
+        end: { x: (x += deltaX), y: connectY },
       })
     }
     parentRenderNode.width = width
     parentRenderNode.height = height
   }
-  renderNode(
-    parentRenderNode: RenderNode | RenderVirtualNode,
-    renderNode: RenderNode
-  ) {
+  renderNode(renderNode: RenderNode) {
     const { target } = renderNode
     if (target?.children) {
-      this.renderNodes(parentRenderNode, target.children)
+      this.renderNodes(renderNode, target.children)
     } else if (target?.branches) {
       const { branches } = target
       const { x: originX, y: originY, width } = renderNode
