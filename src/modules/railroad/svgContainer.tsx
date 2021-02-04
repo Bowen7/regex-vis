@@ -1,15 +1,13 @@
 import React, { useState, useRef } from "react"
-import { Box } from "./types"
 import { useEventListener } from "../../utils/hooks"
-import { RenderNode, RenderConnect } from "./types"
+import { RenderNode, RenderConnect, Box } from "@/types"
 import { Node } from "@/types"
 import RailNode from "./node"
 import Connect from "./connect"
 type Props = {
   width: number
   height: number
-  nodes: RenderNode[]
-  connects: RenderConnect[]
+  renderNodes: (RenderNode | RenderConnect)[]
   selectedNodes: Node[]
   onDragSelect?: (box: Box) => void
   onClick?: (node: Node) => void
@@ -18,8 +16,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
   const {
     width,
     height,
-    nodes,
-    connects,
+    renderNodes,
     onDragSelect,
     selectedNodes,
     onClick,
@@ -92,6 +89,28 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
     window.removeEventListener("click", captureClick, true)
   }
 
+  function displayRenderNodes() {
+    return renderNodes.map(renderNode => {
+      if (renderNode.type === "node") {
+        const { id, x, y, width, height, target } = renderNode
+        return (
+          <RailNode
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            node={target}
+            selected={selectedNodes.includes(target)}
+            onClick={handleClick}
+            key={id}
+          />
+        )
+      } else if (renderNode.type === "connect") {
+        const { start, end, id } = renderNode
+        return <Connect type={"split"} start={start} end={end} key={id} />
+      }
+    })
+  }
   useEventListener("mouseup", onMouseUp)
   return (
     <>
@@ -103,26 +122,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
         onMouseDown={onMouseDown}
         onMouseMove={onMouseMove}
       >
-        {nodes.map(renderNode => {
-          const { x, y, width, height, node } = renderNode
-          const { id } = node
-          return (
-            <RailNode
-              x={x}
-              y={y}
-              width={width}
-              height={height}
-              node={node}
-              selected={selectedNodes.includes(node)}
-              onClick={handleClick}
-              key={id}
-            />
-          )
-        })}
-        {connects.map(connect => {
-          const { type, start, end, id } = connect
-          return <Connect type={type} start={start} end={end} key={id} />
-        })}
+        {displayRenderNodes()}
         <rect
           x={rect.x}
           y={rect.y}

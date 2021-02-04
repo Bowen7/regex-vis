@@ -21,6 +21,9 @@ ReactDOM.render(
       ::selection {
         color: #fff !important;
       }
+      body {
+        font-family: Consolas, Monaco, monospace;
+      }
     `}</style>
   </>,
   document.getElementById("root")
