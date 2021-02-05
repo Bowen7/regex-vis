@@ -31,6 +31,7 @@ class Traverse {
     this.renderNodes(rootRenderNode, nodes)
     rootRenderNode.width += CHART_PADDING_HORIZONTAL * 2
     rootRenderNode.height += CHART_PADDING_VERTICAL * 2
+    console.log(rootRenderNode)
     return rootRenderNode
   }
   renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {
@@ -38,81 +39,107 @@ class Traverse {
       x: originX,
       y: originY,
       width: parentWidth,
+      height: parentHeight,
       children,
     } = parentRenderNode
-    const { width, height } = this.getNodesSize(nodes)
+    const { width } = this.getNodesSize(nodes)
     const deltaX = (parentWidth - width) / 2
-    const connectY = originY + height / 2
+    const connectY = originY + parentHeight / 2
     let x = originX
 
     const head = nodes[0]
     const tail = nodes[nodes.length - 1]
+
+    let paddingLeft = 0
+    let paddingRight = 0
     if (head.type !== "root") {
+      const headSize = this.getSize(head)
+      paddingLeft = (headSize.offsetWidth - headSize.width) / 2
       children.push({
         type: "connect",
         id: nanoid(),
         start: { x, y: connectY },
-        end: { x: (x += deltaX), y: connectY },
+        end: { x: (x += deltaX + paddingLeft), y: connectY },
       })
     }
     nodes.forEach((node, index) => {
+      const size = this.getSize(node)
+      paddingLeft = (size.offsetWidth - size.width) / 2
       if (index !== 0) {
         children.push({
           type: "connect",
           id: nanoid(),
           start: { x, y: connectY },
-          end: { x: (x += NODE_MARGIN_HORIZONTAL), y: connectY },
+          end: {
+            x: (x += NODE_MARGIN_HORIZONTAL + paddingLeft + paddingRight),
+            y: connectY,
+          },
         })
       }
-      const size = this.getSize(node)
       const renderNode: RenderNode = {
         type: "node",
         id: node.id,
         x,
-        y: originY + (height - size.height) / 2,
+        y: originY + (parentHeight - size.height) / 2,
         width: size.width,
         height: size.height,
         target: node,
         children: [],
       }
       children.push(renderNode)
-      x += size.offsetWidth
+      x += size.width
       this.renderNode(renderNode)
+
+      paddingRight = paddingLeft
     })
     if (tail.type !== "root") {
       children.push({
         type: "connect",
         id: nanoid(),
         start: { x, y: connectY },
-        end: { x: (x += deltaX), y: connectY },
+        end: { x: (x += deltaX + paddingRight), y: connectY },
       })
     }
-    parentRenderNode.width = width
-    parentRenderNode.height = height
   }
   renderNode(renderNode: RenderNode) {
-    const { target } = renderNode
-    if (target?.children) {
+    const { target, children } = renderNode
+    if (target.children) {
       this.renderNodes(renderNode, target.children)
     } else if (target?.branches) {
       const { branches } = target
-      const { x: originX, y: originY, width } = renderNode
+      const { x: originX, y: originY, width, height } = renderNode
       let x = originX
       let y = originY
       branches.forEach(branch => {
         const branchHeight =
           this.getNodesSize(branch).height + NODE_MARGIN_VERTICAL
+
+        children.push({
+          id: nanoid(),
+          type: "connect",
+          start: { x, y: originY + height / 2 },
+          end: { x: x + 20, y: y + branchHeight / 2 },
+        })
         const virtualNode: RenderVirtualNode = {
           type: "virtual",
-          x,
+          x: x + 20,
           y,
-          width,
+          width: width - 40,
           height: branchHeight,
           children: [],
         }
+        children.push(virtualNode)
+        children.push({
+          id: nanoid(),
+          type: "connect",
+          start: { x: x + width - 20, y: y + branchHeight / 2 },
+          end: { x: x + width, y: originY + height / 2 },
+        })
         this.renderNodes(virtualNode, branch)
         y += branchHeight
       })
+
+      console.log(children)
     }
   }
   measureText(text: string, fontSize: number = 16) {

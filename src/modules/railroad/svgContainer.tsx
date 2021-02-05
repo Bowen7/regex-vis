@@ -91,12 +91,23 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
 
   function displayRenderNodes() {
     const result: JSX.Element[] = []
-    function dfs(renderNode: RenderNode | RenderVirtualNode | RenderConnect) {
+    function dfs(
+      renderNode: RenderNode | RenderVirtualNode | RenderConnect,
+      options: {
+        selected: boolean
+        connectType: "combine" | "split" | "straight"
+      }
+    ) {
       switch (renderNode.type) {
         case "connect": {
           const { start, end, id } = renderNode
           result.push(
-            <Connect type={"split"} start={start} end={end} key={id} />
+            <Connect
+              type={options.connectType}
+              start={start}
+              end={end}
+              key={id}
+            />
           )
           break
         }
@@ -114,19 +125,31 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
               key={id}
             />
           )
-          children.forEach(item => dfs(item))
+          children.forEach((item, index) => {
+            if (target.branches && item.type === "connect") {
+              if (index % 3 === 0) {
+                dfs(item, { ...options, connectType: "split" })
+              }
+              if (index % 3 === 2) {
+                dfs(item, { ...options, connectType: "combine" })
+              }
+              return
+            }
+            dfs(item, options)
+          })
+
           break
         }
         case "virtual": {
           const { children } = renderNode
-          children.forEach(item => dfs(item))
+          children.forEach(item => dfs(item, options))
           break
         }
         default:
           break
       }
     }
-    dfs(rootRenderNode)
+    dfs(rootRenderNode, { selected: false, connectType: "straight" })
     return result
   }
   useEventListener("mouseup", onMouseUp)

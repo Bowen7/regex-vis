@@ -6,9 +6,9 @@ import Editor from "../editor"
 import { remove, insert, group } from "../../parser/utils"
 import Railroad from "../railroad"
 import parser from "@/parser"
-const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
-// const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
-// const DEFAULT_REGEX = `/a/`
+// const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
+const DEFAULT_REGEX = `/a[.]{1,33333}a/`
+// const DEFAULT_REGEX = `/(a)/`
 const Home: React.FC<{}> = () => {
   const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
   const [nodes, _setNodes] = useState<Node[]>(parser.parse(DEFAULT_REGEX))

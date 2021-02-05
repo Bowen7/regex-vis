@@ -153,7 +153,7 @@ export type RenderConnect = {
 export type RenderNode = {
   type: "node"
   id: string
-  children: (RenderNode | RenderConnect)[]
+  children: (RenderNode | RenderConnect | RenderVirtualNode)[]
   x: number
   y: number
   width: number
@@ -163,7 +163,7 @@ export type RenderNode = {
 
 export type RenderVirtualNode = {
   type: "virtual"
-  children: (RenderNode | RenderConnect)[]
+  children: (RenderNode | RenderConnect | RenderVirtualNode)[]
   x: number
   y: number
   width: number

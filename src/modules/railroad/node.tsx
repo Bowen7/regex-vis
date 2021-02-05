@@ -131,9 +131,9 @@ const RailNode: React.FC<Props> = props => {
           {text && (
             <text
               x={center.x}
-              y={y + height + 25}
+              y={y + height + 27.5}
               fill={stroke}
-              fontSize={14}
+              fontSize={12}
               dy={14 * 0.35}
               textAnchor="middle"
               pointerEvents="none"

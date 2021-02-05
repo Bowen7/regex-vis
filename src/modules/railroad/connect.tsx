@@ -5,7 +5,7 @@ type Props = {
   start: Pos
   end: Pos
 }
-const FlowConnect: React.FC<Props> = React.memo(props => {
+const RailConnect: React.FC<Props> = React.memo(props => {
   const { type, start, end } = props
   let path = ""
   if (Math.abs(start.y - end.y) < 0.5) {
@@ -50,4 +50,4 @@ const FlowConnect: React.FC<Props> = React.memo(props => {
   return <path d={path} stroke="#000" fill="none"></path>
 })
 
-export default FlowConnect
+export default RailConnect
