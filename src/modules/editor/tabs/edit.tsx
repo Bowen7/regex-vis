@@ -7,7 +7,7 @@ import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
 import { getInfoFromNodes, NodesInfo, genInitialNodesInfo } from "./helper"
 
-export type InsertDirection = "prev" | "next" | "parallel"
+export type InsertDirection = "prev" | "next" | "branch"
 
 type Props = {
   nodes: Node[]
@@ -46,8 +46,8 @@ const InfoItem: React.FC<Props> = props => {
             <ButtonGroup>
               <Button onClick={() => onInert("prev")}>Insert before</Button>
               <Button onClick={() => onInert("next")}>Insert after</Button>
-              <Button onClick={() => onInert("parallel")}>
-                Insert parallel
+              <Button onClick={() => onInert("branch")}>
+                Insert as a branch
               </Button>
             </ButtonGroup>
           </Fieldset.Content>

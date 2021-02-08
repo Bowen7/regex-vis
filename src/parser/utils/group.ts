@@ -90,7 +90,6 @@ export default (
     const headId = nextSelectedIds[0]
     visit(nextNodes, headId, (_, nodeList) => {
       const startIndex = nodeList.findIndex(({ id }) => id === headId)
-      console.log(startIndex)
       if (startIndex !== -1) {
         nextSelectedNodes = nodeList.slice(
           startIndex,

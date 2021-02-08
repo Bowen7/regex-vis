@@ -11,7 +11,8 @@ type Props = {
   selected: boolean
   onClick: (node: Node) => void
 }
-const RailNode: React.FC<Props> = props => {
+const RailNode: React.FC<Props> = React.memo(props => {
+  console.log("render")
   let { x, y, width, height, selected, node } = props
   const { type, val } = node
 
@@ -185,6 +186,6 @@ const RailNode: React.FC<Props> = props => {
       {renderQuantifier()}
     </g>
   )
-}
+})
 
 export default RailNode

@@ -31,7 +31,6 @@ class Traverse {
     this.renderNodes(rootRenderNode, nodes)
     rootRenderNode.width += CHART_PADDING_HORIZONTAL * 2
     rootRenderNode.height += CHART_PADDING_VERTICAL * 2
-    console.log(rootRenderNode)
     return rootRenderNode
   }
   renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {
@@ -47,6 +46,9 @@ class Traverse {
     const connectY = originY + parentHeight / 2
     let x = originX
 
+    if (nodes.length === 0) {
+      return
+    }
     const head = nodes[0]
     const tail = nodes[nodes.length - 1]
 
@@ -138,8 +140,6 @@ class Traverse {
         this.renderNodes(virtualNode, branch)
         y += branchHeight
       })
-
-      console.log(children)
     }
   }
   measureText(text: string, fontSize: number = 16) {

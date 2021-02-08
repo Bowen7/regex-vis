@@ -7,7 +7,7 @@ type Props = {
   selectedNodes: Node[]
   onSelect: (nodes: Node[]) => void
 }
-const Railroad: React.FC<Props> = props => {
+const Railroad: React.FC<Props> = React.memo(props => {
   const { nodes, onSelect, selectedNodes } = props
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [traverse] = useState<Traverse>(new Traverse(canvasRef))
@@ -89,6 +89,6 @@ const Railroad: React.FC<Props> = props => {
       ></SvgContainer>
     </>
   )
-}
+})
 
 export default Railroad

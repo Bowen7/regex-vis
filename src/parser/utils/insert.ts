@@ -3,7 +3,7 @@ import produce from "immer"
 import { SingleNode, ChoiceNode, Node } from "@/types"
 import visit from "@/parser/visit"
 import { replaceFromLists } from "./replace"
-type InsertDirection = "prev" | "next" | "parallel"
+type InsertDirection = "prev" | "next" | "branch"
 function insert(
   nodes: Node[],
   selectedNodes: Node[],

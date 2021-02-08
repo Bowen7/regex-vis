@@ -1,9 +1,11 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useCallback, useContext } from "react"
 import { useEventListener } from "../../utils/hooks"
 import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
 import RailNode from "./node"
 import Connect from "./connect"
+import HomeContext from "@/modules/home/context"
+import { ActionTypes } from "@/reducers/home"
 type Props = {
   width: number
   height: number
@@ -13,14 +15,8 @@ type Props = {
   onClick?: (node: Node) => void
 }
 const SvgContainer: React.FC<Props> = React.memo(props => {
-  const {
-    width,
-    height,
-    rootRenderNode,
-    onDragSelect,
-    selectedNodes,
-    onClick,
-  } = props
+  const { width, height, rootRenderNode, onDragSelect, selectedNodes } = props
+  const { dispatch } = useContext(HomeContext)
   const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
   const startX = useRef<number>(0)
@@ -78,11 +74,17 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
     setRect({ x: 0, y: 0, width: 0, height: 0 })
   }
 
-  function handleClick(node: Node) {
-    if (!moving.current) {
-      onClick && onClick(node)
-    }
-  }
+  const handleClick = useCallback(
+    (node: Node) => {
+      if (!moving.current) {
+        dispatch({
+          type: ActionTypes.SELECT_NODES,
+          payload: { selected: node },
+        })
+      }
+    },
+    [dispatch]
+  )
 
   function captureClick(e: MouseEvent) {
     e.stopPropagation()
