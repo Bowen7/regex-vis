@@ -91,6 +91,8 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
 
   function displayRenderNodes() {
     const result: JSX.Element[] = []
+    const selectedHead = selectedNodes[0]
+    const selectedTail = selectedNodes[selectedNodes.length - 1]
     function dfs(
       renderNode: RenderNode | RenderVirtualNode | RenderConnect,
       options: {
@@ -98,56 +100,64 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
         connectType: "combine" | "split" | "straight"
       }
     ) {
-      switch (renderNode.type) {
-        case "connect": {
-          const { start, end, id } = renderNode
-          result.push(
-            <Connect
-              type={options.connectType}
-              start={start}
-              end={end}
-              key={id}
-            />
-          )
-          break
-        }
-        case "node": {
-          const { id, x, y, width, height, target, children } = renderNode
-          result.push(
-            <RailNode
-              x={x}
-              y={y}
-              width={width}
-              height={height}
-              node={target}
-              selected={selectedNodes.includes(target)}
-              onClick={handleClick}
-              key={id}
-            />
-          )
-          children.forEach((item, index) => {
-            if (target.branches && item.type === "connect") {
-              if (index % 3 === 0) {
-                dfs(item, { ...options, connectType: "split" })
-              }
-              if (index % 3 === 2) {
-                dfs(item, { ...options, connectType: "combine" })
-              }
-              return
-            }
-            dfs(item, options)
-          })
-
-          break
-        }
-        case "virtual": {
-          const { children } = renderNode
-          children.forEach(item => dfs(item, options))
-          break
-        }
-        default:
-          break
+      let { selected } = options
+      if (renderNode.type === "connect") {
+        const { start, end, id } = renderNode
+        result.push(
+          <Connect
+            type={options.connectType}
+            start={start}
+            end={end}
+            selected={selected}
+            key={id}
+          />
+        )
+        return
       }
+
+      const { x, y, width, height, children } = renderNode
+      if (renderNode.type === "node") {
+        const { target, id } = renderNode
+        result.push(
+          <RailNode
+            x={x}
+            y={y}
+            width={width}
+            height={height}
+            node={target}
+            selected={selected}
+            onClick={handleClick}
+            key={id}
+          />
+        )
+      }
+
+      if (renderNode.type === "node" && renderNode.target.branches) {
+        const { target } = renderNode
+        children.forEach((item, index) => {
+          if (target.branches && item.type === "connect") {
+            if (index % 3 === 0) {
+              dfs(item, { ...options, connectType: "split" })
+            }
+            if (index % 3 === 2) {
+              dfs(item, { ...options, connectType: "combine" })
+            }
+            return
+          }
+          dfs(item, options)
+        })
+        return
+      }
+
+      children.forEach(item => {
+        if (item.type === "node" && item.target.id === selectedHead?.id) {
+          selected = true
+        }
+        dfs(item, { ...options, selected })
+        if (item.type === "node" && item.target.id === selectedTail?.id) {
+          selected = false
+        }
+      })
     }
     dfs(rootRenderNode, { selected: false, connectType: "straight" })
     return result

@@ -55,8 +55,8 @@ const Home: React.FC<{}> = () => {
     }
     onSelect([])
   }
-  function onSelect(nodes: Node[]) {
-    setSelectedNodes(nodes)
+  function onSelect(selectedNodes: Node[]) {
+    setSelectedNodes(selectedNodes)
   }
   function onInsert(direction: "prev" | "next" | "parallel") {
     setNodes(insert(nodes, selectedNodes, direction))

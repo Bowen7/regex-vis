@@ -5,7 +5,7 @@ import SvgContainer from "./svgContainer"
 type Props = {
   nodes: Node[]
   selectedNodes: Node[]
-  onSelect?: (nodes: Node[]) => void
+  onSelect: (nodes: Node[]) => void
 }
 const Railroad: React.FC<Props> = props => {
   const { nodes, onSelect, selectedNodes } = props
@@ -32,7 +32,7 @@ const Railroad: React.FC<Props> = props => {
 
   function onDragSelect(box: Box) {
     const { x: boxX, y: boxY, width: boxWidth, height: boxHeight } = box
-    const selectIds: string[] = []
+    const selectedNodes: Node[] = []
     let selected = false
     function dfs(renderNode: RenderVirtualNode | RenderNode) {
       const { children } = renderNode
@@ -40,13 +40,13 @@ const Railroad: React.FC<Props> = props => {
         const child = children[i]
         switch (child.type) {
           case "node":
-            const { target, x, y, width, height, id } = child
+            const { target, x, y, width, height } = child
             if (target.type !== "root") {
               const overlapX = boxX < x && boxX + boxWidth > x + width
               const overlapY = boxY < y && boxY + boxHeight > y + height
               if (overlapX && overlapY) {
                 selected = true
-                selectIds.push(id)
+                selectedNodes.push(target)
                 break
               } else if (selected) {
                 return
@@ -63,15 +63,15 @@ const Railroad: React.FC<Props> = props => {
       }
     }
     dfs(rootRenderNode)
-    console.log(selectIds)
+    onSelect(selectedNodes)
   }
 
   function onClick(node: Node) {
-    let nodes = [node]
-    if (selectedNodes.length === 1 && selectedNodes.includes(node)) {
-      nodes = []
+    const nodes: Node[] = []
+    if (!(selectedNodes.length === 1 && selectedNodes.includes(node))) {
+      nodes.push(node)
     }
-    onSelect && onSelect(nodes)
+    onSelect(nodes)
   }
   return (
     <>
