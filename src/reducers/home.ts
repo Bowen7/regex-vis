@@ -144,7 +144,7 @@ export const homeReducer = (state: InitialStateType, action: Action) => {
       if (
         !Array.isArray(nextSelected) &&
         selectedNodes.length === 1 &&
-        !!selectedNodes.find(({ id }) => (nextSelected as Node).id === id)
+        selectedNodes.some(({ id }) => (nextSelected as Node).id === id)
       ) {
         return {
           ...state,

@@ -120,6 +120,14 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       const { x, y, width, height, children } = renderNode
       if (renderNode.type === "node") {
         const { target, id } = renderNode
+        let nodeSelected = selected
+        if (
+          nodeSelected &&
+          target.branches &&
+          selectedNodes.every(({ id: _id }) => _id !== id)
+        ) {
+          nodeSelected = false
+        }
         result.push(
           <RailNode
             x={x}
@@ -127,7 +135,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
             width={width}
             height={height}
             node={target}
-            selected={selected}
+            selected={nodeSelected}
             onClick={handleClick}
             key={id}
           />
