@@ -5,7 +5,7 @@ import { Tabs } from "@geist-ui/react"
 import { Node } from "@/types"
 import EditTab, { InsertDirection } from "./tabs/edit"
 import LegendTab from "./tabs/legend"
-import { useEventListener } from "../../utils/hooks"
+import { useEventListener } from "../../../utils/hooks"
 type Props = {
   nodes: Node[]
   onInsert?: (direction: InsertDirection) => void

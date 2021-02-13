@@ -1,11 +1,11 @@
 import React, { useState, useRef, useCallback, useContext } from "react"
-import { useEventListener } from "../../utils/hooks"
+import { useEventListener } from "../../../utils/hooks"
 import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
 import RailNode from "./node"
 import Connect from "./connect"
-import HomeContext from "@/modules/home/context"
-import { ActionTypes } from "@/reducers/home"
+import HomeContext from "@/modules/vis/context"
+import { ActionTypes } from "@/reducers/vis"
 type Props = {
   width: number
   height: number

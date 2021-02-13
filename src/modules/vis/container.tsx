@@ -1,17 +1,17 @@
 import React, { useContext } from "react"
 import { Input, Button } from "@geist-ui/react"
 import { Node, GroupKind } from "@/types"
-import HomeContext from "./context"
-import { ActionTypes } from "@/reducers/home"
-import Editor from "../editor"
-import Railroad from "../railroad"
+import VisContext from "./context"
+import { ActionTypes } from "@/reducers/vis"
+import Editor from "./editor"
+import Railroad from "./railroad"
 import parser from "@/parser"
 
-const Home: React.FC<{}> = React.memo(() => {
+const Container: React.FC<{}> = React.memo(() => {
   const {
     state: { nodes, selectedNodes, regex },
     dispatch,
-  } = useContext(HomeContext)
+  } = useContext(VisContext)
 
   function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
     dispatch({
@@ -67,9 +67,7 @@ const Home: React.FC<{}> = React.memo(() => {
           justifyContent: "center",
           alignItems: "center",
         }}
-      >
-        {/* <Repeat transform="rotate(90)" /> */}
-      </div>
+      ></div>
       <div
         style={{
           width: "100%",
@@ -99,4 +97,4 @@ const Home: React.FC<{}> = React.memo(() => {
   )
 })
 
-export default Home
+export default Container

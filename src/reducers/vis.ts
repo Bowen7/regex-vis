@@ -9,16 +9,21 @@ export type InitialStateType = {
   redoStack: Node[][]
 }
 
-const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
-// const DEFAULT_REGEX = `/a[.]{1,33333}a/`
-// const DEFAULT_REGEX = `/(a)/`
-const DEFAULT_NODES = parser.parse(DEFAULT_REGEX)
 export const initialState: InitialStateType = {
   regex: "",
-  nodes: DEFAULT_NODES,
+  nodes: [],
   selectedNodes: [],
-  undoStack: [DEFAULT_NODES],
+  undoStack: [],
   redoStack: [],
+}
+
+export const genInitialState = (regex: string): InitialStateType => {
+  const nodes = parser.parse(regex)
+  return {
+    ...initialState,
+    regex,
+    nodes,
+  }
 }
 
 export enum ActionTypes {
@@ -68,7 +73,7 @@ const setNodes = (
   }
 }
 
-export const homeReducer = (state: InitialStateType, action: Action) => {
+export const visReducer = (state: InitialStateType, action: Action) => {
   switch (action.type) {
     case ActionTypes.SET_REGEX: {
       const { regex } = action.payload

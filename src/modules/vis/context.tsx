@@ -1,7 +1,7 @@
 import { createContext, Dispatch } from "react"
-import { InitialStateType, initialState, Action } from "@/reducers/home"
-const HomeContext = createContext<{
+import { InitialStateType, initialState, Action } from "@/reducers/vis"
+const VisContext = createContext<{
   state: InitialStateType
   dispatch: Dispatch<Action>
 }>({ state: initialState, dispatch: () => null })
-export default HomeContext
+export default VisContext

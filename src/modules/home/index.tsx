@@ -1,15 +1,11 @@
-import React, { useReducer } from "react"
-import { initialState, homeReducer } from "@/reducers/home"
-import HomeContainer from "./container"
-
-import HomeContext from "./context"
+import React from "react"
+import Vis from "@/modules/vis"
 
 const HomeProvider: React.FC<{}> = () => {
-  const [state, dispatch] = useReducer(homeReducer, initialState)
   return (
-    <HomeContext.Provider value={{ state, dispatch }}>
-      <HomeContainer />
-    </HomeContext.Provider>
+    <Vis
+      defaultRegex={`/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`}
+    />
   )
 }
 
