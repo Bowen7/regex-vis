@@ -1,6 +1,5 @@
 import React, { useContext } from "react"
 import { Input, Button } from "@geist-ui/react"
-import { Node, GroupKind } from "@/types"
 import VisContext from "./context"
 import { ActionTypes } from "@/reducers/vis"
 import Editor from "./editor"
@@ -9,7 +8,7 @@ import parser from "@/parser"
 
 const Container: React.FC<{}> = React.memo(() => {
   const {
-    state: { nodes, selectedNodes, regex },
+    state: { regex },
     dispatch,
   } = useContext(VisContext)
 
@@ -19,83 +18,50 @@ const Container: React.FC<{}> = React.memo(() => {
       payload: { regex: e.target.value },
     })
   }
+
   function handleRenderClick() {
     const nodes = parser.parse(regex)
     dispatch({ type: ActionTypes.SET_NODES, payload: { nodes } })
   }
-  function onRemove() {
-    dispatch({ type: ActionTypes.REMOVE })
-  }
-  function onSelect(selectedNodes: Node[]) {
-    dispatch({
-      type: ActionTypes.SELECT_NODES,
-      payload: { selected: selectedNodes },
-    })
-  }
-  function onInsert(direction: "prev" | "next" | "branch") {
-    dispatch({ type: ActionTypes.INSERT, payload: { direction } })
-  }
-  function onGroup(type: string, name: string) {
-    dispatch({
-      type: ActionTypes.GROUP,
-      payload: { groupType: type as GroupKind | "nonGroup" },
-    })
-  }
+
   function onKeyDown(e: React.KeyboardEvent) {
     e.stopPropagation()
   }
   return (
     <>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <Railroad
-          nodes={nodes}
-          onSelect={onSelect}
-          selectedNodes={selectedNodes}
-        />
+      <div className="container">
+        <Railroad />
+        <Editor />
+        <div>
+          <Input
+            placeholder="输入正则"
+            width="500px"
+            value={regex}
+            onChange={handleRegexChange}
+            onKeyDown={onKeyDown}
+          />
+          <Button
+            auto
+            style={{
+              marginLeft: "20px",
+            }}
+            onClick={handleRenderClick}
+          >
+            Render
+          </Button>
+        </div>
       </div>
-
-      <Editor
-        nodes={selectedNodes}
-        onInsert={onInsert}
-        onRemove={onRemove}
-        onGroup={onGroup}
-        onRedo={() => dispatch({ type: ActionTypes.REDO })}
-        onUndo={() => dispatch({ type: ActionTypes.UNDO })}
-      />
-
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      ></div>
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Input
-          placeholder="输入正则"
-          width="500px"
-          value={regex}
-          onChange={handleRegexChange}
-          onKeyDown={onKeyDown}
-        />
-        <Button
-          auto
-          style={{
-            marginLeft: "20px",
-          }}
-          onClick={handleRenderClick}
-        >
-          Render
-        </Button>
-      </div>
+      <style jsx>
+        {`
+          .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+          }
+        `}
+      </style>
     </>
   )
 })

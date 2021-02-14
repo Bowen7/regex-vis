@@ -1,5 +1,5 @@
 import { nanoid } from "nanoid"
-import { Node, Pos, RenderNode, RenderVirtualNode, Size } from "@/types"
+import { Node, RenderNode, RenderVirtualNode, Size } from "@/types"
 import {
   CHART_PADDING_HORIZONTAL,
   CHART_PADDING_VERTICAL,

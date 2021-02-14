@@ -1,14 +1,16 @@
-import React, { useRef, useState, useEffect } from "react"
+import React, { useRef, useState, useEffect, useContext } from "react"
 import { Node, Box, RenderVirtualNode, RenderNode } from "@/types"
 import Traverse from "./traverse"
 import SvgContainer from "./svgContainer"
-type Props = {
-  nodes: Node[]
-  selectedNodes: Node[]
-  onSelect: (nodes: Node[]) => void
-}
-const Railroad: React.FC<Props> = React.memo(props => {
-  const { nodes, onSelect, selectedNodes } = props
+import VisContext from "../context"
+import { ActionTypes } from "@/reducers/vis"
+
+const Railroad: React.FC<{}> = React.memo(() => {
+  const {
+    state: { nodes, selectedNodes },
+    dispatch,
+  } = useContext(VisContext)
+
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [traverse] = useState<Traverse>(new Traverse(canvasRef))
   const [width, setWidth] = useState(0)
@@ -30,7 +32,14 @@ const Railroad: React.FC<Props> = React.memo(props => {
     setRootRenderNode(rootRenderNode)
   }, [nodes, traverse])
 
-  function onDragSelect(box: Box) {
+  const handleSelect = (nodes: Node[] | Node) => {
+    dispatch({
+      type: ActionTypes.SELECT_NODES,
+      payload: { selected: nodes },
+    })
+  }
+
+  const onDragSelect = (box: Box) => {
     const { x: boxX, y: boxY, width: boxWidth, height: boxHeight } = box
     const selectedNodes: Node[] = []
     let selected = false
@@ -63,15 +72,11 @@ const Railroad: React.FC<Props> = React.memo(props => {
       }
     }
     dfs(rootRenderNode)
-    onSelect(selectedNodes)
+    handleSelect(selectedNodes)
   }
 
-  function onClick(node: Node) {
-    const nodes: Node[] = []
-    if (!(selectedNodes.length === 1 && selectedNodes.includes(node))) {
-      nodes.push(node)
-    }
-    onSelect(nodes)
+  const onClick = (node: Node) => {
+    handleSelect(node)
   }
   return (
     <>

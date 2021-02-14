@@ -47,7 +47,10 @@ export type Action =
       payload: { direction: "prev" | "next" | "branch" }
     }
   | { type: ActionTypes.REMOVE }
-  | { type: ActionTypes.GROUP; payload: { groupType: GroupKind | "nonGroup" } }
+  | {
+      type: ActionTypes.GROUP
+      payload: { groupType: GroupKind | "nonGroup"; groupName: string }
+    }
   | { type: ActionTypes.SET_NODES; payload: { nodes: Node[] } }
   | { type: ActionTypes.UNDO }
   | { type: ActionTypes.REDO }
@@ -91,11 +94,12 @@ export const visReducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.GROUP: {
       const { nodes, selectedNodes } = state
-      const { groupType } = action.payload
+      const { groupType, groupName } = action.payload
       const { nextNodes, nextSelectedNodes } = group(
         nodes,
         selectedNodes,
-        groupType
+        groupType,
+        groupName
       )
       return setNodes(state, nextNodes, { selectedNodes: nextSelectedNodes })
     }
@@ -140,7 +144,7 @@ export const visReducer = (state: InitialStateType, action: Action) => {
       if (
         !Array.isArray(nextSelected) &&
         selectedNodes.length === 1 &&
-        selectedNodes.some(({ id }) => (nextSelected as Node).id === id)
+        selectedNodes[0].id === (nextSelected as Node).id
       ) {
         return {
           ...state,

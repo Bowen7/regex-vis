@@ -1,21 +1,22 @@
-import React, { useEffect, useState, useCallback } from "react"
-import { Node } from "@/types"
+import React, { useEffect, useState, useContext } from "react"
 import { Divider, Button, ButtonGroup, Fieldset, Spacer } from "@geist-ui/react"
 import Characters from "../features/characters"
 import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
 import { getInfoFromNodes, NodesInfo, genInitialNodesInfo } from "./helper"
+import { GroupKind } from "@/types"
+import { ActionTypes } from "@/reducers/vis"
+import VisContext from "../../context"
 
 export type InsertDirection = "prev" | "next" | "branch"
 
-type Props = {
-  nodes: Node[]
-  onGroup: (type: string, name: string) => void
-  onInert: (direction: InsertDirection) => void
-}
-const InfoItem: React.FC<Props> = props => {
-  const { nodes, onGroup, onInert } = props
+const InfoItem: React.FC<{}> = () => {
+  const {
+    state: { selectedNodes: nodes },
+    dispatch,
+  } = useContext(VisContext)
+
   const oneNode = nodes.length === 1
   const charactersShow = oneNode && nodes[0].type === "single"
   const quantifierShow = oneNode
@@ -23,6 +24,14 @@ const InfoItem: React.FC<Props> = props => {
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
   const { expression, groupType, groupName } = nodesInfo
+
+  const handleInsert = (direction: InsertDirection) =>
+    dispatch({ type: ActionTypes.INSERT, payload: { direction } })
+  const handleGroup = (groupType: string, groupName: string) =>
+    dispatch({
+      type: ActionTypes.GROUP,
+      payload: { groupType: groupType as GroupKind | "nonGroup", groupName },
+    })
 
   useEffect(() => {
     const nodesInfo = getInfoFromNodes(nodes)
@@ -44,9 +53,11 @@ const InfoItem: React.FC<Props> = props => {
           <Divider y={0} />
           <Fieldset.Content>
             <ButtonGroup>
-              <Button onClick={() => onInert("prev")}>Insert before</Button>
-              <Button onClick={() => onInert("next")}>Insert after</Button>
-              <Button onClick={() => onInert("branch")}>
+              <Button onClick={() => handleInsert("prev")}>
+                Insert before
+              </Button>
+              <Button onClick={() => handleInsert("next")}>Insert after</Button>
+              <Button onClick={() => handleInsert("branch")}>
                 Insert as a branch
               </Button>
             </ButtonGroup>
@@ -70,7 +81,7 @@ const InfoItem: React.FC<Props> = props => {
             <Group
               groupType={groupType}
               groupName={groupName}
-              onGroupChange={onGroup}
+              onGroupChange={handleGroup}
             />
             {quantifierShow && <Quantifier />}
           </Fieldset.Content>

@@ -1,31 +1,20 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useContext } from "react"
 import BookOpen from "@geist-ui/react-icons/bookOpen"
 import Edit from "@geist-ui/react-icons/edit"
 import { Tabs } from "@geist-ui/react"
-import { Node } from "@/types"
-import EditTab, { InsertDirection } from "./tabs/edit"
+import { ActionTypes } from "@/reducers/vis"
+import VisContext from "../context"
+import EditTab from "./tabs/edit"
 import LegendTab from "./tabs/legend"
 import { useEventListener } from "../../../utils/hooks"
-type Props = {
-  nodes: Node[]
-  onInsert?: (direction: InsertDirection) => void
-  onRemove?: () => void
-  onGroup: (type: string, name: string) => void
-  onUndo: () => void
-  onRedo: () => void
-}
 
 type Tab = "legend" | "edit"
 
-const Editor: React.FC<Props> = props => {
+const Editor: React.FC<{}> = () => {
   const {
-    nodes,
-    onInsert = () => {},
-    onRemove,
-    onGroup,
-    onRedo,
-    onUndo,
-  } = props
+    state: { selectedNodes: nodes },
+    dispatch,
+  } = useContext(VisContext)
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -36,20 +25,25 @@ const Editor: React.FC<Props> = props => {
       setTabValue("edit")
     }
   }, [nodes])
+
   const editDisabled = nodes.length === 0
+
+  const remove = () => dispatch({ type: ActionTypes.REMOVE })
+  const undo = () => dispatch({ type: ActionTypes.UNDO })
+  const redo = () => dispatch({ type: ActionTypes.REDO })
 
   useEventListener("keydown", (e: Event) => {
     const event = e as KeyboardEvent
     const { key } = event
     if (key === "Backspace") {
-      return onRemove && onRemove()
+      return remove()
     }
     const metaKey = event.ctrlKey || event.metaKey
     if (metaKey && key === "z") {
-      return onUndo()
+      return undo()
     }
     if (metaKey && event.shiftKey && key === "z") {
-      return onRedo()
+      return redo()
     }
   })
   return (
@@ -81,7 +75,7 @@ const Editor: React.FC<Props> = props => {
             }
             disabled={editDisabled}
           >
-            <EditTab nodes={nodes} onGroup={onGroup} onInert={onInsert} />
+            <EditTab />
           </Tabs.Item>
         </Tabs>
       </div>

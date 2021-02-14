@@ -7,7 +7,6 @@ import {
   GroupNode,
   CharRange,
   CharRanges,
-  Chars,
   ChoiceNode,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
