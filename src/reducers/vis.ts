@@ -32,7 +32,6 @@ export enum ActionTypes {
   REMOVE = "REMOVE_NODES",
   GROUP = "GROUP_NODES",
   SET_NODES = "SET_NODES",
-  SET_SELECTED = "SET_SELECTED",
   UNDO = "UNDO",
   REDO = "REDO",
   SELECT_NODES = "SELECT_NODES",
@@ -50,7 +49,6 @@ export type Action =
   | { type: ActionTypes.REMOVE }
   | { type: ActionTypes.GROUP; payload: { groupType: GroupKind | "nonGroup" } }
   | { type: ActionTypes.SET_NODES; payload: { nodes: Node[] } }
-  | { type: ActionTypes.SET_SELECTED; payload: { selectedNodes: Node[] } }
   | { type: ActionTypes.UNDO }
   | { type: ActionTypes.REDO }
   | {
@@ -106,13 +104,6 @@ export const visReducer = (state: InitialStateType, action: Action) => {
       const { nodes: nextNodes } = action.payload
       undoStack.push(nodes)
       return setNodes(state, nextNodes, { undoStack })
-    }
-    case ActionTypes.SET_SELECTED: {
-      const { selectedNodes } = action.payload
-      return {
-        ...state,
-        selectedNodes,
-      }
     }
     case ActionTypes.UNDO: {
       const { undoStack, redoStack, nodes } = state

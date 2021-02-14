@@ -27,7 +27,10 @@ const Container: React.FC<{}> = React.memo(() => {
     dispatch({ type: ActionTypes.REMOVE })
   }
   function onSelect(selectedNodes: Node[]) {
-    dispatch({ type: ActionTypes.SET_SELECTED, payload: { selectedNodes } })
+    dispatch({
+      type: ActionTypes.SELECT_NODES,
+      payload: { selected: selectedNodes },
+    })
   }
   function onInsert(direction: "prev" | "next" | "branch") {
     dispatch({ type: ActionTypes.INSERT, payload: { direction } })
