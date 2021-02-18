@@ -1,6 +1,7 @@
 import React from "react"
 import ReactDOM from "react-dom"
 import { GeistProvider, CssBaseline } from "@geist-ui/react"
+import { colors } from "@/constants/style"
 import "./index.css"
 import App from "./App"
 import * as serviceWorker from "./serviceWorker"
@@ -22,10 +23,7 @@ ReactDOM.render(
         color: #fff !important;
       }
       body {
-        font-family: Consolas, Monaco, monospace;
-
-        font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica,
-          Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+        color: ${colors.dark};
       }
     `}</style>
   </>,

@@ -11,7 +11,8 @@ import {
   QUANTIFIER_HEIGHT,
   NAME_HEIGHT,
   BRANCH_PADDING_HORIZONTAL,
-} from "./constants"
+} from "@/constants/railroad"
+import { font } from "@/constants/style"
 class Traverse {
   canvasRef: React.RefObject<HTMLCanvasElement>
   constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
@@ -147,7 +148,7 @@ class Traverse {
     if (!context) {
       return { width: 0, height: 0 }
     }
-    context.font = fontSize + "px Consolas, Monaco, monospace"
+    context.font = fontSize + "px " + font.family
     const metrics = context.measureText(text)
     return { width: metrics.width, height: fontSize }
   }

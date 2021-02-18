@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { NODE_BORDER_RADIUS } from "./constants"
+import { NODE_BORDER_RADIUS } from "@/constants/railroad"
 import { Node } from "@/types"
 const FONT = 16
 type Props = {
