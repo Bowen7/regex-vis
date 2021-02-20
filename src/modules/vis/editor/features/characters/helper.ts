@@ -1,4 +1,4 @@
-export const charactersData = [
+export const charactersOptions = [
   {
     label: "Simple string",
     value: "string",

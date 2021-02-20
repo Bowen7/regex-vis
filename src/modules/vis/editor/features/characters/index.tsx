@@ -1,24 +1,19 @@
-import React from "react"
-import { Checkbox } from "@geist-ui/react"
+import React, { useState } from "react"
+import RadioGroup from "@/components/radioGroup"
 import Cell from "@/components/cell"
-import { charactersData } from "./helper"
+import { charactersOptions } from "./helper"
 const Characters: React.FC<{}> = () => {
+  const [value, setValue] = useState<string>("string")
   return (
     <>
       <Cell label="Characters:">
-        <div className="checkboxes">
-          {charactersData.map(({ value, label }) => (
-            <Checkbox checked={false} key={value}>
-              {label}
-            </Checkbox>
-          ))}
-        </div>
+        <RadioGroup
+          value={value}
+          options={charactersOptions}
+          onChange={setValue}
+        />
       </Cell>
-      <style jsx>{`
-        .checkboxes :global(label:not(:last-child)) {
-          margin-right: 20px;
-        }
-      `}</style>
+      <style jsx>{``}</style>
     </>
   )
 }
