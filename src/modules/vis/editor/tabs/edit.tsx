@@ -4,8 +4,9 @@ import Characters from "../features/characters"
 import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
-import { getInfoFromNodes, NodesInfo, genInitialNodesInfo } from "./helper"
+import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
 import { GroupKind } from "@/types"
+import { NodesInfo } from "../types"
 import { ActionTypes } from "@/reducers/vis"
 import VisContext from "../../context"
 
@@ -18,12 +19,11 @@ const InfoItem: React.FC<{}> = () => {
   } = useContext(VisContext)
 
   const oneNode = nodes.length === 1
-  const charactersShow = oneNode && nodes[0].type === "single"
   const quantifierShow = oneNode
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
-  const { expression, groupType, groupName } = nodesInfo
+  const { expression, group, character } = nodesInfo
 
   const handleInsert = (direction: InsertDirection) =>
     dispatch({ type: ActionTypes.INSERT, payload: { direction } })
@@ -77,12 +77,8 @@ const InfoItem: React.FC<{}> = () => {
           <Divider y={0} />
           <Fieldset.Content>
             <Expression expression={expression} />
-            {charactersShow && <Characters />}
-            <Group
-              groupType={groupType}
-              groupName={groupName}
-              onGroupChange={handleGroup}
-            />
+            {character && <Characters character={character} />}
+            {group && <Group group={group} onGroupChange={handleGroup} />}
             {quantifierShow && <Quantifier />}
           </Fieldset.Content>
         </Fieldset>

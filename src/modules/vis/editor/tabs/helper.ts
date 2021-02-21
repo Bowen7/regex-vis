@@ -1,48 +1,46 @@
-import { Node, SingleNode } from "@/types"
+import { Node } from "@/types"
 import parser from "@/parser"
-export type NodesInfo = {
-  expression: string
-  groupType: string
-  groupName: string
-  characterKind: string
-}
+import { NodesInfo, Group, Character } from "../types"
 
 export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
-  groupType: "nonGroup",
-  groupName: "",
-  characterKind: "",
+  group: null,
+  character: null,
 })
-function getGroupType(node: Node) {
-  if (node.type === "group") {
-    return node.val.kind
+
+function getGroupInfo(nodes: Node[]): Group | null {
+  if (nodes.length !== 1) {
+    return null
   }
-  return "nonGroup"
+  const node = nodes[0]
+  const type = node.type === "group" ? node.val.kind : "nonGroup"
+  return type === "namedCapturing" ? { type, name: node.val.name } : { type }
 }
 
-function getGroupName(node: Node) {
-  if (node.type === "group" && node.val.kind === "namedCapturing") {
-    return node.val.name as string
+function getCharacterInfo(nodes: Node[]): Character | null {
+  if (nodes.length === 1 && nodes[0].type === "single") {
+    const node = nodes[0]
+    const { val } = node
+    switch (val.kind) {
+      case "string":
+        return {
+          type: val.kind,
+          value: val.text,
+        }
+      case "ranges":
+        return { type: val.kind }
+      case "special":
+        return { type: val.kind }
+      default:
+        return null
+    }
   }
-  return ""
-}
-
-function getCharacterKind(node: SingleNode) {
-  const { val } = node
-  return val.kind
+  return null
 }
 
 export function getInfoFromNodes(nodes: Node[]): NodesInfo {
-  const info = genInitialNodesInfo()
-  info.expression = parser.gen(nodes)
-
-  if (nodes.length === 1) {
-    info.groupType = getGroupType(nodes[0])
-    info.groupName = getGroupName(nodes[0])
-  }
-
-  if (nodes.length === 1 && nodes[0].type === "single") {
-    info.characterKind = getCharacterKind(nodes[0])
-  }
-  return info
+  const expression = parser.gen(nodes)
+  const group = getGroupInfo(nodes)
+  const character = getCharacterInfo(nodes)
+  return { expression, group, character }
 }
