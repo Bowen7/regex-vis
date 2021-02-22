@@ -1,4 +1,4 @@
-import { Node } from '@/types'
+import { Node } from "@/types"
 export type Path = { node: Node; nodeList: Node[] }[]
 function visit(
   nodes: Node[],
@@ -34,18 +34,19 @@ function visit(
 }
 
 export function visitTree(nodes: Node[], callback: (node: Node) => void) {
-  const stack = [...nodes]
+  let stack = [...nodes]
   while (stack.length !== 0) {
     const cur = stack.shift()
     callback(cur as Node)
     if (cur?.children) {
-      stack.unshift(...cur.children.reverse())
+      stack = cur.children.concat(stack)
     }
     if (cur?.branches) {
       const branches = cur.branches
-      branches.reverse().forEach(branch => {
-        stack.unshift(...branch.reverse())
-      })
+      for (let i = branches.length - 1; i >= 0; i--) {
+        const branch = branches[i]
+        stack = branch.concat(stack)
+      }
     }
   }
 }
