@@ -1,6 +1,6 @@
 import { Node } from "@/types"
 import parser from "@/parser"
-import { NodesInfo, Group, Character } from "../types"
+import { NodesInfo, Group, Character } from "@/types"
 
 export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
@@ -18,22 +18,8 @@ function getGroupInfo(nodes: Node[]): Group | null {
 }
 
 function getCharacterInfo(nodes: Node[]): Character | null {
-  if (nodes.length === 1 && nodes[0].type === "single") {
-    const node = nodes[0]
-    const { val } = node
-    switch (val.kind) {
-      case "string":
-        return {
-          type: val.kind,
-          value: val.text,
-        }
-      case "ranges":
-        return { type: val.kind }
-      case "special":
-        return { type: val.kind }
-      default:
-        return null
-    }
+  if (nodes.length === 1 && nodes[0].type === "character") {
+    return nodes[0].val
   }
   return null
 }

@@ -2,7 +2,7 @@ import React from "react"
 import { Tooltip, Input, Select, Spacer } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
 import { groupData } from "./helper"
-import { Group } from "../../types"
+import { Group } from "@/types"
 import Cell from "@/components/cell"
 type GroupSelectProps = {
   group: Group

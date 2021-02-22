@@ -1,10 +1,9 @@
 import {
-  Chars,
   Node,
   ChoiceNode,
   GroupNode,
   Quantifier,
-  SingleNode,
+  CharacterNode,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
 } from "@/types"
@@ -24,8 +23,8 @@ function gen(nodes: Node[]) {
         case "group":
           regex += genGroup(node)
           break
-        case "single":
-          regex += genSingle(node)
+        case "character":
+          regex += genCharacter(node)
           break
         case "boundaryAssertion":
           regex += genBoundaryAssertionNode(node)
@@ -74,31 +73,28 @@ function genGroup(node: GroupNode) {
   }
 }
 
-function genChar(node: Chars, prefix: boolean) {
-  if (prefix) {
-    return node.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  }
-  return node.text
+function prefix(value: string) {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
-function genSingle(node: SingleNode) {
+function genCharacter(node: CharacterNode) {
   const { val } = node
-  switch (val.kind) {
+  switch (val.type) {
     case "ranges":
-      const { negate } = val.content
+      const { negate } = val
       let str = ""
-      val.content.ranges.forEach(range => {
-        if (range.from.text !== range.to.text) {
-          str += genChar(range.from, false) + "-" + genChar(range.to, false)
+      val.value.forEach(({ from, to }) => {
+        if (from !== to) {
+          str += from + "-" + to
         } else {
-          str += genChar(range.from, false)
+          str += from
         }
       })
       return (negate ? "[^" : "[") + str + "]"
     case "string":
-      return genChar(val.content, true)
+      return prefix(val.value)
     case "special":
-      return val.content.raw
+      return val.value
     default:
       return ""
   }

@@ -52,7 +52,8 @@ const RailNode: React.FC<Props> = React.memo(props => {
   }
 
   function renderText() {
-    if (val?.text) {
+    if ("text" in node || val?.text) {
+      const text = "text" in node ? node.text : val.text
       return (
         <text
           x={center.x}
@@ -62,7 +63,7 @@ const RailNode: React.FC<Props> = React.memo(props => {
           fill={stroke}
           textAnchor="middle"
         >
-          {val.text}
+          {text}
         </text>
       )
     }
@@ -148,7 +149,8 @@ const RailNode: React.FC<Props> = React.memo(props => {
   }
 
   function renderName() {
-    if (val?.name) {
+    if ("name" in node || val?.name) {
+      const name = "name" in node ? node.name : val.name
       const { namePrefix = "" } = val
       return (
         <text
@@ -159,7 +161,7 @@ const RailNode: React.FC<Props> = React.memo(props => {
           dy={-0.5 * 12}
           fill={stroke}
         >
-          {namePrefix + val.name}
+          {namePrefix + name}
         </text>
       )
     }

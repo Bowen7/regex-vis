@@ -178,8 +178,8 @@ class Traverse {
       ;({ width, height } = this.getNodesSize(children))
       height += 2 * NODE_MARGIN_VERTICAL
       width += NODE_MARGIN_HORIZONTAL * 2
-    } else if (val?.text || val?.text === "") {
-      const text = val.text
+    } else if ("text" in node) {
+      const text = node.text
       const size = this.measureText(text)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
@@ -209,8 +209,9 @@ class Traverse {
     }
 
     // handle name
-    if (val?.name) {
-      const { name, namePrefix = "" } = val
+    if ("name" in node || val?.name) {
+      const name = "name" in node ? node.name : val.name
+      const { namePrefix = "" } = val
       const nameWidth =
         this.measureText(name + namePrefix, 12).width +
         NODE_PADDING_VERTICAL * 2

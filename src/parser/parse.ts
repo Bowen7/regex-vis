@@ -3,10 +3,9 @@ import { nanoid } from "nanoid"
 import {
   Node,
   RootNode,
-  SingleNode,
+  CharacterNode,
   GroupNode,
-  CharRange,
-  CharRanges,
+  Range,
   ChoiceNode,
   BoundaryAssertionNode,
   LookaroundAssertionNode,
@@ -109,21 +108,19 @@ function parseAlternatives(ast: AST.Alternative[]) {
   return node
 }
 
-function parseCharacter(character: AST.Character): Node {
+function parseCharacter(character: AST.Character): CharacterNode {
   return {
     id: nanoid(),
-    type: "single",
+    type: "character",
     val: {
-      kind: "string",
-      text: character.raw,
-      content: {
-        text: character.raw,
-      },
+      type: "string",
+      value: character.raw,
     },
+    text: character.raw,
   }
 }
 
-function parseCharacterSet(characterSet: AST.CharacterSet): SingleNode {
+function parseCharacterSet(characterSet: AST.CharacterSet): CharacterNode {
   let text = ""
   let raw = ""
   switch (characterSet.kind) {
@@ -137,12 +134,12 @@ function parseCharacterSet(characterSet: AST.CharacterSet): SingleNode {
   }
   return {
     id: nanoid(),
-    type: "single",
+    type: "character",
     val: {
-      kind: "special",
-      content: { text, raw },
-      text: text,
+      type: "special",
+      value: raw,
     },
+    text: text,
   }
 }
 
@@ -249,52 +246,43 @@ function parseGroup(ast: AST.CapturingGroup | AST.Group) {
   return node
 }
 
-function parseCharacterClass(ast: AST.CharacterClass): SingleNode {
+function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
   const { elements, negate } = ast
-  const charRanges: CharRanges = {
-    ranges: [],
-    text: "",
-    negate,
-  }
+  const ranges: Range[] = []
+  const texts: string[] = []
   elements.forEach(element => {
     if (element.type === "Character") {
       const text = String.fromCharCode(element.value)
-      const range: CharRange = {
-        from: { text },
-        to: { text },
-        text,
+      const range: Range = {
+        from: text,
+        to: text,
       }
-      charRanges.ranges.push(range)
+      ranges.push(range)
+      texts.push(text)
     } else if (element.type === "CharacterClassRange") {
       const { min, max } = element
-      const minText = String.fromCharCode(min.value)
-      const maxText = String.fromCharCode(max.value)
-      const from = {
-        text: minText,
-      }
-      const to = {
-        text: maxText,
-      }
-      const range: CharRange = {
+      const from = String.fromCharCode(min.value)
+      const to = String.fromCharCode(max.value)
+      const range: Range = {
         from,
         to,
-        text: minText + "-" + maxText,
       }
-      charRanges.ranges.push(range)
+      ranges.push(range)
+      texts.push(from + "-" + to)
     }
   })
-  const text = charRanges.ranges.map(item => item.text).join(", ")
+  const text = texts.join(", ")
   const name = negate ? "None of " : "One of "
-  charRanges.text = text
   return {
     id: nanoid(),
-    type: "single",
+    type: "character",
     val: {
-      kind: "ranges",
-      content: charRanges,
-      text: charRanges.text,
-      name,
+      type: "ranges",
+      value: ranges,
+      negate,
     },
+    name,
+    text,
   }
 }
 

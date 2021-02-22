@@ -1,6 +1,6 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
-import { SingleNode, ChoiceNode, Node } from "@/types"
+import { CharacterNode, ChoiceNode, Node } from "@/types"
 import visit from "@/parser/visit"
 import { replaceFromLists } from "./replace"
 type InsertDirection = "prev" | "next" | "branch"
@@ -38,17 +38,15 @@ function insert(
   })
 }
 
-function genNode(): SingleNode {
+function genNode(): CharacterNode {
   return {
     id: nanoid(),
-    type: "single",
+    type: "character",
     val: {
-      kind: "string",
-      text: "",
-      content: {
-        text: "",
-      },
+      type: "string",
+      value: "",
     },
+    text: "",
   }
 }
 

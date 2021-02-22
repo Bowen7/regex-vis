@@ -3,22 +3,23 @@ import { Input, Spacer } from "@geist-ui/react"
 import RadioGroup from "@/components/radioGroup"
 import Cell from "@/components/cell"
 import { charactersOptions } from "./helper"
-import { Character } from "../../types"
+import { Character } from "@/types"
 type Prop = {
   character: Character
 }
 const Characters: React.FC<Prop> = ({ character }) => {
-  const [value, setValue] = useState<string>("string")
   return (
     <>
       <Cell label="Characters:">
         <RadioGroup
-          value={value}
+          value={character.type}
           options={charactersOptions}
-          onChange={setValue}
+          onChange={() => {}}
         />
         <Spacer y={0.5} />
-        <Input placeholder="一个基础示例" size="small" />
+        {character.type === "string" && (
+          <Input size="small" value={character.value} />
+        )}
       </Cell>
       <style jsx>{``}</style>
     </>

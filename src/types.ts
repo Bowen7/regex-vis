@@ -1,21 +1,3 @@
-export type Chars = {
-  text: string
-}
-export type CharRange = {
-  from: Chars
-  to: Chars
-  text: string
-}
-export type SpecialChar = {
-  text: string
-  raw: string
-}
-export type CharRanges = {
-  ranges: CharRange[]
-  negate: boolean
-  text: string
-}
-
 export type Pos = {
   x: number
   y: number
@@ -27,43 +9,51 @@ export type Quantifier = {
   text: string
 }
 
-export type NodeChildren = Node[]
+export type StringCharacter = {
+  type: "string"
+  value: string
+}
+
+export type Range = {
+  from: string
+  to: string
+}
+export type RangesCharacter = {
+  type: "ranges"
+  value: Range[]
+  negate: boolean
+}
+
+export type SpecialCharacter = {
+  type: "special"
+  value: string
+}
+
+export type Character = StringCharacter | RangesCharacter | SpecialCharacter
 
 export interface NodeBase {
   id: string
   type: string
   quantifier?: Quantifier
   children?: Node[]
-  branches?: NodeChildren[]
+  branches?: Node[][]
   val?: any
 }
 
-type SingleNodeVal =
-  | {
-      kind: "string"
-      content: Chars
-      text: string
-      name?: string
-    }
-  | {
-      kind: "ranges"
-      content: CharRanges
-      text: string
-      name?: string
-    }
-  | {
-      kind: "special"
-      content: SpecialChar
-      text: string
-      name?: string
-    }
-
-export interface SingleNode extends NodeBase {
-  type: "single"
-  val: SingleNodeVal
+export interface CharacterNode extends NodeBase {
+  type: "character"
+  val: Character
+  text: string
+  name?: string
 }
 
 export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"
+
+export type Group =
+  | {
+      type: "capturing" | "nonCapturing" | "nonGroup"
+    }
+  | { type: "namedCapturing"; name: string }
 
 export interface GroupNode extends NodeBase {
   type: "group"
@@ -101,7 +91,7 @@ export interface RootNode extends NodeBase {
 }
 
 export type Node =
-  | SingleNode
+  | CharacterNode
   | GroupNode
   | ChoiceNode
   | RootNode
@@ -109,19 +99,12 @@ export type Node =
   | LookaroundAssertionNode
 
 export type NodeType =
-  | "single"
+  | "character"
   | "root"
   | "choice"
   | "group"
   | "edgeAssertion"
   | "lookaroundAssertion"
-
-export type BodyNode =
-  | SingleNode
-  | GroupNode
-  | ChoiceNode
-  | BoundaryAssertionNode
-  | LookaroundAssertionNode
 
 export type Size = {
   width: number
@@ -168,4 +151,10 @@ export type RenderVirtualNode = {
   y: number
   width: number
   height: number
+}
+
+export type NodesInfo = {
+  expression: string
+  group: Group | null
+  character: Character | null
 }
