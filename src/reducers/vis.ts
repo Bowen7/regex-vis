@@ -4,7 +4,7 @@ import parser from "@/parser"
 export type InitialStateType = {
   regex: string
   nodes: Node[]
-  selectedNodes: Node[]
+  selectedIds: string[]
   undoStack: Node[][]
   redoStack: Node[][]
 }
@@ -12,7 +12,7 @@ export type InitialStateType = {
 export const initialState: InitialStateType = {
   regex: "",
   nodes: [],
-  selectedNodes: [],
+  selectedIds: [],
   undoStack: [],
   redoStack: [],
 }
@@ -56,7 +56,7 @@ export type Action =
   | { type: ActionTypes.REDO }
   | {
       type: ActionTypes.SELECT_NODES
-      payload: { selected: Node[] | Node }
+      payload: { selected: string[] | string }
     }
 
 const setNodes = (
@@ -82,26 +82,26 @@ export const visReducer = (state: InitialStateType, action: Action) => {
       return setNodes(state, nextNodes, { regex })
     }
     case ActionTypes.INSERT: {
-      const { nodes, selectedNodes } = state
+      const { nodes, selectedIds } = state
       const { direction } = action.payload
-      const nextNodes = insert(nodes, selectedNodes, direction)
+      const nextNodes = insert(nodes, selectedIds, direction)
       return setNodes(state, nextNodes)
     }
     case ActionTypes.REMOVE: {
-      const { nodes, selectedNodes } = state
-      const nextNodes = remove(nodes, selectedNodes)
-      return setNodes(state, nextNodes, { selectedNodes: [] })
+      const { nodes, selectedIds } = state
+      const nextNodes = remove(nodes, selectedIds)
+      return setNodes(state, nextNodes, { selectedIds: [] })
     }
     case ActionTypes.GROUP: {
-      const { nodes, selectedNodes } = state
+      const { nodes, selectedIds } = state
       const { groupType, groupName } = action.payload
-      const { nextNodes, nextSelectedNodes } = group(
+      const { nextNodes, nextSelectedIds } = group(
         nodes,
-        selectedNodes,
+        selectedIds,
         groupType,
         groupName
       )
-      return setNodes(state, nextNodes, { selectedNodes: nextSelectedNodes })
+      return setNodes(state, nextNodes, { selectedIds: nextSelectedIds })
     }
     case ActionTypes.SET_NODES: {
       const { undoStack, nodes } = state
@@ -138,17 +138,17 @@ export const visReducer = (state: InitialStateType, action: Action) => {
       return state
     }
     case ActionTypes.SELECT_NODES: {
-      const { selectedNodes } = state
+      const { selectedIds } = state
       let { selected: nextSelected } = action.payload
 
       if (
         !Array.isArray(nextSelected) &&
-        selectedNodes.length === 1 &&
-        selectedNodes[0].id === (nextSelected as Node).id
+        selectedIds.length === 1 &&
+        selectedIds[0] === nextSelected
       ) {
         return {
           ...state,
-          selectedNodes: [],
+          selectedIds: [],
         }
       }
       if (!Array.isArray(nextSelected)) {
@@ -156,7 +156,7 @@ export const visReducer = (state: InitialStateType, action: Action) => {
       }
       return {
         ...state,
-        selectedNodes: nextSelected,
+        selectedIds: nextSelected,
       }
     }
     default:

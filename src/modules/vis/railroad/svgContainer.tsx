@@ -10,12 +10,11 @@ type Props = {
   width: number
   height: number
   rootRenderNode: RenderVirtualNode
-  selectedNodes: Node[]
-  onDragSelect?: (box: Box) => void
-  onClick?: (node: Node) => void
+  selectedIds: string[]
+  onDragSelect: (box: Box) => void
 }
 const SvgContainer: React.FC<Props> = React.memo(props => {
-  const { width, height, rootRenderNode, onDragSelect, selectedNodes } = props
+  const { width, height, rootRenderNode, onDragSelect, selectedIds } = props
   const { dispatch } = useContext(HomeContext)
   const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
@@ -79,7 +78,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       if (!moving.current) {
         dispatch({
           type: ActionTypes.SELECT_NODES,
-          payload: { selected: node },
+          payload: { selected: node.id },
         })
       }
     },
@@ -93,8 +92,8 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
 
   function displayRenderNodes() {
     const result: JSX.Element[] = []
-    const selectedHead = selectedNodes[0]
-    const selectedTail = selectedNodes[selectedNodes.length - 1]
+    const selectedHeadId = selectedIds[0]
+    const selectedTailId = selectedIds[selectedIds.length - 1]
     function dfs(
       renderNode: RenderNode | RenderVirtualNode | RenderConnect,
       options: {
@@ -124,7 +123,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
         if (
           nodeSelected &&
           target.branches &&
-          selectedNodes.every(({ id: _id }) => _id !== id)
+          selectedIds.every(selectedId => selectedId !== id)
         ) {
           nodeSelected = false
         }
@@ -160,11 +159,11 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       }
 
       children.forEach(item => {
-        if (item.type === "node" && item.target.id === selectedHead?.id) {
+        if (item.type === "node" && item.target.id === selectedHeadId) {
           selected = true
         }
         dfs(item, { ...options, selected })
-        if (item.type === "node" && item.target.id === selectedTail?.id) {
+        if (item.type === "node" && item.target.id === selectedTailId) {
           selected = false
         }
       })

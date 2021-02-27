@@ -1,6 +1,6 @@
 import produce from "immer"
 import { Node } from "@/types"
-import visit from "../visit"
+import visit, { getNodesByIds } from "../visit"
 import { replaceFromLists } from "./replace"
 function remove(nodes: Node[], selectedNodes: Node[]) {
   if (selectedNodes.length === 0) {
@@ -33,5 +33,5 @@ function removeFromList(nodeList: Node[], nodes: Node[]) {
   nodeList.splice(index, nodes.length)
 }
 
-export default (nodes: Node[], selectedNodes: Node[]) =>
-  produce(nodes, draft => remove(draft, selectedNodes))
+export default (nodes: Node[], selectedIds: string[]) =>
+  produce(nodes, draft => remove(draft, getNodesByIds(draft, selectedIds)))

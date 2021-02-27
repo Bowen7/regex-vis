@@ -34,7 +34,7 @@ function visit(
 }
 
 export function visitTree(nodes: Node[], callback: (node: Node) => void) {
-  let stack = [...nodes]
+  let stack = nodes.slice()
   while (stack.length !== 0) {
     const cur = stack.shift()
     callback(cur as Node)
@@ -49,5 +49,31 @@ export function visitTree(nodes: Node[], callback: (node: Node) => void) {
       }
     }
   }
+}
+
+export function getNodesByIds(nodes: Node[], ids: string[]): Node[] {
+  if (ids.length === 0) {
+    return []
+  }
+  const headId = ids[0]
+  let cur!: Node
+  let stack = nodes.slice()
+  while (stack.length !== 0) {
+    cur = stack.shift() as Node
+    if (cur!.id === headId) {
+      break
+    }
+    if (cur?.children) {
+      stack = stack.concat(cur.children)
+    }
+    if (cur?.branches) {
+      const branches = cur.branches
+      for (let i = branches.length - 1; i >= 0; i--) {
+        const branch = branches[i]
+        stack = stack.concat(branch)
+      }
+    }
+  }
+  return [cur, ...stack.slice(0, ids.length - 1)]
 }
 export default visit

@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
 import { Node, GroupNode, GroupKind } from "@/types"
-import visit, { visitTree } from "@/parser/visit"
+import { visitTree, getNodesByIds } from "@/parser/visit"
 import { replace } from "./replace"
 
 function group(
@@ -76,27 +76,15 @@ function refreshGroupName(nodes: Node[]) {
 
 export default (
   nodes: Node[],
-  selectedNodes: Node[],
+  selectedIds: string[],
   type: GroupKind | "nonGroup",
   name?: string
 ) => {
   let nextSelectedIds: string[] = []
-  let nextSelectedNodes: Node[] = []
   const nextNodes = produce(nodes, draft => {
+    const selectedNodes = getNodesByIds(draft, selectedIds)
     nextSelectedIds = group(draft, selectedNodes, type, name)
   })
 
-  if (nextSelectedIds.length > 0) {
-    const headId = nextSelectedIds[0]
-    visit(nextNodes, headId, (_, nodeList) => {
-      const startIndex = nodeList.findIndex(({ id }) => id === headId)
-      if (startIndex !== -1) {
-        nextSelectedNodes = nodeList.slice(
-          startIndex,
-          startIndex + nextSelectedIds.length
-        )
-      }
-    })
-  }
-  return { nextNodes, nextSelectedNodes }
+  return { nextNodes, nextSelectedIds }
 }

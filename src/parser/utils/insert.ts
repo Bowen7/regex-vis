@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
 import { CharacterNode, ChoiceNode, Node } from "@/types"
-import visit from "@/parser/visit"
+import visit, { getNodesByIds } from "@/parser/visit"
 import { replaceFromLists } from "./replace"
 type InsertDirection = "prev" | "next" | "branch"
 function insert(
@@ -60,6 +60,9 @@ function genChoiceNode(): ChoiceNode {
 
 export default (
   nodes: Node[],
-  selectedNodes: Node[],
+  selectedIds: string[],
   direction: InsertDirection
-) => produce(nodes, draft => insert(draft, selectedNodes, direction))
+) =>
+  produce(nodes, draft =>
+    insert(draft, getNodesByIds(draft, selectedIds), direction)
+  )

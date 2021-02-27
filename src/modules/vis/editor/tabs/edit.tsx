@@ -5,17 +5,24 @@ import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
 import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
-import { GroupKind, NodesInfo } from "@/types"
+import { GroupKind, NodesInfo, Node } from "@/types"
 import { ActionTypes } from "@/reducers/vis"
+import { getNodesByIds } from "@/parser/visit"
 import VisContext from "../../context"
 
 export type InsertDirection = "prev" | "next" | "branch"
 
 const InfoItem: React.FC<{}> = () => {
+  const [nodes, setNodes] = useState<Node[]>([])
   const {
-    state: { selectedNodes: nodes },
+    state: { selectedIds, nodes: rootNodes },
     dispatch,
   } = useContext(VisContext)
+
+  useEffect(() => setNodes(getNodesByIds(rootNodes, selectedIds)), [
+    rootNodes,
+    selectedIds,
+  ])
 
   const oneNode = nodes.length === 1
   const quantifierShow = oneNode

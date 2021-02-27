@@ -7,7 +7,7 @@ import { ActionTypes } from "@/reducers/vis"
 
 const Railroad: React.FC<{}> = React.memo(() => {
   const {
-    state: { nodes, selectedNodes },
+    state: { nodes, selectedIds },
     dispatch,
   } = useContext(VisContext)
 
@@ -32,16 +32,17 @@ const Railroad: React.FC<{}> = React.memo(() => {
     setRootRenderNode(rootRenderNode)
   }, [nodes, traverse])
 
-  const handleSelect = (nodes: Node[] | Node) => {
+  const handleSelect = (ids: string[] | string) => {
+    console.log(ids)
     dispatch({
       type: ActionTypes.SELECT_NODES,
-      payload: { selected: nodes },
+      payload: { selected: ids },
     })
   }
 
   const onDragSelect = (box: Box) => {
     const { x: boxX, y: boxY, width: boxWidth, height: boxHeight } = box
-    const selectedNodes: Node[] = []
+    const selectedIds: string[] = []
     let selected = false
     function dfs(renderNode: RenderVirtualNode | RenderNode) {
       const { children } = renderNode
@@ -55,7 +56,7 @@ const Railroad: React.FC<{}> = React.memo(() => {
               const overlapY = boxY < y && boxY + boxHeight > y + height
               if (overlapX && overlapY) {
                 selected = true
-                selectedNodes.push(target)
+                selectedIds.push(target.id)
                 break
               } else if (selected) {
                 return
@@ -72,11 +73,7 @@ const Railroad: React.FC<{}> = React.memo(() => {
       }
     }
     dfs(rootRenderNode)
-    handleSelect(selectedNodes)
-  }
-
-  const onClick = (node: Node) => {
-    handleSelect(node)
+    handleSelect(selectedIds)
   }
   return (
     <>
@@ -88,9 +85,8 @@ const Railroad: React.FC<{}> = React.memo(() => {
         width={width}
         height={height}
         rootRenderNode={rootRenderNode}
-        selectedNodes={selectedNodes}
+        selectedIds={selectedIds}
         onDragSelect={onDragSelect}
-        onClick={onClick}
       ></SvgContainer>
     </>
   )

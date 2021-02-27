@@ -12,21 +12,21 @@ type Tab = "legend" | "edit"
 
 const Editor: React.FC<{}> = () => {
   const {
-    state: { selectedNodes: nodes },
+    state: { selectedIds },
     dispatch,
   } = useContext(VisContext)
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
   useEffect(() => {
-    if (nodes.length === 0) {
+    if (selectedIds.length === 0) {
       setTabValue("legend")
     } else {
       setTabValue("edit")
     }
-  }, [nodes])
+  }, [selectedIds])
 
-  const editDisabled = nodes.length === 0
+  const editDisabled = selectedIds.length === 0
 
   const remove = () => dispatch({ type: ActionTypes.REMOVE })
   const undo = () => dispatch({ type: ActionTypes.UNDO })

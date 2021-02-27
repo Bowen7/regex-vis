@@ -168,7 +168,7 @@ const RailNode: React.FC<Props> = React.memo(props => {
   }
 
   function onClick() {
-    props.onClick && props.onClick(node)
+    props.onClick(node)
   }
 
   return (
