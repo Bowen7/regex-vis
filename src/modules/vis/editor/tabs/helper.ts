@@ -10,7 +10,7 @@ export const genInitialNodesInfo = (): NodesInfo => ({
 
 function getGroupInfo(nodes: Node[]): Group | null {
   if (nodes.length !== 1) {
-    return null
+    return { type: "nonGroup" }
   }
   const node = nodes[0]
   const type = node.type === "group" ? node.val.kind : "nonGroup"
