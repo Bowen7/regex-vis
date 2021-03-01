@@ -9,3 +9,7 @@ svg {
 .max-z-index {
   z-index: 1200 !important;
 }
+
+button {
+  vertical-align: middle;
+}
