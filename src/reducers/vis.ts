@@ -1,5 +1,5 @@
-import { Node, GroupKind } from "@/types"
-import { remove, insert, group } from "@/parser/utils"
+import { Node, GroupKind, Character } from "@/types"
+import { remove, insert, group, character } from "@/parser/utils"
 import parser from "@/parser"
 export type InitialStateType = {
   regex: string
@@ -35,6 +35,7 @@ export enum ActionTypes {
   UNDO = "UNDO",
   REDO = "REDO",
   SELECT_NODES = "SELECT_NODES",
+  EDIT_CHARACTER = "EDIT_CHARACTER",
 }
 
 export type Action =
@@ -57,6 +58,10 @@ export type Action =
   | {
       type: ActionTypes.SELECT_NODES
       payload: { selected: string[] | string }
+    }
+  | {
+      type: ActionTypes.EDIT_CHARACTER
+      payload: { val: Character }
     }
 
 const setNodes = (
@@ -158,6 +163,13 @@ export const visReducer = (state: InitialStateType, action: Action) => {
         ...state,
         selectedIds: nextSelected,
       }
+    }
+    case ActionTypes.EDIT_CHARACTER: {
+      const { nodes, selectedIds } = state
+      const { val } = action.payload
+      const id = selectedIds[0]
+      const nextNodes = character(nodes, id, val)
+      return setNodes(state, nextNodes)
     }
     default:
       return state

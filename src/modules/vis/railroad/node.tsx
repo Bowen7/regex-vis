@@ -37,6 +37,8 @@ const RailNode: React.FC<Props> = React.memo(props => {
       case "choice":
         if (!selected) {
           attrs.stroke = "none"
+        } else {
+          attrs.stroke = "rgba(50, 145, 255, 0.5)"
         }
         attrs.fill = "transparent"
         break
