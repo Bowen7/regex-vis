@@ -51,6 +51,27 @@ export function visitTree(nodes: Node[], callback: (node: Node) => void) {
   }
 }
 
+export function getNodeById(nodes: Node[], id: string): Node {
+  let stack = nodes.slice()
+  while (stack.length !== 0) {
+    const cur = stack.shift() as Node
+    if (cur!.id === id) {
+      return cur
+    }
+    if (cur?.children) {
+      stack = stack.concat(cur.children)
+    }
+    if (cur?.branches) {
+      const branches = cur.branches
+      for (let i = branches.length - 1; i >= 0; i--) {
+        const branch = branches[i]
+        stack = stack.concat(branch)
+      }
+    }
+  }
+  throw new Error("unreachable")
+}
+
 export function getNodesByIds(nodes: Node[], ids: string[]): Node[] {
   if (ids.length === 0) {
     return []
