@@ -1,7 +1,8 @@
 import React, { useState, useContext, useEffect } from "react"
-import { Input, Spacer, Button } from "@geist-ui/react"
+import { Spacer, Button } from "@geist-ui/react"
 import RadioGroup from "@/components/radioGroup"
 import Cell from "@/components/cell"
+import Input from "@/components/input"
 import { charactersOptions } from "./helper"
 import { Character, StringCharacter } from "@/types"
 import VisContext from "../../../context"
@@ -46,6 +47,7 @@ const Characters: React.FC<Prop> = ({ character }) => {
         val,
       },
     })
+    setEdited(false)
   }
   return (
     <>
@@ -64,7 +66,7 @@ const Characters: React.FC<Prop> = ({ character }) => {
               onChange={handleStringValueChange}
             />
             <Spacer inline />
-            <Button auto size="small" onClick={handleApply}>
+            <Button auto size="small" onClick={handleApply} disabled={!edited}>
               Apply
             </Button>
           </>
