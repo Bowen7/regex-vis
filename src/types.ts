@@ -154,6 +154,7 @@ export type RenderVirtualNode = {
 }
 
 export type NodesInfo = {
+  id: string
   expression: string
   group: Group | null
   character: Character | null

@@ -1,5 +1,6 @@
-import React, { useState, useContext, useEffect } from "react"
+import React, { useState, useContext, useEffect, useCallback } from "react"
 import { Spacer, Button } from "@geist-ui/react"
+import debounce from "lodash/debounce"
 import RadioGroup from "@/components/radioGroup"
 import Cell from "@/components/cell"
 import Input from "@/components/input"
@@ -9,46 +10,42 @@ import VisContext from "../../../context"
 import { ActionTypes } from "@/reducers/vis"
 type Prop = {
   character: Character
+  id: string
 }
-const Characters: React.FC<Prop> = ({ character }) => {
+const Characters: React.FC<Prop> = ({ character, id }) => {
   const { dispatch } = useContext(VisContext)
-  const [edited, setEdited] = useState(false)
   const [stringValue, setStringValue] = useState("")
 
   useEffect(() => {
-    if (!edited) {
-      switch (character.type) {
-        case "string": {
-          setStringValue(character.value)
-          break
-        }
-      }
-    }
-  }, [character, edited])
-
-  const handleStringValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.value !== stringValue) {
-      setEdited(true)
-    }
-    setStringValue(e.target.value)
-  }
-
-  const handleApply = () => {
-    let val!: StringCharacter
     switch (character.type) {
       case "string": {
-        val = { ...character, value: stringValue }
+        setStringValue(character.value)
         break
       }
     }
-    dispatch({
-      type: ActionTypes.EDIT_CHARACTER,
-      payload: {
-        val,
-      },
-    })
-    setEdited(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
+
+  const handleStringValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setStringValue(e.target.value)
+    debouncedEditStringValue(e.target.value)
   }
+
+  const debouncedEditStringValue = useCallback(
+    debounce((value: string) => {
+      console.log(123)
+      dispatch({
+        type: ActionTypes.EDIT_CHARACTER,
+        payload: {
+          val: {
+            type: "string",
+            value,
+          },
+        },
+      })
+    }, 500),
+    [dispatch]
+  )
   return (
     <>
       <Cell label="Characters:">
@@ -59,17 +56,11 @@ const Characters: React.FC<Prop> = ({ character }) => {
         />
         <Spacer y={0.5} />
         {character.type === "string" && (
-          <>
-            <Input
-              size="small"
-              value={stringValue}
-              onChange={handleStringValueChange}
-            />
-            <Spacer inline />
-            <Button auto size="small" onClick={handleApply} disabled={!edited}>
-              Apply
-            </Button>
-          </>
+          <Input
+            size="small"
+            value={stringValue}
+            onChange={handleStringValueChange}
+          />
         )}
       </Cell>
       <style jsx>{``}</style>

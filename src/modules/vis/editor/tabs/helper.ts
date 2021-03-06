@@ -6,9 +6,10 @@ export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
   group: null,
   character: null,
+  id: "",
 })
 
-function getGroupInfo(nodes: Node[]): Group | null {
+const getGroupInfo = (nodes: Node[]): Group | null => {
   if (nodes.length !== 1) {
     return { type: "nonGroup" }
   }
@@ -17,16 +18,24 @@ function getGroupInfo(nodes: Node[]): Group | null {
   return type === "namedCapturing" ? { type, name: node.val.name } : { type }
 }
 
-function getCharacterInfo(nodes: Node[]): Character | null {
+const getCharacterInfo = (nodes: Node[]): Character | null => {
   if (nodes.length === 1 && nodes[0].type === "character") {
     return nodes[0].val
   }
   return null
 }
 
+const getId = (nodes: Node[]): string => {
+  if (nodes.length === 1) {
+    return nodes[0].id
+  }
+  return ""
+}
+
 export function getInfoFromNodes(nodes: Node[]): NodesInfo {
   const expression = parser.gen(nodes)
   const group = getGroupInfo(nodes)
   const character = getCharacterInfo(nodes)
-  return { expression, group, character }
+  const id = getId(nodes)
+  return { id, expression, group, character }
 }

@@ -29,7 +29,7 @@ const InfoItem: React.FC<{}> = () => {
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
-  const { expression, group, character } = nodesInfo
+  const { id, expression, group, character } = nodesInfo
 
   const handleInsert = (direction: InsertDirection) =>
     dispatch({ type: ActionTypes.INSERT, payload: { direction } })
@@ -83,7 +83,7 @@ const InfoItem: React.FC<{}> = () => {
           <Divider y={0} />
           <Fieldset.Content>
             <Expression expression={expression} />
-            {character && <Characters character={character} />}
+            {character && <Characters character={character} id={id} />}
             {group && <Group group={group} onGroupChange={handleGroup} />}
             {quantifierShow && <Quantifier />}
           </Fieldset.Content>
