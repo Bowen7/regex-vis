@@ -1,6 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef } from "react"
 
-export function useEventListener(
+export default function useEventListener(
   eventName: string,
   handler: (e: Event) => void,
   element: HTMLElement | Window = window

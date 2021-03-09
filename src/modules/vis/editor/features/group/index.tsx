@@ -1,9 +1,11 @@
-import React from "react"
-import { Tooltip, Input, Select, Spacer } from "@geist-ui/react"
+import React, { useEffect } from "react"
+import { Tooltip, Select, Spacer } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
+import Input from "@/components/input"
 import { groupData } from "./helper"
 import { Group } from "@/types"
 import Cell from "@/components/cell"
+import { useDebounceInput } from "@/utils/hooks"
 type GroupSelectProps = {
   group: Group
   onGroupChange: (groupType: string, groupName: string) => void
@@ -11,18 +13,28 @@ type GroupSelectProps = {
 
 const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
   const { type } = group
-  function onInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    e.stopPropagation()
-    onGroupChange(type, e.target.value)
-  }
+
+  const [setName, nameBindings, cancelNameChange] = useDebounceInput(
+    value => {
+      onGroupChange(type, value)
+    },
+    [type]
+  )
+
+  useEffect(() => {
+    cancelNameChange && cancelNameChange()
+    if (group.type === "namedCapturing") {
+      setName(group.name)
+    } else {
+      setName("")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [type])
 
   function onSelectChange(value: string | string[]) {
     onGroupChange(value as string, "name" in group ? group.name : "")
   }
 
-  function onKeyDown(e: React.KeyboardEvent) {
-    e.stopPropagation()
-  }
   function onTipClick(e: React.MouseEvent) {
     e.preventDefault()
   }
@@ -55,12 +67,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
         {group.type === "namedCapturing" && (
           <>
             <Spacer x={1} inline />
-            <Input
-              label="The capture group's name"
-              value={group.name}
-              onChange={onInputChange}
-              onKeyDown={onKeyDown}
-            />
+            <Input label="The capture group's name" {...nameBindings} />
           </>
         )}
       </Cell>

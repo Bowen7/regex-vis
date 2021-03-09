@@ -4,6 +4,7 @@ import debounce from "lodash/debounce"
 import RadioGroup from "@/components/radioGroup"
 import Cell from "@/components/cell"
 import Input from "@/components/input"
+import { useDebounceInput } from "@/utils/hooks"
 import { charactersOptions } from "./helper"
 import { Character, StringCharacter } from "@/types"
 import VisContext from "../../../context"
@@ -14,26 +15,9 @@ type Prop = {
 }
 const Characters: React.FC<Prop> = ({ character, id }) => {
   const { dispatch } = useContext(VisContext)
-  const [stringValue, setStringValue] = useState("")
 
-  useEffect(() => {
-    switch (character.type) {
-      case "string": {
-        setStringValue(character.value)
-        break
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [id])
-
-  const handleStringValueChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setStringValue(e.target.value)
-    debouncedEditStringValue(e.target.value)
-  }
-
-  const debouncedEditStringValue = useCallback(
-    debounce((value: string) => {
-      console.log(123)
+  const [setString, stringBindings] = useDebounceInput(
+    (value: string) =>
       dispatch({
         type: ActionTypes.EDIT_CHARACTER,
         payload: {
@@ -42,10 +26,19 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
             value,
           },
         },
-      })
-    }, 500),
+      }),
     [dispatch]
   )
+
+  useEffect(() => {
+    switch (character.type) {
+      case "string": {
+        setString(character.value)
+        break
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [id])
   return (
     <>
       <Cell label="Characters:">
@@ -56,11 +49,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         />
         <Spacer y={0.5} />
         {character.type === "string" && (
-          <Input
-            size="small"
-            value={stringValue}
-            onChange={handleStringValueChange}
-          />
+          <Input size="small" {...stringBindings} />
         )}
       </Cell>
       <style jsx>{``}</style>
