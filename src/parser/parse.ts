@@ -136,7 +136,7 @@ function parseCharacterSet(characterSet: AST.CharacterSet): CharacterNode {
     id: nanoid(),
     type: "character",
     val: {
-      type: "special",
+      type: "class",
       value: raw,
     },
     text: text,

@@ -8,7 +8,7 @@ export const charactersOptions = [
     value: "ranges",
   },
   {
-    label: "Special character",
-    value: "special",
+    label: "Character class",
+    value: "class",
   },
 ]

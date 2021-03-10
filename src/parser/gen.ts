@@ -93,7 +93,7 @@ function genCharacter(node: CharacterNode) {
       return (negate ? "[^" : "[") + str + "]"
     case "string":
       return prefix(val.value)
-    case "special":
+    case "class":
       return val.value
     default:
       return ""

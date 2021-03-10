@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react"
 import { Divider, Button, ButtonGroup, Fieldset, Spacer } from "@geist-ui/react"
-import Characters from "../features/characters"
+import Characters from "../features/basic"
 import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"

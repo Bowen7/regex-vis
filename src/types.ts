@@ -24,12 +24,12 @@ export type RangesCharacter = {
   negate: boolean
 }
 
-export type SpecialCharacter = {
-  type: "special"
+export type ClassCharacter = {
+  type: "class"
   value: string
 }
 
-export type Character = StringCharacter | RangesCharacter | SpecialCharacter
+export type Character = StringCharacter | RangesCharacter | ClassCharacter
 
 export interface NodeBase {
   id: string
