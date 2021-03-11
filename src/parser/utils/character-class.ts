@@ -19,4 +19,5 @@ const characterClassTextMap = {
   "\\u{hhhh}": "Unicode",
   "\\u{hhhhh}": "Unicode",
 }
+export type CharacterClassKey = keyof typeof characterClassTextMap
 export { characterClassTextMap }

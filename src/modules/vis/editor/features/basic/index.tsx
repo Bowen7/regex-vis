@@ -1,6 +1,5 @@
 import React, { useState, useContext, useEffect, useCallback } from "react"
 import { Spacer, Button } from "@geist-ui/react"
-import debounce from "lodash/debounce"
 import RadioGroup from "@/components/radioGroup"
 import Cell from "@/components/cell"
 import Input from "@/components/input"
@@ -39,13 +38,33 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id])
+
+  const handleTypeChange = (type: string) => {
+    let val!: Character
+    switch (type) {
+      case "string":
+        val = { type: "string", value: stringBindings.value }
+        break
+      case "class":
+        val = { type: "class", value: "." }
+        break
+      default:
+        return
+    }
+    dispatch({
+      type: ActionTypes.EDIT_CHARACTER,
+      payload: {
+        val: val as Character,
+      },
+    })
+  }
   return (
     <>
       <Cell label="Characters:">
         <RadioGroup
           value={character.type}
           options={charactersOptions}
-          onChange={() => {}}
+          onChange={handleTypeChange}
         />
         <Spacer y={0.5} />
         {character.type === "string" && (
