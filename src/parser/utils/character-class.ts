@@ -13,11 +13,16 @@ const characterClassTextMap = {
   "\\f": "Form-feed",
   "[\\b]": "Backspace",
   "[\\0]": "NUL",
-  "\\c": "Control",
   "\\xhh": "\\x00-\\xFF",
   "\\uhhhh": "\\u0000-\\uFFFF",
   "\\u{hhhh}": "Unicode",
   "\\u{hhhhh}": "Unicode",
+  "\\cH": "\\b Backspace",
+  "\\cI": "\\t Horizontal Tab",
+  "\\cJ": "\\n Line Feed",
+  "\\cK": "\\v Vertical Tab",
+  "\\cL": "\\f Form Feed",
+  "\\cM": "\\r Carriage Return",
 }
 export type CharacterClassKey = keyof typeof characterClassTextMap
 export { characterClassTextMap }
