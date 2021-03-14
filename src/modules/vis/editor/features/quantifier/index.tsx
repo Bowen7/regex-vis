@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Checkbox } from "@geist-ui/react"
 import Cell from "@/components/cell"
-import RadioGroup from "@/components/radioGroup"
+import RadioGroup from "@/components/radio-group"
 import { quantifierOptions } from "./helper"
 const Quantifier: React.FC<{}> = () => {
   const [times, setTimes] = useState("non")

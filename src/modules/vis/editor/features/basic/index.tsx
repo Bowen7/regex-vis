@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect, useCallback } from "react"
 import { Spacer, Select, Code, AutoComplete } from "@geist-ui/react"
-import RadioGroup from "@/components/radioGroup"
+import RadioGroup from "@/components/radio-group"
+import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import Input from "@/components/input"
 import { useDebounceInput } from "@/utils/hooks"
@@ -96,13 +97,17 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           <Input size="small" {...stringBindings} />
         )}
         {character.type === "ranges" &&
-          ranges.map(range => (
-            <React.Fragment>
-              <AutoComplete value={range.from} width="50px" size="mini" />
-              -
-              <AutoComplete value={range.to} width="50px" size="mini" />
-              <Spacer x={0.5} inline />
-            </React.Fragment>
+          ranges.map((range, index) => (
+            <>
+              {index !== 0 && (
+                <>
+                  <Spacer inline />
+                  <span>or</span>
+                  <Spacer inline />
+                </>
+              )}
+              <RangeOption range={range} />
+            </>
           ))}
         {character.type === "class" && (
           <Select
@@ -122,11 +127,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           </Select>
         )}
       </Cell>
-      <style jsx global>{`
-        .auto-complete {
-          display: inline-block;
-        }
-      `}</style>
+      <style jsx>{``}</style>
     </>
   )
 }
