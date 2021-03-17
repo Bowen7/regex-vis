@@ -9,7 +9,7 @@ import { charactersOptions } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
 import { Character, ClassCharacter, Range } from "@/types"
 import VisContext from "../../../context"
-import { ActionTypes } from "@/reducers/vis"
+import { ActionTypes } from "@/redux/vis"
 import { classOptions } from "./helper"
 type Prop = {
   character: Character

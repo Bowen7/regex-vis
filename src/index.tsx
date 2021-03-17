@@ -2,8 +2,8 @@ import React from "react"
 import ReactDOM from "react-dom"
 import { GeistProvider, CssBaseline } from "@geist-ui/react"
 import { colors } from "@/constants/style"
-import "./index.css"
 import App from "./App"
+import { MainProvider } from "@/redux"
 import * as serviceWorker from "./serviceWorker"
 
 const theme = {
@@ -16,7 +16,9 @@ ReactDOM.render(
   <>
     <GeistProvider theme={theme}>
       <CssBaseline />
-      <App />
+      <MainProvider>
+        <App />
+      </MainProvider>
     </GeistProvider>
     <style jsx global>{`
       ::selection {
@@ -24,6 +26,19 @@ ReactDOM.render(
       }
       body {
         color: ${colors.dark};
+        box-sizing: border-box;
+      }
+
+      svg {
+        user-select: none;
+      }
+
+      .max-z-index {
+        z-index: 1200 !important;
+      }
+
+      button {
+        vertical-align: middle;
       }
     `}</style>
   </>,

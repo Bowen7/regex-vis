@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react"
 import BookOpen from "@geist-ui/react-icons/bookOpen"
 import Edit from "@geist-ui/react-icons/edit"
 import { Tabs } from "@geist-ui/react"
-import { ActionTypes } from "@/reducers/vis"
+import { ActionTypes } from "@/redux/vis"
 import VisContext from "../context"
 import EditTab from "./tabs/edit"
 import LegendTab from "./tabs/legend"
@@ -81,8 +81,12 @@ const Editor: React.FC<{}> = () => {
       </div>
       <style jsx>{`
         .container {
-          width: 800px;
-          margin: 24px auto;
+          position: fixed;
+          top: 72px;
+          right: 0;
+          height: calc(100% - 72px);
+          overflow-y: auto;
+          width: 200px;
         }
       `}</style>
     </>

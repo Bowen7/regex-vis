@@ -1,5 +1,5 @@
 import React, { useReducer, useMemo } from "react"
-import { genInitialState, visReducer } from "@/reducers/vis"
+import { genInitialState, visReducer } from "@/redux/vis"
 import Container from "./container"
 
 import VisContext from "./context"

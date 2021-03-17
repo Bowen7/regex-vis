@@ -1,5 +1,5 @@
 import { createContext, Dispatch } from "react"
-import { InitialStateType, initialState, Action } from "@/reducers/vis"
+import { InitialStateType, initialState, Action } from "@/redux/vis"
 const VisContext = createContext<{
   state: InitialStateType
   dispatch: Dispatch<Action>

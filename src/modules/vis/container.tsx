@@ -1,9 +1,9 @@
 import React, { useContext } from "react"
 import { Input, Button } from "@geist-ui/react"
 import VisContext from "./context"
-import { ActionTypes } from "@/reducers/vis"
+import { ActionTypes } from "@/redux/vis"
 import Editor from "./editor"
-import Railroad from "./railroad"
+// import Railroad from "./railroad"
 import parser from "@/parser"
 
 const Container: React.FC<{}> = React.memo(() => {
@@ -30,7 +30,7 @@ const Container: React.FC<{}> = React.memo(() => {
   return (
     <>
       <div className="container">
-        <Railroad />
+        {/* <Railroad /> */}
         <Editor />
         <div>
           <Input

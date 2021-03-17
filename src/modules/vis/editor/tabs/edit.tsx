@@ -6,7 +6,7 @@ import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
 import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
 import { GroupKind, NodesInfo, Node } from "@/types"
-import { ActionTypes } from "@/reducers/vis"
+import { ActionTypes } from "@/redux/vis"
 import { getNodesByIds } from "@/parser/visit"
 import VisContext from "../../context"
 

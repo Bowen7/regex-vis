@@ -27,15 +27,15 @@ export const genInitialState = (regex: string): InitialStateType => {
 }
 
 export enum ActionTypes {
-  SET_REGEX = "SET_REGEX",
-  INSERT = "INSERT_NODE",
-  REMOVE = "REMOVE_NODES",
-  GROUP = "GROUP_NODES",
-  SET_NODES = "SET_NODES",
-  UNDO = "UNDO",
-  REDO = "REDO",
-  SELECT_NODES = "SELECT_NODES",
-  EDIT_CHARACTER = "EDIT_CHARACTER",
+  SET_REGEX,
+  INSERT,
+  REMOVE,
+  GROUP,
+  SET_NODES,
+  UNDO,
+  REDO,
+  SELECT_NODES,
+  EDIT_CHARACTER,
 }
 
 export type Action =

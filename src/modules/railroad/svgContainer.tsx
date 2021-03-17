@@ -1,21 +1,19 @@
 import React, { useState, useRef, useCallback, useContext } from "react"
-import { useEventListener } from "../../../utils/hooks"
+import { useEventListener } from "@/utils/hooks"
 import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
 import RailNode from "./node"
 import Connect from "./connect"
-import HomeContext from "@/modules/vis/context"
-import { ActionTypes } from "@/reducers/vis"
+import { MainActionTypes, useMainReducer } from "@/redux"
 type Props = {
   width: number
   height: number
   rootRenderNode: RenderVirtualNode
   selectedIds: string[]
-  onDragSelect: (box: Box) => void
 }
-const SvgContainer: React.FC<Props> = React.memo(props => {
-  const { width, height, rootRenderNode, onDragSelect, selectedIds } = props
-  const { dispatch } = useContext(HomeContext)
+const SvgContainer: React.FC<Props> = props => {
+  const { width, height, rootRenderNode, selectedIds } = props
+  const [_, dispatch] = useMainReducer()
   const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
   const startX = useRef<number>(0)
@@ -23,6 +21,45 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
   const endX = useRef<number>(0)
   const endY = useRef<number>(0)
   const [rect, setRect] = useState<Box>({ x: 0, y: 0, width: 0, height: 0 })
+  const onDragSelect = (box: Box) => {
+    const { x: boxX, y: boxY, width: boxWidth, height: boxHeight } = box
+    const selectedIds: string[] = []
+    let selected = false
+    function dfs(renderNode: RenderVirtualNode | RenderNode) {
+      const { children } = renderNode
+      for (let i = 0; i < children.length; i++) {
+        const child = children[i]
+        switch (child.type) {
+          case "node":
+            const { target, x, y, width, height } = child
+            if (target.type !== "root") {
+              const overlapX = boxX < x && boxX + boxWidth > x + width
+              const overlapY = boxY < y && boxY + boxHeight > y + height
+              if (overlapX && overlapY) {
+                selected = true
+                selectedIds.push(target.id)
+                break
+              } else if (selected) {
+                return
+              }
+            }
+            dfs(child)
+            break
+          case "virtual":
+            dfs(child)
+            break
+          default:
+            break
+        }
+      }
+    }
+    dfs(rootRenderNode)
+    dispatch({
+      type: MainActionTypes.SELECT_NODES,
+      payload: { selected: selectedIds },
+    })
+  }
+
   function onMouseDown(e: React.MouseEvent<SVGSVGElement>) {
     const { offsetX, offsetY } = e.nativeEvent
     dragging.current = true
@@ -77,7 +114,7 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
     (node: Node) => {
       if (!moving.current) {
         dispatch({
-          type: ActionTypes.SELECT_NODES,
+          type: MainActionTypes.SELECT_NODES,
           payload: { selected: node.id },
         })
       }
@@ -200,6 +237,6 @@ const SvgContainer: React.FC<Props> = React.memo(props => {
       `}</style>
     </>
   )
-})
+}
 
 export default SvgContainer
