@@ -2,28 +2,28 @@ import React, { useRef, useState, useEffect } from "react"
 import { RenderVirtualNode, Node } from "@/types"
 import Traverse from "./traverse"
 import SvgContainer from "./svgContainer"
-import { useMainReducer } from "@/redux"
+import { useMainReducer, MainActionTypes } from "@/redux"
+import { useEffectOnce } from "@/utils/hooks"
 import parser from "@/parser"
 import { nanoid } from "nanoid"
 type Props = {
   regex: string
+  onMount?: (id: string, nodes: Node[]) => void
   onChange?: (regex: string) => void
 }
-const emptyArr: string[] = []
-const Railroad: React.FC<Props> = ({ regex: propRegex, onChange }) => {
+const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
   const [
     { nodes: propNodes, selectedIds: propSelectedIds, activeId: propActiveId },
+    dispatch,
   ] = useMainReducer()
 
-  const regex = useRef<string>("")
+  const regex = useRef<string>(propRegex)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const traverse = useRef<Traverse>(new Traverse(canvasRef))
 
-  const activeId = useRef<string>(nanoid())
+  const id = useRef<string>(nanoid())
   const [nodes, setNodes] = useState<Node[]>([])
   const [selectedIds, setSelectedIds] = useState<string[]>([])
-  const [width, setWidth] = useState(0)
-  const [height, setHeight] = useState(0)
   const [rootRenderNode, setRootRenderNode] = useState<RenderVirtualNode>({
     type: "virtual",
     x: 0,
@@ -33,43 +33,52 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange }) => {
     children: [],
   })
 
+  useEffectOnce(() => {
+    onMount && onMount(id.current, nodes)
+  })
+
   useEffect(() => {
     if (propRegex !== regex.current) {
       regex.current = propRegex
       const nodes = parser.parse(propRegex)
       setNodes(nodes)
+      if (propActiveId === id.current) {
+        dispatch({
+          type: MainActionTypes.SET_ACTIVE_CHART,
+          payload: { id: id.current, nodes, selectedIds: [] },
+        })
+      }
     }
-  }, [propRegex])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propRegex, propActiveId])
 
   useEffect(() => {
-    if (activeId.current !== propActiveId) {
-      setSelectedIds(emptyArr)
+    if (id.current !== propActiveId) {
+      if (selectedIds.length > 0) {
+        setSelectedIds([])
+      }
       return
     }
     setNodes(propNodes)
     setSelectedIds(propSelectedIds)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [propNodes, propActiveId, propSelectedIds])
 
   useEffect(() => {
-    console.log(nodes)
     const rootRenderNode = traverse.current.render(nodes)
-    const { width, height } = rootRenderNode
     regex.current = parser.gen(nodes)
     onChange && onChange(regex.current)
-    setWidth(width)
-    setHeight(height)
     setRootRenderNode(rootRenderNode)
   }, [onChange, nodes])
 
   return (
     <>
+      {/* for measureText */}
       <canvas
         ref={canvasRef}
         style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
       />
       <SvgContainer
-        width={width}
-        height={height}
         rootRenderNode={rootRenderNode}
         selectedIds={selectedIds}
       />

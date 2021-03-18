@@ -1,20 +1,16 @@
-import React, { useState, useEffect, useContext } from "react"
+import React, { useState, useEffect } from "react"
 import BookOpen from "@geist-ui/react-icons/bookOpen"
 import Edit from "@geist-ui/react-icons/edit"
 import { Tabs } from "@geist-ui/react"
-import { ActionTypes } from "@/redux/vis"
-import VisContext from "../context"
+import { useMainReducer, MainActionTypes } from "@/redux/"
 import EditTab from "./tabs/edit"
 import LegendTab from "./tabs/legend"
-import { useEventListener } from "../../../utils/hooks"
+import { useEventListener } from "@/utils/hooks"
 
 type Tab = "legend" | "edit"
 
 const Editor: React.FC<{}> = () => {
-  const {
-    state: { selectedIds },
-    dispatch,
-  } = useContext(VisContext)
+  const [{ selectedIds }, dispatch] = useMainReducer()
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -28,9 +24,9 @@ const Editor: React.FC<{}> = () => {
 
   const editDisabled = selectedIds.length === 0
 
-  const remove = () => dispatch({ type: ActionTypes.REMOVE })
-  const undo = () => dispatch({ type: ActionTypes.UNDO })
-  const redo = () => dispatch({ type: ActionTypes.REDO })
+  const remove = () => dispatch({ type: MainActionTypes.REMOVE })
+  const undo = () => dispatch({ type: MainActionTypes.UNDO })
+  const redo = () => dispatch({ type: MainActionTypes.REDO })
 
   useEventListener("keydown", (e: Event) => {
     const event = e as KeyboardEvent

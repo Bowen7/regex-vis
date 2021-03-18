@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react"
+import React, { useEffect, useState } from "react"
 import { Divider, Button, ButtonGroup, Fieldset, Spacer } from "@geist-ui/react"
 import Characters from "../features/basic"
 import Group from "../features/group"
@@ -6,18 +6,14 @@ import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
 import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
 import { GroupKind, NodesInfo, Node } from "@/types"
-import { ActionTypes } from "@/redux/vis"
 import { getNodesByIds } from "@/parser/visit"
-import VisContext from "../../context"
+import { useMainReducer, MainActionTypes } from "@/redux"
 
 export type InsertDirection = "prev" | "next" | "branch"
 
 const InfoItem: React.FC<{}> = () => {
   const [nodes, setNodes] = useState<Node[]>([])
-  const {
-    state: { selectedIds, nodes: rootNodes },
-    dispatch,
-  } = useContext(VisContext)
+  const [{ selectedIds, nodes: rootNodes }, dispatch] = useMainReducer()
 
   useEffect(() => setNodes(getNodesByIds(rootNodes, selectedIds)), [
     rootNodes,
@@ -32,10 +28,10 @@ const InfoItem: React.FC<{}> = () => {
   const { id, expression, group, character } = nodesInfo
 
   const handleInsert = (direction: InsertDirection) =>
-    dispatch({ type: ActionTypes.INSERT, payload: { direction } })
+    dispatch({ type: MainActionTypes.INSERT, payload: { direction } })
   const handleGroup = (groupType: string, groupName: string) =>
     dispatch({
-      type: ActionTypes.GROUP,
+      type: MainActionTypes.GROUP,
       payload: { groupType: groupType as GroupKind | "nonGroup", groupName },
     })
 

@@ -16,8 +16,8 @@ export const initialState: InitialStateType = {
   redoStack: [],
 }
 
-export enum MainActionTypes {
-  SET_ACTIVE_ID,
+export enum ActionTypes {
+  SET_ACTIVE_CHART,
   INSERT,
   REMOVE,
   GROUP,
@@ -30,27 +30,27 @@ export enum MainActionTypes {
 
 export type Action =
   | {
-      type: MainActionTypes.SET_ACTIVE_ID
-      payload: { id: string }
+      type: ActionTypes.SET_ACTIVE_CHART
+      payload: { id: string; nodes: Node[]; selectedIds: string[] }
     }
   | {
-      type: MainActionTypes.INSERT
+      type: ActionTypes.INSERT
       payload: { direction: "prev" | "next" | "branch" }
     }
-  | { type: MainActionTypes.REMOVE }
+  | { type: ActionTypes.REMOVE }
   | {
-      type: MainActionTypes.GROUP
+      type: ActionTypes.GROUP
       payload: { groupType: GroupKind | "nonGroup"; groupName: string }
     }
-  | { type: MainActionTypes.SET_NODES; payload: { nodes: Node[] } }
-  | { type: MainActionTypes.UNDO }
-  | { type: MainActionTypes.REDO }
+  | { type: ActionTypes.SET_NODES; payload: { nodes: Node[] } }
+  | { type: ActionTypes.UNDO }
+  | { type: ActionTypes.REDO }
   | {
-      type: MainActionTypes.SELECT_NODES
+      type: ActionTypes.SELECT_NODES
       payload: { selected: string[] | string }
     }
   | {
-      type: MainActionTypes.EDIT_CHARACTER
+      type: ActionTypes.EDIT_CHARACTER
       payload: { val: Character }
     }
 
@@ -71,22 +71,22 @@ const setNodes = (
 
 export const reducer = (state: InitialStateType, action: Action) => {
   switch (action.type) {
-    case MainActionTypes.SET_ACTIVE_ID: {
-      const { id } = action.payload
-      return { ...state, activeId: id }
+    case ActionTypes.SET_ACTIVE_CHART: {
+      const { id, nodes, selectedIds } = action.payload
+      return { ...state, activeId: id, nodes, selectedIds }
     }
-    case MainActionTypes.INSERT: {
+    case ActionTypes.INSERT: {
       const { nodes, selectedIds } = state
       const { direction } = action.payload
       const nextNodes = insert(nodes, selectedIds, direction)
       return setNodes(state, nextNodes)
     }
-    case MainActionTypes.REMOVE: {
+    case ActionTypes.REMOVE: {
       const { nodes, selectedIds } = state
       const nextNodes = remove(nodes, selectedIds)
       return setNodes(state, nextNodes, { selectedIds: [] })
     }
-    case MainActionTypes.GROUP: {
+    case ActionTypes.GROUP: {
       const { nodes, selectedIds } = state
       const { groupType, groupName } = action.payload
       const { nextNodes, nextSelectedIds } = group(
@@ -97,13 +97,13 @@ export const reducer = (state: InitialStateType, action: Action) => {
       )
       return setNodes(state, nextNodes, { selectedIds: nextSelectedIds })
     }
-    case MainActionTypes.SET_NODES: {
+    case ActionTypes.SET_NODES: {
       const { undoStack, nodes } = state
       const { nodes: nextNodes } = action.payload
       undoStack.push(nodes)
       return setNodes(state, nextNodes, { undoStack })
     }
-    case MainActionTypes.UNDO: {
+    case ActionTypes.UNDO: {
       const { undoStack, redoStack, nodes } = state
       if (undoStack.length > 0) {
         const nextNodes = undoStack.pop()
@@ -117,7 +117,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       }
       return state
     }
-    case MainActionTypes.REDO: {
+    case ActionTypes.REDO: {
       const { undoStack, redoStack, nodes } = state
       if (redoStack.length > 0) {
         const nextNodes = redoStack.pop()
@@ -131,7 +131,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       }
       return state
     }
-    case MainActionTypes.SELECT_NODES: {
+    case ActionTypes.SELECT_NODES: {
       const { selectedIds } = state
       let { selected: nextSelected } = action.payload
 
@@ -153,7 +153,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
         selectedIds: nextSelected,
       }
     }
-    case MainActionTypes.EDIT_CHARACTER: {
+    case ActionTypes.EDIT_CHARACTER: {
       const { nodes, selectedIds } = state
       const { val } = action.payload
       const id = selectedIds[0]

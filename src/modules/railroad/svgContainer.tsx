@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback, useContext } from "react"
+import React, { useState, useRef, useCallback } from "react"
 import { useEventListener } from "@/utils/hooks"
 import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
@@ -6,14 +6,13 @@ import RailNode from "./node"
 import Connect from "./connect"
 import { MainActionTypes, useMainReducer } from "@/redux"
 type Props = {
-  width: number
-  height: number
   rootRenderNode: RenderVirtualNode
   selectedIds: string[]
 }
-const SvgContainer: React.FC<Props> = props => {
-  const { width, height, rootRenderNode, selectedIds } = props
-  const [_, dispatch] = useMainReducer()
+const SvgContainer: React.FC<Props> = (props) => {
+  const { rootRenderNode, selectedIds } = props
+  const { width, height } = rootRenderNode
+  const [, dispatch] = useMainReducer()
   const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
   const startX = useRef<number>(0)
@@ -160,7 +159,7 @@ const SvgContainer: React.FC<Props> = props => {
         if (
           nodeSelected &&
           target.branches &&
-          selectedIds.every(selectedId => selectedId !== id)
+          selectedIds.every((selectedId) => selectedId !== id)
         ) {
           nodeSelected = false
         }
@@ -195,7 +194,7 @@ const SvgContainer: React.FC<Props> = props => {
         return
       }
 
-      children.forEach(item => {
+      children.forEach((item) => {
         if (item.type === "node" && item.target.id === selectedHeadId) {
           selected = true
         }

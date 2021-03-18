@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect, useCallback } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Spacer, Select, Code, AutoComplete } from "@geist-ui/react"
 import RadioGroup from "@/components/radio-group"
 import RangeOption from "@/components/range-option"
@@ -8,20 +8,19 @@ import { useDebounceInput } from "@/utils/hooks"
 import { charactersOptions } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
 import { Character, ClassCharacter, Range } from "@/types"
-import VisContext from "../../../context"
-import { ActionTypes } from "@/redux/vis"
+import { useMainReducer, MainActionTypes } from "@/redux"
 import { classOptions } from "./helper"
 type Prop = {
   character: Character
   id: string
 }
 const Characters: React.FC<Prop> = ({ character, id }) => {
-  const { dispatch } = useContext(VisContext)
+  const [, dispatch] = useMainReducer()
 
   const [setString, stringBindings] = useDebounceInput(
     (value: string) =>
       dispatch({
-        type: ActionTypes.EDIT_CHARACTER,
+        type: MainActionTypes.EDIT_CHARACTER,
         payload: {
           val: {
             type: "string",
@@ -64,7 +63,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         return
     }
     dispatch({
-      type: ActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.EDIT_CHARACTER,
       payload: {
         val: val as Character,
       },
@@ -78,7 +77,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
       value: value as string,
     }
     dispatch({
-      type: ActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.EDIT_CHARACTER,
       payload: {
         val,
       },

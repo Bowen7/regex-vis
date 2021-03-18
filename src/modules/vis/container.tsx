@@ -2,7 +2,7 @@ import React, { useContext } from "react"
 import { Input, Button } from "@geist-ui/react"
 import VisContext from "./context"
 import { ActionTypes } from "@/redux/vis"
-import Editor from "./editor"
+import Editor from "@/modules/editor"
 // import Railroad from "./railroad"
 import parser from "@/parser"
 
