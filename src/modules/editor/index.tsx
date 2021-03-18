@@ -82,7 +82,7 @@ const Editor: React.FC<{}> = () => {
           right: 0;
           height: calc(100% - 72px);
           overflow-y: auto;
-          width: 200px;
+          width: 250px;
         }
       `}</style>
     </>

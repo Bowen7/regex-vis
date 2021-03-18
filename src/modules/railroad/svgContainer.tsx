@@ -228,12 +228,6 @@ const SvgContainer: React.FC<Props> = (props) => {
           fillOpacity={0.5}
         ></rect>
       </svg>
-      <style jsx>{`
-        svg {
-          border: 0.5px dashed #999;
-          border-radius: 5px;
-        }
-      `}</style>
     </>
   )
 }

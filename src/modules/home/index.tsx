@@ -20,12 +20,19 @@ const Home: React.FC<{}> = () => {
 
   return (
     <>
-      <Railroad
-        regex={DEFAULT_REGEX}
-        onChange={handleChange}
-        onMount={handleMount}
-      />
+      <div className="railroad">
+        <Railroad
+          regex={DEFAULT_REGEX}
+          onChange={handleChange}
+          onMount={handleMount}
+        />
+      </div>
       <Editor />
+      <style jsx>{`
+        .railroad {
+          width: calc(100% - 250px);
+        }
+      `}</style>
     </>
   )
 }
