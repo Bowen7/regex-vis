@@ -21,16 +21,27 @@ const Home: React.FC<{}> = () => {
   return (
     <>
       <div className="railroad">
-        <Railroad
-          regex={DEFAULT_REGEX}
-          onChange={handleChange}
-          onMount={handleMount}
-        />
+        <div className="content">
+          <Railroad
+            regex={DEFAULT_REGEX}
+            onChange={handleChange}
+            onMount={handleMount}
+          />
+        </div>
       </div>
       <Editor />
       <style jsx>{`
         .railroad {
           width: calc(100% - 250px);
+          height: calc(100vh - 144px);
+          display: flex;
+          overflow: auto;
+        }
+
+        .content {
+          /* https://stackoverflow.com/questions/33454533/cant-scroll-to-top-of-flex-item-that-is-overflowing-container */
+          margin: auto;
+          padding: 24px;
         }
       `}</style>
     </>

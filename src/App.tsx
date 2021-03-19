@@ -1,6 +1,7 @@
 import React, { lazy, Suspense } from "react"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import Header from "./modules/common/header"
+import Footer from "./modules/common/footer"
 import Playground from "@/modules/playground"
 
 const Home = lazy(() => import("./modules/home"))
@@ -8,7 +9,7 @@ const Home = lazy(() => import("./modules/home"))
 export default function App() {
   return (
     <Router>
-      <div>
+      <>
         <Header />
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
@@ -27,7 +28,8 @@ export default function App() {
             </Route>
           </Switch>
         </Suspense>
-      </div>
+        <Footer/>
+      </>
     </Router>
   )
 }

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useCallback } from "react"
+import {useTheme} from "@geist-ui/react"
 import { useEventListener } from "@/utils/hooks"
 import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
@@ -11,6 +12,7 @@ type Props = {
 }
 const SvgContainer: React.FC<Props> = (props) => {
   const { rootRenderNode, selectedIds } = props
+  const {palette} = useTheme()
   const { width, height } = rootRenderNode
   const [, dispatch] = useMainReducer()
   const dragging = useRef<boolean>(false)
@@ -228,6 +230,13 @@ const SvgContainer: React.FC<Props> = (props) => {
           fillOpacity={0.5}
         ></rect>
       </svg>
+      <style jsx>{`
+        svg {
+          border: 1px solid ${palette.accents_2};
+          border-radius: 5px;
+        }
+      `}
+      </style>
     </>
   )
 }
