@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@geist-ui/react": "^2.1.0-canary.1",
+    "@geist-ui/react": "^2.1.3",
     "@geist-ui/react-icons": "^1.0.1",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

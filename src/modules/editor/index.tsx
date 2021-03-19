@@ -97,12 +97,11 @@ const Editor: React.FC<{}> = () => {
           position: fixed;
           top: 72px;
           right: 0;
-          height: calc(100% - 144px);
+          height: calc(100% - 72px);
           overflow-y: auto;
           width: 250px;
-          border: 1px solid ${palette.accents_2};
-          border-style: solid none solid solid;
-          border-radius: 5px 0 0 5px;
+          border-left: 1px solid ${palette.accents_2};
+          background: ${palette.accents_1};
         }
       `}</style>
       <style jsx global>{`

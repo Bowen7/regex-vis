@@ -1,5 +1,12 @@
 import React, { useEffect, useState } from "react"
-import { Divider, Button, ButtonGroup, Fieldset, Spacer } from "@geist-ui/react"
+import {
+  Divider,
+  Button,
+  ButtonGroup,
+  Fieldset,
+  Spacer,
+  Collapse,
+} from "@geist-ui/react"
 import Characters from "../features/basic"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -42,18 +49,8 @@ const InfoItem: React.FC<{}> = () => {
   return (
     <>
       <div className="container">
-        <Fieldset>
-          <Fieldset.Title
-            style={{
-              paddingTop: "10pt",
-              paddingBottom: "10pt",
-              paddingLeft: "16pt",
-            }}
-          >
-            Insert A Node
-          </Fieldset.Title>
-          <Divider y={0} />
-          <Fieldset.Content>
+        <Collapse.Group>
+          <Collapse title="Insert or Remove">
             <ButtonGroup>
               <Button onClick={() => handleInsert("prev")}>
                 Insert before
@@ -63,35 +60,31 @@ const InfoItem: React.FC<{}> = () => {
                 Insert as a branch
               </Button>
             </ButtonGroup>
-          </Fieldset.Content>
-        </Fieldset>
-        <Spacer />
-        <Fieldset>
-          <Fieldset.Title
-            style={{
-              paddingTop: "10pt",
-              paddingBottom: "10pt",
-              paddingLeft: "16pt",
-            }}
-          >
-            Edit Selected Nodes
-          </Fieldset.Title>
-          <Divider y={0} />
-          <Fieldset.Content>
+          </Collapse>
+          <Divider />
+          <Collapse title="Edit Nodes">
             <Expression expression={expression} />
             {character && <Characters character={character} id={id} />}
             {group && <Group group={group} onGroupChange={handleGroup} />}
             {quantifierShow && <Quantifier />}
-          </Fieldset.Content>
-        </Fieldset>
+          </Collapse>
+        </Collapse.Group>
       </div>
       <style jsx>{`
         .container {
           margin-top: 12px;
         }
-
         .button {
           text-align: center;
+        }
+
+        .container :global(.collapse) {
+          border: none;
+          padding: 0;
+        }
+
+        .container :global(h3) {
+          font-size: 1.25rem;
         }
       `}</style>
     </>

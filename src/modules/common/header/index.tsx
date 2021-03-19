@@ -1,9 +1,19 @@
 import React from "react"
 import { NavLink } from "react-router-dom"
+import { Toggle, useTheme } from "@geist-ui/react"
+import { ToggleEvent } from "@geist-ui/react/dist/toggle/toggle"
 const activeStyle = {
   color: "#0070F3",
 }
-function Header() {
+type Props = {
+  theme: string
+  onThemeChange: (theme: string) => void
+}
+const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
+  const handleThemeChange = (e: ToggleEvent) => {
+    onThemeChange(e.target.checked ? "dark" : "light")
+  }
+  const { palette } = useTheme()
   return (
     <>
       <header>
@@ -28,6 +38,7 @@ function Header() {
           >
             Github
           </a>
+          <Toggle checked={theme === "dark"} onChange={handleThemeChange} />
         </div>
       </header>
       <style jsx>{`
@@ -37,6 +48,8 @@ function Header() {
           justify-content: space-between;
           align-items: center;
           padding: 24px 36px;
+          height: 72px;
+          border-bottom: 1px solid ${palette.accents_2};
         }
         .logo {
           font-weight: bold;
@@ -47,6 +60,14 @@ function Header() {
         .nav :global(a) {
           color: rgb(102, 102, 102);
           font-size: 14px;
+        }
+
+        header :global(label) {
+          vertical-align: middle;
+        }
+
+        header :global(.checked) {
+          background-color: #000;
         }
       `}</style>
     </>
