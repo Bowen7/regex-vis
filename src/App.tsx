@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
 import { colors } from "@/constants/style"
 import Header from "./modules/common/header"
-import Footer from "./modules/common/footer"
 import Playground from "@/modules/playground"
 import { MainProvider } from "@/redux"
 
@@ -36,7 +35,6 @@ export default function App() {
                 </Route>
               </Switch>
             </Suspense>
-            <Footer />
           </MainProvider>
         </Router>
       </GeistProvider>

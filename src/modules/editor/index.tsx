@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react"
-import BookOpen from "@geist-ui/react-icons/bookOpen"
-import Edit from "@geist-ui/react-icons/edit"
-import CheckCircle from "@geist-ui/react-icons/checkCircle"
+import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
 import { Tabs, useTheme, Tooltip } from "@geist-ui/react"
 import { useMainReducer, MainActionTypes } from "@/redux/"
 import EditTab from "./tabs/edit"
@@ -53,44 +51,19 @@ const Editor: React.FC<{}> = () => {
           onChange={(value: string) => setTabValue(value as Tab)}
           hideDivider
         >
-          <Tabs.Item
-            value="legend"
-            label={
-              <>
-                <Tooltip text="Legends" hideArrow type="secondary">
-                  <BookOpen />
-                </Tooltip>
-              </>
-            }
-          >
+          <Tabs.Item value="legend" label="Legends">
             <LegendTab />
           </Tabs.Item>
-          <Tabs.Item
-            value="edit"
-            label={
-              <>
-                <Tooltip text="Edit" hideArrow type="secondary">
-                  <Edit />
-                </Tooltip>
-              </>
-            }
-            disabled={editDisabled}
-          >
+          <Tabs.Item value="edit" label="Edit" disabled={editDisabled}>
             <EditTab />
           </Tabs.Item>
-          <Tabs.Item
-            value="test"
-            label={
-              <>
-                <Tooltip text="Test" hideArrow type="secondary">
-                  <CheckCircle />
-                </Tooltip>
-              </>
-            }
-          >
+          <Tabs.Item value="test" label="Test">
             Todo
           </Tabs.Item>
         </Tabs>
+        <footer>
+          <ChevronsRight />
+        </footer>
       </div>
       <style jsx>{`
         .container {
@@ -101,10 +74,27 @@ const Editor: React.FC<{}> = () => {
           overflow-y: auto;
           width: 250px;
           border-left: 1px solid ${palette.accents_2};
-          background: ${palette.accents_1};
         }
-      `}</style>
-      <style jsx global>{`
+        footer {
+          height: 45px;
+          text-align: center;
+          line-height: 45px;
+          border-top: 2px solid ${palette.accents_1};
+        }
+        footer :global(svg) {
+          vertical-align: middle;
+        }
+
+        .container :global(.tabs) {
+          height: calc(100% - 45px);
+        }
+        .container :global(.content) {
+          height: calc(100% - 45px);
+          overflow: auto;
+        }
+        .container :global(header) {
+          padding: 0 12px;
+        }
         .container :global(.tab) {
           width: 33.3%;
           margin: 0;

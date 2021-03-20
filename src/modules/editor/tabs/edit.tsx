@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react"
-import {
-  Divider,
-  Button,
-  ButtonGroup,
-  Fieldset,
-  Spacer,
-  Collapse,
-} from "@geist-ui/react"
+import { Divider, Button, ButtonGroup, Collapse } from "@geist-ui/react"
 import Characters from "../features/basic"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -84,7 +77,7 @@ const InfoItem: React.FC<{}> = () => {
         }
 
         .container :global(h3) {
-          font-size: 1.25rem;
+          font-size: 1.15rem;
         }
       `}</style>
     </>

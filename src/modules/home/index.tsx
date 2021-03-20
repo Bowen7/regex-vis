@@ -1,4 +1,5 @@
 import React, { useCallback } from "react"
+import { useTheme } from "@geist-ui/react"
 import Railroad from "@/modules/railroad"
 import Editor from "@/modules/editor"
 import { Node } from "@/types"
@@ -8,6 +9,7 @@ const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
 const Home: React.FC<{}> = () => {
   const handleChange = useCallback((regex: string) => console.log(regex), [])
   const [, dispatch] = useMainReducer()
+  const { palette } = useTheme()
 
   const handleMount = useCallback(
     (id: string, nodes: Node[]) =>
@@ -33,7 +35,8 @@ const Home: React.FC<{}> = () => {
       <style jsx>{`
         .railroad {
           width: calc(100% - 250px);
-          height: calc(100vh - 144px);
+          height: calc(100vh - 72px);
+          background: ${palette.accents_1};
           display: flex;
           overflow: auto;
         }

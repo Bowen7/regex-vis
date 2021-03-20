@@ -1,7 +1,9 @@
 import React from "react"
 import { NavLink } from "react-router-dom"
-import { Toggle, useTheme } from "@geist-ui/react"
-import { ToggleEvent } from "@geist-ui/react/dist/toggle/toggle"
+import { useTheme } from "@geist-ui/react"
+import Sun from "@geist-ui/react-icons/sun"
+import Moon from "@geist-ui/react-icons/moon"
+
 const activeStyle = {
   color: "#0070F3",
 }
@@ -10,9 +12,6 @@ type Props = {
   onThemeChange: (theme: string) => void
 }
 const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
-  const handleThemeChange = (e: ToggleEvent) => {
-    onThemeChange(e.target.checked ? "dark" : "light")
-  }
   const { palette } = useTheme()
   return (
     <>
@@ -38,7 +37,11 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           >
             Github
           </a>
-          <Toggle checked={theme === "dark"} onChange={handleThemeChange} />
+          {theme === "dark" ? (
+            <Sun size={18} onClick={() => onThemeChange("light")} />
+          ) : (
+            <Moon size={18} onClick={() => onThemeChange("dark")} />
+          )}
         </div>
       </header>
       <style jsx>{`
@@ -62,12 +65,9 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           font-size: 14px;
         }
 
-        header :global(label) {
+        header :global(svg) {
           vertical-align: middle;
-        }
-
-        header :global(.checked) {
-          background-color: #000;
+          cursor: pointer;
         }
       `}</style>
     </>
