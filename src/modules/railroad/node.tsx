@@ -1,4 +1,5 @@
 import React, { useMemo } from "react"
+import { GeistUIThemesPalette } from "@geist-ui/react/dist/themes/presets"
 import { NODE_BORDER_RADIUS } from "@/constants/railroad"
 import { Node } from "@/types"
 const FONT = 16
@@ -9,18 +10,19 @@ type Props = {
   width: number
   height: number
   selected: boolean
+  palette: GeistUIThemesPalette
   onClick: (node: Node) => void
 }
-const RailNode: React.FC<Props> = React.memo(props => {
+const RailNode: React.FC<Props> = React.memo((props) => {
   console.log("render")
-  let { x, y, width, height, selected, node } = props
+  let { x, y, width, height, selected, node, palette } = props
   const { type, val } = node
 
-  const stroke = selected ? "#3291FF" : "#000"
+  const stroke = selected ? palette.success : palette.foreground
 
   const rectAttrs = useMemo<React.SVGProps<SVGRectElement>>(() => {
     const attrs: React.SVGProps<SVGRectElement> = {
-      fill: "#fff",
+      fill: palette.background,
       rx: NODE_BORDER_RADIUS,
       ry: NODE_BORDER_RADIUS,
     }
@@ -46,7 +48,7 @@ const RailNode: React.FC<Props> = React.memo(props => {
         break
     }
     return attrs
-  }, [type, width, height, selected])
+  }, [type, width, height, selected, palette])
 
   const center = {
     x: x + width / 2,

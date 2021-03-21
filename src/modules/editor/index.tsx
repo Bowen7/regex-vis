@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
-import { Tabs, useTheme, Tooltip } from "@geist-ui/react"
+import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
+import { Tabs, useTheme, Button } from "@geist-ui/react"
+import clsx from "clsx"
 import { useMainReducer, MainActionTypes } from "@/redux/"
 import EditTab from "./tabs/edit"
 import LegendTab from "./tabs/legend"
@@ -9,7 +11,7 @@ import { useEventListener } from "@/utils/hooks"
 type Tab = "legend" | "edit" | "test"
 
 const Editor: React.FC<{}> = () => {
-  const [{ selectedIds }, dispatch] = useMainReducer()
+  const [{ selectedIds, editorCollapsed }, dispatch] = useMainReducer()
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -43,9 +45,25 @@ const Editor: React.FC<{}> = () => {
       return redo()
     }
   })
+
+  const collapseEditor = () =>
+    dispatch({
+      type: MainActionTypes.SET_EDITOR_COLLAPSED,
+      payload: { collapsed: true },
+    })
+
+  const unCollapseEditor = () =>
+    dispatch({
+      type: MainActionTypes.SET_EDITOR_COLLAPSED,
+      payload: { collapsed: false },
+    })
   return (
     <>
-      <div className="container">
+      <div
+        className={clsx("container", {
+          "collapsed-container": editorCollapsed,
+        })}
+      >
         <Tabs
           value={tabValue}
           onChange={(value: string) => setTabValue(value as Tab)}
@@ -61,10 +79,20 @@ const Editor: React.FC<{}> = () => {
             Todo
           </Tabs.Item>
         </Tabs>
-        <footer>
-          <ChevronsRight />
+        <footer onClick={collapseEditor}>
+          <ChevronsRight color={palette.secondary} size={20} />
         </footer>
       </div>
+      {editorCollapsed && (
+        <span className="uncollapse-btn">
+          <Button
+            iconRight={<ChevronsLeft />}
+            auto
+            shadow
+            onClick={unCollapseEditor}
+          />
+        </span>
+      )}
       <style jsx>{`
         .container {
           position: fixed;
@@ -72,19 +100,34 @@ const Editor: React.FC<{}> = () => {
           right: 0;
           height: calc(100% - 72px);
           overflow-y: auto;
-          width: 250px;
+          width: 275px;
           border-left: 1px solid ${palette.accents_2};
+          transition: transform 0.3s ease-out;
         }
+        .collapsed-container {
+          transform: translateX(275px);
+        }
+
         footer {
           height: 45px;
           text-align: center;
           line-height: 45px;
           border-top: 2px solid ${palette.accents_1};
+          cursor: pointer;
         }
         footer :global(svg) {
           vertical-align: middle;
         }
 
+        .uncollapse-btn :global(button) {
+          position: fixed;
+          right: 24px;
+          bottom: 24px;
+        }
+        .uncollapse-btn :global(svg) {
+          width: 20px;
+          height: 20px;
+        }
         .container :global(.tabs) {
           height: calc(100% - 45px);
         }

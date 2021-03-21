@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react"
 import { AutoComplete, Spacer, useClickAway, useTheme } from "@geist-ui/react"
-import { CheckInCircle, Trash2 } from '@geist-ui/react-icons'
+import { CheckInCircle, Trash2 } from "@geist-ui/react-icons"
 import { Range } from "@/types"
 type Prop = {
   range: Range
@@ -21,17 +21,19 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
         <AutoComplete value={from} size="small" />
         {" - "}
         <AutoComplete value={to} size="small" />
-        {focused && <span className="operations">
-          <CheckInCircle size={18} color="#333"/>
-          <Spacer inline x={0.5}/>
-          <Trash2 size={18} color="#333"/>
-        </span>}
+        {focused && (
+          <span className="operations">
+            <CheckInCircle size={18} color="#333" />
+            <Spacer inline x={0.5} />
+            <Trash2 size={18} color="#333" />
+          </span>
+        )}
       </div>
       <style jsx>{`
         .wrapper {
           position: relative;
           display: inline-block;
-          border: 1px solid ${focused ? '#0070F3' :'rgb(234, 234, 234)'};
+          border: 1px solid ${focused ? "#0070F3" : "rgb(234, 234, 234)"};
           border-radius: 5px;
         }
         .wrapper :global(.auto-complete) {

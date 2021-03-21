@@ -9,7 +9,7 @@ import { MainProvider } from "@/redux"
 const Home = lazy(() => import("./modules/home"))
 
 export default function App() {
-  const [themeType, setThemeType] = useState("light")
+  const [themeType, setThemeType] = useState("dark")
   console.log(useTheme())
   return (
     <>
@@ -41,11 +41,10 @@ export default function App() {
 
       <style jsx global>{`
         ::selection {
-          selection: #3291ff;
+          background: #3291ff !important;
           color: #fff !important;
         }
         body {
-          color: ${colors.dark};
           box-sizing: border-box;
         }
 

@@ -8,7 +8,7 @@ const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
 
 const Home: React.FC<{}> = () => {
   const handleChange = useCallback((regex: string) => console.log(regex), [])
-  const [, dispatch] = useMainReducer()
+  const [{ editorCollapsed }, dispatch] = useMainReducer()
   const { palette } = useTheme()
 
   const handleMount = useCallback(
@@ -20,9 +20,11 @@ const Home: React.FC<{}> = () => {
     [dispatch]
   )
 
+  const style = editorCollapsed ? { width: "100%" } : {}
+
   return (
     <>
-      <div className="railroad">
+      <div className="railroad" style={style}>
         <div className="content">
           <Railroad
             regex={DEFAULT_REGEX}
@@ -34,11 +36,12 @@ const Home: React.FC<{}> = () => {
       <Editor />
       <style jsx>{`
         .railroad {
-          width: calc(100% - 250px);
+          width: calc(100% - 275px);
           height: calc(100vh - 72px);
           background: ${palette.accents_1};
           display: flex;
           overflow: auto;
+          transition: width 0.3s ease-out;
         }
 
         .content {

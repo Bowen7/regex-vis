@@ -1,4 +1,4 @@
-import React from "react"
+import React, { useMemo } from "react"
 import { NavLink } from "react-router-dom"
 import { useTheme } from "@geist-ui/react"
 import Sun from "@geist-ui/react-icons/sun"
@@ -13,6 +13,7 @@ type Props = {
 }
 const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
   const { palette } = useTheme()
+
   return (
     <>
       <header>
@@ -38,9 +39,17 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
             Github
           </a>
           {theme === "dark" ? (
-            <Sun size={18} onClick={() => onThemeChange("light")} />
+            <Sun
+              size={18}
+              onClick={() => onThemeChange("light")}
+              color={palette.foreground}
+            />
           ) : (
-            <Moon size={18} onClick={() => onThemeChange("dark")} />
+            <Moon
+              size={18}
+              onClick={() => onThemeChange("dark")}
+              color={palette.foreground}
+            />
           )}
         </div>
       </header>

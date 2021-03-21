@@ -6,6 +6,7 @@ export type InitialStateType = {
   selectedIds: string[]
   undoStack: Node[][]
   redoStack: Node[][]
+  editorCollapsed: Boolean
 }
 
 export const initialState: InitialStateType = {
@@ -14,6 +15,7 @@ export const initialState: InitialStateType = {
   selectedIds: [],
   undoStack: [],
   redoStack: [],
+  editorCollapsed: false,
 }
 
 export enum ActionTypes {
@@ -26,6 +28,7 @@ export enum ActionTypes {
   REDO,
   SELECT_NODES,
   EDIT_CHARACTER,
+  SET_EDITOR_COLLAPSED,
 }
 
 export type Action =
@@ -53,6 +56,7 @@ export type Action =
       type: ActionTypes.EDIT_CHARACTER
       payload: { val: Character }
     }
+  | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
 
 const setNodes = (
   state: InitialStateType,
@@ -159,6 +163,10 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const id = selectedIds[0]
       const nextNodes = character(nodes, id, val)
       return setNodes(state, nextNodes)
+    }
+    case ActionTypes.SET_EDITOR_COLLAPSED: {
+      const { collapsed } = action.payload
+      return { ...state, editorCollapsed: collapsed }
     }
     default:
       return state

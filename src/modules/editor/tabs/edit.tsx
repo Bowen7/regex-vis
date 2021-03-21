@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Divider, Button, ButtonGroup, Collapse } from "@geist-ui/react"
+import { Divider, Button } from "@geist-ui/react"
+import Box from "@/components/box"
 import Characters from "../features/basic"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -42,30 +43,24 @@ const InfoItem: React.FC<{}> = () => {
   return (
     <>
       <div className="container">
-        <Collapse.Group>
-          <Collapse title="Insert or Remove">
-            <ButtonGroup>
-              <Button onClick={() => handleInsert("prev")}>
-                Insert before
-              </Button>
-              <Button onClick={() => handleInsert("next")}>Insert after</Button>
-              <Button onClick={() => handleInsert("branch")}>
-                Insert as a branch
-              </Button>
-            </ButtonGroup>
-          </Collapse>
-          <Divider />
-          <Collapse title="Edit Nodes">
-            <Expression expression={expression} />
-            {character && <Characters character={character} id={id} />}
-            {group && <Group group={group} onGroupChange={handleGroup} />}
-            {quantifierShow && <Quantifier />}
-          </Collapse>
-        </Collapse.Group>
+        <Box title="Insert or Remove">
+          <Button onClick={() => handleInsert("prev")}>Insert before</Button>
+          <Button onClick={() => handleInsert("next")}>Insert after</Button>
+          <Button onClick={() => handleInsert("branch")}>
+            Insert as a branch
+          </Button>
+        </Box>
+        <Divider />
+        <Box title="Edit">
+          <Expression expression={expression} />
+          {character && <Characters character={character} id={id} />}
+          {group && <Group group={group} onGroupChange={handleGroup} />}
+          {quantifierShow && <Quantifier />}
+        </Box>
       </div>
       <style jsx>{`
         .container {
-          margin-top: 12px;
+          padding: 12px;
         }
         .button {
           text-align: center;

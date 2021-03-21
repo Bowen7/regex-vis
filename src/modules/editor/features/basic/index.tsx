@@ -97,16 +97,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         )}
         {character.type === "ranges" &&
           ranges.map((range, index) => (
-            <>
-              {index !== 0 && (
-                <>
-                  <Spacer inline />
-                  <span>or</span>
-                  <Spacer inline />
-                </>
-              )}
-              <RangeOption range={range} />
-            </>
+            <RangeOption range={range} key={index} />
           ))}
         {character.type === "class" && (
           <Select
