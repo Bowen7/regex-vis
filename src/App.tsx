@@ -1,11 +1,9 @@
-import React, { lazy, Suspense, useState } from "react"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import React, { useState } from "react"
+import { BrowserRouter as Router, Switch } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
-import Header from "./modules/common/header"
-import Playground from "@/modules/playground"
+import Header from "@/modules/common/header"
+import Routes from "./routes"
 import { MainProvider } from "@/redux"
-
-const Home = lazy(() => import("./modules/home"))
 const defaultTheme = localStorage.getItem("theme") || "dark"
 export default function App() {
   const [themeType, setThemeType] = useState(defaultTheme)
@@ -17,29 +15,15 @@ export default function App() {
   return (
     <>
       <GeistProvider themeType={themeType}>
-        <Router>
-          <CssBaseline />
-          <MainProvider>
+        <CssBaseline />
+        <MainProvider>
+          <Router>
             <Header theme={themeType} onThemeChange={handleThemeChange} />
-            <Suspense fallback={<div>Loading...</div>}>
-              <Switch>
-                <Route exact path="/" component={Home} />
-                <Route path="/guide">
-                  <p>Todo</p>
-                </Route>
-                <Route path="/samples">
-                  <p>Todo</p>
-                </Route>
-                <Route path="/about">
-                  <p>Todo</p>
-                </Route>
-                <Route path="/playground">
-                  <Playground />
-                </Route>
-              </Switch>
-            </Suspense>
-          </MainProvider>
-        </Router>
+            <Switch>
+              <Routes />
+            </Switch>
+          </Router>
+        </MainProvider>
       </GeistProvider>
 
       <style jsx global>{`
