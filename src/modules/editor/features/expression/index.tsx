@@ -6,7 +6,7 @@ type Prop = {
 const Expression: React.FC<Prop> = ({ expression }) => {
   return (
     <>
-      <Cell label="Expression:">
+      <Cell label="Expression">
         <span className="expression">{expression}</span>
       </Cell>
       <style jsx>{`

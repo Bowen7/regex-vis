@@ -7,14 +7,14 @@ const Quantifier: React.FC<{}> = () => {
   const [times, setTimes] = useState("non")
   return (
     <>
-      <Cell label="Quantifier times:">
+      <Cell label="Quantifier times">
         <RadioGroup
           options={quantifierOptions}
           value={times}
           onChange={setTimes}
         />
       </Cell>
-      <Cell label="Quantifier greedy:">
+      <Cell label="Quantifier greedy">
         <Checkbox initialChecked={true}>Greedy</Checkbox>
       </Cell>
     </>

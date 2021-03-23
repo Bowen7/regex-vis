@@ -7,7 +7,7 @@ const Cell: React.FC<Props> = ({ label, children }) => {
   return (
     <>
       <div className="container">
-        <h6>{label}</h6>
+        <h5>{label}</h5>
         <div className="content">{children}</div>
       </div>
       <style jsx>{`

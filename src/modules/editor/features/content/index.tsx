@@ -1,11 +1,10 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Spacer, Select, Code, AutoComplete } from "@geist-ui/react"
-import RadioGroup from "@/components/radio-group"
+import { Spacer, Select, Code, useTheme } from "@geist-ui/react"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import Input from "@/components/input"
 import { useDebounceInput } from "@/utils/hooks"
-import { charactersOptions } from "./helper"
+import { options } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
 import { Character, ClassCharacter, Range } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
@@ -16,6 +15,7 @@ type Prop = {
 }
 const Characters: React.FC<Prop> = ({ character, id }) => {
   const [, dispatch] = useMainReducer()
+  const { palette } = useTheme()
 
   const [setString, stringBindings] = useDebounceInput(
     (value: string) =>
@@ -47,7 +47,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, character])
 
-  const handleTypeChange = (type: string) => {
+  const handleTypeChange = (type: string | string[]) => {
     let val!: Character
     switch (type) {
       case "string":
@@ -85,13 +85,21 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   }
   return (
     <>
-      <Cell label="Characters:">
-        <RadioGroup
+      <Cell label="Content">
+        <h6>Type</h6>
+        <Select
           value={character.type}
-          options={charactersOptions}
           onChange={handleTypeChange}
-        />
+          disableMatchWidth
+        >
+          {options.map(({ value, label }) => (
+            <Select.Option value={value} key={value}>
+              <div>{label}</div>
+            </Select.Option>
+          ))}
+        </Select>
         <Spacer y={0.5} />
+        <h6>Type</h6>
         {character.type === "string" && (
           <Input size="small" {...stringBindings} />
         )}
@@ -117,7 +125,11 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           </Select>
         )}
       </Cell>
-      <style jsx>{``}</style>
+      <style jsx>{`
+        h6 {
+          color: ${palette.secondary};
+        }
+      `}</style>
     </>
   )
 }

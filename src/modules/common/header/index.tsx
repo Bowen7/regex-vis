@@ -13,7 +13,6 @@ type Props = {
 }
 const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
   const { palette } = useTheme()
-
   return (
     <>
       <header>
@@ -39,13 +38,13 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
             Github
           </a>
           {theme === "dark" ? (
-            <Sun
+            <Moon
               size={18}
               onClick={() => onThemeChange("light")}
               color={palette.foreground}
             />
           ) : (
-            <Moon
+            <Sun
               size={18}
               onClick={() => onThemeChange("dark")}
               color={palette.foreground}
@@ -70,7 +69,7 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           margin-right: 24px;
         }
         .nav :global(a) {
-          color: rgb(102, 102, 102);
+          color: ${palette.accents_4};
           font-size: 14px;
         }
 

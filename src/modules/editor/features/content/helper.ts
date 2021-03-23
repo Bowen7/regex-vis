@@ -2,7 +2,7 @@ import {
   characterClassTextMap,
   CharacterClassKey,
 } from "@/parser/utils/character-class"
-export const charactersOptions = [
+export const options = [
   {
     label: "Simple string",
     value: "string",

@@ -15,7 +15,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
   const { type } = group
 
   const [setName, nameBindings, cancelNameChange] = useDebounceInput(
-    value => {
+    (value) => {
       onGroupChange(type, value)
     },
     [type]
@@ -41,7 +41,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
 
   return (
     <>
-      <Cell label="Group:">
+      <Cell label="Group">
         <Select value={type} onChange={onSelectChange} disableMatchWidth>
           {groupData.map(({ value, label, tip }) => (
             <Select.Option value={value} key={value}>

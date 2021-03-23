@@ -1,23 +1,26 @@
 import React, { lazy, Suspense, useState } from "react"
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
-import { colors } from "@/constants/style"
 import Header from "./modules/common/header"
 import Playground from "@/modules/playground"
 import { MainProvider } from "@/redux"
 
 const Home = lazy(() => import("./modules/home"))
-
+const defaultTheme = localStorage.getItem("theme") || "dark"
 export default function App() {
-  const [themeType, setThemeType] = useState("dark")
-  console.log(useTheme())
+  const [themeType, setThemeType] = useState(defaultTheme)
+  const handleThemeChange = (themeType: string) => {
+    setThemeType(themeType)
+    localStorage.setItem("theme", themeType)
+  }
+  const { palette } = useTheme()
   return (
     <>
       <GeistProvider themeType={themeType}>
         <Router>
           <CssBaseline />
           <MainProvider>
-            <Header theme={themeType} onThemeChange={setThemeType} />
+            <Header theme={themeType} onThemeChange={handleThemeChange} />
             <Suspense fallback={<div>Loading...</div>}>
               <Switch>
                 <Route exact path="/" component={Home} />
@@ -41,7 +44,7 @@ export default function App() {
 
       <style jsx global>{`
         ::selection {
-          background: #3291ff !important;
+          background: ${palette.successLight} !important;
           color: #fff !important;
         }
         body {

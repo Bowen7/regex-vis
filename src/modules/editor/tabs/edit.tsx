@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Divider, Button } from "@geist-ui/react"
 import Box from "@/components/box"
-import Characters from "../features/basic"
+import Characters from "../features/content"
 import Group from "../features/group"
 import Expression from "../features/expression"
 import Quantifier from "../features/quantifier"
