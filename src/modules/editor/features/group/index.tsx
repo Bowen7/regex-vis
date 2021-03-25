@@ -1,7 +1,7 @@
 import React, { useEffect } from "react"
 import { Tooltip, Select, Spacer } from "@geist-ui/react"
-import QuestionCircle from "@geist-ui/react-icons/questionCircle"
 import Input from "@/components/input"
+import Guider from "@/components/guider"
 import { groupData } from "./helper"
 import { Group } from "@/types"
 import Cell from "@/components/cell"
@@ -35,10 +35,6 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
     onGroupChange(value as string, "name" in group ? group.name : "")
   }
 
-  function onTipClick(e: React.MouseEvent) {
-    e.preventDefault()
-  }
-
   return (
     <>
       <Cell label="Group">
@@ -46,21 +42,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
           {groupData.map(({ value, label, tip }) => (
             <Select.Option value={value} key={value}>
               <span>{label}</span>
-              {tip && (
-                <Tooltip
-                  text={tip}
-                  placement="right"
-                  portalClassName="max-z-index"
-                >
-                  <span className="question-circle">
-                    <QuestionCircle
-                      size={16}
-                      onClick={onTipClick}
-                      cursor="pointer"
-                    />
-                  </span>
-                </Tooltip>
-              )}
+              {tip && <Guider size={16} title={label} content={tip} />}
             </Select.Option>
           ))}
         </Select>
@@ -71,12 +53,6 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
           </>
         )}
       </Cell>
-      <style jsx>{`
-        .question-circle > :global(svg) {
-          vertical-align: middle;
-          margin-left: 5px;
-        }
-      `}</style>
     </>
   )
 }

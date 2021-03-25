@@ -1,11 +1,17 @@
 import React from "react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
 import { useMainReducer, MainActionTypes } from "@/redux"
+type IconProps = React.ComponentProps<typeof QuestionCircle>
 type Props = {
   title: string
   content: JSX.Element | string
-}
-const Guider: React.FC<Props> = ({ title, content }) => {
+} & IconProps
+const Guider: React.FC<Props> = ({
+  title,
+  content,
+  children,
+  ...restProps
+}) => {
   const [, dispatch] = useMainReducer()
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
@@ -15,6 +21,8 @@ const Guider: React.FC<Props> = ({ title, content }) => {
       payload: { visible: true, title, content },
     })
   }
-  return <QuestionCircle onClick={handleClick} cursor="pointer" />
+  return (
+    <QuestionCircle onClick={handleClick} cursor="pointer" {...restProps} />
+  )
 }
 export default Guider
