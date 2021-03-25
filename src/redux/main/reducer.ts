@@ -1,5 +1,10 @@
 import { Node, GroupKind, Character } from "@/types"
 import { remove, insert, group, character } from "@/parser/utils"
+type GuideConfig = {
+  visible: boolean
+  title: string
+  content: JSX.Element | string
+}
 export type InitialStateType = {
   activeId: string
   nodes: Node[]
@@ -7,6 +12,7 @@ export type InitialStateType = {
   undoStack: Node[][]
   redoStack: Node[][]
   editorCollapsed: Boolean
+  guiderConfig: GuideConfig
 }
 
 export const initialState: InitialStateType = {
@@ -16,6 +22,7 @@ export const initialState: InitialStateType = {
   undoStack: [],
   redoStack: [],
   editorCollapsed: false,
+  guiderConfig: { visible: false, title: "", content: "" },
 }
 
 export enum ActionTypes {
@@ -29,6 +36,7 @@ export enum ActionTypes {
   SELECT_NODES,
   EDIT_CHARACTER,
   SET_EDITOR_COLLAPSED,
+  UPDATE_GUIDE_CONFIG,
 }
 
 export type Action =
@@ -57,6 +65,7 @@ export type Action =
       payload: { val: Character }
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
+  | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
 
 const setNodes = (
   state: InitialStateType,
@@ -167,6 +176,9 @@ export const reducer = (state: InitialStateType, action: Action) => {
     case ActionTypes.SET_EDITOR_COLLAPSED: {
       const { collapsed } = action.payload
       return { ...state, editorCollapsed: collapsed }
+    }
+    case ActionTypes.UPDATE_GUIDE_CONFIG: {
+      return { ...state, guiderConfig: action.payload }
     }
     default:
       return state
