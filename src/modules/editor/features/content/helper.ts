@@ -25,4 +25,10 @@ for (let key in characterClassTextMap) {
   })
 }
 
-export { classOptions }
+const labelMap = {
+  string: "Value",
+  ranges: "Ranges",
+  class: "Class",
+}
+
+export { classOptions, labelMap }

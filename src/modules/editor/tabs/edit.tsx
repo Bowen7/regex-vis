@@ -66,11 +66,6 @@ const InfoItem: React.FC<{}> = () => {
           text-align: center;
         }
 
-        .container :global(.collapse) {
-          border: none;
-          padding: 0;
-        }
-
         .container :global(h3) {
           font-size: 1.15rem;
         }

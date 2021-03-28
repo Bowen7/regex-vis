@@ -17,34 +17,32 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
   console.log(theme)
   return (
     <>
-      <div ref={wrapRef} className="wrapper" onClick={handleWrapperClick}>
+      <div ref={wrapRef} className="range-option" onClick={handleWrapperClick}>
         <AutoComplete value={from} size="small" />
         {" - "}
         <AutoComplete value={to} size="small" />
         {focused && (
           <span className="operations">
-            <CheckInCircle size={18} color="#333" />
-            <Spacer inline x={0.5} />
             <Trash2 size={18} color="#333" />
           </span>
         )}
       </div>
       <style jsx>{`
-        .wrapper {
+        .range-option {
           position: relative;
           display: inline-block;
           border: 1px solid ${focused ? "#0070F3" : "rgb(234, 234, 234)"};
           border-radius: 5px;
         }
-        .wrapper :global(.auto-complete) {
+        .range-option :global(.auto-complete) {
           display: inline-block;
           width: 75px;
         }
 
-        .wrapper :global(.input-wrapper) {
+        .range-option :global(.input-wrapper) {
           border: none;
         }
-        .wrapper :global(input) {
+        .range-option :global(input) {
           text-align: center;
         }
 

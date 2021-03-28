@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Spacer, Select, Code, useTheme } from "@geist-ui/react"
+import { Spacer, Select, Code, useTheme, ButtonDropdown } from "@geist-ui/react"
+import PlusSquare from "@geist-ui/react-icons/plusSquare"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import Input from "@/components/input"
@@ -8,7 +9,7 @@ import { options } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
 import { Character, ClassCharacter, Range } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
-import { classOptions } from "./helper"
+import { classOptions, labelMap } from "./helper"
 type Prop = {
   character: Character
   id: string
@@ -99,14 +100,26 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           ))}
         </Select>
         <Spacer y={0.5} />
-        <h6>Type</h6>
+        <h6>{labelMap[character.type]}</h6>
         {character.type === "string" && (
           <Input size="small" {...stringBindings} />
         )}
-        {character.type === "ranges" &&
-          ranges.map((range, index) => (
-            <RangeOption range={range} key={index} />
-          ))}
+
+        {character.type === "ranges" && (
+          <>
+            <ButtonDropdown size="small">
+              <ButtonDropdown.Item main>
+                Create a empty range
+              </ButtonDropdown.Item>
+            </ButtonDropdown>
+            <Spacer y={0.5} />
+            <div className="range-options">
+              {ranges.map((range, index) => (
+                <RangeOption range={range} key={index} />
+              ))}
+            </div>
+          </>
+        )}
         {character.type === "class" && (
           <Select
             value={classValue}
@@ -128,6 +141,9 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
       <style jsx>{`
         h6 {
           color: ${palette.secondary};
+        }
+        .range-options > :global(.range-option:not(:last-child)) {
+          margin-bottom: 12px;
         }
       `}</style>
     </>

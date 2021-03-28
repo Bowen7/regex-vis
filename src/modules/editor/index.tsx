@@ -148,17 +148,17 @@ const Editor: React.FC<{}> = () => {
           width: 20px;
           height: 20px;
         }
-        .container :global(.tabs) {
+        .container > :global(.tabs) {
           height: calc(100% - 45px);
         }
-        .container :global(.content) {
+        .container > :global(.tabs > .content) {
           height: calc(100% - 45px);
           overflow: auto;
         }
-        .container :global(header) {
+        .container > :global(.tabs > header) {
           padding: 0 12px;
         }
-        .container :global(.tab) {
+        .container :global(.tabs > header > .tab) {
           width: 33.3%;
           margin: 0;
           justify-content: center;

@@ -22,7 +22,17 @@ const Guider: React.FC<Props> = ({
     })
   }
   return (
-    <QuestionCircle onClick={handleClick} cursor="pointer" {...restProps} />
+    <>
+      <span>
+        <QuestionCircle onClick={handleClick} cursor="pointer" {...restProps} />
+      </span>
+      <style jsx>{`
+        span > :global(svg) {
+          vertical-align: middle;
+          margin-left: 6px;
+        }
+      `}</style>
+    </>
   )
 }
 export default Guider
