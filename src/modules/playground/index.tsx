@@ -1,40 +1,11 @@
-import React from "react"
-import Guider from "@/components/guider"
-import { useMainReducer, MainActionTypes } from "@/redux"
-import { Modal } from "@geist-ui/react"
+import React, { useState } from "react"
+import RangeOption from "@/components/range-option"
+import { Range } from "@/types"
 const Playground: React.FC<{}> = () => {
-  const [{ guiderConfig }, dispatch] = useMainReducer()
+  const [range, setRange] = useState<Range>({ from: "", to: "" })
   return (
     <>
-      <Guider title="Regex" content="regex-vis" />
-      <Modal
-        open={guiderConfig.visible}
-        onClose={() =>
-          dispatch({
-            type: MainActionTypes.UPDATE_GUIDE_CONFIG,
-            payload: { ...guiderConfig, visible: false },
-          })
-        }
-      >
-        <Modal.Title>{guiderConfig.title}</Modal.Title>
-        <Modal.Content>
-          {typeof guiderConfig.content === "string" ? (
-            <p>{guiderConfig.content}</p>
-          ) : (
-            guiderConfig.content
-          )}
-        </Modal.Content>
-        <Modal.Action
-          onClick={() =>
-            dispatch({
-              type: MainActionTypes.UPDATE_GUIDE_CONFIG,
-              payload: { ...guiderConfig, visible: false },
-            })
-          }
-        >
-          I got it
-        </Modal.Action>
-      </Modal>
+      <RangeOption range={range} />
     </>
   )
 }
