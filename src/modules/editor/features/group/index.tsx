@@ -1,11 +1,14 @@
 import React, { useEffect } from "react"
-import { Tooltip, Select, Spacer } from "@geist-ui/react"
-import Input from "@/components/input"
+import { Input as _Input, Select, Spacer } from "@geist-ui/react"
 import Guider from "@/components/guider"
 import { groupData } from "./helper"
 import { Group } from "@/types"
 import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
+import { injectInput } from "@/utils/hoc"
+
+const Input = injectInput<React.ComponentProps<typeof _Input>>(_Input)
+
 type GroupSelectProps = {
   group: Group
   onGroupChange: (groupType: string, groupName: string) => void

@@ -28,13 +28,6 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
   useClickAway(wrapRef, () => setFocused(false))
   const handleWrapperClick = () => setFocused(true)
 
-  const makeOption = (label: string, value: string) => (
-    <AutoComplete.Option value={value}>
-      <span>Recommended: </span>
-      <Code>label</Code>
-    </AutoComplete.Option>
-  )
-
   const searchHandler = (type: "from" | "to", currentValue: string) => {
     if (currentValue === "") {
       if (type === "from") {

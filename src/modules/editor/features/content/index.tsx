@@ -1,15 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react"
-import { Spacer, Select, Code, useTheme, ButtonDropdown } from "@geist-ui/react"
-import PlusSquare from "@geist-ui/react-icons/plusSquare"
+import {
+  Spacer,
+  Select,
+  Code,
+  useTheme,
+  ButtonDropdown,
+  Input as _Input,
+} from "@geist-ui/react"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
-import Input from "@/components/input"
 import { useDebounceInput } from "@/utils/hooks"
+import { injectInput } from "@/utils/hoc"
 import { options } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
 import { Character, ClassCharacter, Range } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { classOptions, labelMap } from "./helper"
+
+const Input = injectInput<React.ComponentProps<typeof _Input>>(_Input)
+
 type Prop = {
   character: Character
   id: string
