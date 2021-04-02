@@ -1,11 +1,5 @@
 import React, { useState, useRef } from "react"
-import {
-  AutoComplete,
-  Spacer,
-  useClickAway,
-  useTheme,
-  Code,
-} from "@geist-ui/react"
+import { AutoComplete, useClickAway, useTheme } from "@geist-ui/react"
 import { Trash2 } from "@geist-ui/react-icons"
 import { Range } from "@/types"
 import { fromRecommendedOptions, toRecommendedOptions } from "./options"
@@ -72,7 +66,7 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
         }
         .range-option :global(.auto-complete) {
           display: inline-block;
-          width: 75px;
+          width: 85px;
         }
 
         .range-option :global(.input-wrapper) {

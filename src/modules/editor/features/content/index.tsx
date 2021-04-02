@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useEffect } from "react"
 import {
   Spacer,
   Select,
   Code,
   useTheme,
   ButtonDropdown,
-  Input as _Input,
+  Input,
 } from "@geist-ui/react"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
@@ -13,11 +13,12 @@ import { useDebounceInput } from "@/utils/hooks"
 import { injectInput } from "@/utils/hoc"
 import { options } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
-import { Character, ClassCharacter, Range } from "@/types"
+import { Character, ClassCharacter, Range, RangesCharacter } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { classOptions, labelMap } from "./helper"
+import Ranges from "./ranges"
 
-const Input = injectInput<React.ComponentProps<typeof _Input>>(_Input)
+const InjectedInput = injectInput<React.ComponentProps<typeof Input>>(Input)
 
 type Prop = {
   character: Character
@@ -42,7 +43,6 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   )
 
   const [classValue, setClassValue] = useState<CharacterClassKey>(".")
-  const [ranges, setRanges] = useState<Range[]>([])
 
   useEffect(() => {
     switch (character.type) {
@@ -51,8 +51,6 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           setString(character.value)
         }
         break
-      case "ranges":
-        setRanges(character.value)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, character])
@@ -111,24 +109,10 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         <Spacer y={0.5} />
         <h6>{labelMap[character.type]}</h6>
         {character.type === "string" && (
-          <Input size="small" {...stringBindings} />
+          <InjectedInput size="small" {...stringBindings} />
         )}
 
-        {character.type === "ranges" && (
-          <>
-            <ButtonDropdown size="small">
-              <ButtonDropdown.Item main>
-                Create a empty range
-              </ButtonDropdown.Item>
-            </ButtonDropdown>
-            <Spacer y={0.5} />
-            <div className="range-options">
-              {ranges.map((range, index) => (
-                <RangeOption range={range} key={index} />
-              ))}
-            </div>
-          </>
-        )}
+        {character.type === "ranges" && <Ranges ranges={character.value} />}
         {character.type === "class" && (
           <Select
             value={classValue}

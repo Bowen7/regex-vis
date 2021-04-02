@@ -1,5 +1,5 @@
 import React, { useEffect } from "react"
-import { Input as _Input, Select, Spacer } from "@geist-ui/react"
+import { Input, Select, Spacer } from "@geist-ui/react"
 import Guider from "@/components/guider"
 import { groupData } from "./helper"
 import { Group } from "@/types"
@@ -7,7 +7,7 @@ import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
 import { injectInput } from "@/utils/hoc"
 
-const Input = injectInput<React.ComponentProps<typeof _Input>>(_Input)
+const InjectedInput = injectInput<React.ComponentProps<typeof Input>>(Input)
 
 type GroupSelectProps = {
   group: Group
@@ -52,7 +52,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
         {group.type === "namedCapturing" && (
           <>
             <Spacer x={1} inline />
-            <Input label="The capture group's name" {...nameBindings} />
+            <InjectedInput label="The capture group's name" {...nameBindings} />
           </>
         )}
       </Cell>

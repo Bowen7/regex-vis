@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react"
 import { Divider, Button } from "@geist-ui/react"
-import Box from "@/components/box"
 import Characters from "../features/content"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -43,20 +42,16 @@ const InfoItem: React.FC<{}> = () => {
   return (
     <>
       <div className="container">
-        <Box title="Insert or Remove">
-          <Button onClick={() => handleInsert("prev")}>Insert before</Button>
-          <Button onClick={() => handleInsert("next")}>Insert after</Button>
-          <Button onClick={() => handleInsert("branch")}>
-            Insert as a branch
-          </Button>
-        </Box>
+        <Button onClick={() => handleInsert("prev")}>Insert before</Button>
+        <Button onClick={() => handleInsert("next")}>Insert after</Button>
+        <Button onClick={() => handleInsert("branch")}>
+          Insert as a branch
+        </Button>
         <Divider />
-        <Box title="Edit">
-          <Expression expression={expression} />
-          {character && <Characters character={character} id={id} />}
-          {group && <Group group={group} onGroupChange={handleGroup} />}
-          {quantifierShow && <Quantifier />}
-        </Box>
+        <Expression expression={expression} />
+        {character && <Characters character={character} id={id} />}
+        {group && <Group group={group} onGroupChange={handleGroup} />}
+        {quantifierShow && <Quantifier />}
       </div>
       <style jsx>{`
         .container {
