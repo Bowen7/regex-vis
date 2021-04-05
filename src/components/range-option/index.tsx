@@ -1,8 +1,8 @@
 import React, { useState, useRef } from "react"
-import { AutoComplete, useClickAway, useTheme } from "@geist-ui/react"
+import { useClickAway, useTheme } from "@geist-ui/react"
 import { Trash2 } from "@geist-ui/react-icons"
 import { Range } from "@/types"
-import { fromRecommendedOptions, toRecommendedOptions } from "./options"
+import RangeInput from "./input"
 type Prop = {
   range: Range
 }
@@ -13,8 +13,6 @@ type Option = {
 const RangeOption: React.FC<Prop> = ({ range }) => {
   const { from, to } = range
   const [focused, setFocused] = useState(false)
-  const [fromOptions, setFromOptions] = useState<Option[]>([])
-  const [toOptions, setToOptions] = useState<Option[]>([])
   const wrapRef = useRef<HTMLDivElement>(null)
 
   const { palette } = useTheme()
@@ -22,34 +20,12 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
   useClickAway(wrapRef, () => setFocused(false))
   const handleWrapperClick = () => setFocused(true)
 
-  const searchHandler = (type: "from" | "to", currentValue: string) => {
-    if (currentValue === "") {
-      if (type === "from") {
-        setFromOptions(fromRecommendedOptions)
-      } else {
-        setToOptions(toRecommendedOptions)
-      }
-    }
-  }
-
   return (
     <>
       <div ref={wrapRef} className="range-option" onClick={handleWrapperClick}>
-        <AutoComplete
-          value={from}
-          size="small"
-          options={fromOptions}
-          disableFreeSolo
-          onSearch={(value: string) => searchHandler("from", value)}
-        />
+        <RangeInput value={from} />
         {" - "}
-        <AutoComplete
-          value={to}
-          size="small"
-          options={toOptions}
-          disableFreeSolo
-          onSearch={(value: string) => searchHandler("to", value)}
-        />
+        <RangeInput value={to} />
         {focused && (
           <span className="operations">
             <Trash2 size={18} color="#333" />
@@ -83,7 +59,7 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
           transform: translate(100%, 0);
           display: flex;
           align-items: center;
-          height: 32px;
+          height: 36px;
           padding: 0 12px;
         }
 
