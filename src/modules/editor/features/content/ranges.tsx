@@ -41,8 +41,8 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
         h6 {
           color: ${palette.secondary};
         }
-        .range-options > :global(.range-option:not(:last-child)) {
-          margin-bottom: 12px;
+        .range-options > :global(.range-option:not(:first-child)) {
+          margin-top: 12px;
         }
       `}</style>
     </>

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import React, { useState, useRef, useMemo } from "react"
 import { useClickAway, useTheme } from "@geist-ui/react"
 import { Trash2 } from "@geist-ui/react-icons"
 import { Range } from "@/types"
@@ -13,12 +13,23 @@ type Option = {
 const RangeOption: React.FC<Prop> = ({ range }) => {
   const { from, to } = range
   const [focused, setFocused] = useState(false)
+  const [error, setError] = useState<null | string>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
 
   const { palette } = useTheme()
 
   useClickAway(wrapRef, () => setFocused(false))
   const handleWrapperClick = () => setFocused(true)
+
+  const borderColor = useMemo(() => {
+    if (error) {
+      return palette.error
+    }
+    if (focused) {
+      return palette.success
+    }
+    return palette.accents_2
+  }, [palette, focused, error])
 
   return (
     <>
@@ -32,12 +43,12 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
           </span>
         )}
       </div>
+      {error && <div className="error-msg">{error}</div>}
       <style jsx>{`
         .range-option {
           position: relative;
           display: inline-block;
-          border: 1px solid
-            ${focused ? palette.successLight : palette.accents_2};
+          border: 1px solid ${borderColor};
           border-radius: 5px;
         }
         .range-option :global(.auto-complete) {
@@ -50,6 +61,10 @@ const RangeOption: React.FC<Prop> = ({ range }) => {
         }
         .range-option :global(input) {
           text-align: center;
+        }
+
+        .error-msg {
+          color: ${palette.error};
         }
 
         .operations {

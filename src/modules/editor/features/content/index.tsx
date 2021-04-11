@@ -135,9 +135,6 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         h6 {
           color: ${palette.secondary};
         }
-        .range-options > :global(.range-option:not(:last-child)) {
-          margin-bottom: 12px;
-        }
       `}</style>
     </>
   )
