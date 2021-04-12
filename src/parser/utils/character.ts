@@ -10,10 +10,18 @@ function updateCharacterNode(node: CharacterNode, val: Character) {
       break
     case "class":
       node.text = characterClassTextMap[val.value as CharacterClassKey]
+      break
+    case "ranges":
+      node.text = val.value
+        .map((range) =>
+          range.from === range.to ? range.from : range.from + "-" + range.to
+        )
+        .join(", ")
+      break
   }
 }
 export default (nodes: Node[], id: string, val: Character) =>
-  produce(nodes, draft => {
+  produce(nodes, (draft) => {
     const node = getNodeById(draft, id) as CharacterNode
     updateCharacterNode(node, val)
   })
