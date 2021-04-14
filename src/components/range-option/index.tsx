@@ -7,14 +7,16 @@ import { RangeError } from "./utils"
 type Prop = {
   range: Range
   onChange: (range: Range) => void
+  onRemove: () => void
 }
 type Option = {
   label: string
   value: string
 }
-const RangeOption: React.FC<Prop> = ({ range, onChange }) => {
+const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
   const { from, to } = range
   const [focused, setFocused] = useState(false)
+  const [hovered, setHovered] = useState(false)
   const [error, setError] = useState<null | string>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const fromRef = useRef<string>(from)
@@ -69,28 +71,34 @@ const RangeOption: React.FC<Prop> = ({ range, onChange }) => {
 
   return (
     <>
-      <div ref={wrapRef} className="range-option" onClick={handleWrapperClick}>
-        <RangeInput
-          value={from}
-          onChange={(value: string) => handleInputChange("from", value)}
-          onError={handleError}
-        />
-        {" - "}
-        <RangeInput
-          value={to}
-          onChange={(value: string) => handleInputChange("to", value)}
-          onError={handleError}
-        />
-        {focused && (
+      <div
+        ref={wrapRef}
+        className="range-wrapper"
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+      >
+        <div className="range-option" onClick={handleWrapperClick}>
+          <RangeInput
+            value={from}
+            onChange={(value: string) => handleInputChange("from", value)}
+            onError={handleError}
+          />
+          {" - "}
+          <RangeInput
+            value={to}
+            onChange={(value: string) => handleInputChange("to", value)}
+            onError={handleError}
+          />
+        </div>
+        {(focused || hovered) && (
           <span className="operations">
-            <Trash2 size={18} color="#333" />
+            <Trash2 size={18} color={palette.accents_6} onClick={onRemove} />
           </span>
         )}
       </div>
       {error && <div className="error-msg">{error}</div>}
       <style jsx>{`
         .range-option {
-          position: relative;
           display: inline-block;
           border: 1px solid ${borderColor};
           border-radius: 5px;
@@ -112,18 +120,15 @@ const RangeOption: React.FC<Prop> = ({ range, onChange }) => {
         }
 
         .operations {
-          position: absolute;
-          right: 0;
-          top: 0;
-          transform: translate(100%, 0);
-          display: flex;
+          display: inline-block;
           align-items: center;
-          height: 36px;
+          line-height: 36px;
           padding: 0 12px;
         }
 
         .operations :global(svg) {
           cursor: pointer;
+          vertical-align: middle;
         }
       `}</style>
     </>

@@ -13,6 +13,7 @@ function updateCharacterNode(node: CharacterNode, val: Character) {
       break
     case "ranges":
       node.text = val.value
+        .filter((range) => range.from && range.to)
         .map((range) =>
           range.from === range.to ? range.from : range.from + "-" + range.to
         )

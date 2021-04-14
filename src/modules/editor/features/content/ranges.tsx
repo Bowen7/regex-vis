@@ -44,6 +44,22 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       },
     })
   }
+
+  const handleRemove = (index: number) => {
+    const val: RangesCharacter = {
+      type: "ranges",
+      value: ranges.filter((_, _index) => {
+        return index !== _index
+      }),
+      negate: false,
+    }
+    dispatch({
+      type: MainActionTypes.EDIT_CHARACTER,
+      payload: {
+        val,
+      },
+    })
+  }
   return (
     <>
       <div className="range-options">
@@ -52,6 +68,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
             range={range}
             key={index}
             onChange={(range: Range) => handleRangeChange(index, range)}
+            onRemove={() => handleRemove(index)}
           />
         ))}
       </div>
@@ -65,7 +82,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
         h6 {
           color: ${palette.secondary};
         }
-        .range-options > :global(.range-option:not(:first-child)) {
+        .range-options > :global(.range-wrapper:not(:first-child)) {
           margin-top: 12px;
         }
       `}</style>
