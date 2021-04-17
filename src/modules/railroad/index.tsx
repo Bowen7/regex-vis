@@ -78,10 +78,7 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
         ref={canvasRef}
         style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
       />
-      <SvgContainer
-        rootRenderNode={rootRenderNode}
-        selectedIds={selectedIds}
-      />
+      <SvgContainer rootRenderNode={rootRenderNode} selectedIds={selectedIds} />
     </>
   )
 }

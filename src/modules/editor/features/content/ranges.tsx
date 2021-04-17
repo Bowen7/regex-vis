@@ -11,10 +11,10 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
   const [, dispatch] = useMainReducer()
   const { palette } = useTheme()
 
-  const addRange = () => {
+  const addRange = (newRanges: Range[]) => {
     const val: RangesCharacter = {
       type: "ranges",
-      value: ranges.concat({ from: "", to: "" }),
+      value: ranges.concat(newRanges),
       negate: false,
     }
     dispatch({
@@ -73,9 +73,19 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
         ))}
       </div>
       <Spacer />
-      <ButtonDropdown size="small">
-        <ButtonDropdown.Item main onClick={addRange}>
+      {/* Todo: Custom Dropdown */}
+      <ButtonDropdown>
+        <ButtonDropdown.Item
+          main
+          onClick={() => addRange([{ from: "", to: "" }])}
+        >
           Create A Empty Range
+        </ButtonDropdown.Item>
+        <ButtonDropdown.Item onClick={() => addRange([{ from: "a", to: "z" }])}>
+          a-z
+        </ButtonDropdown.Item>
+        <ButtonDropdown.Item onClick={() => addRange([{ from: "A", to: "Z" }])}>
+          A-Z
         </ButtonDropdown.Item>
       </ButtonDropdown>
       <style jsx>{`
