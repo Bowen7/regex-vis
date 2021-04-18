@@ -69,6 +69,7 @@ const Editor: React.FC<{}> = () => {
   return (
     <>
       <div
+        id="editor-container"
         className={clsx("container", {
           "collapsed-container": editorCollapsed,
         })}
@@ -78,15 +79,17 @@ const Editor: React.FC<{}> = () => {
           onChange={(value: string) => setTabValue(value as Tab)}
           hideDivider
         >
-          <Tabs.Item value="legend" label="Legends">
-            <LegendTab />
-          </Tabs.Item>
-          <Tabs.Item value="edit" label="Edit" disabled={editDisabled}>
-            <EditTab />
-          </Tabs.Item>
-          <Tabs.Item value="test" label="Test">
-            Todo
-          </Tabs.Item>
+          <div className="content" id="editor-content">
+            <Tabs.Item value="legend" label="Legends">
+              <LegendTab />
+            </Tabs.Item>
+            <Tabs.Item value="edit" label="Edit" disabled={editDisabled}>
+              <EditTab />
+            </Tabs.Item>
+            <Tabs.Item value="test" label="Test">
+              Todo
+            </Tabs.Item>
+          </div>
         </Tabs>
         <footer onClick={collapseEditor}>
           <ChevronsRight color={palette.secondary} size={20} />
@@ -119,7 +122,6 @@ const Editor: React.FC<{}> = () => {
           top: 72px;
           right: 0;
           height: calc(100% - 72px);
-          overflow-y: auto;
           width: 275px;
           border-left: 1px solid ${palette.accents_2};
           transition: transform 0.3s ease-out;
@@ -153,7 +155,11 @@ const Editor: React.FC<{}> = () => {
         }
         .container > :global(.tabs > .content) {
           height: calc(100% - 45px);
-          overflow: auto;
+        }
+        .content {
+          position: relative;
+          height: calc(100%);
+          overflow-y: auto;
         }
         .container > :global(.tabs > header) {
           padding: 0 12px;

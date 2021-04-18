@@ -98,6 +98,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         <Select
           value={character.type}
           onChange={handleTypeChange}
+          getPopupContainer={() => document.getElementById("editor-content")}
           disableMatchWidth
         >
           {options.map(({ value, label }) => (
@@ -117,6 +118,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           <Select
             value={classValue}
             onChange={handleClassValueChange}
+            getPopupContainer={() => document.getElementById("editor-content")}
             disableMatchWidth
           >
             {classOptions.map(({ value, text }) => (

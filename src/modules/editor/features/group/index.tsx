@@ -41,7 +41,12 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
   return (
     <>
       <Cell label="Group">
-        <Select value={type} onChange={onSelectChange} disableMatchWidth>
+        <Select
+          value={type}
+          onChange={onSelectChange}
+          getPopupContainer={() => document.getElementById("editor-content")}
+          disableMatchWidth
+        >
           {groupData.map(({ value, label, tip }) => (
             <Select.Option value={value} key={value}>
               <span>{label}</span>
