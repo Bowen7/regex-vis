@@ -75,7 +75,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       <Spacer y={0.5} />
       <h6>Create</h6>
       <div className="dropdown">
-        <ButtonDropdown>
+        <ButtonDropdown size="small">
           <ButtonDropdown.Item
             main
             onClick={() => addRange([{ from: "", to: "" }])}
@@ -107,10 +107,15 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
           width: 186px;
           min-width: unset;
           padding: 0;
+          height: calc(1.687 * 16pt);
         }
 
         .dropdown :global(details) {
           border-radius: 0 ${layout.radius} ${layout.radius} 0;
+        }
+
+        .dropdown :global(summary) {
+          height: calc(1.687 * 16pt);
         }
       `}</style>
     </>

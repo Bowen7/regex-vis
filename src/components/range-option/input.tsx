@@ -1,9 +1,7 @@
 import React, { useEffect } from "react"
-import { Input } from "@geist-ui/react"
-import InjectInput from "@/utils/hoc/inject-input"
+import Input from "@/components/input"
 import { useDebounceInput } from "@/utils/hooks"
 import { checkInputValid, RangeError } from "./utils"
-const InjectedInput = InjectInput(Input)
 type Props = {
   value: string
   onChange: (value: string) => void
@@ -24,6 +22,6 @@ const RangeInput: React.FC<Props> = ({ value, onChange, onError }) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
 
-  return <InjectedInput {...valueBindings} width="85px" />
+  return <Input {...valueBindings} width="85px" />
 }
 export default RangeInput

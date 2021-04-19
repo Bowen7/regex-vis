@@ -1,24 +1,14 @@
 import React, { useState, useEffect } from "react"
-import {
-  Spacer,
-  Select,
-  Code,
-  useTheme,
-  ButtonDropdown,
-  Input,
-} from "@geist-ui/react"
-import RangeOption from "@/components/range-option"
+import { Spacer, Select, Code, useTheme } from "@geist-ui/react"
+import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
-import { injectInput } from "@/utils/hoc"
 import { options } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
 import { Character, ClassCharacter, Range, RangesCharacter } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { classOptions, labelMap } from "./helper"
 import Ranges from "./ranges"
-
-const InjectedInput = injectInput<React.ComponentProps<typeof Input>>(Input)
 
 type Prop = {
   character: Character
@@ -110,7 +100,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         <Spacer y={0.5} />
         <h6>{labelMap[character.type]}</h6>
         {character.type === "string" && (
-          <InjectedInput size="small" {...stringBindings} />
+          <Input size="small" {...stringBindings} />
         )}
 
         {character.type === "ranges" && <Ranges ranges={character.value} />}
