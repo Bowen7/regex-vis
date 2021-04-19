@@ -9,7 +9,7 @@ type Prop = {
 }
 const Ranges: React.FC<Prop> = ({ ranges }) => {
   const [, dispatch] = useMainReducer()
-  const { palette } = useTheme()
+  const { palette, layout } = useTheme()
 
   const addRange = (newRanges: Range[]) => {
     const val: RangesCharacter = {
@@ -72,28 +72,45 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
           />
         ))}
       </div>
-      <Spacer />
-      {/* Todo: Custom Dropdown */}
-      <ButtonDropdown>
-        <ButtonDropdown.Item
-          main
-          onClick={() => addRange([{ from: "", to: "" }])}
-        >
-          Create A Empty Range
-        </ButtonDropdown.Item>
-        <ButtonDropdown.Item onClick={() => addRange([{ from: "a", to: "z" }])}>
-          a-z
-        </ButtonDropdown.Item>
-        <ButtonDropdown.Item onClick={() => addRange([{ from: "A", to: "Z" }])}>
-          A-Z
-        </ButtonDropdown.Item>
-      </ButtonDropdown>
+      <Spacer y={0.5} />
+      <h6>Create</h6>
+      <div className="dropdown">
+        <ButtonDropdown>
+          <ButtonDropdown.Item
+            main
+            onClick={() => addRange([{ from: "", to: "" }])}
+          >
+            A Hyphen Range
+          </ButtonDropdown.Item>
+          <ButtonDropdown.Item
+            onClick={() => addRange([{ from: "a", to: "z" }])}
+          >
+            a-z
+          </ButtonDropdown.Item>
+          <ButtonDropdown.Item
+            onClick={() => addRange([{ from: "A", to: "Z" }])}
+          >
+            A-Z
+          </ButtonDropdown.Item>
+        </ButtonDropdown>
+      </div>
       <style jsx>{`
         h6 {
           color: ${palette.secondary};
         }
+
         .range-options > :global(.range-wrapper:not(:first-child)) {
           margin-top: 12px;
+        }
+
+        .dropdown :global(.btn-dropdown > button) {
+          width: 186px;
+          min-width: unset;
+          padding: 0;
+        }
+
+        .dropdown :global(details) {
+          border-radius: 0 ${layout.radius} ${layout.radius} 0;
         }
       `}</style>
     </>
