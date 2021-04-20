@@ -37,6 +37,7 @@ const InfoItem: React.FC<{}> = () => {
 
   useEffect(() => {
     const nodesInfo = getInfoFromNodes(nodes)
+    console.log(nodesInfo)
     setNodesInfo(nodesInfo)
   }, [nodes])
   return (

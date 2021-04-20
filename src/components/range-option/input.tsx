@@ -21,7 +21,6 @@ const RangeInput: React.FC<Props> = ({ value, onChange, onError }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
-
   return <Input {...valueBindings} width="85px" />
 }
 export default RangeInput

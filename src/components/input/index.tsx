@@ -1,6 +1,6 @@
 import React from "react"
-import { Input as _Input } from "@geist-ui/react"
-type Props = React.ComponentProps<typeof _Input>
+import { Input as GeistInput } from "@geist-ui/react"
+type Props = React.ComponentProps<typeof GeistInput>
 const Input: React.FC<Props> = (props) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const metaKey = e.ctrlKey || e.metaKey
@@ -10,7 +10,7 @@ const Input: React.FC<Props> = (props) => {
     }
     e.stopPropagation()
   }
-  return <Input onKeyDown={handleKeyDown} {...props} />
+  return <GeistInput onKeyDown={handleKeyDown} {...props} />
 }
 
 export default Input
