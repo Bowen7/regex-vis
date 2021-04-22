@@ -84,44 +84,48 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   return (
     <>
       <Cell label="Content">
-        <h6>Type</h6>
-        <Select
-          value={character.type}
-          onChange={handleTypeChange}
-          getPopupContainer={() => document.getElementById("editor-content")}
-          disableMatchWidth
-        >
-          {options.map(({ value, label }) => (
-            <Select.Option value={value} key={value}>
-              <div>{label}</div>
-            </Select.Option>
-          ))}
-        </Select>
-        <Spacer y={0.5} />
-        <h6>{labelMap[character.type]}</h6>
-        {character.type === "string" && (
-          <Input size="small" {...stringBindings} />
-        )}
-
-        {character.type === "ranges" && <Ranges ranges={character.value} />}
-        {character.type === "class" && (
+        <Cell.Item label="Type">
           <Select
-            value={classValue}
-            onChange={handleClassValueChange}
+            value={character.type}
+            onChange={handleTypeChange}
             getPopupContainer={() => document.getElementById("editor-content")}
             disableMatchWidth
           >
-            {classOptions.map(({ value, text }) => (
+            {options.map(({ value, label }) => (
               <Select.Option value={value} key={value}>
-                <div>
-                  <Code>{value}</Code>
-                  <Spacer x={0.5} inline />
-                  {text}
-                </div>
+                <div>{label}</div>
               </Select.Option>
             ))}
           </Select>
-        )}
+        </Cell.Item>
+
+        <Cell.Item label={labelMap[character.type]}>
+          {character.type === "string" && (
+            <Input size="small" {...stringBindings} />
+          )}
+
+          {character.type === "ranges" && <Ranges ranges={character.value} />}
+          {character.type === "class" && (
+            <Select
+              value={classValue}
+              onChange={handleClassValueChange}
+              getPopupContainer={() =>
+                document.getElementById("editor-content")
+              }
+              disableMatchWidth
+            >
+              {classOptions.map(({ value, text }) => (
+                <Select.Option value={value} key={value}>
+                  <div>
+                    <Code>{value}</Code>
+                    <Spacer x={0.5} inline />
+                    {text}
+                  </div>
+                </Select.Option>
+              ))}
+            </Select>
+          )}
+        </Cell.Item>
       </Cell>
       <style jsx>{`
         h6 {

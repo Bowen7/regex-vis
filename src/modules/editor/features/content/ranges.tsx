@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import { Spacer, useTheme, ButtonDropdown } from "@geist-ui/react"
 import RangeOption from "@/components/range-option"
+import Cell from "@/components/cell"
 import { Range, RangesCharacter } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
@@ -72,28 +73,28 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
           />
         ))}
       </div>
-      <Spacer y={0.5} />
-      <h6>Create</h6>
-      <div className="dropdown">
-        <ButtonDropdown size="small">
-          <ButtonDropdown.Item
-            main
-            onClick={() => addRange([{ from: "", to: "" }])}
-          >
-            A Hyphen Range
-          </ButtonDropdown.Item>
-          <ButtonDropdown.Item
-            onClick={() => addRange([{ from: "a", to: "z" }])}
-          >
-            a-z
-          </ButtonDropdown.Item>
-          <ButtonDropdown.Item
-            onClick={() => addRange([{ from: "A", to: "Z" }])}
-          >
-            A-Z
-          </ButtonDropdown.Item>
-        </ButtonDropdown>
-      </div>
+      <Cell.Item label="Create">
+        <div className="dropdown">
+          <ButtonDropdown size="small">
+            <ButtonDropdown.Item
+              main
+              onClick={() => addRange([{ from: "", to: "" }])}
+            >
+              A Hyphen Range
+            </ButtonDropdown.Item>
+            <ButtonDropdown.Item
+              onClick={() => addRange([{ from: "a", to: "z" }])}
+            >
+              a-z
+            </ButtonDropdown.Item>
+            <ButtonDropdown.Item
+              onClick={() => addRange([{ from: "A", to: "Z" }])}
+            >
+              A-Z
+            </ButtonDropdown.Item>
+          </ButtonDropdown>
+        </div>
+      </Cell.Item>
       <style jsx>{`
         h6 {
           color: ${palette.secondary};
