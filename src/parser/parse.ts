@@ -49,7 +49,7 @@ function genBodyNode(ast: AST.RegExpLiteral) {
 function parseAlternative(ast: AST.Alternative) {
   const elements = mergeElements(ast.elements)
 
-  return elements.map(element => parseElement(element))
+  return elements.map((element) => parseElement(element))
 }
 
 function parseElement(ast: AST.Element): Node {
@@ -65,19 +65,9 @@ function parseElement(ast: AST.Element): Node {
     case "Quantifier":
       const { min, max, element } = ast
       node = parseElement(element)
-      let text = ""
-      if (max !== Infinity) {
-        text += Math.max(0, min - 1)
-        if (max !== min) {
-          text += " - "
-          text += max - 1
-        }
-        text += " times"
-      }
       node.quantifier = {
         min,
         max,
-        text,
       }
       break
     case "CharacterClass":
@@ -250,7 +240,7 @@ function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
   const { elements, negate } = ast
   const ranges: Range[] = []
   const texts: string[] = []
-  elements.forEach(element => {
+  elements.forEach((element) => {
     if (element.type === "Character") {
       const text = String.fromCharCode(element.value)
       const range: Range = {
@@ -289,7 +279,7 @@ function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
 function mergeElements(elements: AST.Element[]) {
   const result: AST.Element[] = []
   let lastElement: AST.Element | null = null
-  elements.forEach(element => {
+  elements.forEach((element) => {
     if (element.type === "Character") {
       const raw = String.fromCharCode(element.value)
       if (lastElement) {

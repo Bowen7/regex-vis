@@ -6,7 +6,6 @@ export type Pos = {
 export type Quantifier = {
   min: number
   max: number
-  text: string
 }
 
 export type StringCharacter = {

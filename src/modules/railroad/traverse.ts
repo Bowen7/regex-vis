@@ -13,6 +13,7 @@ import {
   BRANCH_PADDING_HORIZONTAL,
 } from "@/constants/railroad"
 import { font } from "@/constants/style"
+import { getQuantifierText } from "@/parser/utils/quantifier"
 class Traverse {
   canvasRef: React.RefObject<HTMLCanvasElement>
   constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
@@ -113,7 +114,7 @@ class Traverse {
       const { x: originX, y: originY, width, height } = renderNode
       let x = originX
       let y = originY
-      branches.forEach(branch => {
+      branches.forEach((branch) => {
         const branchHeight =
           this.getNodesSize(branch).height + NODE_MARGIN_VERTICAL
 
@@ -164,7 +165,7 @@ class Traverse {
     const { val, branches, children } = node
 
     if (branches) {
-      branches.forEach(nodes => {
+      branches.forEach((nodes) => {
         let { width: branchWidth, height: branchHeight } = this.getNodesSize(
           nodes
         )
@@ -190,7 +191,7 @@ class Traverse {
 
     if (node.quantifier) {
       const { quantifier } = node
-      const { max, min, text } = quantifier
+      const { max, min } = quantifier
       // quantifier curve
       if (min === 0) {
         paddingTop += QUANTIFIER_HEIGHT
@@ -199,6 +200,7 @@ class Traverse {
         paddingBottom += QUANTIFIER_HEIGHT
       }
 
+      const text = getQuantifierText(quantifier)
       // handle times text
       if (text) {
         paddingBottom += NAME_HEIGHT
@@ -234,7 +236,7 @@ class Traverse {
   getNodesSize(nodes: Node[]) {
     let height = 0
     let width = 0
-    nodes.forEach(node => {
+    nodes.forEach((node) => {
       const size = this.getSize(node)
       height = Math.max(height, size.offsetHeight)
       width += size.offsetWidth

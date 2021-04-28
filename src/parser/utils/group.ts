@@ -4,7 +4,7 @@ import { Node, GroupNode, GroupKind } from "@/types"
 import { visitTree, getNodesByIds } from "@/parser/visit"
 import { replace } from "./replace"
 
-function group(
+export function group(
   nodes: Node[],
   selectedNodes: Node[],
   type: GroupKind | "nonGroup",
@@ -81,7 +81,7 @@ export default (
   name?: string
 ) => {
   let nextSelectedIds: string[] = []
-  const nextNodes = produce(nodes, draft => {
+  const nextNodes = produce(nodes, (draft) => {
     const selectedNodes = getNodesByIds(draft, selectedIds)
     nextSelectedIds = group(draft, selectedNodes, type, name)
   })

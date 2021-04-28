@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { GeistUIThemesPalette } from "@geist-ui/react/dist/themes/presets"
 import { NODE_BORDER_RADIUS } from "@/constants/railroad"
+import { getQuantifierText } from "@/parser/utils/quantifier"
 import { Node } from "@/types"
 const FONT = 16
 type Props = {
@@ -75,7 +76,8 @@ const RailNode: React.FC<Props> = React.memo((props) => {
 
   function renderQuantifier() {
     if (node.quantifier) {
-      const { min, max, text } = node.quantifier
+      const { min, max } = node.quantifier
+      const text = getQuantifierText(node.quantifier)
       let path1 = ""
       let path2 = ""
       let path3 = ""
