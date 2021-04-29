@@ -61,11 +61,12 @@ const Editor: React.FC<{}> = () => {
       payload: { collapsed: false },
     })
 
-  const closeGuideModal = () =>
+  const closeGuideModal = () => {
     dispatch({
       type: MainActionTypes.UPDATE_GUIDE_CONFIG,
       payload: { ...guiderConfig, visible: false },
     })
+  }
   return (
     <>
       <div

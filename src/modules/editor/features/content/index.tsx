@@ -21,7 +21,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   const [setString, stringBindings] = useDebounceInput(
     (value: string) =>
       dispatch({
-        type: MainActionTypes.EDIT_CHARACTER,
+        type: MainActionTypes.UPDATE_CHARACTER,
         payload: {
           val: {
             type: "string",
@@ -61,7 +61,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         return
     }
     dispatch({
-      type: MainActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
         val: val as Character,
       },
@@ -75,7 +75,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
       value: value as string,
     }
     dispatch({
-      type: MainActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
         val,
       },

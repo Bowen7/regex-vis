@@ -157,4 +157,5 @@ export type NodesInfo = {
   expression: string
   group: Group | null
   character: Character | null
+  quantifier: Quantifier | null
 }

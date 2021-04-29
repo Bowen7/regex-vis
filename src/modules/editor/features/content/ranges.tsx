@@ -19,7 +19,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       negate: false,
     }
     dispatch({
-      type: MainActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
         val,
       },
@@ -39,7 +39,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       negate: false,
     }
     dispatch({
-      type: MainActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
         val,
       },
@@ -55,7 +55,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       negate: false,
     }
     dispatch({
-      type: MainActionTypes.EDIT_CHARACTER,
+      type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
         val,
       },

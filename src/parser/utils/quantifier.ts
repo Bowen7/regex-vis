@@ -5,8 +5,7 @@ import { group } from "./group"
 export default (
   nodes: Node[],
   selectedIds: string[],
-  min: number,
-  max: number
+  quantifier: Quantifier
 ) => {
   let nextSelectedIds: string[] = selectedIds
   const nextNodes = produce(nodes, (draft) => {
@@ -27,7 +26,7 @@ export default (
     }
 
     const node = selectedNodes[0]
-    node.quantifier = { min, max }
+    node.quantifier = quantifier
   })
   return { nextNodes, nextSelectedIds }
 }
@@ -35,6 +34,9 @@ export default (
 export const getQuantifierText = (quantifier: Quantifier) => {
   const { min, max } = quantifier
   let text = ""
+  if (min === 1 && max === 1) {
+    return text
+  }
   if (max !== Infinity) {
     text += Math.max(0, min - 1)
     if (max !== min) {

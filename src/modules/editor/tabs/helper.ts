@@ -1,4 +1,4 @@
-import { Node } from "@/types"
+import { Node, Quantifier } from "@/types"
 import parser from "@/parser"
 import { NodesInfo, Group, Character } from "@/types"
 
@@ -6,6 +6,7 @@ export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
   group: null,
   character: null,
+  quantifier: null,
   id: "",
 })
 
@@ -25,6 +26,13 @@ const getCharacterInfo = (nodes: Node[]): Character | null => {
   return null
 }
 
+const getQuantifierInfo = (nodes: Node[]): Quantifier => {
+  if (nodes.length === 1 && nodes[0].quantifier) {
+    return nodes[0].quantifier
+  }
+  return { max: 1, min: 1 }
+}
+
 const getId = (nodes: Node[]): string => {
   if (nodes.length === 1) {
     return nodes[0].id
@@ -36,6 +44,7 @@ export function getInfoFromNodes(nodes: Node[]): NodesInfo {
   const expression = parser.gen(nodes)
   const group = getGroupInfo(nodes)
   const character = getCharacterInfo(nodes)
+  const quantifier = getQuantifierInfo(nodes)
   const id = getId(nodes)
-  return { id, expression, group, character }
+  return { id, expression, group, character, quantifier }
 }

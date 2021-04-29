@@ -1,5 +1,5 @@
-import { Node, GroupKind, Character } from "@/types"
-import { remove, insert, group, character } from "@/parser/utils"
+import { Node, GroupKind, Character, Quantifier } from "@/types"
+import { remove, insert, group, character, quantifier } from "@/parser/utils"
 type GuideConfig = {
   visible: boolean
   title: string
@@ -29,14 +29,15 @@ export enum ActionTypes {
   SET_ACTIVE_CHART,
   INSERT,
   REMOVE,
-  GROUP,
+  UPDATE_GROUP,
   SET_NODES,
   UNDO,
   REDO,
   SELECT_NODES,
-  EDIT_CHARACTER,
+  UPDATE_CHARACTER,
   SET_EDITOR_COLLAPSED,
   UPDATE_GUIDE_CONFIG,
+  UPDATE_QUANTIFIER,
 }
 
 export type Action =
@@ -50,7 +51,7 @@ export type Action =
     }
   | { type: ActionTypes.REMOVE }
   | {
-      type: ActionTypes.GROUP
+      type: ActionTypes.UPDATE_GROUP
       payload: { groupType: GroupKind | "nonGroup"; groupName: string }
     }
   | { type: ActionTypes.SET_NODES; payload: { nodes: Node[] } }
@@ -61,11 +62,12 @@ export type Action =
       payload: { selected: string[] | string }
     }
   | {
-      type: ActionTypes.EDIT_CHARACTER
+      type: ActionTypes.UPDATE_CHARACTER
       payload: { val: Character }
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
+  | { type: ActionTypes.UPDATE_QUANTIFIER; payload: Quantifier }
 
 const setNodes = (
   state: InitialStateType,
@@ -99,7 +101,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const nextNodes = remove(nodes, selectedIds)
       return setNodes(state, nextNodes, { selectedIds: [] })
     }
-    case ActionTypes.GROUP: {
+    case ActionTypes.UPDATE_GROUP: {
       const { nodes, selectedIds } = state
       const { groupType, groupName } = action.payload
       const { nextNodes, nextSelectedIds } = group(
@@ -166,7 +168,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
         selectedIds: nextSelected,
       }
     }
-    case ActionTypes.EDIT_CHARACTER: {
+    case ActionTypes.UPDATE_CHARACTER: {
       const { nodes, selectedIds } = state
       const { val } = action.payload
       const id = selectedIds[0]
@@ -179,6 +181,15 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_GUIDE_CONFIG: {
       return { ...state, guiderConfig: action.payload }
+    }
+    case ActionTypes.UPDATE_QUANTIFIER: {
+      const { nodes, selectedIds } = state
+      const { nextNodes, nextSelectedIds } = quantifier(
+        nodes,
+        selectedIds,
+        action.payload
+      )
+      return setNodes(state, nextNodes, { selectedIds: nextSelectedIds })
     }
     default:
       return state

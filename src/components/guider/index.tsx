@@ -15,6 +15,7 @@ const Guider: React.FC<Props> = ({
   const [, dispatch] = useMainReducer()
   const handleClick = (e: React.MouseEvent) => {
     e.stopPropagation()
+    e.nativeEvent.stopImmediatePropagation()
 
     dispatch({
       type: MainActionTypes.UPDATE_GUIDE_CONFIG,
@@ -23,8 +24,8 @@ const Guider: React.FC<Props> = ({
   }
   return (
     <>
-      <span>
-        <QuestionCircle onClick={handleClick} cursor="pointer" {...restProps} />
+      <span onClick={handleClick}>
+        <QuestionCircle cursor="pointer" {...restProps} />
       </span>
       <style jsx>{`
         span > :global(svg) {
