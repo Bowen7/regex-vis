@@ -75,13 +75,16 @@ const RailNode: React.FC<Props> = React.memo((props) => {
   }
 
   function renderQuantifier() {
+    const paths = []
     if (node.quantifier) {
       const { min, max } = node.quantifier
       const text = getQuantifierText(node.quantifier)
-      let path1 = ""
-      let path2 = ""
-      let path3 = ""
       if (min === 0) {
+        let offsetY = 0
+        if ("name" in node || val?.name) {
+          offsetY = 10
+        }
+
         const left = {
           x,
           y: y + height / 2,
@@ -90,52 +93,40 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           x: x + width,
           y: y + height / 2,
         }
-        path1 =
-          `M${left.x - 15},${left.y}` +
+        const d =
+          `M${left.x},${left.y}` +
+          `L${left.x - 15},${left.y}` +
           `A5 5 0 0 0,${left.x - 10},${left.y - 5}` +
-          `L${left.x - 10},${left.y - height / 2 - 5}` +
-          `A5 5 0 0 1,${left.x - 5},${left.y - height / 2 - 10}` +
-          `L${left.x + width + 5},${left.y - height / 2 - 10}` +
-          `A5 5 0 0 1,${left.x + width + 10},${left.y - height / 2 - 5}` +
+          `L${left.x - 10},${left.y - height / 2 - 5 - offsetY}` +
+          `A5 5 0 0 1,${left.x - 5},${left.y - height / 2 - 10 - offsetY}` +
+          `L${left.x + width + 5},${left.y - height / 2 - 10 - offsetY}` +
+          `A5 5 0 0 1,${left.x + width + 10},${
+            left.y - height / 2 - 5 - offsetY
+          }` +
           `L${left.x + width + 10},${left.y - 5}` +
-          `A5 5 0 0 0,${right.x + 15},${right.y}`
+          `A5 5 0 0 0,${right.x + 15},${right.y}` +
+          `L${right.x},${right.y}`
+        paths.push({ d, id: node.id + "-q-0" })
       }
       if (max > 1) {
-        path2 =
+        const d =
           `M${center.x - 7.5},${y + height}` +
-          `A10 10 0 1 0,${center.x + 7.5},${y + height}`
-        path3 =
+          `A10 10 0 1 0,${center.x + 7.5},${y + height}` +
           `M${center.x + 6.5},${y + height + 7}` +
           `L${center.x + 10},${y + height + 10.5}` +
           `L${center.x + 13.5},${y + height + 7}`
+
+        paths.push({ d, id: node.id + "-q-1" })
+      }
+
+      if (min === 0 && selected) {
       }
       // todo: optimize
       return (
         <>
-          {path1 && (
-            <path
-              d={path1}
-              stroke={stroke}
-              fill="none"
-              pointerEvents="none"
-            ></path>
-          )}
-          {path2 && (
-            <path
-              d={path2}
-              stroke={stroke}
-              fill="none"
-              pointerEvents="none"
-            ></path>
-          )}
-          {path3 && (
-            <path
-              d={path3}
-              stroke={stroke}
-              fill="none"
-              pointerEvents="none"
-            ></path>
-          )}
+          {paths.map(({ d, id }) => (
+            <path d={d} key={id} stroke={stroke} fill="transparent"></path>
+          ))}
           {text && (
             <text
               x={center.x}
@@ -190,8 +181,8 @@ const RailNode: React.FC<Props> = React.memo((props) => {
         ></rect>
         {renderText()}
         {renderName()}
+        {renderQuantifier()}
       </g>
-      {renderQuantifier()}
     </g>
   )
 })

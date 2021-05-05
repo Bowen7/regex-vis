@@ -4,7 +4,7 @@ import Railroad from "@/modules/railroad"
 import Editor from "@/modules/editor"
 import { Node } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
-const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
+const DEFAULT_REGEX = `/([a-zA-Z0-9_-])?@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+(a|b)/`
 
 const Home: React.FC<{}> = () => {
   const handleChange = useCallback((regex: string) => console.log(regex), [])

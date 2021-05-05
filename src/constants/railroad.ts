@@ -5,7 +5,7 @@ export const NODE_PADDING_VERTICAL = 8
 export const NODE_PADDING_HORIZONTAL = 10
 
 export const NODE_MARGIN_VERTICAL = 15
-export const NODE_MARGIN_HORIZONTAL = 20
+export const NODE_MARGIN_HORIZONTAL = 25
 
 export const BRANCH_PADDING_HORIZONTAL = 10
 

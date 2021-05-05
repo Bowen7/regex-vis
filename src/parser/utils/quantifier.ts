@@ -32,10 +32,13 @@ export default (
 }
 
 export const getQuantifierText = (quantifier: Quantifier) => {
-  const { min, max } = quantifier
+  let { min, max } = quantifier
+  if (min === 0) {
+    min = 1
+  }
   let text = ""
   if (min === 1 && max === 1) {
-    return text
+    return ""
   }
   if (max !== Infinity) {
     text += Math.max(0, min - 1)

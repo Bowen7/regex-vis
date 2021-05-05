@@ -129,7 +129,8 @@ const SvgContainer: React.FC<Props> = (props) => {
   }
 
   function displayRenderNodes() {
-    const result: JSX.Element[] = []
+    const nodes: JSX.Element[] = []
+    const connects: JSX.Element[] = []
     const selectedHeadId = selectedIds[0]
     const selectedTailId = selectedIds[selectedIds.length - 1]
     function dfs(
@@ -142,7 +143,7 @@ const SvgContainer: React.FC<Props> = (props) => {
       let { selected } = options
       if (renderNode.type === "connect") {
         const { start, end, id } = renderNode
-        result.push(
+        connects.push(
           <Connect
             type={options.connectType}
             start={start}
@@ -166,7 +167,7 @@ const SvgContainer: React.FC<Props> = (props) => {
         ) {
           nodeSelected = false
         }
-        result.push(
+        nodes.push(
           <RailNode
             x={x}
             y={y}
@@ -209,7 +210,7 @@ const SvgContainer: React.FC<Props> = (props) => {
       })
     }
     dfs(rootRenderNode, { selected: false, connectType: "straight" })
-    return result
+    return [connects, nodes]
   }
   useEventListener("mouseup", onMouseUp)
   return (
