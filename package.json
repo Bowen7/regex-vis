@@ -25,7 +25,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "regexpp": "git+ssh://git@github.com:Bowen7/regexpp.git#8fb9c55",
+    "regexpp": "Bowen7/regexpp#8fb9c55",
     "styled-jsx": "3.3.0",
     "typescript": "~3.7.2"
   },
