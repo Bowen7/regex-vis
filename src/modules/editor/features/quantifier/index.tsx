@@ -5,34 +5,39 @@ import { Quantifier } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { quantifierOptions } from "./helper"
 type Props = {
-  quantifier: Quantifier
+  quantifier: Quantifier | null
 }
 const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   const [times, setTimes] = useState("non")
   const [, dispatch] = useMainReducer()
 
   useEffect(() => {
-    const { max, min } = quantifier
-    if (max === 1 && min === 1) {
+    if (!quantifier) {
       setTimes("non")
-    } else if (max === 1 && min === 0) {
-      setTimes("?")
-    } else if (max === Infinity && min === 0) {
-      setTimes("*")
-    } else if (max === Infinity && min === 1) {
-      setTimes("+")
+      return
+    }
+    if (quantifier.kind === "custom") {
+    } else {
+      const { kind } = quantifier
+      setTimes(kind)
     }
   }, [quantifier])
 
   const handleChange = (value: string | string[]) => {
-    const quantifier = { max: 1, min: 1 }
-    if (value === "?") {
-      quantifier.min = 0
-    } else if (value === "*") {
-      quantifier.min = 0
-      quantifier.max = Infinity
-    } else if (value === "+") {
-      quantifier.max = Infinity
+    let quantifier: Quantifier | null = null
+    switch (value) {
+      case "?":
+        quantifier = { kind: "?", min: 0, max: 1 }
+        break
+      case "*":
+        quantifier = { kind: "*", min: 0, max: Infinity }
+        break
+      case "+":
+        quantifier = { kind: "+", min: 1, max: Infinity }
+        break
+
+      default:
+        break
     }
     dispatch({ type: MainActionTypes.UPDATE_QUANTIFIER, payload: quantifier })
   }

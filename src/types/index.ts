@@ -4,6 +4,7 @@ export type Pos = {
 }
 
 export type Quantifier = {
+  kind: "?" | "*" | "+" | "custom"
   min: number
   max: number
 }

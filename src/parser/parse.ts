@@ -63,9 +63,10 @@ function parseElement(ast: AST.Element): Node {
       node = parseGroup(ast)
       break
     case "Quantifier":
-      const { min, max, element } = ast
+      const { min, max, kind, element } = ast
       node = parseElement(element)
       node.quantifier = {
+        kind,
         min,
         max,
       }

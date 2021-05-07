@@ -49,7 +49,7 @@ const InfoItem: React.FC<{}> = () => {
         <Expression expression={expression} />
         {character && <Characters character={character} id={id} />}
         {group && <Group group={group} onGroupChange={handleGroup} />}
-        {quantifier && <Quantifier quantifier={quantifier} />}
+        <Quantifier quantifier={quantifier} />
       </div>
       <style jsx>{`
         .container {

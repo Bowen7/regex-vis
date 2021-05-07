@@ -26,11 +26,11 @@ const getCharacterInfo = (nodes: Node[]): Character | null => {
   return null
 }
 
-const getQuantifierInfo = (nodes: Node[]): Quantifier => {
+const getQuantifierInfo = (nodes: Node[]): Quantifier | null => {
   if (nodes.length === 1 && nodes[0].quantifier) {
     return nodes[0].quantifier
   }
-  return { max: 1, min: 1 }
+  return null
 }
 
 const getId = (nodes: Node[]): string => {

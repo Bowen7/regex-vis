@@ -67,7 +67,7 @@ export type Action =
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
-  | { type: ActionTypes.UPDATE_QUANTIFIER; payload: Quantifier }
+  | { type: ActionTypes.UPDATE_QUANTIFIER; payload: Quantifier | null }
 
 const setNodes = (
   state: InitialStateType,

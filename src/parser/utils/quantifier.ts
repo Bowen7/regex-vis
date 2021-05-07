@@ -5,11 +5,17 @@ import { group } from "./group"
 export default (
   nodes: Node[],
   selectedIds: string[],
-  quantifier: Quantifier
+  quantifier: Quantifier | null
 ) => {
   let nextSelectedIds: string[] = selectedIds
   const nextNodes = produce(nodes, (draft) => {
     let selectedNodes = getNodesByIds(draft, selectedIds)
+    if (!quantifier) {
+      const node = selectedNodes[0]
+      delete node.quantifier
+      return
+    }
+
     if (selectedNodes.length === 1) {
       const node = selectedNodes[0]
       if (
