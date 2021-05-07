@@ -18,8 +18,7 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
   ] = useMainReducer()
 
   const regex = useRef<string>(propRegex)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const traverse = useRef<Traverse>(new Traverse(canvasRef))
+  const traverse = useRef<Traverse>(new Traverse())
 
   const id = useRef<string>(nanoid())
   const [nodes, setNodes] = useState<Node[]>([])
@@ -72,14 +71,7 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
   }, [onChange, nodes])
 
   return (
-    <>
-      {/* for measureText */}
-      <canvas
-        ref={canvasRef}
-        style={{ position: "absolute", top: "-9999px", left: "-9999px" }}
-      />
-      <SvgContainer rootRenderNode={rootRenderNode} selectedIds={selectedIds} />
-    </>
+    <SvgContainer rootRenderNode={rootRenderNode} selectedIds={selectedIds} />
   )
 }
 

@@ -15,10 +15,10 @@ import {
 import { font } from "@/constants/style"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 class Traverse {
-  canvasRef: React.RefObject<HTMLCanvasElement>
-  constructor(canvasRef: React.RefObject<HTMLCanvasElement>) {
+  canvas: HTMLCanvasElement
+  constructor() {
     // the `measureText` method use canvas.measureText
-    this.canvasRef = canvasRef
+    this.canvas = document.createElement('canvas')
   }
   render(nodes: Node[]) {
     const { width, height } = this.getNodesSize(nodes)
@@ -145,7 +145,7 @@ class Traverse {
     }
   }
   measureText(text: string, fontSize: number = 16) {
-    const context = this.canvasRef.current?.getContext("2d")
+    const context = this.canvas.getContext("2d")
     if (!context) {
       return { width: 0, height: 0 }
     }
