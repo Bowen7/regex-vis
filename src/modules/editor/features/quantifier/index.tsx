@@ -1,25 +1,29 @@
 import React, { useState, useEffect } from "react"
-import { Checkbox, Select } from "@geist-ui/react"
+import { Checkbox, Select, AutoComplete, Spacer } from "@geist-ui/react"
 import Cell from "@/components/cell"
+import RangeInput from "@/components/range-input"
 import { Quantifier } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { quantifierOptions } from "./helper"
 type Props = {
   quantifier: Quantifier | null
 }
+const maxOptions = [{ label: "Infinity", value: "Infinity" }]
 const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
-  const [times, setTimes] = useState("non")
+  const [kind, setKind] = useState("non")
+  const [min, setMin] = useState("")
+  const [max, setMax] = useState("")
   const [, dispatch] = useMainReducer()
 
   useEffect(() => {
     if (!quantifier) {
-      setTimes("non")
+      setKind("non")
       return
     }
     if (quantifier.kind === "custom") {
     } else {
       const { kind } = quantifier
-      setTimes(kind)
+      setKind(kind)
     }
   }, [quantifier])
 
@@ -35,18 +39,23 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
       case "+":
         quantifier = { kind: "+", min: 1, max: Infinity }
         break
-
       default:
         break
     }
-    dispatch({ type: MainActionTypes.UPDATE_QUANTIFIER, payload: quantifier })
+    if (["non", "*", "?", "+"].includes(value as string)) {
+      return dispatch({
+        type: MainActionTypes.UPDATE_QUANTIFIER,
+        payload: quantifier,
+      })
+    }
+    setKind(value as string)
   }
   return (
     <>
       <Cell label="Quantifier">
         <Cell.Item label="times">
           <Select
-            value={times}
+            value={kind}
             onChange={handleChange}
             getPopupContainer={() => document.getElementById("editor-content")}
             disableMatchWidth
@@ -57,11 +66,18 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
               </Select.Option>
             ))}
           </Select>
+          {kind !== "custom" && (
+            <>
+              <Spacer y={0.5} />
+              <RangeInput start="1" end="1" onChange={() => {}} />
+            </>
+          )}
         </Cell.Item>
         <Cell.Item label="greedy">
           <Checkbox initialChecked={true}>Greedy</Checkbox>
         </Cell.Item>
       </Cell>
+      <style jsx>{``}</style>
     </>
   )
 }

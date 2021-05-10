@@ -3,8 +3,8 @@ export const quantifierOptions = [
   { value: "?", label: "0 or 1" },
   { value: "*", label: "0 or more" },
   { value: "+", label: "1 or more" },
-  // {
-  //   value: "custom",
-  //   label: "Custom",
-  // },
+  {
+    value: "custom",
+    label: "Custom",
+  },
 ]
