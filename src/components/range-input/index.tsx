@@ -7,8 +7,9 @@ type Prop = {
   end: string
   startPlaceholder?: string
   endPlaceholder?: string
-  removable?: boolean
   width?: number
+  removable?: boolean
+  controlled?: boolean
   onChange: (start: string, end: string) => void
   onRemove?: () => void
   validate?: (start: string, end: string) => null | string
@@ -18,8 +19,9 @@ const RangeOption: React.FC<Prop> = ({
   end,
   startPlaceholder = "",
   endPlaceholder = "",
-  removable = false,
   width = 186,
+  removable = false,
+  controlled = true,
   onChange,
   onRemove,
   validate,
@@ -29,6 +31,9 @@ const RangeOption: React.FC<Prop> = ({
   const [focused, setFocused] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [error, setError] = useState<null | string>(null)
+
+  const [defaultStart] = useState(start)
+  const [defaultEnd] = useState(end)
 
   const wrapRef = useRef<HTMLDivElement>(null)
   const startRef = useRef<string>(start)
@@ -74,13 +79,13 @@ const RangeOption: React.FC<Prop> = ({
           style={{ width }}
         >
           <SingleInput
-            value={start}
+            value={controlled ? start : defaultStart}
             placeholder={startPlaceholder}
             onChange={(value: string) => handleInputChange("start", value)}
           />
           <span>{" - "}</span>
           <SingleInput
-            value={end}
+            value={controlled ? end : defaultEnd}
             placeholder={endPlaceholder}
             onChange={(value: string) => handleInputChange("end", value)}
           />

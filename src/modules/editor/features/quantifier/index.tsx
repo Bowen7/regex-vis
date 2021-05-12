@@ -63,11 +63,16 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
 
     const minNumber = Number(min)
     const maxNumber = Number(max)
-    if (isNaN(minNumber) || isNaN(maxNumber)) {
-      return "Only numbers can be entered"
+    if (
+      isNaN(minNumber) ||
+      isNaN(maxNumber) ||
+      minNumber < 0 ||
+      maxNumber < 0
+    ) {
+      return "Only positive numbers can be entered"
     }
 
-    if (!min && !max && minNumber > maxNumber) {
+    if (min && max && minNumber > maxNumber) {
       return "Numbers out of order in the quantifier"
     }
     return null
@@ -111,6 +116,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
                 end={max}
                 startPlaceholder={minPlaceholder}
                 endPlaceholder={maxPlaceholder}
+                controlled={false}
                 onChange={handleCustomRangeChange}
                 validate={validateCustomRange}
               />
