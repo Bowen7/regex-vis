@@ -4,8 +4,9 @@ import { useDebounceInput } from "@/utils/hooks"
 type Props = {
   value: string
   onChange: (value: string) => void
-}
-const SingleInput: React.FC<Props> = ({ value, onChange }) => {
+} & Omit<React.ComponentProps<typeof Input>, "onChange" | "value">
+
+const SingleInput: React.FC<Props> = ({ value, onChange, ...restProps }) => {
   const [setValue, valueBindings] = useDebounceInput((value: string) => {
     onChange(value)
   }, [])
@@ -15,6 +16,7 @@ const SingleInput: React.FC<Props> = ({ value, onChange }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value])
-  return <Input {...valueBindings} />
+  return <Input {...valueBindings} {...restProps} />
 }
+
 export default SingleInput

@@ -5,16 +5,20 @@ import SingleInput from "./single-input"
 type Prop = {
   start: string
   end: string
+  startPlaceholder?: string
+  endPlaceholder?: string
   removable?: boolean
   width?: number
   onChange: (start: string, end: string) => void
   onRemove?: () => void
-  validate?: () => null | string
+  validate?: (start: string, end: string) => null | string
 }
 const RangeOption: React.FC<Prop> = ({
   start,
   end,
-  removable = true,
+  startPlaceholder = "",
+  endPlaceholder = "",
+  removable = false,
   width = 186,
   onChange,
   onRemove,
@@ -49,7 +53,8 @@ const RangeOption: React.FC<Prop> = ({
     } else {
       endRef.current = value
     }
-    const error = (validate && validate()) || null
+    const error =
+      (validate && validate(startRef.current, endRef.current)) || null
     setError(error)
     if (error === null) {
       onChange(startRef.current, endRef.current)
@@ -70,11 +75,13 @@ const RangeOption: React.FC<Prop> = ({
         >
           <SingleInput
             value={start}
+            placeholder={startPlaceholder}
             onChange={(value: string) => handleInputChange("start", value)}
           />
-          {" - "}
+          <span>{" - "}</span>
           <SingleInput
             value={end}
+            placeholder={endPlaceholder}
             onChange={(value: string) => handleInputChange("end", value)}
           />
         </div>
