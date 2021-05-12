@@ -71,10 +71,10 @@ export interface ChoiceNode extends NodeBase {
 export interface BoundaryAssertionNode extends NodeBase {
   type: "boundaryAssertion"
   val: {
-    text: string
     kind: "start" | "end" | "word"
     negate?: boolean
-  }
+  },
+  text: string
 }
 
 export interface LookaroundAssertionNode extends NodeBase {

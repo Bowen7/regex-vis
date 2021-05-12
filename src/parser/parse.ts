@@ -115,6 +115,7 @@ function parseCharacterSet(characterSet: AST.CharacterSet): CharacterNode {
   let text = ""
   let raw = ""
   switch (characterSet.kind) {
+    // todo
     case "any":
       text = "any character"
       raw = "."
@@ -187,10 +188,10 @@ function parseWordBoundaryAssertion(
     id: nanoid(),
     type: "boundaryAssertion",
     val: {
-      text: negate ? "NonWordBoundary" : "WordBoundary",
       kind,
       negate,
     },
+    text: negate ? "NonWordBoundary" : "WordBoundary"
   }
 }
 
@@ -202,9 +203,9 @@ function parseEdgeAssertion(
     id: nanoid(),
     type: "boundaryAssertion",
     val: {
-      text: text,
       kind: assertion.kind,
     },
+    text: text,
   }
 }
 
