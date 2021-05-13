@@ -11,17 +11,18 @@ type Props = {
   onMount?: (id: string, nodes: Node[]) => void
   onChange?: (regex: string) => void
 }
+const INITIAL_NODES: Node[] = []
 const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
   const [
     { nodes: propNodes, selectedIds: propSelectedIds, activeId: propActiveId },
     dispatch,
   ] = useMainReducer()
 
-  const regex = useRef<string>(propRegex)
+  const regex = useRef<string>("")
   const traverse = useRef<Traverse>(new Traverse())
 
   const id = useRef<string>(nanoid())
-  const [nodes, setNodes] = useState<Node[]>([])
+  const [nodes, setNodes] = useState<Node[]>(INITIAL_NODES)
   const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [rootRenderNode, setRootRenderNode] = useState<RenderVirtualNode>({
     type: "virtual",
@@ -41,15 +42,18 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
       regex.current = propRegex
       const nodes = parser.parse(propRegex)
       setNodes(nodes)
-      if (propActiveId === id.current) {
-        dispatch({
-          type: MainActionTypes.SET_ACTIVE_CHART,
-          payload: { id: id.current, nodes, selectedIds: [] },
-        })
-      }
+    }
+  }, [propRegex, propActiveId])
+
+  useEffect(() => {
+    if (propActiveId === id.current) {
+      dispatch({
+        type: MainActionTypes.SET_ACTIVE_CHART,
+        payload: { id: id.current, nodes, selectedIds: [] },
+      })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propRegex, propActiveId])
+  }, [propActiveId])
 
   useEffect(() => {
     if (id.current !== propActiveId) {
@@ -64,10 +68,12 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
   }, [propNodes, propActiveId, propSelectedIds])
 
   useEffect(() => {
-    const rootRenderNode = traverse.current.render(nodes)
-    regex.current = parser.gen(nodes)
-    onChange && onChange(regex.current)
-    setRootRenderNode(rootRenderNode)
+    if (nodes !== INITIAL_NODES) {
+      const rootRenderNode = traverse.current.render(nodes)
+      regex.current = parser.gen(nodes)
+      onChange && onChange(regex.current)
+      setRootRenderNode(rootRenderNode)
+    }
   }, [onChange, nodes])
 
   return (
