@@ -173,9 +173,9 @@ function parseLookaroundAssertion(
     },
   }
   if (alternatives.length === 1) {
-    parseAlternative(alternatives[0])
+    node.children = parseAlternative(alternatives[0])
   } else {
-    parseAlternatives(alternatives)
+    node.children = [parseAlternatives(alternatives)]
   }
   return node
 }
