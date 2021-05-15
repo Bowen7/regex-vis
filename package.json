@@ -25,7 +25,7 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "3.4.3",
-    "regexpp": "Bowen7/regexpp#8fb9c55",
+    "regexpp": "Bowen7/regexpp#8fb9c550810a37b8c4486cc547635518a2e4f57e",
     "styled-jsx": "3.3.0",
     "typescript": "~3.7.2"
   },
