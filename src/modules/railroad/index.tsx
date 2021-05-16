@@ -8,18 +8,24 @@ import parser from "@/parser"
 import { nanoid } from "nanoid"
 type Props = {
   regex: string
+  minimum?: boolean
   onMount?: (id: string, nodes: Node[]) => void
   onChange?: (regex: string) => void
 }
 const INITIAL_NODES: Node[] = []
-const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
+const Railroad: React.FC<Props> = ({
+  regex: propRegex,
+  minimum = false,
+  onChange,
+  onMount,
+}) => {
   const [
     { nodes: propNodes, selectedIds: propSelectedIds, activeId: propActiveId },
     dispatch,
   ] = useMainReducer()
 
   const regex = useRef<string>("")
-  const traverse = useRef<Traverse>(new Traverse())
+  const traverse = useRef<Traverse>(new Traverse(minimum))
 
   const id = useRef<string>(nanoid())
   const [nodes, setNodes] = useState<Node[]>(INITIAL_NODES)
@@ -77,7 +83,11 @@ const Railroad: React.FC<Props> = ({ regex: propRegex, onChange, onMount }) => {
   }, [onChange, nodes])
 
   return (
-    <SvgContainer rootRenderNode={rootRenderNode} selectedIds={selectedIds} />
+    <SvgContainer
+      rootRenderNode={rootRenderNode}
+      selectedIds={selectedIds}
+      minimum={minimum}
+    />
   )
 }
 

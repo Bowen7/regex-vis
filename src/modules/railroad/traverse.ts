@@ -16,23 +16,28 @@ import { font } from "@/constants/style"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 class Traverse {
   canvas: HTMLCanvasElement
-  constructor() {
+  minimum: boolean
+  constructor(minimum = false) {
     // the `measureText` method use canvas.measureText
-    this.canvas = document.createElement('canvas')
+    this.canvas = document.createElement("canvas")
+    this.minimum = minimum
   }
   render(nodes: Node[]) {
+    const { minimum } = this
     const { width, height } = this.getNodesSize(nodes)
     const rootRenderNode: RenderVirtualNode = {
       type: "virtual",
       width: width,
       height: height,
-      x: CHART_PADDING_HORIZONTAL,
-      y: CHART_PADDING_VERTICAL,
+      x: minimum ? 0 : CHART_PADDING_HORIZONTAL,
+      y: minimum ? 0 : CHART_PADDING_VERTICAL,
       children: [],
     }
     this.renderNodes(rootRenderNode, nodes)
-    rootRenderNode.width += CHART_PADDING_HORIZONTAL * 2
-    rootRenderNode.height += CHART_PADDING_VERTICAL * 2
+    if (!minimum) {
+      rootRenderNode.width += CHART_PADDING_HORIZONTAL * 2
+      rootRenderNode.height += CHART_PADDING_VERTICAL * 2
+    }
     return rootRenderNode
   }
   renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {

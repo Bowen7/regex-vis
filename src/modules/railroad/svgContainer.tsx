@@ -9,9 +9,10 @@ import { MainActionTypes, useMainReducer } from "@/redux"
 type Props = {
   rootRenderNode: RenderVirtualNode
   selectedIds: string[]
+  minimum: boolean
 }
 const SvgContainer: React.FC<Props> = (props) => {
-  const { rootRenderNode, selectedIds } = props
+  const { rootRenderNode, selectedIds, minimum } = props
   const { palette } = useTheme()
   const { width, height } = rootRenderNode
   const [, dispatch] = useMainReducer()
@@ -176,7 +177,7 @@ const SvgContainer: React.FC<Props> = (props) => {
             node={target}
             selected={nodeSelected}
             palette={palette}
-            onClick={handleClick}
+            onClick={minimum ? undefined : handleClick}
             key={id}
           />
         )
@@ -220,8 +221,8 @@ const SvgContainer: React.FC<Props> = (props) => {
         xmlns="http://www.w3.org/2000/svg"
         width={width}
         height={height}
-        onMouseDown={onMouseDown}
-        onMouseMove={onMouseMove}
+        onMouseDown={minimum ? undefined : onMouseDown}
+        onMouseMove={minimum ? undefined : onMouseMove}
       >
         {displayRenderNodes()}
         <rect
@@ -236,7 +237,7 @@ const SvgContainer: React.FC<Props> = (props) => {
       <style jsx>
         {`
           svg {
-            border: 1px solid ${palette.accents_2};
+            border: ${minimum ? "none" : `1px solid ${palette.accents_2}`};
             border-radius: 5px;
           }
         `}

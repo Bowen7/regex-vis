@@ -12,7 +12,7 @@ type Props = {
   height: number
   selected: boolean
   palette: GeistUIThemesPalette
-  onClick: (node: Node) => void
+  onClick?: (node: Node) => void
 }
 const RailNode: React.FC<Props> = React.memo((props) => {
   console.log("render")
@@ -165,7 +165,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
   }
 
   function onClick() {
-    props.onClick(node)
+    props.onClick && props.onClick(node)
   }
 
   return (
