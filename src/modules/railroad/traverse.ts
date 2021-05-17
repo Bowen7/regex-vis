@@ -19,7 +19,12 @@ class Traverse {
   minimum: boolean
   constructor(minimum = false) {
     // the `measureText` method use canvas.measureText
-    this.canvas = document.createElement("canvas")
+    if (process.env.EXPORT) {
+      const { createCanvas } = require("canvas")
+      this.canvas = createCanvas()
+    } else {
+      this.canvas = document.createElement("canvas")
+    }
     this.minimum = minimum
   }
   render(nodes: Node[]) {

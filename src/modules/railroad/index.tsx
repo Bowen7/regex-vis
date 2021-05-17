@@ -39,6 +39,11 @@ const Railroad: React.FC<Props> = ({
     children: [],
   })
 
+  if (process.env.EXPORT && regex.current !== propRegex) {
+    regex.current = propRegex
+    setRootRenderNode(traverse.current.render(parser.parse(propRegex)))
+  }
+
   useEffectOnce(() => {
     onMount && onMount(id.current, nodes)
   })
