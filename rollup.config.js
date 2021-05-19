@@ -8,7 +8,7 @@ import path from "path"
 const extensions = [".js", ".ts", ".tsx"]
 
 export default {
-  input: "./src/modules/railroad/index.tsx",
+  input: "./src/modules/railroad/minimum-railroad.tsx",
   output: {
     file: "dest/index.js",
     format: "cjs",
