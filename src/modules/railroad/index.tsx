@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { RenderVirtualNode, Node } from "@/types"
 import Traverse from "./traverse"
-import SvgContainer from "./svgContainer"
+import SvgContainer from "./svg-container"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { useEffectOnce } from "@/utils/hooks"
 import parser from "@/parser"
