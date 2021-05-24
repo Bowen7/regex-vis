@@ -3,6 +3,8 @@ import { Node, RenderNode, RenderVirtualNode, Size } from "@/types"
 import {
   CHART_PADDING_HORIZONTAL,
   CHART_PADDING_VERTICAL,
+  MINIMUM_CHART_PADDING_HORIZONTAL,
+  MINIMUM_CHART_PADDING_VERTICAL,
   NODE_PADDING_HORIZONTAL,
   NODE_PADDING_VERTICAL,
   NODE_MARGIN_VERTICAL,
@@ -30,19 +32,23 @@ class Traverse {
   render(nodes: Node[]) {
     const { minimum } = this
     const { width, height } = this.getNodesSize(nodes)
+    const paddingHorizontal = minimum
+      ? MINIMUM_CHART_PADDING_HORIZONTAL
+      : CHART_PADDING_HORIZONTAL
+    const paddingVertical = minimum
+      ? MINIMUM_CHART_PADDING_VERTICAL
+      : CHART_PADDING_VERTICAL
     const rootRenderNode: RenderVirtualNode = {
       type: "virtual",
       width: width,
       height: height,
-      x: minimum ? 0 : CHART_PADDING_HORIZONTAL,
-      y: minimum ? 0 : CHART_PADDING_VERTICAL,
+      x: paddingHorizontal,
+      y: paddingVertical,
       children: [],
     }
     this.renderNodes(rootRenderNode, nodes)
-    if (!minimum) {
-      rootRenderNode.width += CHART_PADDING_HORIZONTAL * 2
-      rootRenderNode.height += CHART_PADDING_VERTICAL * 2
-    }
+    rootRenderNode.width += paddingHorizontal * 2
+    rootRenderNode.height += paddingVertical * 2
     return rootRenderNode
   }
   renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {
