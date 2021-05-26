@@ -6,11 +6,21 @@ const MinimumRailroad = require("../dest/index.js")
 const exportList = [
   {
     name: "characters",
-    regex: "/a/",
+    regex: "/abc/",
     selected: false,
+  },
+  {
+    name: "selected",
+    regex: "/abc/",
+    selected: true,
   },
 ]
 const classRegexp = / class="[\w-]+"/g
+const assetsDir = path.resolve(__dirname, "../public/assets/")
+
+if (!fs.existsSync(assetsDir)) {
+  fs.mkdirSync(assetsDir)
+}
 
 exportList.forEach(({ name, regex, select }) => {
   const darkString = ReactDOMServer.renderToString(
@@ -21,12 +31,6 @@ exportList.forEach(({ name, regex, select }) => {
     React.createElement(MinimumRailroad, { regex, select, mode: "light" })
   ).replace(classRegexp, "")
 
-  fs.writeFileSync(
-    path.resolve(__dirname, "../public/" + name + "-dark.svg"),
-    darkString
-  )
-  fs.writeFileSync(
-    path.resolve(__dirname, "../public/" + name + "-light.svg"),
-    lightString
-  )
+  fs.writeFileSync(path.resolve(assetsDir, name + "-dark.svg"), darkString)
+  fs.writeFileSync(path.resolve(assetsDir, name + "-light.svg"), lightString)
 })

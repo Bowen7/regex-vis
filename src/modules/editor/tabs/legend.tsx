@@ -4,7 +4,7 @@ function Legend() {
   return (
     <>
       <div className="container">
-        <img src="/characters-dark.svg" alt="characters" />
+        <img src="/assets/characters-dark.svg" alt="characters" />
       </div>
       <style jsx>{`
         .container {

@@ -129,3 +129,5 @@ yarn-error.log*
 .vscode
 
 /dest
+
+/public/assets/
