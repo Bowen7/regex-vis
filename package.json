@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "npm run export:svg && react-app-rewired build",
+    "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "build:railroad": "rm -rf dest && rollup -c",
