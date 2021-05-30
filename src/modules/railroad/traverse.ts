@@ -201,8 +201,10 @@ class Traverse {
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
     } else {
-      width = ROOT_RADIUS
-      height = ROOT_RADIUS
+      if (!this.minimum) {
+        width = ROOT_RADIUS
+        height = ROOT_RADIUS
+      }
     }
 
     if (node.quantifier) {

@@ -20,7 +20,9 @@ const MinimumRailroad: React.FC<Props> = ({
 
   const selectedIds = selected
     ? rootRenderNode.children
-        .filter((child) => child.type === "node")
+        .filter(
+          (child) => child.type === "node" && child.target.type !== "root"
+        )
         .map((child) => (child as RenderNode).id)
     : []
   return (

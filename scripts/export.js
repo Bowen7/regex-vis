@@ -22,13 +22,13 @@ if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir)
 }
 
-exportList.forEach(({ name, regex, select }) => {
+exportList.forEach(({ name, regex, selected }) => {
   const darkString = ReactDOMServer.renderToString(
-    React.createElement(MinimumRailroad, { regex, select, mode: "dark" })
+    React.createElement(MinimumRailroad, { regex, selected, mode: "dark" })
   ).replace(classRegexp, "")
 
   const lightString = ReactDOMServer.renderToString(
-    React.createElement(MinimumRailroad, { regex, select, mode: "light" })
+    React.createElement(MinimumRailroad, { regex, selected, mode: "light" })
   ).replace(classRegexp, "")
 
   fs.writeFileSync(path.resolve(assetsDir, name + "-dark.svg"), darkString)

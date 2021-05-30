@@ -1,14 +1,16 @@
 import React from "react"
+import LegendItem from "@/components/legend-item"
 
 function Legend() {
   return (
     <>
       <div className="container">
-        <img src="/assets/characters-dark.svg" alt="characters" />
+        <LegendItem name="characters" desc="this is a desc" />
+        <LegendItem name="selected" desc="this is a desc" />
       </div>
       <style jsx>{`
         .container {
-          margin-top: 12px;
+          padding: 0 12px;
         }
       `}</style>
     </>
