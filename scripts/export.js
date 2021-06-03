@@ -16,21 +16,16 @@ const exportList = [
   },
 ]
 const classRegexp = / class="[\w-]+"/g
-const assetsDir = path.resolve(__dirname, "../public/assets/")
+const assetsDir = path.resolve(__dirname, "../src/assets/")
 
 if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir)
 }
 
 exportList.forEach(({ name, regex, selected }) => {
-  const darkString = ReactDOMServer.renderToString(
-    React.createElement(MinimumRailroad, { regex, selected, mode: "dark" })
+  const string = ReactDOMServer.renderToString(
+    React.createElement(MinimumRailroad, { regex, selected })
   ).replace(classRegexp, "")
 
-  const lightString = ReactDOMServer.renderToString(
-    React.createElement(MinimumRailroad, { regex, selected, mode: "light" })
-  ).replace(classRegexp, "")
-
-  fs.writeFileSync(path.resolve(assetsDir, name + "-dark.svg"), darkString)
-  fs.writeFileSync(path.resolve(assetsDir, name + "-light.svg"), lightString)
+  fs.writeFileSync(path.resolve(assetsDir, name + ".svg"), string)
 })

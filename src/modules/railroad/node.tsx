@@ -1,5 +1,4 @@
 import React, { useMemo } from "react"
-import { GeistUIThemesPalette } from "@geist-ui/react/dist/themes/presets"
 import { NODE_BORDER_RADIUS } from "@/constants/railroad"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 import { Node } from "@/types"
@@ -11,19 +10,17 @@ type Props = {
   width: number
   height: number
   selected: boolean
-  palette: GeistUIThemesPalette
   onClick?: (node: Node) => void
 }
 const RailNode: React.FC<Props> = React.memo((props) => {
   console.log("render")
-  let { x, y, width, height, selected, node, palette } = props
+  let { x, y, width, height, selected, node } = props
   const { type, val } = node
 
-  const stroke = selected ? palette.success : palette.foreground
+  const textFill = selected ? "selected-text" : "text"
 
   const rectAttrs = useMemo<React.SVGProps<SVGRectElement>>(() => {
     const attrs: React.SVGProps<SVGRectElement> = {
-      fill: palette.background,
       rx: NODE_BORDER_RADIUS,
       ry: NODE_BORDER_RADIUS,
     }
@@ -31,25 +28,30 @@ const RailNode: React.FC<Props> = React.memo((props) => {
       case "lookaroundAssertion":
       case "group":
         attrs.strokeDasharray = "5,5"
-        attrs.fill = "transparent"
         break
       case "root":
         attrs.rx = width
         attrs.ry = height
         break
-      case "choice":
-        if (!selected) {
-          attrs.stroke = "none"
-        } else {
-          attrs.stroke = "rgba(50, 145, 255, 0.5)"
-        }
-        attrs.fill = "transparent"
-        break
       default:
         break
     }
     return attrs
-  }, [type, width, height, selected, palette])
+  }, [type, width, height])
+
+  const fill = useMemo<string>(() => {
+    if (["lookaroundAssertion", "group", "choice"].includes(type)) {
+      return "transparent-fill"
+    }
+    return "fill"
+  }, [type])
+
+  const stroke = useMemo<string>(() => {
+    if (type === "choice") {
+      return selected ? "virtual-stroke" : "none-stroke"
+    }
+    return selected ? "selected-stroke" : "stroke"
+  }, [type, selected])
 
   const center = {
     x: x + width / 2,
@@ -65,7 +67,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           y={center.y}
           fontSize={FONT}
           dy={FONT * 0.35}
-          fill={stroke}
+          className={textFill}
           textAnchor="middle"
         >
           {text}
@@ -125,13 +127,18 @@ const RailNode: React.FC<Props> = React.memo((props) => {
       return (
         <>
           {paths.map(({ d, id }) => (
-            <path d={d} key={id} stroke={stroke} fill="transparent"></path>
+            <path
+              d={d}
+              key={id}
+              className={selected ? "selected-stroke" : "stroke"}
+              fill="transparent"
+            ></path>
           ))}
           {text && (
             <text
               x={center.x}
               y={y + height + 27.5}
-              fill={stroke}
+              className={textFill}
               fontSize={12}
               dy={14 * 0.35}
               textAnchor="middle"
@@ -156,7 +163,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           fontSize={12}
           textAnchor="middle"
           dy={-0.5 * 12}
-          fill={stroke}
+          className={textFill}
         >
           {namePrefix + name}
         </text>
@@ -176,7 +183,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           y={y}
           width={width}
           height={height}
-          stroke={stroke}
+          className={stroke + " " + fill}
           {...rectAttrs}
         ></rect>
         {renderText()}

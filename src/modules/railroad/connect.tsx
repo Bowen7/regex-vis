@@ -1,16 +1,13 @@
 import React from "react"
-import { GeistUIThemesPalette } from "@geist-ui/react/dist/themes/presets"
 import { Pos } from "@/types"
 type Props = {
   type: "combine" | "split" | "straight"
   start: Pos
   end: Pos
   selected: boolean
-  palette: GeistUIThemesPalette
 }
 const RailConnect: React.FC<Props> = React.memo((props) => {
-  const { type, start, end, selected, palette } = props
-  const stroke = selected ? palette.success : palette.foreground
+  const { type, start, end, selected } = props
   let path = ""
   if (Math.abs(start.y - end.y) < 0.5) {
     path = `M${start.x},${start.y}L${end.x},${end.y}`
@@ -51,7 +48,13 @@ const RailConnect: React.FC<Props> = React.memo((props) => {
     }
     path = M + L1 + A1 + L2 + A2 + L3
   }
-  return <path d={path} stroke={stroke} fill="none"></path>
+  return (
+    <path
+      d={path}
+      className={selected ? "selected-stroke" : "stroke"}
+      fill="none"
+    ></path>
+  )
 })
 
 export default RailConnect

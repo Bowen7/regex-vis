@@ -1,5 +1,4 @@
 import React, { useState, useRef, useCallback } from "react"
-import { useTheme } from "@geist-ui/react"
 import { useEventListener } from "@/utils/hooks"
 import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
 import { Node } from "@/types"
@@ -13,7 +12,6 @@ type Props = {
 }
 const SvgContainer: React.FC<Props> = (props) => {
   const { rootRenderNode, selectedIds, minimum } = props
-  const { palette } = useTheme()
   const { width, height } = rootRenderNode
   const [, dispatch] = useMainReducer()
   const dragging = useRef<boolean>(false)
@@ -150,7 +148,6 @@ const SvgContainer: React.FC<Props> = (props) => {
             start={start}
             end={end}
             selected={selected}
-            palette={palette}
             key={id}
           />
         )
@@ -176,7 +173,6 @@ const SvgContainer: React.FC<Props> = (props) => {
             height={height}
             node={target}
             selected={nodeSelected}
-            palette={palette}
             onClick={minimum ? undefined : handleClick}
             key={id}
           />
@@ -215,16 +211,16 @@ const SvgContainer: React.FC<Props> = (props) => {
   }
   useEventListener("mouseup", onMouseUp)
   return (
-    <>
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        width={width}
-        height={height}
-        onMouseDown={minimum ? undefined : onMouseDown}
-        onMouseMove={minimum ? undefined : onMouseMove}
-      >
-        {displayRenderNodes()}
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      width={width}
+      height={height}
+      onMouseDown={minimum ? undefined : onMouseDown}
+      onMouseMove={minimum ? undefined : onMouseMove}
+    >
+      {displayRenderNodes()}
+      {!minimum && (
         <rect
           x={rect.x}
           y={rect.y}
@@ -233,16 +229,8 @@ const SvgContainer: React.FC<Props> = (props) => {
           fill="#3291FF"
           fillOpacity={0.5}
         ></rect>
-      </svg>
-      <style jsx>
-        {`
-          svg {
-            border: ${minimum ? "none" : `1px solid ${palette.accents_2}`};
-            border-radius: 5px;
-          }
-        `}
-      </style>
-    </>
+      )}
+    </svg>
   )
 }
 

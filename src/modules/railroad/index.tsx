@@ -1,4 +1,5 @@
 import React, { useRef, useState, useEffect } from "react"
+import { useTheme } from "@geist-ui/react"
 import { RenderVirtualNode, Node } from "@/types"
 import Traverse from "./traverse"
 import SvgContainer from "./svg-container"
@@ -19,6 +20,7 @@ const Railroad: React.FC<Props> = ({
   onChange,
   onMount,
 }) => {
+  const { palette } = useTheme()
   const [
     { nodes: propNodes, selectedIds: propSelectedIds, activeId: propActiveId },
     dispatch,
@@ -88,11 +90,48 @@ const Railroad: React.FC<Props> = ({
   }, [onChange, nodes])
 
   return (
-    <SvgContainer
-      rootRenderNode={rootRenderNode}
-      selectedIds={selectedIds}
-      minimum={minimum}
-    />
+    <>
+      <div className="railroad">
+        <SvgContainer
+          rootRenderNode={rootRenderNode}
+          selectedIds={selectedIds}
+          minimum={minimum}
+        />
+      </div>
+      <style jsx>{`
+        .railroad {
+          display: inline-block;
+        }
+        .railroad :global(svg) {
+          border: 1px solid ${palette.accents_2};
+          border-radius: 5px;
+        }
+        .railroad :global(.selected-stroke) {
+          stroke: ${palette.success};
+        }
+        .railroad :global(.virtual-stroke) {
+          stroke: rgba(50, 145, 255, 0.5);
+        }
+        .railroad :global(.none-stroke) {
+          stroke: none;
+        }
+        .railroad :global(.stroke) {
+          stroke: ${palette.foreground};
+        }
+        .railroad :global(.selected-text) {
+          fill: ${palette.success};
+        }
+        .railroad :global(.text) {
+          fill: ${palette.foreground};
+        }
+        .railroad :global(.fill) {
+          fill: ${palette.background};
+        }
+        .railroad :global(.transparent-fill) {
+          fill: transparent;
+        }
+      `}</style>
+    </>
   )
 }
 

@@ -8,14 +8,9 @@ const traverse = new Traverse(true)
 type Props = {
   regex: string
   selected?: boolean
-  mode: "dark" | "light"
 }
 
-const MinimumRailroad: React.FC<Props> = ({
-  regex,
-  selected = false,
-  mode,
-}) => {
+const MinimumRailroad: React.FC<Props> = ({ regex, selected = false }) => {
   const rootRenderNode = traverse.render(parser.parse(regex))
 
   const selectedIds = selected
@@ -26,14 +21,11 @@ const MinimumRailroad: React.FC<Props> = ({
         .map((child) => (child as RenderNode).id)
     : []
   return (
-    <GeistProvider themeType={mode}>
-      <CssBaseline />
-      <SvgContainer
-        rootRenderNode={rootRenderNode}
-        selectedIds={selectedIds}
-        minimum={true}
-      />
-    </GeistProvider>
+    <SvgContainer
+      rootRenderNode={rootRenderNode}
+      selectedIds={selectedIds}
+      minimum={true}
+    />
   )
 }
 

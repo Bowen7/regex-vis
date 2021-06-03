@@ -3,14 +3,15 @@ import { useTheme } from "@geist-ui/react"
 type Props = {
   name: string
   desc: string
+  Icon: React.ReactNode
 }
-const LegendItem: React.FC<Props> = ({ name, desc }) => {
-  const { type: themeType, palette } = useTheme()
+const LegendItem: React.FC<Props> = ({ name, desc, Icon }) => {
+  const { palette } = useTheme()
   return (
     <>
       <div className="wrapper">
         <h5>{name}:</h5>
-        <img src={`/assets/${name}-${themeType}.svg`} alt={name} />
+        {Icon}
         <span className="desc">{desc}</span>
       </div>
       <style jsx>
