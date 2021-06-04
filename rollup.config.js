@@ -31,7 +31,7 @@ export default {
         "@babel/preset-react",
         "@babel/preset-typescript",
       ],
-      plugins: ["styled-jsx/babel"],
+      // plugins: ["styled-jsx/babel"],
     }),
     alias({
       entries: {

@@ -15,7 +15,6 @@ const exportList = [
     selected: true,
   },
 ]
-const classRegexp = / class="[\w-]+"/g
 const assetsDir = path.resolve(__dirname, "../src/assets/")
 
 if (!fs.existsSync(assetsDir)) {
@@ -25,7 +24,7 @@ if (!fs.existsSync(assetsDir)) {
 exportList.forEach(({ name, regex, selected }) => {
   const string = ReactDOMServer.renderToString(
     React.createElement(MinimumRailroad, { regex, selected })
-  ).replace(classRegexp, "")
+  )
 
   fs.writeFileSync(path.resolve(assetsDir, name + ".svg"), string)
 })
