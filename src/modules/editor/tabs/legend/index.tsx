@@ -1,24 +1,16 @@
 import React from "react"
 import { useTheme } from "@geist-ui/react"
 import LegendItem from "@/components/legend-item"
-import { ReactComponent as CharactersSvg } from "@/assets/characters.svg"
-import { ReactComponent as SelectedSvg } from "@/assets/selected.svg"
+import legends from "./legends"
 
 function Legend() {
   const { palette } = useTheme()
   return (
     <>
       <div className="container">
-        <LegendItem
-          name="characters"
-          desc="this is a desc"
-          Icon={<CharactersSvg />}
-        />
-        <LegendItem
-          name="selected"
-          desc="this is a desc"
-          Icon={<SelectedSvg />}
-        />
+        {legends.map(({ name, infos }) => (
+          <LegendItem name={name} infos={infos} key={name} />
+        ))}
       </div>
       <style jsx>{`
         .container {

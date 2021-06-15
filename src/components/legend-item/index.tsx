@@ -2,17 +2,23 @@ import React from "react"
 import { useTheme } from "@geist-ui/react"
 type Props = {
   name: string
-  desc: string
-  Icon: React.ReactNode
+  infos: {
+    desc: string
+    Icon: React.ReactNode
+  }[]
 }
-const LegendItem: React.FC<Props> = ({ name, desc, Icon }) => {
+const LegendItem: React.FC<Props> = ({ name, infos }) => {
   const { palette } = useTheme()
   return (
     <>
       <div className="wrapper">
         <h5>{name}:</h5>
-        {Icon}
-        <span className="desc">{desc}</span>
+        {infos.map(({ Icon, desc }) => (
+          <React.Fragment key={desc}>
+            {Icon}
+            <span className="desc">{desc}</span>
+          </React.Fragment>
+        ))}
       </div>
       <style jsx>
         {`
@@ -20,9 +26,15 @@ const LegendItem: React.FC<Props> = ({ name, desc, Icon }) => {
             border-bottom: 1px solid ${palette.accents_2};
             padding: 12px 0;
           }
+          .wrapper :global(> svg) {
+            display: block;
+          }
           .desc {
             display: block;
             color: ${palette.accents_6};
+          }
+          .wrapper > span:not(:last-of-type) {
+            margin-bottom: 10px;
           }
         `}
       </style>

@@ -11,10 +11,8 @@ import { useEventListener } from "@/utils/hooks"
 type Tab = "legend" | "edit" | "test"
 
 const Editor: React.FC<{}> = () => {
-  const [
-    { selectedIds, editorCollapsed, guiderConfig },
-    dispatch,
-  ] = useMainReducer()
+  const [{ selectedIds, editorCollapsed, guiderConfig }, dispatch] =
+    useMainReducer()
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
