@@ -64,11 +64,13 @@ function parseElement(ast: AST.Element): Node {
       break
     case "Quantifier":
       const { min, max, kind, element } = ast
+      console.log(ast)
       node = parseElement(element)
       node.quantifier = {
         kind,
         min,
         max,
+        greedy: false,
       }
       break
     case "CharacterClass":
@@ -191,7 +193,7 @@ function parseWordBoundaryAssertion(
       kind,
       negate,
     },
-    text: negate ? "NonWordBoundary" : "WordBoundary"
+    text: negate ? "NonWordBoundary" : "WordBoundary",
   }
 }
 

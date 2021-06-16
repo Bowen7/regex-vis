@@ -7,6 +7,7 @@ export type Quantifier = {
   kind: "?" | "*" | "+" | "custom"
   min: number
   max: number
+  greedy: boolean
 }
 
 export type StringCharacter = {
@@ -73,7 +74,7 @@ export interface BoundaryAssertionNode extends NodeBase {
   val: {
     kind: "start" | "end" | "word"
     negate?: boolean
-  },
+  }
   text: string
 }
 

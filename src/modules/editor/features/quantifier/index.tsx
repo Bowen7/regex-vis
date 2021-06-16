@@ -33,16 +33,17 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   }, [quantifier])
 
   const handleChange = (value: string | string[]) => {
-    let quantifier: Quantifier | null = null
+    const greedy = quantifier?.greedy || false
+    let nextQuantifier: Quantifier | null = null
     switch (value) {
       case "?":
-        quantifier = { kind: "?", min: 0, max: 1 }
+        nextQuantifier = { kind: "?", min: 0, max: 1, greedy }
         break
       case "*":
-        quantifier = { kind: "*", min: 0, max: Infinity }
+        nextQuantifier = { kind: "*", min: 0, max: Infinity, greedy }
         break
       case "+":
-        quantifier = { kind: "+", min: 1, max: Infinity }
+        nextQuantifier = { kind: "+", min: 1, max: Infinity, greedy }
         break
       default:
         break
@@ -50,7 +51,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
     if (["non", "*", "?", "+"].includes(value as string)) {
       return dispatch({
         type: MainActionTypes.UPDATE_QUANTIFIER,
-        payload: quantifier,
+        payload: nextQuantifier,
       })
     }
     setKind(value as string)
@@ -87,9 +88,10 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
       setMaxPlaceholder("Infinity")
       max = "Infinity"
     }
+    const greedy = quantifier?.greedy || false
     dispatch({
       type: MainActionTypes.UPDATE_QUANTIFIER,
-      payload: { kind: "custom", min: Number(min), max: Number(max) },
+      payload: { kind: "custom", min: Number(min), max: Number(max), greedy },
     })
   }
   return (
