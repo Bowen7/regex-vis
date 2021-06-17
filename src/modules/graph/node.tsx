@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { NODE_BORDER_RADIUS } from "@/constants/railroad"
+import { NODE_BORDER_RADIUS } from "@/constants/graph"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 import { Node } from "@/types"
 const FONT = 16

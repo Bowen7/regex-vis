@@ -10,7 +10,7 @@ type Props = {
   selected?: boolean
 }
 
-const MinimumRailroad: React.FC<Props> = ({ regex, selected = false }) => {
+const MinimumGraph: React.FC<Props> = ({ regex, selected = false }) => {
   const rootRenderNode = traverse.render(parser.parse(regex))
 
   const selectedIds = selected
@@ -29,4 +29,4 @@ const MinimumRailroad: React.FC<Props> = ({ regex, selected = false }) => {
   )
 }
 
-export default MinimumRailroad
+export default MinimumGraph

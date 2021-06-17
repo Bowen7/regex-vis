@@ -14,7 +14,7 @@ type Props = {
   onChange?: (regex: string) => void
 }
 const INITIAL_NODES: Node[] = []
-const Railroad: React.FC<Props> = ({
+const Graph: React.FC<Props> = ({
   regex: propRegex,
   minimum = false,
   onChange,
@@ -91,7 +91,7 @@ const Railroad: React.FC<Props> = ({
 
   return (
     <>
-      <div className="railroad">
+      <div className="graph">
         <SvgContainer
           rootRenderNode={rootRenderNode}
           selectedIds={selectedIds}
@@ -99,35 +99,35 @@ const Railroad: React.FC<Props> = ({
         />
       </div>
       <style jsx>{`
-        .railroad {
+        .graph {
           display: inline-block;
         }
-        .railroad :global(svg) {
+        .graph :global(svg) {
           border: 1px solid ${palette.accents_2};
           border-radius: 5px;
         }
-        .railroad :global(.selected-stroke) {
+        .graph :global(.selected-stroke) {
           stroke: ${palette.success};
         }
-        .railroad :global(.virtual-stroke) {
+        .graph :global(.virtual-stroke) {
           stroke: rgba(50, 145, 255, 0.5);
         }
-        .railroad :global(.none-stroke) {
+        .graph :global(.none-stroke) {
           stroke: none;
         }
-        .railroad :global(.stroke) {
+        .graph :global(.stroke) {
           stroke: ${palette.foreground};
         }
-        .railroad :global(.selected-text) {
+        .graph :global(.selected-text) {
           fill: ${palette.success};
         }
-        .railroad :global(.text) {
+        .graph :global(.text) {
           fill: ${palette.foreground};
         }
-        .railroad :global(.fill) {
+        .graph :global(.fill) {
           fill: ${palette.background};
         }
-        .railroad :global(.transparent-fill) {
+        .graph :global(.transparent-fill) {
           fill: transparent;
         }
       `}</style>
@@ -135,4 +135,4 @@ const Railroad: React.FC<Props> = ({
   )
 }
 
-export default Railroad
+export default Graph

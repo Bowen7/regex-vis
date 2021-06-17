@@ -13,7 +13,7 @@ import {
   QUANTIFIER_HEIGHT,
   NAME_HEIGHT,
   BRANCH_PADDING_HORIZONTAL,
-} from "@/constants/railroad"
+} from "@/constants/graph"
 import { font } from "@/constants/style"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 class Traverse {
@@ -182,9 +182,8 @@ class Traverse {
 
     if (branches) {
       branches.forEach((nodes) => {
-        let { width: branchWidth, height: branchHeight } = this.getNodesSize(
-          nodes
-        )
+        let { width: branchWidth, height: branchHeight } =
+          this.getNodesSize(nodes)
         height += branchHeight
         height += NODE_MARGIN_VERTICAL
         branchWidth +=

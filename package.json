@@ -35,8 +35,8 @@
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
-    "build:railroad": "rm -rf dest && rollup -c",
-    "export:svg": "npm run build:railroad && node scripts/export.js"
+    "build:graph": "rm -rf dest && rollup -c",
+    "export:svg": "npm run build:graph && node scripts/export.js"
   },
   "eslintConfig": {
     "extends": "react-app"

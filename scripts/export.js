@@ -2,7 +2,7 @@ const React = require("react")
 const ReactDOMServer = require("react-dom/server")
 const fs = require("fs")
 const path = require("path")
-const MinimumRailroad = require("../dest/index.js")
+const MinimumGraph = require("../dest/index.js")
 const exportList = [
   {
     name: "characters",
@@ -23,7 +23,7 @@ if (!fs.existsSync(assetsDir)) {
 
 exportList.forEach(({ name, regex, selected }) => {
   const string = ReactDOMServer.renderToString(
-    React.createElement(MinimumRailroad, { regex, selected })
+    React.createElement(MinimumGraph, { regex, selected })
   )
 
   fs.writeFileSync(path.resolve(assetsDir, name + ".svg"), string)

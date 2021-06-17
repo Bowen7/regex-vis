@@ -1,6 +1,6 @@
 import React, { useCallback } from "react"
 import { useTheme } from "@geist-ui/react"
-import Railroad from "@/modules/railroad"
+import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import { Node } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
@@ -25,9 +25,9 @@ const Home: React.FC<{}> = () => {
 
   return (
     <>
-      <div className="railroad" style={style}>
+      <div className="graph" style={style}>
         <div className="content">
-          <Railroad
+          <Graph
             regex={DEFAULT_REGEX}
             onChange={handleChange}
             onMount={handleMount}
@@ -36,7 +36,7 @@ const Home: React.FC<{}> = () => {
       </div>
       <Editor />
       <style jsx>{`
-        .railroad {
+        .graph {
           width: calc(100% - 275px);
           height: calc(100vh - 72px);
           background: ${palette.accents_1};
