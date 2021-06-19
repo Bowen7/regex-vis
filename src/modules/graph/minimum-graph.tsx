@@ -1,5 +1,4 @@
 import React from "react"
-import { GeistProvider, CssBaseline } from "@geist-ui/react"
 import Traverse from "./traverse"
 import SvgContainer from "./svg-container"
 import parser from "@/parser"

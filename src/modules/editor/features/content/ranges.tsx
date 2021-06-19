@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { Spacer, useTheme, ButtonDropdown } from "@geist-ui/react"
+import React from "react"
+import { useTheme, ButtonDropdown } from "@geist-ui/react"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import { Range, RangesCharacter } from "@/types"

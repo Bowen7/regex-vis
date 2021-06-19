@@ -1,6 +1,5 @@
 import React from "react"
 import { Node } from "@/types"
-const FONT = 16
 type Center = {
   x: number
   y: number

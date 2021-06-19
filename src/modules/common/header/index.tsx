@@ -1,4 +1,4 @@
-import React, { useMemo } from "react"
+import React from "react"
 import { NavLink } from "react-router-dom"
 import { useTheme } from "@geist-ui/react"
 import Sun from "@geist-ui/react-icons/sun"
