@@ -50,7 +50,7 @@ export const getQuantifierText = (quantifier: Quantifier) => {
     text += Math.max(0, min - 1)
     if (max !== min) {
       text += " - "
-      text += max - 1
+      text += max
     }
     text += " times"
   }

@@ -63,14 +63,13 @@ function parseElement(ast: AST.Element): Node {
       node = parseGroup(ast)
       break
     case "Quantifier":
-      const { min, max, kind, element } = ast
-      console.log(ast)
+      const { min, max, kind, element, greedy } = ast
       node = parseElement(element)
       node.quantifier = {
         kind,
         min,
         max,
-        greedy: false,
+        greedy,
       }
       break
     case "CharacterClass":

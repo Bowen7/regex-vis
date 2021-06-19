@@ -15,7 +15,7 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
     if (!node.quantifier) {
       return null
     }
-    const pathClassName = selected ? "selected-stroke" : "stroke"
+    const pathClassName = selected ? "selected-stroke" : "second-stroke"
     const textClassName = selected ? "selected-text" : "text"
     const center = {
       x: x + width / 2,
@@ -25,6 +25,8 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
     const { val } = node
     const { min, max } = node.quantifier
     const text = getQuantifierText(node.quantifier)
+
+    const strokeDasharray = node.quantifier.greedy ? "" : "3,3"
 
     if (min === 0) {
       let offsetY = 0
@@ -79,12 +81,13 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
             className={pathClassName}
             transform={transform}
             fill="transparent"
+            strokeDasharray={strokeDasharray}
           ></path>
         ))}
         {text && (
           <text
             x={center.x}
-            y={y + height + 27.5}
+            y={y + height + 20}
             className={textClassName}
             fontSize={12}
             dy={14 * 0.35}

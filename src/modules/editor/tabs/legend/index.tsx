@@ -21,7 +21,7 @@ function Legend() {
           stroke: ${palette.success};
         }
         .container :global(.virtual-stroke) {
-          stroke: rgba(50, 145, 255, 0.5);
+          stroke: ${palette.purple};
         }
         .container :global(.none-stroke) {
           stroke: none;

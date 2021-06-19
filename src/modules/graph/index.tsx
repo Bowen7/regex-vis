@@ -110,13 +110,16 @@ const Graph: React.FC<Props> = ({
           stroke: ${palette.success};
         }
         .graph :global(.virtual-stroke) {
-          stroke: rgba(50, 145, 255, 0.5);
+          stroke: ${palette.purple};
         }
         .graph :global(.none-stroke) {
           stroke: none;
         }
         .graph :global(.stroke) {
           stroke: ${palette.foreground};
+        }
+        .graph :global(.second-stroke) {
+          stroke: ${palette.accents_6};
         }
         .graph :global(.selected-text) {
           fill: ${palette.success};

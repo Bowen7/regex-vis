@@ -14,5 +14,5 @@ export const BRANCH_PADDING_HORIZONTAL = 10
 
 export const NODE_BORDER_RADIUS = 5
 export const ROOT_RADIUS = 5
-export const QUANTIFIER_HEIGHT = 20
+export const QUANTIFIER_HEIGHT = 10
 export const NAME_HEIGHT = 10

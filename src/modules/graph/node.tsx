@@ -28,8 +28,11 @@ const RailNode: React.FC<Props> = React.memo((props) => {
       case "lookaroundAssertion":
       case "group":
         if (node.val.kind === "nonCapturing") {
-          attrs.strokeDasharray = "5,5"
+          attrs.strokeDasharray = "4,4"
         }
+        break
+      case "choice":
+        attrs.strokeDasharray = "4,4"
         break
       case "root":
         attrs.rx = width
@@ -41,19 +44,25 @@ const RailNode: React.FC<Props> = React.memo((props) => {
     return attrs
   }, [node, width, height])
 
-  const fill = useMemo<string>(() => {
+  const fillClassName = useMemo<string>(() => {
     if (["lookaroundAssertion", "group", "choice"].includes(type)) {
       return "transparent-fill"
     }
     return "fill"
   }, [type])
 
-  const stroke = useMemo<string>(() => {
-    if (type === "choice") {
-      return selected ? "virtual-stroke" : "none-stroke"
+  const strokeClassName = useMemo<string>(() => {
+    switch (type) {
+      case "choice":
+        return selected ? "virtual-stroke" : "none-stroke"
+      case "group":
+        return selected ? "selected-stroke" : "second-stroke"
+      default:
+        return selected ? "selected-stroke" : "stroke"
     }
-    return selected ? "selected-stroke" : "stroke"
   }, [type, selected])
+
+  const className = fillClassName + " " + strokeClassName
 
   const center = {
     x: x + width / 2,
@@ -72,7 +81,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           y={y}
           width={width}
           height={height}
-          className={stroke + " " + fill}
+          className={className}
           {...rectAttrs}
         ></rect>
         <NodeText center={center} selected={selected} node={node} />

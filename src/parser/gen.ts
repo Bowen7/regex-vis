@@ -11,7 +11,7 @@ import {
 function gen(nodes: Node[]) {
   const isSingleNode = judgeSingleNode(nodes)
   return nodes
-    .map(node => {
+    .map((node) => {
       let regex = ""
       switch (node.type) {
         case "choice":
@@ -44,13 +44,13 @@ function gen(nodes: Node[]) {
 }
 
 function judgeSingleNode(nodes: Node[]) {
-  return nodes.filter(node => node.type !== "root").length === 1
+  return nodes.filter((node) => node.type !== "root").length === 1
 }
 
 function genChoice(node: ChoiceNode) {
   const { branches } = node
   return branches!
-    .map(branch => {
+    .map((branch) => {
       return gen(branch as Node[])
     })
     .join("|")
@@ -102,20 +102,22 @@ function genCharacter(node: CharacterNode) {
 
 function genQuantifier(node: Node) {
   const { quantifier } = node as { quantifier: Quantifier }
-  const { min, max } = quantifier as Quantifier
+  const { min, max, greedy } = quantifier as Quantifier
+  let result = ""
   if (min === 0 && max === Infinity) {
-    return "*"
+    result = "*"
   } else if (min === 1 && max === Infinity) {
-    return "+"
+    result = "+"
   } else if (min === 0 && max === 1) {
-    return "?"
+    result = "?"
   } else if (min === max) {
-    return "{" + min + "}"
+    result = "{" + min + "}"
   } else if (max === Infinity) {
-    return "{" + min + ",}"
+    result = "{" + min + ",}"
   } else {
-    return "{" + min + "-" + max + "}"
+    result = "{" + min + "-" + max + "}"
   }
+  return result + greedy ? "?" : ""
 }
 
 function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
