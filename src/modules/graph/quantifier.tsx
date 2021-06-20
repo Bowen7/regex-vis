@@ -42,8 +42,7 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
         `L${width + 5},${-height / 2 - 10 - offsetY}` +
         `A5 5 0 0 1,${width + 10},${-height / 2 - 5 - offsetY}` +
         `L${width + 10},-5` +
-        `A5 5 0 0 0,${width + 15},0` +
-        `L${width},0`
+        `A5 5 0 0 0,${width + 15},0`
 
       paths.push({
         d,
@@ -62,8 +61,7 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
         `L${width + 5},${height / 2 + 10 + offsetY}` +
         `A5 5 0 0 0,${width + 7.5},${height / 2 + 7.5 + offsetY}` +
         `L${width + 7.5},7.5` +
-        `A7.5 7.5 0 0 0,${width},0` +
-        `L${width},0`
+        `A7.5 7.5 0 0 0,${width},0`
 
       paths.push({
         d,
