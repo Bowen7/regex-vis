@@ -132,24 +132,17 @@ const SvgContainer: React.FC<Props> = (props) => {
     const connects: JSX.Element[] = []
     const selectedHeadId = selectedIds[0]
     const selectedTailId = selectedIds[selectedIds.length - 1]
+    let selected = false
     function dfs(
       renderNode: RenderNode | RenderVirtualNode | RenderConnect,
-      options: {
-        selected: boolean
-        connectType: "combine" | "split" | "straight"
-      }
+      connectType: "combine" | "split" | "straight"
     ) {
-      let { selected } = options
+      const _selected = selected
+      selected = false
       if (renderNode.type === "connect") {
         const { start, end, id } = renderNode
         connects.push(
-          <Connect
-            type={options.connectType}
-            start={start}
-            end={end}
-            selected={selected}
-            key={id}
-          />
+          <Connect type={connectType} start={start} end={end} key={id} />
         )
         return
       }
@@ -157,14 +150,6 @@ const SvgContainer: React.FC<Props> = (props) => {
       const { x, y, width, height, children } = renderNode
       if (renderNode.type === "node") {
         const { target, id } = renderNode
-        let nodeSelected = selected
-        if (
-          nodeSelected &&
-          target.branches &&
-          selectedIds.every((selectedId) => selectedId !== id)
-        ) {
-          nodeSelected = false
-        }
         nodes.push(
           <RailNode
             x={x}
@@ -172,7 +157,7 @@ const SvgContainer: React.FC<Props> = (props) => {
             width={width}
             height={height}
             node={target}
-            selected={nodeSelected}
+            selected={_selected}
             onClick={minimum ? undefined : handleClick}
             key={id}
           />
@@ -184,14 +169,14 @@ const SvgContainer: React.FC<Props> = (props) => {
         children.forEach((item, index) => {
           if (target.branches && item.type === "connect") {
             if (index % 3 === 0) {
-              dfs(item, { ...options, connectType: "split" })
+              dfs(item, "split")
             }
             if (index % 3 === 2) {
-              dfs(item, { ...options, connectType: "combine" })
+              dfs(item, "combine")
             }
             return
           }
-          dfs(item, options)
+          dfs(item, "straight")
         })
         return
       }
@@ -200,13 +185,18 @@ const SvgContainer: React.FC<Props> = (props) => {
         if (item.type === "node" && item.target.id === selectedHeadId) {
           selected = true
         }
-        dfs(item, { ...options, selected })
+        if (selected) {
+          dfs(item, connectType)
+          selected = true
+        } else {
+          dfs(item, connectType)
+        }
         if (item.type === "node" && item.target.id === selectedTailId) {
           selected = false
         }
       })
     }
-    dfs(rootRenderNode, { selected: false, connectType: "straight" })
+    dfs(rootRenderNode, "straight")
     return [connects, nodes]
   }
   useEventListener("mouseup", onMouseUp)
@@ -226,7 +216,7 @@ const SvgContainer: React.FC<Props> = (props) => {
           y={rect.y}
           width={rect.width}
           height={rect.height}
-          fill="#3291FF"
+          className="box-fill"
           fillOpacity={0.5}
         ></rect>
       )}

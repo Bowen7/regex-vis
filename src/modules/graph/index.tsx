@@ -106,8 +106,15 @@ const Graph: React.FC<Props> = ({
           border: 1px solid ${palette.accents_2};
           border-radius: 5px;
         }
+        .graph :global(.box-fill) {
+          fill: ${palette.success};
+        }
         .graph :global(.selected-stroke) {
           stroke: ${palette.success};
+        }
+        .graph :global(.selected-fill) {
+          fill: ${palette.success};
+          fill-opacity: 0.5;
         }
         .graph :global(.virtual-stroke) {
           stroke: ${palette.purple};

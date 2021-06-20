@@ -44,23 +44,18 @@ const RailNode: React.FC<Props> = React.memo((props) => {
     return attrs
   }, [node, width, height])
 
-  const fillClassName = useMemo<string>(() => {
-    if (["lookaroundAssertion", "group", "choice"].includes(type)) {
-      return "transparent-fill"
-    }
-    return "fill"
-  }, [type])
+  const fillClassName = selected ? "selected-fill" : "transparent-fill"
 
   const strokeClassName = useMemo<string>(() => {
     switch (type) {
       case "choice":
-        return selected ? "virtual-stroke" : "none-stroke"
+        return "none-stroke"
       case "group":
-        return selected ? "selected-stroke" : "second-stroke"
+        return "second-stroke"
       default:
-        return selected ? "selected-stroke" : "stroke"
+        return "stroke"
     }
-  }, [type, selected])
+  }, [type])
 
   const className = fillClassName + " " + strokeClassName
 
@@ -84,8 +79,6 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           className={className}
           {...rectAttrs}
         ></rect>
-        <NodeText center={center} selected={selected} node={node} />
-        <NodeName center={center} selected={selected} node={node} y={y} />
         <NodeQuantifier
           node={node}
           selected={selected}
@@ -94,6 +87,8 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           width={width}
           height={height}
         />
+        <NodeText center={center} node={node} />
+        <NodeName center={center} node={node} y={y} />
       </g>
     </g>
   )
