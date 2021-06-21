@@ -117,7 +117,7 @@ function genQuantifier(node: Node) {
   } else {
     result = "{" + min + "-" + max + "}"
   }
-  return result + greedy ? "?" : ""
+  return result + (greedy ? "" : "?")
 }
 
 function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
