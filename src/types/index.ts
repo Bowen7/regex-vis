@@ -44,7 +44,7 @@ export interface NodeBase {
 export interface CharacterNode extends NodeBase {
   type: "character"
   val: Character
-  text: string
+  texts: string[]
   name?: string
 }
 
@@ -75,7 +75,7 @@ export interface BoundaryAssertionNode extends NodeBase {
     kind: "start" | "end" | "word"
     negate?: boolean
   }
-  text: string
+  texts: string[]
 }
 
 export interface LookaroundAssertionNode extends NodeBase {

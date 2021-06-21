@@ -16,3 +16,5 @@ export const NODE_BORDER_RADIUS = 5
 export const ROOT_RADIUS = 5
 export const QUANTIFIER_HEIGHT = 10
 export const NAME_HEIGHT = 10
+
+export const TEXT_PADDING_VERTICAL = 5

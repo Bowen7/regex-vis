@@ -1,32 +1,44 @@
 import React from "react"
 import { Node } from "@/types"
+import {
+  NODE_PADDING_HORIZONTAL,
+  NODE_MARGIN_VERTICAL,
+  TEXT_PADDING_VERTICAL,
+} from "@/constants/graph"
 const FONT = 16
-type Center = {
+type TextProps = {
+  node: Node
   x: number
   y: number
 }
-type TextProps = {
-  center: Center
-  node: Node
-}
 
-const NodeText: React.FC<TextProps> = React.memo(({ center, node }) => {
-  const { val } = node
-  if (!("text" in node || val?.text)) {
+const NodeText: React.FC<TextProps> = React.memo(({ x, y, node }) => {
+  if (!("texts" in node)) {
     return null
   }
-  const text = "text" in node ? node.text : val.text
+  const texts = node.texts
   return (
-    <text
-      x={center.x}
-      y={center.y}
-      fontSize={FONT}
-      dy={FONT * 0.35}
-      className="text"
-      textAnchor="middle"
-    >
-      {text}
-    </text>
+    <>
+      {texts.map((text, index) => (
+        <text
+          x={x}
+          y={y}
+          fontSize={FONT}
+          dy={
+            FONT * (index + 1) +
+            NODE_MARGIN_VERTICAL / 2 +
+            index * TEXT_PADDING_VERTICAL
+          }
+          dx={NODE_PADDING_HORIZONTAL}
+          className="text"
+          key={index}
+        >
+          <tspan className="quote">`</tspan>
+          <tspan>{text}</tspan>
+          <tspan className="quote">`</tspan>
+        </text>
+      ))}
+    </>
   )
 })
 

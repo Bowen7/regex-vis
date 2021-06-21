@@ -87,7 +87,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
           width={width}
           height={height}
         />
-        <NodeText center={center} node={node} />
+        <NodeText node={node} x={x} y={y} />
         <NodeName center={center} node={node} y={y} />
       </g>
     </g>

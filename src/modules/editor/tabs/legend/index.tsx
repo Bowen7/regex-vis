@@ -17,11 +17,12 @@ function Legend() {
           padding: 0 12px;
         }
 
-        .container :global(.selected-stroke) {
-          stroke: ${palette.success};
+        .container :global(.box-fill) {
+          fill: ${palette.success};
         }
-        .container :global(.virtual-stroke) {
-          stroke: ${palette.purple};
+        .container :global(.selected-fill) {
+          fill: ${palette.success};
+          fill-opacity: 0.5;
         }
         .container :global(.none-stroke) {
           stroke: none;
@@ -29,8 +30,8 @@ function Legend() {
         .container :global(.stroke) {
           stroke: ${palette.foreground};
         }
-        .container :global(.selected-text) {
-          fill: ${palette.success};
+        .container :global(.second-stroke) {
+          stroke: ${palette.accents_6};
         }
         .container :global(.text) {
           fill: ${palette.foreground};

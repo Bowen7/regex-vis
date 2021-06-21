@@ -108,7 +108,7 @@ function parseCharacter(character: AST.Character): CharacterNode {
       type: "string",
       value: character.raw,
     },
-    text: character.raw,
+    texts: [character.raw],
   }
 }
 
@@ -132,7 +132,7 @@ function parseCharacterSet(characterSet: AST.CharacterSet): CharacterNode {
       type: "class",
       value: raw,
     },
-    text: text,
+    texts: [text],
   }
 }
 
@@ -192,7 +192,7 @@ function parseWordBoundaryAssertion(
       kind,
       negate,
     },
-    text: negate ? "NonWordBoundary" : "WordBoundary",
+    texts: negate ? ["NonWordBoundary"] : ["WordBoundary"],
   }
 }
 
@@ -206,7 +206,7 @@ function parseEdgeAssertion(
     val: {
       kind: assertion.kind,
     },
-    text: text,
+    texts: [text],
   }
 }
 
@@ -261,10 +261,9 @@ function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
         to,
       }
       ranges.push(range)
-      texts.push(from + "-" + to)
+      texts.push(from + " - " + to)
     }
   })
-  const text = texts.join(", ")
   const name = negate ? "None of " : "One of "
   return {
     id: nanoid(),
@@ -275,7 +274,7 @@ function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
       negate,
     },
     name,
-    text,
+    texts,
   }
 }
 

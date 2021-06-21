@@ -6,18 +6,17 @@ function updateCharacterNode(node: CharacterNode, val: Character) {
   node.val = val
   switch (val.type) {
     case "string":
-      node.text = val.value
+      node.texts = [val.value]
       break
     case "class":
-      node.text = characterClassTextMap[val.value as CharacterClassKey]
+      node.texts = [characterClassTextMap[val.value as CharacterClassKey]]
       break
     case "ranges":
-      node.text = val.value
+      node.texts = val.value
         .filter((range) => range.from && range.to)
         .map((range) =>
           range.from === range.to ? range.from : range.from + "-" + range.to
         )
-        .join(", ")
       break
   }
 }

@@ -46,7 +46,7 @@ function genNode(): CharacterNode {
       type: "string",
       value: "",
     },
-    text: "",
+    texts: [""],
   }
 }
 
@@ -63,6 +63,6 @@ export default (
   selectedIds: string[],
   direction: InsertDirection
 ) =>
-  produce(nodes, draft =>
+  produce(nodes, (draft) =>
     insert(draft, getNodesByIds(draft, selectedIds), direction)
   )

@@ -109,15 +109,9 @@ const Graph: React.FC<Props> = ({
         .graph :global(.box-fill) {
           fill: ${palette.success};
         }
-        .graph :global(.selected-stroke) {
-          stroke: ${palette.success};
-        }
         .graph :global(.selected-fill) {
           fill: ${palette.success};
           fill-opacity: 0.5;
-        }
-        .graph :global(.virtual-stroke) {
-          stroke: ${palette.purple};
         }
         .graph :global(.none-stroke) {
           stroke: none;
@@ -128,9 +122,6 @@ const Graph: React.FC<Props> = ({
         .graph :global(.second-stroke) {
           stroke: ${palette.accents_6};
         }
-        .graph :global(.selected-text) {
-          fill: ${palette.success};
-        }
         .graph :global(.text) {
           fill: ${palette.foreground};
         }
@@ -139,6 +130,9 @@ const Graph: React.FC<Props> = ({
         }
         .graph :global(.transparent-fill) {
           fill: transparent;
+        }
+        .graph :global(.quote) {
+          fill: ${palette.accents_4};
         }
       `}</style>
     </>

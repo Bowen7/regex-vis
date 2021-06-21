@@ -35,13 +35,13 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
 
       const d =
         `M-15,0` +
-        `A5 5 0 0 0,-10,-5` +
+        `A5 10 0 0 0,-10,-10` +
         `L-10,${-height / 2 - 5 - offsetY}` +
         `A5 5 0 0 1,-5,${-height / 2 - 10 - offsetY}` +
         `L${width + 5},${-height / 2 - 10 - offsetY}` +
         `A5 5 0 0 1,${width + 10},${-height / 2 - 5 - offsetY}` +
-        `L${width + 10},-5` +
-        `A5 5 0 0 0,${width + 15},0`
+        `L${width + 10},-10` +
+        `A5 10 0 0 0,${width + 15},0`
 
       const selectedD =
         d +
@@ -71,13 +71,13 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
     if (max > 1) {
       const d =
         `M0,0` +
-        `A7.5 7.5 0 0 0,-7.5,7.5` +
+        `A7.5 10 0 0 0,-7.5,10` +
         `L-7.5,${height / 2 + 5}` +
         `A5 5 0 0 0,-2.5,${height / 2 + 10}` +
         `L${width + 5},${height / 2 + 10}` +
         `A5 5 0 0 0,${width + 7.5},${height / 2 + 7.5}` +
-        `L${width + 7.5},7.5` +
-        `A7.5 7.5 0 0 0,${width},0`
+        `L${width + 7.5},10` +
+        `A7.5 10 0 0 0,${width},0`
 
       const selectedD =
         d +
@@ -96,7 +96,7 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
 
       paths.push({
         d: selectedD,
-        key: node.id + "-q-1",
+        key: node.id + "-q-3",
         transform,
         stroke: "transparent",
         className: selected ? "selected-fill" : "transparent-fill",

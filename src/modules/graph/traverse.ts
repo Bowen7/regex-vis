@@ -13,12 +13,14 @@ import {
   QUANTIFIER_HEIGHT,
   NAME_HEIGHT,
   BRANCH_PADDING_HORIZONTAL,
+  TEXT_PADDING_VERTICAL,
 } from "@/constants/graph"
 import { font } from "@/constants/style"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 class Traverse {
   canvas: HTMLCanvasElement
   minimum: boolean
+  context: CanvasRenderingContext2D | null
   constructor(minimum = false) {
     // the `measureText` method use canvas.measureText
     if (process.env.EXPORT) {
@@ -27,9 +29,11 @@ class Traverse {
     } else {
       this.canvas = document.createElement("canvas")
     }
+    this.context = this.canvas.getContext("2d")
     this.minimum = minimum
   }
   render(nodes: Node[]) {
+    console.log(nodes)
     const { minimum } = this
     const { width, height } = this.getNodesSize(nodes)
     const paddingHorizontal = minimum
@@ -160,14 +164,27 @@ class Traverse {
       })
     }
   }
+
   measureText(text: string, fontSize: number = 16) {
-    const context = this.canvas.getContext("2d")
+    const context = this.context
     if (!context) {
       return { width: 0, height: 0 }
     }
     context.font = fontSize + "px " + font.family
-    const metrics = context.measureText(text)
+    const metrics = context.measureText("`" + text + "`")
     return { width: metrics.width, height: fontSize }
+  }
+
+  measureTexts(texts: string[], fontSize: number = 16) {
+    return texts
+      .map((text) => this.measureText(text, fontSize))
+      .reduce(
+        ({ width: prevWidth, height: prevHeight }, { width, height }) => ({
+          width: Math.max(width, prevWidth),
+          height: height + prevHeight + TEXT_PADDING_VERTICAL,
+        }),
+        { width: 0, height: -TEXT_PADDING_VERTICAL }
+      )
   }
 
   getSize(node: Node) {
@@ -194,9 +211,9 @@ class Traverse {
       ;({ width, height } = this.getNodesSize(children))
       height += 2 * NODE_MARGIN_VERTICAL
       width += NODE_MARGIN_HORIZONTAL * 2
-    } else if ("text" in node) {
-      const text = node.text
-      const size = this.measureText(text)
+    } else if ("texts" in node) {
+      const texts = node.texts
+      const size = this.measureTexts(texts)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
     } else {
