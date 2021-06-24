@@ -117,10 +117,12 @@ const Graph: React.FC<Props> = ({
           stroke: none;
         }
         .graph :global(.stroke) {
-          stroke: ${palette.foreground};
+          stroke: ${palette.accents_6};
+          stroke-width: 2px;
         }
         .graph :global(.second-stroke) {
-          stroke: ${palette.accents_6};
+          stroke: ${palette.accents_3};
+          stroke-width: 2px;
         }
         .graph :global(.text) {
           fill: ${palette.foreground};
