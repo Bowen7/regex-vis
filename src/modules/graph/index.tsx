@@ -111,7 +111,7 @@ const Graph: React.FC<Props> = ({
         }
         .graph :global(.selected-fill) {
           fill: ${palette.success};
-          fill-opacity: 0.5;
+          fill-opacity: 0.3;
         }
         .graph :global(.none-stroke) {
           stroke: none;

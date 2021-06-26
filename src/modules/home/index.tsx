@@ -4,7 +4,7 @@ import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import { Node } from "@/types"
 import { useMainReducer, MainActionTypes } from "@/redux"
-const DEFAULT_REGEX = `/([a-zA-Z0-9_-])*?@[a-zA-Z0-9_-](\\.[a-zA-Z0-9_-]{0,10})?(a|b)/`
+const DEFAULT_REGEX = `/([a-zA-Z_])*?@[a-zA-Z](\\.[a-zA-Z-]{0,10})?(a|b)/`
 // const DEFAULT_REGEX = `/x(?=aaa)/`
 
 const Home: React.FC<{}> = () => {

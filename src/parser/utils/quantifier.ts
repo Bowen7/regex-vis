@@ -37,22 +37,15 @@ export default (
   return { nextNodes, nextSelectedIds }
 }
 
-export const getQuantifierText = (quantifier: Quantifier) => {
+export const getQuantifierText = (quantifier: Quantifier): string => {
   let { min, max } = quantifier
-  if (min === 0) {
-    min = 1
+  let minText = `${min}`
+  let maxText = `${max}`
+  if (min === max) {
+    return minText
   }
-  let text = ""
-  if (min === 1 && max === 1) {
-    return ""
+  if (max === Infinity) {
+    maxText = "∞"
   }
-  if (max !== Infinity) {
-    text += Math.max(0, min - 1)
-    if (max !== min) {
-      text += " - "
-      text += max
-    }
-    text += " times"
-  }
-  return text
+  return minText + " - " + maxText
 }

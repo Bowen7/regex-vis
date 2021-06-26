@@ -225,22 +225,13 @@ class Traverse {
 
     if (node.quantifier) {
       const { quantifier } = node
-      const { max, min } = quantifier
-      // quantifier curve
-      if (min === 0) {
-        paddingTop += QUANTIFIER_HEIGHT
-      }
-      if (max > 1) {
-        paddingBottom += QUANTIFIER_HEIGHT
-      }
+      paddingBottom += QUANTIFIER_HEIGHT
 
       const text = getQuantifierText(quantifier)
       // handle times text
       if (text) {
-        paddingBottom += NAME_HEIGHT
-        const textWidth =
-          this.measureText(text, 12).width + NODE_PADDING_VERTICAL * 2
-        offsetWidth = Math.max(textWidth, width, offsetWidth)
+        const quantifierWidth = this.measureText(text, 12).width + 26
+        offsetWidth = Math.max(quantifierWidth, width, offsetWidth)
       }
     }
 
