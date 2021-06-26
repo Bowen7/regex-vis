@@ -24,7 +24,6 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
     const strokeDasharray = node.quantifier.greedy ? "" : "3,3"
     const transform = `translate(${x} ${y + height + 4})`
 
-    // todo: optimize
     return (
       <>
         <g fill="none" className="stroke" transform={transform}>
@@ -40,12 +39,11 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
           ></path>
         </g>
         <text
-          x={center.x}
+          x={x + 26}
           y={y + height + 10}
           className="text"
           fontSize={12}
           dy={12 * 0.35 + 4}
-          textAnchor="middle"
           pointerEvents="none"
         >
           {text}
