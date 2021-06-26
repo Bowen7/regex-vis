@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { useTheme } from "@geist-ui/react"
 import { RenderVirtualNode, Node } from "@/types"
-import Traverse from "./traverse"
+import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { useEffectOnce } from "@/utils/hooks"
@@ -27,7 +27,6 @@ const Graph: React.FC<Props> = ({
   ] = useMainReducer()
 
   const regex = useRef<string>("")
-  const traverse = useRef<Traverse>(new Traverse(minimum))
 
   const id = useRef<string>(nanoid())
   const [nodes, setNodes] = useState<Node[]>(INITIAL_NODES)
@@ -43,7 +42,7 @@ const Graph: React.FC<Props> = ({
 
   if (process.env.EXPORT && regex.current !== propRegex) {
     regex.current = propRegex
-    setRootRenderNode(traverse.current.render(parser.parse(propRegex)))
+    setRootRenderNode(renderEngine.render(parser.parse(propRegex)))
   }
 
   useEffectOnce(() => {
@@ -82,7 +81,7 @@ const Graph: React.FC<Props> = ({
 
   useEffect(() => {
     if (nodes !== INITIAL_NODES) {
-      const rootRenderNode = traverse.current.render(nodes)
+      const rootRenderNode = renderEngine.render(nodes)
       regex.current = parser.gen(nodes)
       onChange && onChange(regex.current)
       setRootRenderNode(rootRenderNode)

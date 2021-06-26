@@ -9,19 +9,27 @@ import {
   NODE_PADDING_VERTICAL,
   NODE_MARGIN_VERTICAL,
   NODE_MARGIN_HORIZONTAL,
+  NODE_TEXT_FONTSIZE,
   ROOT_RADIUS,
   QUANTIFIER_HEIGHT,
   NAME_HEIGHT,
   BRANCH_PADDING_HORIZONTAL,
   TEXT_PADDING_VERTICAL,
+  QUANTIFIER_TEXT_FONTSIZE,
+  QUANTIFIER_ICON_WIDTH,
+  QUANTIFIER_ICON_MARGIN_RIGHT,
+  NAME_TEXT_FONTSIZE,
 } from "@/constants/graph"
 import { font } from "@/constants/style"
 import { getQuantifierText } from "@/parser/utils/quantifier"
-class Traverse {
+
+type TextSize = { width: number; height: number }
+const textSizeMap = new Map<string, TextSize>()
+class RenderEngine {
+  minimum: boolean = false
   canvas: HTMLCanvasElement
-  minimum: boolean
   context: CanvasRenderingContext2D | null
-  constructor(minimum = false) {
+  constructor() {
     // the `measureText` method use canvas.measureText
     if (process.env.EXPORT) {
       const { createCanvas } = require("canvas")
@@ -30,11 +38,10 @@ class Traverse {
       this.canvas = document.createElement("canvas")
     }
     this.context = this.canvas.getContext("2d")
-    this.minimum = minimum
   }
-  render(nodes: Node[]) {
-    console.log(nodes)
-    const { minimum } = this
+
+  render(nodes: Node[], minimum = false) {
+    this.minimum = minimum
     const { width, height } = this.getNodesSize(nodes)
     const paddingHorizontal = minimum
       ? MINIMUM_CHART_PADDING_HORIZONTAL
@@ -55,6 +62,7 @@ class Traverse {
     rootRenderNode.height += paddingVertical * 2
     return rootRenderNode
   }
+
   renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {
     const {
       x: originX,
@@ -125,6 +133,7 @@ class Traverse {
       })
     }
   }
+
   renderNode(renderNode: RenderNode) {
     const { target, children } = renderNode
     if (target.children) {
@@ -134,6 +143,8 @@ class Traverse {
       const { x: originX, y: originY, width, height } = renderNode
       let x = originX
       let y = originY
+
+      const padding = NODE_MARGIN_HORIZONTAL + BRANCH_PADDING_HORIZONTAL
       branches.forEach((branch) => {
         const branchHeight =
           this.getNodesSize(branch).height + NODE_MARGIN_VERTICAL
@@ -142,13 +153,16 @@ class Traverse {
           id: nanoid(),
           type: "connect",
           start: { x, y: originY + height / 2 },
-          end: { x: x + 20, y: y + branchHeight / 2 },
+          end: {
+            x: x + padding,
+            y: y + branchHeight / 2,
+          },
         })
         const virtualNode: RenderVirtualNode = {
           type: "virtual",
-          x: x + 20,
+          x: x + padding,
           y,
-          width: width - 40,
+          width: width - padding * 2,
           height: branchHeight,
           children: [],
         }
@@ -156,7 +170,7 @@ class Traverse {
         children.push({
           id: nanoid(),
           type: "connect",
-          start: { x: x + width - 20, y: y + branchHeight / 2 },
+          start: { x: x + width - padding, y: y + branchHeight / 2 },
           end: { x: x + width, y: originY + height / 2 },
         })
         this.renderNodes(virtualNode, branch)
@@ -165,19 +179,29 @@ class Traverse {
     }
   }
 
-  measureText(text: string, fontSize: number = 16) {
+  measureText(text: string, fontSize: number = 16, withBacktick = false) {
     const context = this.context
     if (!context) {
       return { width: 0, height: 0 }
     }
-    context.font = fontSize + "px " + font.family
-    const metrics = context.measureText("`" + text + "`")
-    return { width: metrics.width, height: fontSize }
+    if (withBacktick) {
+      text = "`" + text + "`"
+    }
+    const textFont = fontSize + "px " + font.family
+    const key = textFont + "-" + text
+    if (textSizeMap.has(key)) {
+      return textSizeMap.get(key) as TextSize
+    }
+    context.font = textFont
+    const metrics = context.measureText(text)
+    const size = { width: metrics.width, height: fontSize }
+    textSizeMap.set(key, size)
+    return size
   }
 
-  measureTexts(texts: string[], fontSize: number = 16) {
+  measureTexts(texts: string[], fontSize: number = 16, withBacktick = false) {
     return texts
-      .map((text) => this.measureText(text, fontSize))
+      .map((text) => this.measureText(text, fontSize, withBacktick))
       .reduce(
         ({ width: prevWidth, height: prevHeight }, { width, height }) => ({
           width: Math.max(width, prevWidth),
@@ -213,7 +237,7 @@ class Traverse {
       width += NODE_MARGIN_HORIZONTAL * 2
     } else if ("texts" in node) {
       const texts = node.texts
-      const size = this.measureTexts(texts)
+      const size = this.measureTexts(texts, NODE_TEXT_FONTSIZE, true)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
     } else {
@@ -230,7 +254,10 @@ class Traverse {
       const text = getQuantifierText(quantifier)
       // handle times text
       if (text) {
-        const quantifierWidth = this.measureText(text, 12).width + 26
+        const quantifierWidth =
+          this.measureText(text, QUANTIFIER_TEXT_FONTSIZE).width +
+          QUANTIFIER_ICON_WIDTH +
+          QUANTIFIER_ICON_MARGIN_RIGHT
         offsetWidth = Math.max(quantifierWidth, width, offsetWidth)
       }
     }
@@ -240,7 +267,7 @@ class Traverse {
       const name = "name" in node ? node.name : val.name
       const { namePrefix = "" } = val
       const nameWidth =
-        this.measureText(name + namePrefix, 12).width +
+        this.measureText(name + namePrefix, NAME_TEXT_FONTSIZE).width +
         NODE_PADDING_VERTICAL * 2
 
       offsetWidth = Math.max(width, nameWidth, offsetWidth)
@@ -272,4 +299,5 @@ class Traverse {
   }
 }
 
-export default Traverse
+const renderEngine = new RenderEngine()
+export default renderEngine

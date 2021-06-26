@@ -1,29 +1,51 @@
 import React from "react"
 import { Node } from "@/types"
 import { getQuantifierText } from "@/parser/utils/quantifier"
+import renderEngine from "@/modules/graph/rendering-engine"
+import {
+  QUANTIFIER_ICON_HEIGHT,
+  QUANTIFIER_ICON_MARGIN_RIGHT,
+  QUANTIFIER_ICON_WIDTH,
+  QUANTIFIER_TEXT_FONTSIZE,
+  QUANTIFIER_ICON_MARGIN_VERTICAL,
+} from "@/constants/graph"
 type QuantifierProps = {
   node: Node
-  selected: boolean
   x: number
   y: number
   width: number
   height: number
 }
-
+const dx = QUANTIFIER_ICON_WIDTH + QUANTIFIER_ICON_MARGIN_RIGHT
+const dy =
+  QUANTIFIER_TEXT_FONTSIZE +
+  (QUANTIFIER_ICON_HEIGHT +
+    QUANTIFIER_ICON_MARGIN_VERTICAL -
+    QUANTIFIER_TEXT_FONTSIZE) /
+    2
 const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
-  ({ node, x, y, width, height, selected }) => {
+  ({ node, x, y, width, height }) => {
     if (!node.quantifier) {
       return null
     }
-    const center = {
-      x: x + width / 2,
-      y: y + height / 2,
-    }
     const text = getQuantifierText(node.quantifier)
+    const { width: textWidth } = renderEngine.measureText(
+      text,
+      QUANTIFIER_TEXT_FONTSIZE
+    )
+
+    const deltaX =
+      (width -
+        textWidth -
+        QUANTIFIER_ICON_WIDTH -
+        QUANTIFIER_ICON_MARGIN_VERTICAL) /
+      2
+    const translateX = deltaX + x
 
     const strokeDasharray = node.quantifier.greedy ? "" : "3,3"
-    const transform = `translate(${x} ${y + height + 4})`
-
+    const transform = `translate(${translateX} ${
+      y + height + QUANTIFIER_ICON_MARGIN_VERTICAL
+    })`
     return (
       <>
         <g fill="none" className="stroke" transform={transform}>
@@ -39,11 +61,12 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
           ></path>
         </g>
         <text
-          x={x + 26}
-          y={y + height + 10}
+          x={x}
+          y={y + height}
           className="text"
-          fontSize={12}
-          dy={12 * 0.35 + 4}
+          fontSize={QUANTIFIER_TEXT_FONTSIZE}
+          dx={dx + deltaX}
+          dy={dy}
           pointerEvents="none"
         >
           {text}

@@ -1,16 +1,15 @@
 import React from "react"
-import Traverse from "./traverse"
+import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
 import parser from "@/parser"
 import { RenderNode } from "@/types"
-const traverse = new Traverse(true)
 type Props = {
   regex: string
   selected?: boolean
 }
 
 const MinimumGraph: React.FC<Props> = ({ regex, selected = false }) => {
-  const rootRenderNode = traverse.render(parser.parse(regex))
+  const rootRenderNode = renderEngine.render(parser.parse(regex), true)
 
   const selectedIds = selected
     ? rootRenderNode.children
