@@ -17,7 +17,7 @@ function gen(nodes: Node[]) {
         case "choice":
           regex = genChoice(node) as string
           if (!isSingleNode) {
-            regex += `(${regex})`
+            regex = `(${regex})`
           }
           break
         case "group":

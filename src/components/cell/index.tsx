@@ -27,7 +27,6 @@ const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
   label,
   children,
 }) => {
-  console.log(useTheme())
   return (
     <>
       <div className="container">
