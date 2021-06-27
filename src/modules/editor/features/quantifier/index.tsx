@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react"
-import { Checkbox, Select, Spacer } from "@geist-ui/react"
+import React, { useState, useEffect, useRef } from "react"
+import { Select, Spacer, Radio } from "@geist-ui/react"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
 import { Quantifier } from "@/types"
@@ -10,14 +10,15 @@ type Props = {
 }
 
 const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
+  const quantifierRef = useRef<Quantifier | null>(quantifier)
   const [kind, setKind] = useState("non")
   const [min, setMin] = useState("")
   const [max, setMax] = useState("")
   const [minPlaceholder, setMinPlaceholder] = useState("")
   const [maxPlaceholder, setMaxPlaceholder] = useState("")
   const [, dispatch] = useMainReducer()
-
   useEffect(() => {
+    quantifierRef.current = quantifier
     if (!quantifier) {
       setKind("non")
       return
@@ -26,10 +27,8 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
       const { min, max } = quantifier
       setMin(min + "")
       setMax(max + "")
-    } else {
-      const { kind } = quantifier
-      setKind(kind)
     }
+    setKind(quantifier.kind)
   }, [quantifier])
 
   const handleChange = (value: string | string[]) => {
@@ -53,8 +52,9 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
         type: MainActionTypes.UPDATE_QUANTIFIER,
         payload: nextQuantifier,
       })
+    } else {
+      setKind(value as string)
     }
-    setKind(value as string)
   }
 
   const validateCustomRange = (min: string, max: string): string | null => {
@@ -94,6 +94,17 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
       payload: { kind: "custom", min: Number(min), max: Number(max), greedy },
     })
   }
+
+  const handleGreedyChange = (value: string | number) => {
+    let greedy = true
+    if (value === "non-greedy") {
+      greedy = false
+    }
+    dispatch({
+      type: MainActionTypes.UPDATE_QUANTIFIER,
+      payload: { ...(quantifierRef.current as Quantifier), greedy },
+    })
+  }
   return (
     <>
       <Cell label="Quantifier">
@@ -126,10 +137,24 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
           )}
         </Cell.Item>
         <Cell.Item label="greedy">
-          <Checkbox initialChecked={true}>Greedy</Checkbox>
+          <div className="greedy">
+            <Radio.Group
+              useRow
+              size="mini"
+              value={quantifier?.greedy ? "greedy" : "non-greedy"}
+              onChange={handleGreedyChange}
+            >
+              <Radio value="greedy">greedy</Radio>
+              <Radio value="non-greedy">non-greedy</Radio>
+            </Radio.Group>
+          </div>
         </Cell.Item>
       </Cell>
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .greedy :global(.name) {
+          font-weight: normal;
+        }
+      `}</style>
     </>
   )
 }
