@@ -1,0 +1,20 @@
+{
+  "/a/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "val": { "type": "string", "value": "a" },
+      "texts": ["a"]
+    },
+    { "type": "root" }
+  ],
+  "/abc/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "val": { "type": "string", "value": "abc" },
+      "texts": ["abc"]
+    },
+    { "type": "root" }
+  ]
+}
