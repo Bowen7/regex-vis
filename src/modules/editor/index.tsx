@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
 import { Tabs, useTheme, Button, Modal } from "@geist-ui/react"
-import clsx from "clsx"
 import { useMainReducer, MainActionTypes } from "@/redux/"
 import EditTab from "./tabs/edit"
 import LegendTab from "./tabs/legend"
@@ -65,14 +64,12 @@ const Editor: React.FC<{}> = () => {
       payload: { ...guiderConfig, visible: false },
     })
   }
+
+  const containerClassName =
+    "container" + (editorCollapsed ? " collapsed-container" : "")
   return (
     <>
-      <div
-        id="editor-container"
-        className={clsx("container", {
-          "collapsed-container": editorCollapsed,
-        })}
-      >
+      <div id="editor-container" className={containerClassName}>
         <Tabs
           value={tabValue}
           onChange={(value: string) => setTabValue(value as Tab)}
