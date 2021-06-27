@@ -14,7 +14,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
 
   const addRange = (newRanges: Range[]) => {
     const val: RangesCharacter = {
-      type: "ranges",
+      kind: "ranges",
       value: ranges.concat(newRanges),
       negate: false,
     }
@@ -29,7 +29,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
   const handleRangeChange = (index: number, range: Range) => {
     // Todo: special action
     const val: RangesCharacter = {
-      type: "ranges",
+      kind: "ranges",
       value: ranges.map((_range, _index) => {
         if (_index === index) {
           return range
@@ -48,7 +48,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
 
   const handleRemove = (index: number) => {
     const val: RangesCharacter = {
-      type: "ranges",
+      kind: "ranges",
       value: ranges.filter((_, _index) => {
         return index !== _index
       }),

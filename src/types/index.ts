@@ -11,7 +11,7 @@ export type Quantifier = {
 }
 
 export type StringCharacter = {
-  type: "string"
+  kind: "string"
   value: string
 }
 
@@ -20,13 +20,13 @@ export type Range = {
   to: string
 }
 export type RangesCharacter = {
-  type: "ranges"
+  kind: "ranges"
   value: Range[]
   negate: boolean
 }
 
 export type ClassCharacter = {
-  type: "class"
+  kind: "class"
   value: string
 }
 
@@ -44,25 +44,19 @@ export interface NodeBase {
 export interface CharacterNode extends NodeBase {
   type: "character"
   value: Character
-  texts: string[]
-  name?: string
 }
 
 export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"
 
 export type Group =
   | {
-      type: "capturing" | "nonCapturing" | "nonGroup"
+      kind: "nonCapturing" | "nonGroup"
     }
-  | { type: "namedCapturing"; name: string }
+  | { kind: "namedCapturing" | "capturing"; name: string }
 
 export interface GroupNode extends NodeBase {
   type: "group"
-  value: {
-    kind: GroupKind
-    name?: string
-    namePrefix: "Group #"
-  }
+  value: Group
 }
 
 export interface ChoiceNode extends NodeBase {
@@ -75,13 +69,11 @@ export interface BoundaryAssertionNode extends NodeBase {
     kind: "start" | "end" | "word"
     negate?: boolean
   }
-  texts: string[]
 }
 
 export interface LookaroundAssertionNode extends NodeBase {
   type: "lookaroundAssertion"
   value: {
-    name: string
     kind: "lookahead" | "lookbehind"
     negate: boolean
   }

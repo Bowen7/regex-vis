@@ -20,7 +20,6 @@ export function group(
       value: {
         kind: "capturing",
         name: "",
-        namePrefix: "Group #",
       },
       children: selectedNodes,
     }
@@ -38,20 +37,25 @@ function changeGroupType(
   type: GroupKind | "nonGroup",
   name?: string
 ) {
-  const { value } = selectedNode
   switch (type) {
     case "nonGroup":
       return removeGroupWrap(nodes, selectedNode)
     case "capturing":
-      value.kind = "capturing"
+      selectedNode.value = {
+        kind: "capturing",
+        name: "",
+      }
       break
     case "namedCapturing":
-      value.kind = "namedCapturing"
-      value.name = name
+      selectedNode.value = {
+        kind: "namedCapturing",
+        name: name as string,
+      }
       break
     case "nonCapturing":
-      value.kind = "nonCapturing"
-      delete value.name
+      selectedNode.value = {
+        kind: "nonCapturing",
+      }
       break
     default:
       return []

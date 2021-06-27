@@ -1,5 +1,6 @@
 import React from "react"
 import { Node } from "@/types"
+import { getName } from "./utils"
 type Center = {
   x: number
   y: number
@@ -11,10 +12,8 @@ type NameProps = {
 }
 
 const NodeName: React.FC<NameProps> = React.memo(({ center, node, y }) => {
-  const { value } = node
-  if ("name" in node || value?.name) {
-    const name = "name" in node ? node.name : value.name
-    const { namePrefix = "" } = value
+  const name = getName(node)
+  if (name) {
     return (
       <text
         x={center.x}
@@ -24,7 +23,7 @@ const NodeName: React.FC<NameProps> = React.memo(({ center, node, y }) => {
         dy={-0.5 * 12}
         className="text"
       >
-        {namePrefix + name}
+        {name}
       </text>
     )
   } else {

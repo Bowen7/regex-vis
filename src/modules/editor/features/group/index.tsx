@@ -13,24 +13,24 @@ type GroupSelectProps = {
 }
 
 const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
-  const { type } = group
+  const { kind } = group
 
   const [setName, nameBindings, cancelNameChange] = useDebounceInput(
     (value) => {
-      onGroupChange(type, value)
+      onGroupChange(kind, value)
     },
-    [type]
+    [kind]
   )
 
   useEffect(() => {
     cancelNameChange && cancelNameChange()
-    if (group.type === "namedCapturing") {
+    if (group.kind === "namedCapturing") {
       setName(group.name)
     } else {
       setName("")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type])
+  }, [kind])
 
   function onSelectChange(value: string | string[]) {
     onGroupChange(value as string, "name" in group ? group.name : "")
@@ -40,7 +40,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
     <>
       <Cell label="Group">
         <Select
-          value={type}
+          value={kind}
           onChange={onSelectChange}
           getPopupContainer={() => document.getElementById("editor-content")}
           disableMatchWidth
@@ -52,7 +52,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
             </Select.Option>
           ))}
         </Select>
-        {group.type === "namedCapturing" && (
+        {group.kind === "namedCapturing" && (
           <>
             <Spacer x={1} inline />
             <Input label="The capture group's name" {...nameBindings} />

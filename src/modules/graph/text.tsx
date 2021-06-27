@@ -5,6 +5,7 @@ import {
   NODE_MARGIN_VERTICAL,
   TEXT_PADDING_VERTICAL,
 } from "@/constants/graph"
+import { getTexts } from "./utils"
 const FONT = 16
 type TextProps = {
   node: Node
@@ -13,10 +14,10 @@ type TextProps = {
 }
 
 const NodeText: React.FC<TextProps> = React.memo(({ x, y, node }) => {
-  if (!("texts" in node)) {
+  const texts = getTexts(node)
+  if (!texts) {
     return null
   }
-  const texts = node.texts
   return (
     <>
       {texts.map((text, index) => (

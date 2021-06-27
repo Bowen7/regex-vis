@@ -20,7 +20,7 @@ export default (
       const node = selectedNodes[0]
       if (
         node.type === "character" &&
-        node.value.type === "string" &&
+        node.value.kind === "string" &&
         node.value.value.length > 1
       ) {
         nextSelectedIds = group(draft, selectedNodes, "capturing", "")

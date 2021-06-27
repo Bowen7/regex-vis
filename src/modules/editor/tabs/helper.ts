@@ -12,11 +12,13 @@ export const genInitialNodesInfo = (): NodesInfo => ({
 
 const getGroupInfo = (nodes: Node[]): Group | null => {
   if (nodes.length !== 1) {
-    return { type: "nonGroup" }
+    return { kind: "nonGroup" }
   }
   const node = nodes[0]
-  const type = node.type === "group" ? node.value.kind : "nonGroup"
-  return type === "namedCapturing" ? { type, name: node.value.name } : { type }
+  const kind = node.type === "group" ? node.value.kind : "nonGroup"
+  return ["namedCapturing", "capturing"].includes(kind)
+    ? ({ kind, name: node.value.name } as Group)
+    : ({ kind } as Group)
 }
 
 const getCharacterInfo = (nodes: Node[]): Character | null => {

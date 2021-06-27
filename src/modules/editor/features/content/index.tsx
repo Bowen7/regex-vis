@@ -24,7 +24,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         type: MainActionTypes.UPDATE_CHARACTER,
         payload: {
           value: {
-            type: "string",
+            kind: "string",
             value,
           },
         },
@@ -35,9 +35,9 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   const [classValue, setClassValue] = useState<CharacterClassKey>(".")
 
   useEffect(() => {
-    switch (character.type) {
+    switch (character.kind) {
       case "string":
-        if (stringBindings.value !== character.type) {
+        if (stringBindings.value !== character.kind) {
           setString(character.value)
         }
         break
@@ -49,13 +49,13 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
     let val!: Character
     switch (type) {
       case "string":
-        val = { type: "string", value: stringBindings.value }
+        val = { kind: "string", value: stringBindings.value }
         break
       case "class":
-        val = { type: "class", value: classValue }
+        val = { kind: "class", value: classValue }
         break
       case "ranges":
-        val = { type: "ranges", value: [], negate: false }
+        val = { kind: "ranges", value: [], negate: false }
         break
       default:
         return
@@ -71,7 +71,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   const handleClassValueChange = (value: string | string[]) => {
     setClassValue(value as CharacterClassKey)
     const val: ClassCharacter = {
-      type: "class",
+      kind: "class",
       value: value as string,
     }
     dispatch({
@@ -86,7 +86,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
       <Cell label="Content">
         <Cell.Item label="Type">
           <Select
-            value={character.type}
+            value={character.kind}
             onChange={handleTypeChange}
             getPopupContainer={() => document.getElementById("editor-content")}
             disableMatchWidth
@@ -99,13 +99,13 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
           </Select>
         </Cell.Item>
 
-        <Cell.Item label={labelMap[character.type]}>
-          {character.type === "string" && (
+        <Cell.Item label={labelMap[character.kind]}>
+          {character.kind === "string" && (
             <Input size="small" {...stringBindings} />
           )}
 
-          {character.type === "ranges" && <Ranges ranges={character.value} />}
-          {character.type === "class" && (
+          {character.kind === "ranges" && <Ranges ranges={character.value} />}
+          {character.kind === "class" && (
             <Select
               value={classValue}
               onChange={handleClassValueChange}

@@ -3,7 +3,7 @@
     { "type": "root" },
     {
       "type": "character",
-      "val": { "type": "string", "value": "a" },
+      "value": { "type": "string", "value": "a" },
       "texts": ["a"]
     },
     { "type": "root" }
@@ -12,8 +12,22 @@
     { "type": "root" },
     {
       "type": "character",
-      "val": { "type": "string", "value": "abc" },
+      "value": { "type": "string", "value": "abc" },
       "texts": ["abc"]
+    },
+    { "type": "root" }
+  ],
+  "/[a-b]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "type": "ranges",
+        "value": [{ "from": "a", "to": "b" }],
+        "negate": false
+      },
+      "texts": ["a - b"],
+      "name": "One of "
     },
     { "type": "root" }
   ]

@@ -58,13 +58,12 @@ function genChoice(node: ChoiceNode) {
 
 function genGroup(node: GroupNode) {
   const { children, value } = node
-  const { kind, name } = value
   const content = gen(children as Node[])
-  switch (kind) {
+  switch (value.kind) {
     case "capturing":
       return "(" + content + ")"
     case "namedCapturing":
-      return "(?<" + name + ">" + content + ")"
+      return "(?<" + value.name + ">" + content + ")"
     case "nonCapturing":
       return "(?:" + content + ")"
 
@@ -79,7 +78,7 @@ function prefix(value: string) {
 
 function genCharacter(node: CharacterNode) {
   const { value } = node
-  switch (value.type) {
+  switch (value.kind) {
     case "ranges":
       const { negate } = value
       let str = ""

@@ -43,10 +43,9 @@ function genNode(): CharacterNode {
     id: nanoid(),
     type: "character",
     value: {
-      type: "string",
+      kind: "string",
       value: "",
     },
-    texts: [""],
   }
 }
 

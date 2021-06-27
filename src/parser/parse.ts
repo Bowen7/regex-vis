@@ -11,13 +11,6 @@ import {
   LookaroundAssertionNode,
 } from "@/types"
 
-const AssertionNameMap = {
-  start: "Start of line",
-  end: "End of line",
-  lookahead: ["Followed by:", "Not followed by"],
-  lookbehind: ["Preceded by", "Not Preceded by"],
-  word: "",
-}
 let groupName = 1
 
 function parse(regex: string | RegExp) {
@@ -105,10 +98,9 @@ function parseCharacter(character: AST.Character): CharacterNode {
     id: nanoid(),
     type: "character",
     value: {
-      type: "string",
+      kind: "string",
       value: character.raw,
     },
-    texts: [character.raw],
   }
 }
 
@@ -129,10 +121,9 @@ function parseCharacterSet(characterSet: AST.CharacterSet): CharacterNode {
     id: nanoid(),
     type: "character",
     value: {
-      type: "class",
+      kind: "class",
       value: raw,
     },
-    texts: [text],
   }
 }
 
@@ -162,7 +153,6 @@ function parseLookaroundAssertion(
   assertion: AST.LookaroundAssertion
 ): LookaroundAssertionNode {
   const { alternatives, negate, kind } = assertion
-  const name = AssertionNameMap[assertion.kind][negate ? 1 : 0]
   const node: LookaroundAssertionNode = {
     id: nanoid(),
     type: "lookaroundAssertion",
@@ -170,7 +160,6 @@ function parseLookaroundAssertion(
     value: {
       kind,
       negate,
-      name,
     },
   }
   if (alternatives.length === 1) {
@@ -192,21 +181,18 @@ function parseWordBoundaryAssertion(
       kind,
       negate,
     },
-    texts: negate ? ["NonWordBoundary"] : ["WordBoundary"],
   }
 }
 
 function parseEdgeAssertion(
   assertion: AST.EdgeAssertion
 ): BoundaryAssertionNode {
-  const text = assertion.kind === "start" ? "Start of line" : "End of line"
   return {
     id: nanoid(),
     type: "boundaryAssertion",
     value: {
       kind: assertion.kind,
     },
-    texts: [text],
   }
 }
 
@@ -218,17 +204,19 @@ function parseGroup(ast: AST.CapturingGroup | AST.Group) {
     children: [],
     value: {
       kind: "nonCapturing",
-      namePrefix: "Group #",
     },
   }
-  const value = node.value
   if (ast.type === "CapturingGroup") {
     if (ast.name) {
-      value.kind = "namedCapturing"
-      value.name = ast.name
+      node.value = {
+        kind: "namedCapturing",
+        name: ast.name,
+      }
     } else {
-      value.kind = "capturing"
-      value.name = groupName++ + ""
+      node.value = {
+        kind: "capturing",
+        name: groupName++ + "",
+      }
     }
   }
   if (alternatives.length === 1) {
@@ -242,16 +230,14 @@ function parseGroup(ast: AST.CapturingGroup | AST.Group) {
 function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
   const { elements, negate } = ast
   const ranges: Range[] = []
-  const texts: string[] = []
   elements.forEach((element) => {
     if (element.type === "Character") {
-      const text = String.fromCharCode(element.value)
+      const from = String.fromCharCode(element.value)
       const range: Range = {
-        from: text,
-        to: text,
+        from: from,
+        to: from,
       }
       ranges.push(range)
-      texts.push(text)
     } else if (element.type === "CharacterClassRange") {
       const { min, max } = element
       const from = String.fromCharCode(min.value)
@@ -261,20 +247,16 @@ function parseCharacterClass(ast: AST.CharacterClass): CharacterNode {
         to,
       }
       ranges.push(range)
-      texts.push(from + " - " + to)
     }
   })
-  const name = negate ? "None of " : "One of "
   return {
     id: nanoid(),
     type: "character",
     value: {
-      type: "ranges",
+      kind: "ranges",
       value: ranges,
       negate,
     },
-    name,
-    texts,
   }
 }
 

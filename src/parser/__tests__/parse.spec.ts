@@ -32,5 +32,10 @@ describe("Parse Regex String", function () {
       const r = "/abc/"
       deepStrictEqual(p(r), parseJson[r])
     })
+
+    it("normal range", function () {
+      const r = "/[a-b]/"
+      deepStrictEqual(p(r), parseJson[r])
+    })
   })
 })
