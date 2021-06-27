@@ -23,7 +23,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
       dispatch({
         type: MainActionTypes.UPDATE_CHARACTER,
         payload: {
-          val: {
+          value: {
             type: "string",
             value,
           },
@@ -63,7 +63,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
     dispatch({
       type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
-        val: val as Character,
+        value: val as Character,
       },
     })
   }
@@ -77,7 +77,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
     dispatch({
       type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
-        val,
+        value: val,
       },
     })
   }

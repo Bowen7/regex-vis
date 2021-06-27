@@ -42,7 +42,7 @@ function genNode(): CharacterNode {
   return {
     id: nanoid(),
     type: "character",
-    val: {
+    value: {
       type: "string",
       value: "",
     },

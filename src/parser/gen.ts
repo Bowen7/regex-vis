@@ -57,8 +57,8 @@ function genChoice(node: ChoiceNode) {
 }
 
 function genGroup(node: GroupNode) {
-  const { children, val } = node
-  const { kind, name } = val
+  const { children, value } = node
+  const { kind, name } = value
   const content = gen(children as Node[])
   switch (kind) {
     case "capturing":
@@ -78,12 +78,12 @@ function prefix(value: string) {
 }
 
 function genCharacter(node: CharacterNode) {
-  const { val } = node
-  switch (val.type) {
+  const { value } = node
+  switch (value.type) {
     case "ranges":
-      const { negate } = val
+      const { negate } = value
       let str = ""
-      val.value.forEach(({ from, to }) => {
+      value.value.forEach(({ from, to }) => {
         if (from !== to) {
           str += from + "-" + to
         } else {
@@ -92,9 +92,9 @@ function genCharacter(node: CharacterNode) {
       })
       return (negate ? "[^" : "[") + str + "]"
     case "string":
-      return prefix(val.value)
+      return prefix(value.value)
     case "class":
-      return val.value
+      return value.value
     default:
       return ""
   }
@@ -121,14 +121,14 @@ function genQuantifier(node: Node) {
 }
 
 function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
-  const { val } = node
-  switch (val.kind) {
+  const { value } = node
+  switch (value.kind) {
     case "start":
       return "^"
     case "end":
       return "$"
     case "word":
-      return val.negate ? "\\B" : "\\b"
+      return value.negate ? "\\B" : "\\b"
     default:
       return ""
   }
@@ -140,8 +140,8 @@ const LookaroundMap = {
 }
 
 function genLookaroundAssertionNode(node: LookaroundAssertionNode) {
-  const { children, val } = node
-  const { kind, negate } = val
+  const { children, value } = node
+  const { kind, negate } = value
   return LookaroundMap[kind][negate ? 1 : 0] + gen(children as Node[]) + ")"
 }
 

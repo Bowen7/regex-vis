@@ -38,12 +38,12 @@ export interface NodeBase {
   quantifier?: Quantifier
   children?: Node[]
   branches?: Node[][]
-  val?: any
+  value?: any
 }
 
 export interface CharacterNode extends NodeBase {
   type: "character"
-  val: Character
+  value: Character
   texts: string[]
   name?: string
 }
@@ -58,7 +58,7 @@ export type Group =
 
 export interface GroupNode extends NodeBase {
   type: "group"
-  val: {
+  value: {
     kind: GroupKind
     name?: string
     namePrefix: "Group #"
@@ -71,7 +71,7 @@ export interface ChoiceNode extends NodeBase {
 
 export interface BoundaryAssertionNode extends NodeBase {
   type: "boundaryAssertion"
-  val: {
+  value: {
     kind: "start" | "end" | "word"
     negate?: boolean
   }
@@ -80,7 +80,7 @@ export interface BoundaryAssertionNode extends NodeBase {
 
 export interface LookaroundAssertionNode extends NodeBase {
   type: "lookaroundAssertion"
-  val: {
+  value: {
     name: string
     kind: "lookahead" | "lookbehind"
     negate: boolean

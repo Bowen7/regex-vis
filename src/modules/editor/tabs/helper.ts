@@ -15,13 +15,13 @@ const getGroupInfo = (nodes: Node[]): Group | null => {
     return { type: "nonGroup" }
   }
   const node = nodes[0]
-  const type = node.type === "group" ? node.val.kind : "nonGroup"
-  return type === "namedCapturing" ? { type, name: node.val.name } : { type }
+  const type = node.type === "group" ? node.value.kind : "nonGroup"
+  return type === "namedCapturing" ? { type, name: node.value.name } : { type }
 }
 
 const getCharacterInfo = (nodes: Node[]): Character | null => {
   if (nodes.length === 1 && nodes[0].type === "character") {
-    return nodes[0].val
+    return nodes[0].value
   }
   return null
 }

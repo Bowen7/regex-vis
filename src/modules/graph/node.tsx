@@ -27,7 +27,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
     switch (node.type) {
       case "lookaroundAssertion":
       case "group":
-        if (node.val.kind === "nonCapturing") {
+        if (node.value.kind === "nonCapturing") {
           attrs.strokeDasharray = "4,4"
         }
         break

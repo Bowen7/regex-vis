@@ -63,7 +63,7 @@ export type Action =
     }
   | {
       type: ActionTypes.UPDATE_CHARACTER
-      payload: { val: Character }
+      payload: { value: Character }
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
@@ -170,9 +170,9 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_CHARACTER: {
       const { nodes, selectedIds } = state
-      const { val } = action.payload
+      const { value } = action.payload
       const id = selectedIds[0]
-      const nextNodes = character(nodes, id, val)
+      const nextNodes = character(nodes, id, value)
       return setNodes(state, nextNodes)
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {

@@ -219,7 +219,7 @@ class RenderEngine {
     let paddingTop = 0
     let paddingBottom = 0
 
-    const { val, branches, children } = node
+    const { value, branches, children } = node
 
     if (branches) {
       branches.forEach((nodes) => {
@@ -263,9 +263,9 @@ class RenderEngine {
     }
 
     // handle name
-    if ("name" in node || val?.name) {
-      const name = "name" in node ? node.name : val.name
-      const { namePrefix = "" } = val
+    if ("name" in node || value?.name) {
+      const name = "name" in node ? node.name : value.name
+      const { namePrefix = "" } = value
       const nameWidth =
         this.measureText(name + namePrefix, NAME_TEXT_FONTSIZE).width +
         NODE_PADDING_VERTICAL * 2

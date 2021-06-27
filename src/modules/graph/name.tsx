@@ -11,10 +11,10 @@ type NameProps = {
 }
 
 const NodeName: React.FC<NameProps> = React.memo(({ center, node, y }) => {
-  const { val } = node
-  if ("name" in node || val?.name) {
-    const name = "name" in node ? node.name : val.name
-    const { namePrefix = "" } = val
+  const { value } = node
+  if ("name" in node || value?.name) {
+    const name = "name" in node ? node.name : value.name
+    const { namePrefix = "" } = value
     return (
       <text
         x={center.x}

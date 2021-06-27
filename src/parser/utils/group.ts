@@ -17,7 +17,7 @@ export function group(
     const groupNode: GroupNode = {
       id: nanoid(),
       type: "group",
-      val: {
+      value: {
         kind: "capturing",
         name: "",
         namePrefix: "Group #",
@@ -38,20 +38,20 @@ function changeGroupType(
   type: GroupKind | "nonGroup",
   name?: string
 ) {
-  const { val } = selectedNode
+  const { value } = selectedNode
   switch (type) {
     case "nonGroup":
       return removeGroupWrap(nodes, selectedNode)
     case "capturing":
-      val.kind = "capturing"
+      value.kind = "capturing"
       break
     case "namedCapturing":
-      val.kind = "namedCapturing"
-      val.name = name
+      value.kind = "namedCapturing"
+      value.name = name
       break
     case "nonCapturing":
-      val.kind = "nonCapturing"
-      delete val.name
+      value.kind = "nonCapturing"
+      delete value.name
       break
     default:
       return []
@@ -68,8 +68,8 @@ function removeGroupWrap(nodes: Node[], selectNode: GroupNode) {
 function refreshGroupName(nodes: Node[]) {
   let groupIndex = 1
   visitTree(nodes, (node: Node) => {
-    if (node.type === "group" && node.val.kind === "capturing") {
-      node.val.name = groupIndex++ + ""
+    if (node.type === "group" && node.value.kind === "capturing") {
+      node.value.name = groupIndex++ + ""
     }
   })
 }

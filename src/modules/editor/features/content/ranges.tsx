@@ -21,7 +21,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
     dispatch({
       type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
-        val,
+        value: val,
       },
     })
   }
@@ -41,7 +41,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
     dispatch({
       type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
-        val,
+        value: val,
       },
     })
   }
@@ -57,7 +57,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
     dispatch({
       type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
-        val,
+        value: val,
       },
     })
   }
