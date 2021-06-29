@@ -83,5 +83,93 @@
       }
     },
     { "type": "root" }
+  ],
+  "/[-b]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "kind": "ranges",
+        "value": [
+          { "from": "-", "to": "-" },
+          { "from": "b", "to": "b" }
+        ],
+        "negate": false
+      }
+    },
+    { "type": "root" }
+  ],
+  "/[b-]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "kind": "ranges",
+        "value": [
+          { "from": "b", "to": "b" },
+          { "from": "-", "to": "-" }
+        ],
+        "negate": false
+      }
+    },
+    { "type": "root" }
+  ],
+  "/^a/": [
+    { "type": "root" },
+    {
+      "type": "boundaryAssertion",
+      "value": {
+        "kind": "start"
+      }
+    },
+    {
+      "type": "character",
+      "value": { "kind": "string", "value": "a" }
+    },
+    { "type": "root" }
+  ],
+  "/a$/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": { "kind": "string", "value": "a" }
+    },
+    {
+      "type": "boundaryAssertion",
+      "value": {
+        "kind": "end"
+      }
+    },
+    { "type": "root" }
+  ],
+  "/a\\b/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": { "kind": "string", "value": "a" }
+    },
+    {
+      "type": "boundaryAssertion",
+      "value": {
+        "kind": "word",
+        "negate": false
+      }
+    },
+    { "type": "root" }
+  ],
+  "/a\\B/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": { "kind": "string", "value": "a" }
+    },
+    {
+      "type": "boundaryAssertion",
+      "value": {
+        "kind": "word",
+        "negate": true
+      }
+    },
+    { "type": "root" }
   ]
 }
