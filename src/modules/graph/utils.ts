@@ -4,12 +4,12 @@ import {
   CharacterClassKey,
 } from "@/parser/utils/character-class"
 
-const AssertionNameMap = {
+const assertionNameMap = {
   start: "Start of line",
   end: "End of line",
   lookahead: ["Followed by:", "Not followed by"],
   lookbehind: ["Preceded by", "Not Preceded by"],
-  word: "",
+  word: ["WordBoundary", "NonWordBoundary"],
 }
 
 export const getName = (node: Node): string | null => {
@@ -29,11 +29,7 @@ export const getName = (node: Node): string | null => {
       return null
     case "lookaroundAssertion": {
       const { kind, negate } = node.value
-      return AssertionNameMap[kind][negate ? 1 : 0]
-    }
-    case "boundaryAssertion": {
-      const { kind } = node.value
-      return kind === "start" ? "Start of line" : "End of line"
+      return assertionNameMap[kind][negate ? 1 : 0]
     }
 
     default:
@@ -53,7 +49,13 @@ export const getTexts = (node: Node) => {
       }
       return [node.value.value]
     case "boundaryAssertion":
-      return node.value.negate ? ["NonWordBoundary"] : ["WordBoundary"]
+      if (node.value.kind === "word") {
+        const negate = node.value.negate
+        return [assertionNameMap.word[negate ? 1 : 0]]
+      } else {
+        const kind = node.value.kind
+        return [assertionNameMap[kind]]
+      }
     default:
       return null
   }

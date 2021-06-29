@@ -65,10 +65,12 @@ export interface ChoiceNode extends NodeBase {
 
 export interface BoundaryAssertionNode extends NodeBase {
   type: "boundaryAssertion"
-  value: {
-    kind: "start" | "end" | "word"
-    negate?: boolean
-  }
+  value:
+    | { kind: "start" | "end" }
+    | {
+        kind: "word"
+        negate?: boolean
+      }
 }
 
 export interface LookaroundAssertionNode extends NodeBase {
