@@ -3,8 +3,7 @@
     { "type": "root" },
     {
       "type": "character",
-      "value": { "type": "string", "value": "a" },
-      "texts": ["a"]
+      "value": { "kind": "string", "value": "a" }
     },
     { "type": "root" }
   ],
@@ -12,8 +11,7 @@
     { "type": "root" },
     {
       "type": "character",
-      "value": { "type": "string", "value": "abc" },
-      "texts": ["abc"]
+      "value": { "kind": "string", "value": "abc" }
     },
     { "type": "root" }
   ],
@@ -22,12 +20,67 @@
     {
       "type": "character",
       "value": {
-        "type": "ranges",
+        "kind": "ranges",
         "value": [{ "from": "a", "to": "b" }],
         "negate": false
-      },
-      "texts": ["a - b"],
-      "name": "One of "
+      }
+    },
+    { "type": "root" }
+  ],
+  "/[a]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "kind": "ranges",
+        "value": [{ "from": "a", "to": "a" }],
+        "negate": false
+      }
+    },
+    { "type": "root" }
+  ],
+  "/[a-bb-c]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "kind": "ranges",
+        "value": [
+          { "from": "a", "to": "b" },
+          { "from": "b", "to": "c" }
+        ],
+        "negate": false
+      }
+    },
+    { "type": "root" }
+  ],
+  "/[a-bc]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "kind": "ranges",
+        "value": [
+          { "from": "a", "to": "b" },
+          { "from": "c", "to": "c" }
+        ],
+        "negate": false
+      }
+    },
+    { "type": "root" }
+  ],
+  "/[^a-bc]/": [
+    { "type": "root" },
+    {
+      "type": "character",
+      "value": {
+        "kind": "ranges",
+        "value": [
+          { "from": "a", "to": "b" },
+          { "from": "c", "to": "c" }
+        ],
+        "negate": true
+      }
     },
     { "type": "root" }
   ]
