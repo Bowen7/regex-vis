@@ -119,6 +119,10 @@ const Graph: React.FC<Props> = ({
           stroke: ${palette.accents_6};
           stroke-width: 2px;
         }
+        .graph :global(.thin-stroke) {
+          stroke: ${palette.accents_6};
+          stroke-width: 1.5px;
+        }
         .graph :global(.second-stroke) {
           stroke: ${palette.accents_3};
           stroke-width: 2px;

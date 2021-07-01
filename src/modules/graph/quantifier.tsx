@@ -48,15 +48,15 @@ const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
     })`
     return (
       <>
-        <g fill="none" className="stroke" transform={transform}>
-          <path d="M17 1l4 4-4 4"></path>
+        <g fill="none" className="thin-stroke" transform={transform}>
+          <path d="M18 1l3 3-3 3"></path>
+          <path d="M6 15l-3-3 3-3"></path>
           <path
-            d="M3 11V9a4 4 0 014-4h14"
+            d="M3 9V7a3 3 0 0 13-3h14"
             strokeDasharray={strokeDasharray}
           ></path>
-          <path d="M7 19l-4-4 4-4"></path>
           <path
-            d="M21 9v2a4 4 0 01-4 4H3"
+            d="M21 7v2a3 3 0 0 1-3 3H3"
             strokeDasharray={strokeDasharray}
           ></path>
         </g>
