@@ -94,7 +94,13 @@ export const getTexts = (node: Node) => {
           ],
         ]
       }
-      return [[{ type: "text", text: node.value.value }]]
+      return [
+        [
+          { type: "backtick" },
+          { type: "text", text: node.value.value },
+          { type: "backtick" },
+        ],
+      ]
     case "boundaryAssertion":
       if (node.value.kind === "word") {
         const negate = node.value.negate
