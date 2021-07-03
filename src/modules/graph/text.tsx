@@ -14,13 +14,13 @@ type TextProps = {
 }
 
 const NodeText: React.FC<TextProps> = React.memo(({ x, y, node }) => {
-  const texts = getTexts(node)
+  let texts = getTexts(node)
   if (!texts) {
     return null
   }
   return (
     <>
-      {texts.map((text, index) => (
+      {texts.map((spans, index) => (
         <text
           x={x}
           y={y}
@@ -34,9 +34,27 @@ const NodeText: React.FC<TextProps> = React.memo(({ x, y, node }) => {
           className="text"
           key={index}
         >
-          <tspan className="quote">`</tspan>
-          <tspan>{text}</tspan>
-          <tspan className="quote">`</tspan>
+          {spans.map((span, index) => {
+            switch (span.type) {
+              case "backtick":
+                return (
+                  <tspan className="quote" key={index}>
+                    `
+                  </tspan>
+                )
+              case "text":
+                return <tspan key={index}>{span.text}</tspan>
+              case "hyphen":
+                return (
+                  <tspan className="quote" key={index}>
+                    {" - "}
+                  </tspan>
+                )
+
+              default:
+                return null
+            }
+          })}
         </text>
       ))}
     </>

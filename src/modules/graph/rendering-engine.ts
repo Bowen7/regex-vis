@@ -22,7 +22,7 @@ import {
 } from "@/constants/graph"
 import { font } from "@/constants/style"
 import { getQuantifierText } from "@/parser/utils/quantifier"
-import { getTexts, getName } from "./utils"
+import { getTextsWithBacktick, getName } from "./utils"
 
 type TextSize = { width: number; height: number }
 const textSizeMap = new Map<string, TextSize>()
@@ -180,13 +180,10 @@ class RenderEngine {
     }
   }
 
-  measureText(text: string, fontSize: number = 16, withBacktick = false) {
+  measureText(text: string, fontSize: number = 16) {
     const context = this.context
     if (!context) {
       return { width: 0, height: 0 }
-    }
-    if (withBacktick) {
-      text = "`" + text + "`"
     }
     const textFont = fontSize + "px " + font.family
     const key = textFont + "-" + text
@@ -200,9 +197,12 @@ class RenderEngine {
     return size
   }
 
-  measureTexts(texts: string[], fontSize: number = 16, withBacktick = false) {
+  measureTexts(texts: string[] | string, fontSize: number = 16) {
+    if (typeof texts === "string") {
+      return this.measureText(texts, fontSize)
+    }
     return texts
-      .map((text) => this.measureText(text, fontSize, withBacktick))
+      .map((text) => this.measureText(text, fontSize))
       .reduce(
         ({ width: prevWidth, height: prevHeight }, { width, height }) => ({
           width: Math.max(width, prevWidth),
@@ -221,7 +221,7 @@ class RenderEngine {
     let paddingBottom = 0
 
     const { value, branches, children } = node
-    const texts = getTexts(node)
+    const texts = getTextsWithBacktick(node)
 
     if (branches) {
       branches.forEach((nodes) => {
@@ -238,7 +238,7 @@ class RenderEngine {
       height += 2 * NODE_MARGIN_VERTICAL
       width += NODE_MARGIN_HORIZONTAL * 2
     } else if (texts) {
-      const size = this.measureTexts(texts, NODE_TEXT_FONTSIZE, true)
+      const size = this.measureTexts(texts, NODE_TEXT_FONTSIZE)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
     } else {
