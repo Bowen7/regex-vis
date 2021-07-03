@@ -8,9 +8,9 @@ import {
   LookaroundAssertionNode,
 } from "@/types"
 
-function gen(nodes: Node[]) {
+function gen(nodes: Node[], withSlash = false) {
   const isSingleNode = judgeSingleNode(nodes)
-  return nodes
+  const r = nodes
     .map((node) => {
       let regex = ""
       switch (node.type) {
@@ -41,6 +41,7 @@ function gen(nodes: Node[]) {
       return regex
     })
     .join("")
+  return withSlash ? `/${r}/` : r
 }
 
 function judgeSingleNode(nodes: Node[]) {
@@ -114,7 +115,7 @@ function genQuantifier(node: Node) {
   } else if (max === Infinity) {
     result = "{" + min + ",}"
   } else {
-    result = "{" + min + "-" + max + "}"
+    result = "{" + min + "," + max + "}"
   }
   return result + (greedy ? "" : "?")
 }
@@ -135,7 +136,7 @@ function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
 
 const LookaroundMap = {
   lookahead: ["(?=", "(?!"],
-  lookbehind: ["(?=<", "(?<!"],
+  lookbehind: ["(?<=", "(?<!"],
 }
 
 function genLookaroundAssertionNode(node: LookaroundAssertionNode) {
