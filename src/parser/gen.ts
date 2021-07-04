@@ -9,16 +9,12 @@ import {
 } from "@/types"
 
 function gen(nodes: Node[], withSlash = false) {
-  const isSingleNode = judgeSingleNode(nodes)
   const r = nodes
     .map((node) => {
       let regex = ""
       switch (node.type) {
         case "choice":
-          regex = genChoice(node) as string
-          if (!isSingleNode) {
-            regex = `(${regex})`
-          }
+          regex = genChoice(node)
           break
         case "group":
           regex += genGroup(node)
@@ -42,10 +38,6 @@ function gen(nodes: Node[], withSlash = false) {
     })
     .join("")
   return withSlash ? `/${r}/` : r
-}
-
-function judgeSingleNode(nodes: Node[]) {
-  return nodes.filter((node) => node.type !== "root").length === 1
 }
 
 function genChoice(node: ChoiceNode) {
