@@ -136,19 +136,21 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
             </>
           )}
         </Cell.Item>
-        <Cell.Item label="greedy">
-          <div className="greedy">
-            <Radio.Group
-              useRow
-              size="mini"
-              value={quantifier?.greedy ? "greedy" : "non-greedy"}
-              onChange={handleGreedyChange}
-            >
-              <Radio value="greedy">greedy</Radio>
-              <Radio value="non-greedy">non-greedy</Radio>
-            </Radio.Group>
-          </div>
-        </Cell.Item>
+        {kind !== "non" && (
+          <Cell.Item label="greedy">
+            <div className="greedy">
+              <Radio.Group
+                useRow
+                size="mini"
+                value={quantifier?.greedy ? "greedy" : "non-greedy"}
+                onChange={handleGreedyChange}
+              >
+                <Radio value="greedy">greedy</Radio>
+                <Radio value="non-greedy">non-greedy</Radio>
+              </Radio.Group>
+            </div>
+          </Cell.Item>
+        )}
       </Cell>
       <style jsx>{`
         .greedy :global(.name) {
