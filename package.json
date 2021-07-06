@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@geist-ui/react": "^2.1.3",
+    "@geist-ui/react": "^2.1.5",
     "@geist-ui/react-icons": "^1.0.1",
     "canvas": "^2.8.0",
     "immer": "^8.0.1",

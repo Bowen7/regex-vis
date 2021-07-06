@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Divider, Button } from "@geist-ui/react"
+import { Divider, ButtonDropdown } from "@geist-ui/react"
 import Characters from "../features/content"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -39,11 +39,17 @@ const InfoItem: React.FC<{}> = () => {
   return (
     <>
       <div className="container">
-        <Button onClick={() => handleInsert("prev")}>Insert before</Button>
-        <Button onClick={() => handleInsert("next")}>Insert after</Button>
-        <Button onClick={() => handleInsert("branch")}>
-          Insert as a branch
-        </Button>
+        <ButtonDropdown size="small">
+          <ButtonDropdown.Item main onClick={() => handleInsert("next")}>
+            Insert after
+          </ButtonDropdown.Item>
+          <ButtonDropdown.Item onClick={() => handleInsert("prev")}>
+            Insert before
+          </ButtonDropdown.Item>
+          <ButtonDropdown.Item onClick={() => handleInsert("branch")}>
+            Insert as a branch
+          </ButtonDropdown.Item>
+        </ButtonDropdown>
         <Divider />
         <Expression expression={expression} />
         {character && <Characters character={character} id={id} />}
