@@ -54,7 +54,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group, onGroupChange }) => {
         </Select>
         {group.kind === "namedCapturing" && (
           <>
-            <Spacer x={1} inline />
+            <Spacer y={0.5} />
             <Input label="The capture group's name" {...nameBindings} />
           </>
         )}

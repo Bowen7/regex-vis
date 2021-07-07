@@ -125,7 +125,7 @@ const Graph: React.FC<Props> = ({
         }
         .graph :global(.second-stroke) {
           stroke: ${palette.accents_3};
-          stroke-width: 2px;
+          stroke-width: 1.5px;
         }
         .graph :global(.text) {
           fill: ${palette.foreground};

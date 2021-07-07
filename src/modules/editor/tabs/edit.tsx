@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Divider, ButtonDropdown, useTheme } from "@geist-ui/react"
+import Cell from "@/components/cell"
 import Characters from "../features/content"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -41,17 +42,39 @@ const InfoItem: React.FC<{}> = () => {
   return (
     <>
       <div className="container">
-        <ButtonDropdown size="small">
-          <ButtonDropdown.Item main onClick={() => handleInsert("next")}>
-            Insert after
-          </ButtonDropdown.Item>
-          <ButtonDropdown.Item onClick={() => handleInsert("prev")}>
-            Insert before
-          </ButtonDropdown.Item>
-          <ButtonDropdown.Item onClick={() => handleInsert("branch")}>
-            Insert as a branch
-          </ButtonDropdown.Item>
-        </ButtonDropdown>
+        <Cell label="Insert a empty node">
+          <ButtonDropdown size="small">
+            <ButtonDropdown.Item main onClick={() => handleInsert("next")}>
+              Insert after
+            </ButtonDropdown.Item>
+            <ButtonDropdown.Item onClick={() => handleInsert("prev")}>
+              Insert before
+            </ButtonDropdown.Item>
+            <ButtonDropdown.Item onClick={() => handleInsert("branch")}>
+              Insert as a branch
+            </ButtonDropdown.Item>
+          </ButtonDropdown>
+        </Cell>
+        <Cell label="Wrap with a group">
+          <ButtonDropdown size="small">
+            <ButtonDropdown.Item
+              main
+              onClick={() => handleGroup("capturing", "")}
+            >
+              with a capturing group
+            </ButtonDropdown.Item>
+            <ButtonDropdown.Item
+              onClick={() => handleGroup("nonCapturing", "")}
+            >
+              with a non-capturing group
+            </ButtonDropdown.Item>
+            <ButtonDropdown.Item
+              onClick={() => handleGroup("namedCapturing", "")}
+            >
+              with a named-capturing group
+            </ButtonDropdown.Item>
+          </ButtonDropdown>
+        </Cell>
         <Divider />
         <Expression expression={expression} />
         {character && <Characters character={character} id={id} />}
