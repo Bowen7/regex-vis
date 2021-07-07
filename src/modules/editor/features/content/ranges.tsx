@@ -10,7 +10,7 @@ type Prop = {
 }
 const Ranges: React.FC<Prop> = ({ ranges }) => {
   const [, dispatch] = useMainReducer()
-  const { palette, layout } = useTheme()
+  const { palette } = useTheme()
 
   const addRange = (newRanges: Range[]) => {
     const val: RangesCharacter = {
@@ -74,26 +74,24 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
         ))}
       </div>
       <Cell.Item label="Create">
-        <div className="dropdown">
-          <ButtonDropdown size="small">
-            <ButtonDropdown.Item
-              main
-              onClick={() => addRange([{ from: "", to: "" }])}
-            >
-              A Hyphen Range
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              onClick={() => addRange([{ from: "a", to: "z" }])}
-            >
-              a-z
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              onClick={() => addRange([{ from: "A", to: "Z" }])}
-            >
-              A-Z
-            </ButtonDropdown.Item>
-          </ButtonDropdown>
-        </div>
+        <ButtonDropdown size="small">
+          <ButtonDropdown.Item
+            main
+            onClick={() => addRange([{ from: "", to: "" }])}
+          >
+            A Hyphen Range
+          </ButtonDropdown.Item>
+          <ButtonDropdown.Item
+            onClick={() => addRange([{ from: "a", to: "z" }])}
+          >
+            a - z
+          </ButtonDropdown.Item>
+          <ButtonDropdown.Item
+            onClick={() => addRange([{ from: "A", to: "Z" }])}
+          >
+            A - Z
+          </ButtonDropdown.Item>
+        </ButtonDropdown>
       </Cell.Item>
       <style jsx>{`
         h6 {
@@ -102,21 +100,6 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
 
         .range-options > :global(.range-wrapper:not(:first-child)) {
           margin-top: 12px;
-        }
-
-        .dropdown :global(.btn-dropdown > button) {
-          width: 186px;
-          min-width: unset;
-          padding: 0;
-          height: calc(1.687 * 16pt);
-        }
-
-        .dropdown :global(details) {
-          border-radius: 0 ${layout.radius} ${layout.radius} 0;
-        }
-
-        .dropdown :global(summary) {
-          height: calc(1.687 * 16pt);
         }
       `}</style>
     </>

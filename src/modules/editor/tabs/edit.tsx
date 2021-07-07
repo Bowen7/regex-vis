@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Divider, ButtonDropdown } from "@geist-ui/react"
+import { Divider, ButtonDropdown, useTheme } from "@geist-ui/react"
 import Characters from "../features/content"
 import Group from "../features/group"
 import Expression from "../features/expression"
@@ -12,6 +12,8 @@ import { useMainReducer, MainActionTypes } from "@/redux"
 export type InsertDirection = "prev" | "next" | "branch"
 
 const InfoItem: React.FC<{}> = () => {
+  const { layout } = useTheme()
+
   const [nodes, setNodes] = useState<Node[]>([])
   const [{ selectedIds, nodes: rootNodes }, dispatch] = useMainReducer()
 
@@ -66,6 +68,23 @@ const InfoItem: React.FC<{}> = () => {
 
         .container :global(h3) {
           font-size: 1.15rem;
+        }
+
+        .container :global(.btn-dropdown button) {
+          height: calc(1.687 * 16pt);
+        }
+
+        .container :global(.btn-dropdown > button) {
+          width: 186px;
+          min-width: unset;
+        }
+
+        .container :global(details) {
+          border-radius: 0 ${layout.radius} ${layout.radius} 0;
+        }
+
+        .container :global(summary) {
+          height: calc(1.687 * 16pt);
         }
       `}</style>
     </>
