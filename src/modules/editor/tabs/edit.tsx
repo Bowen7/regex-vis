@@ -61,17 +61,17 @@ const InfoItem: React.FC<{}> = () => {
               main
               onClick={() => handleGroup("capturing", "")}
             >
-              with a capturing group
+              Capturing group
             </ButtonDropdown.Item>
             <ButtonDropdown.Item
               onClick={() => handleGroup("nonCapturing", "")}
             >
-              with a non-capturing group
+              Non-capturing group
             </ButtonDropdown.Item>
             <ButtonDropdown.Item
               onClick={() => handleGroup("namedCapturing", "")}
             >
-              with a named-capturing group
+              Named-capturing group
             </ButtonDropdown.Item>
           </ButtonDropdown>
         </Cell>
