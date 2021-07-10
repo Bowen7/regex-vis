@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react"
 import { Divider, ButtonDropdown, useTheme } from "@geist-ui/react"
 import Cell from "@/components/cell"
-import Characters from "../features/content"
-import Group from "../features/group"
-import Expression from "../features/expression"
-import Quantifier from "../features/quantifier"
+import Characters from "../../features/content"
+import Group from "../../features/group"
+import Expression from "../../features/expression"
+import Quantifier from "../../features/quantifier"
 import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
 import { GroupKind, NodesInfo, Node } from "@/types"
 import { getNodesByIds } from "@/parser/visit"
@@ -25,7 +25,8 @@ const InfoItem: React.FC<{}> = () => {
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
-  const { id, expression, group, character, quantifier } = nodesInfo
+  const { id, expression, group, character, quantifier, showQuantifier } =
+    nodesInfo
 
   const handleInsert = (direction: InsertDirection) =>
     dispatch({ type: MainActionTypes.INSERT, payload: { direction } })
@@ -55,7 +56,7 @@ const InfoItem: React.FC<{}> = () => {
             </ButtonDropdown.Item>
           </ButtonDropdown>
         </Cell>
-        <Cell label="Wrap with a group">
+        {/* <Cell label="Wrap with a group">
           <ButtonDropdown size="small">
             <ButtonDropdown.Item
               main
@@ -74,12 +75,12 @@ const InfoItem: React.FC<{}> = () => {
               Named-capturing group
             </ButtonDropdown.Item>
           </ButtonDropdown>
-        </Cell>
+        </Cell> */}
         <Divider />
         <Expression expression={expression} />
         {character && <Characters character={character} id={id} />}
         {group && <Group group={group} onGroupChange={handleGroup} />}
-        <Quantifier quantifier={quantifier} />
+        {showQuantifier && <Quantifier quantifier={quantifier} />}
       </div>
       <style jsx>{`
         .container {
@@ -95,11 +96,6 @@ const InfoItem: React.FC<{}> = () => {
 
         .container :global(.btn-dropdown button) {
           height: calc(1.687 * 16pt);
-        }
-
-        .container :global(.btn-dropdown > button) {
-          width: 186px;
-          min-width: unset;
         }
 
         .container :global(details) {

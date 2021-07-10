@@ -7,16 +7,17 @@ export const genInitialNodesInfo = (): NodesInfo => ({
   group: null,
   character: null,
   quantifier: null,
+  showQuantifier: false,
   id: "",
 })
 
-const getGroupInfo = (nodes: Node[]): Group | null => {
+const getGroupInfo = (nodes: Node[]): Group => {
   if (nodes.length !== 1) {
-    return null
+    return { kind: "nonGroup" }
   }
   const node = nodes[0]
   if (node.type !== "group") {
-    return null
+    return { kind: "nonGroup" }
   }
   const kind = node.value.kind
   if (node.value.kind === "namedCapturing" || node.value.kind === "capturing") {
@@ -32,11 +33,18 @@ const getCharacterInfo = (nodes: Node[]): Character | null => {
   return null
 }
 
-const getQuantifierInfo = (nodes: Node[]): Quantifier | null => {
+const getQuantifierInfo = (
+  nodes: Node[]
+): { quantifier: Quantifier | null; showQuantifier: boolean } => {
+  let quantifier = null
+  let showQuantifier = false
   if (nodes.length === 1 && nodes[0].quantifier) {
-    return nodes[0].quantifier
+    quantifier = nodes[0].quantifier
   }
-  return null
+  if (nodes.length === 1 && !["choice", "root"].includes(nodes[0].type)) {
+    showQuantifier = true
+  }
+  return { quantifier, showQuantifier }
 }
 
 const getId = (nodes: Node[]): string => {
@@ -52,5 +60,5 @@ export function getInfoFromNodes(nodes: Node[]): NodesInfo {
   const character = getCharacterInfo(nodes)
   const quantifier = getQuantifierInfo(nodes)
   const id = getId(nodes)
-  return { id, expression, group, character, quantifier }
+  return { id, expression, group, character, ...quantifier }
 }

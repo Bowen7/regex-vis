@@ -154,4 +154,5 @@ export type NodesInfo = {
   group: Group | null
   character: Character | null
   quantifier: Quantifier | null
+  showQuantifier: boolean
 }
