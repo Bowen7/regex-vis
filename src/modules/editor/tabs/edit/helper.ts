@@ -6,8 +6,7 @@ export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
   group: null,
   character: null,
-  quantifier: null,
-  showQuantifier: false,
+  quantifier: undefined,
   id: "",
 })
 
@@ -33,18 +32,15 @@ const getCharacterInfo = (nodes: Node[]): Character | null => {
   return null
 }
 
-const getQuantifierInfo = (
-  nodes: Node[]
-): { quantifier: Quantifier | null; showQuantifier: boolean } => {
+const getQuantifierInfo = (nodes: Node[]): Quantifier | null | undefined => {
   let quantifier = null
-  let showQuantifier = false
-  if (nodes.length === 1 && nodes[0].quantifier) {
+
+  if (nodes.length === 1 && !["choice", "root"].includes(nodes[0].type)) {
+    quantifier = undefined
+  } else if (nodes.length === 1 && nodes[0].quantifier) {
     quantifier = nodes[0].quantifier
   }
-  if (nodes.length === 1 && !["choice", "root"].includes(nodes[0].type)) {
-    showQuantifier = true
-  }
-  return { quantifier, showQuantifier }
+  return quantifier
 }
 
 const getId = (nodes: Node[]): string => {
@@ -60,5 +56,5 @@ export function getInfoFromNodes(nodes: Node[]): NodesInfo {
   const character = getCharacterInfo(nodes)
   const quantifier = getQuantifierInfo(nodes)
   const id = getId(nodes)
-  return { id, expression, group, character, ...quantifier }
+  return { id, expression, group, character, quantifier }
 }

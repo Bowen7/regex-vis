@@ -1,8 +1,8 @@
 import React from "react"
-// import RangeOption from "@/components/range-option"
-// import { Range } from "@/types"
+import parse from "@/parser/parse_new"
 const Playground: React.FC<{}> = () => {
-  // const [range, setRange] = useState<Range>({ from: "", to: "" })
+  const re = parse("/(a|bc)(?<n>12)/u")
+  console.log(re)
   return <>{/* <RangeOption range={range} /> */}</>
 }
 export default Playground

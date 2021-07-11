@@ -1,7 +1,32 @@
-export type Pos = {
-  x: number
-  y: number
+export type Regex = {
+  type: "regex"
+  body: Node[]
+  flags: Flag[]
 }
+
+export type RegexError = {
+  type: "error"
+  message: string
+}
+
+export type Flag = {
+  kind:
+    | "hasIndices"
+    | "global"
+    | "ignoreCase"
+    | "multiline"
+    | "dotAll"
+    | "unicode"
+    | "sticky"
+}
+
+export type Node =
+  | CharacterNode
+  | GroupNode
+  | ChoiceNode
+  | RootNode
+  | BoundaryAssertionNode
+  | LookaroundAssertionNode
 
 export type Quantifier = {
   kind: "?" | "*" | "+" | "custom"
@@ -85,14 +110,6 @@ export interface RootNode extends NodeBase {
   type: "root"
 }
 
-export type Node =
-  | CharacterNode
-  | GroupNode
-  | ChoiceNode
-  | RootNode
-  | BoundaryAssertionNode
-  | LookaroundAssertionNode
-
 export type NodeType =
   | "character"
   | "root"
@@ -100,58 +117,3 @@ export type NodeType =
   | "group"
   | "edgeAssertion"
   | "lookaroundAssertion"
-
-export type Size = {
-  width: number
-  height: number
-  offsetWidth: number
-  offsetHeight: number
-}
-
-export type Box = {
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-export type RenderConnect = {
-  type: "connect"
-  id: string
-  start: {
-    x: number
-    y: number
-  }
-  end: {
-    x: number
-    y: number
-  }
-}
-
-export type RenderNode = {
-  type: "node"
-  id: string
-  children: (RenderNode | RenderConnect | RenderVirtualNode)[]
-  x: number
-  y: number
-  width: number
-  height: number
-  target: Node
-}
-
-export type RenderVirtualNode = {
-  type: "virtual"
-  children: (RenderNode | RenderConnect | RenderVirtualNode)[]
-  x: number
-  y: number
-  width: number
-  height: number
-}
-
-export type NodesInfo = {
-  id: string
-  expression: string
-  group: Group | null
-  character: Character | null
-  quantifier: Quantifier | null | undefined
-}
