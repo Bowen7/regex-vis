@@ -67,12 +67,20 @@ class Parser {
     return true
   }
 
+  private cur(advance = 0) {
+    return this.regex[this.index + advance]
+  }
+
   private consume(endPoint: string) {
     do {
-      switch (this.regex[this.index]) {
+      switch (this.cur()) {
         case endPoint:
           return
         case "{":
+        case "?":
+        case "*":
+        case "+":
+          this.consumeQuantifier()
           break
         case "(":
           this.onGroup()
@@ -81,6 +89,81 @@ class Parser {
           break
       }
     } while (this.advance())
+  }
+
+  private consumeQuantifier() {
+    let quantifier: AST.Quantifier
+    switch (this.cur()) {
+      case "?":
+        quantifier = { kind: "?", min: 0, max: 1, greedy: true }
+        this.advance()
+        break
+      case "*":
+        quantifier = { kind: "*", min: 0, max: Infinity, greedy: true }
+        this.advance()
+        break
+      case "+":
+        quantifier = { kind: "+", min: 1, max: Infinity, greedy: true }
+        this.advance()
+        break
+      case "{":
+        const min = this.eat("\\d+", "", 1)
+        if (!min) {
+          break
+        }
+        if (this.cur(min.length + 1) === "}") {
+          quantifier = {
+            kind: "custom",
+            min: parseInt(min),
+            max: parseInt(min),
+            greedy: true,
+          }
+          this.advance(min.length + 2)
+          break
+        }
+
+        const comma = this.eat(",", "", min.length + 1)
+        if (comma) {
+          if (this.cur(min.length + 2) === "}") {
+            quantifier = {
+              kind: "custom",
+              min: parseInt(min),
+              max: Infinity,
+              greedy: true,
+            }
+            this.advance(min.length + 3)
+            break
+          }
+        }
+
+        const max = this.eat("\\d+", "", 1)
+        if (!max) {
+          break
+        }
+        if (this.cur(min.length + 1) === "}") {
+          quantifier = {
+            kind: "custom",
+            min: parseInt(min),
+            max: parseInt(max),
+            greedy: true,
+          }
+          this.advance(min.length + max.length + 3)
+        }
+        break
+      default:
+        break
+    }
+
+    if (quantifier! && this.cur() === "?") {
+      quantifier!.greedy = false
+      this.advance()
+    }
+
+    if (quantifier!) {
+      this.prev.quantifier = quantifier!
+      return true
+    }
+    return false
   }
 
   private appendChild(node: AST.Node) {
@@ -140,12 +223,22 @@ class Parser {
     }
   }
 
-  private eat(startPoint: string, endPoint: string = ""): string | boolean {
+  private eat(
+    startPoint: string,
+    endPoint: string = "",
+    advance = 0
+  ): string | false {
     if (!endPoint) {
-      return new RegExp(`^${startPoint}`).test(this.regex[this.index])
+      const match = this.regex
+        .slice(this.index + advance)
+        .match(new RegExp(`^${startPoint}`))
+      if (match) {
+        return match[0]
+      }
+      return false
     }
     const match = this.regex
-      .slice(this.index)
+      .slice(this.index + advance)
       .match(new RegExp(`^${startPoint}(.*)${endPoint}`))
 
     if (match) {
@@ -178,8 +271,10 @@ class Parser {
       children: [],
       value: group!,
     }
-
     this.appendChild(groupNode)
+
+    this.consume(")")
+    this.prev = groupNode
   }
 }
 
