@@ -9,6 +9,15 @@ export type RegexError = {
   message: string
 }
 
+export type FlagShortKind = "d" | "g" | "i" | "m" | "s" | "u" | "y"
+export type FlagKind =
+  | "hasIndices"
+  | "global"
+  | "ignoreCase"
+  | "multiline"
+  | "dotAll"
+  | "unicode"
+  | "sticky"
 export type Flag = {
   kind:
     | "hasIndices"
@@ -20,14 +29,6 @@ export type Flag = {
     | "sticky"
 }
 
-export type Node =
-  | CharacterNode
-  | GroupNode
-  | ChoiceNode
-  | RootNode
-  | BoundaryAssertionNode
-  | LookaroundAssertionNode
-
 export type Quantifier = {
   kind: "?" | "*" | "+" | "custom"
   min: number
@@ -35,80 +36,121 @@ export type Quantifier = {
   greedy: boolean
 }
 
-export type StringCharacter = {
+export interface NodeBase {
+  id: string
+  type: string
+}
+
+export interface StringCharacterNode extends NodeBase {
+  type: "character"
   kind: "string"
   value: string
+  quantifier: Quantifier | null
 }
 
 export type Range = {
   from: string
   to: string
 }
-export type RangesCharacter = {
+export interface RangesCharacterNode extends NodeBase {
+  type: "character"
   kind: "ranges"
-  value: Range[]
+  ranges: Range[]
   negate: boolean
+  quantifier: Quantifier | null
 }
 
-export type ClassCharacter = {
+export interface ClassCharacterNode extends NodeBase {
+  type: "character"
   kind: "class"
   value: string
+  quantifier: Quantifier | null
 }
 
-export type Character = StringCharacter | RangesCharacter | ClassCharacter
-
-export interface NodeBase {
-  id: string
-  type: string
-  quantifier?: Quantifier
-  children?: Node[]
-  branches?: Node[][]
-  value?: any
-}
-
-export interface CharacterNode extends NodeBase {
-  type: "character"
-  value: Character
-}
+export type CharacterNode =
+  | StringCharacterNode
+  | RangesCharacterNode
+  | ClassCharacterNode
 
 export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"
 
 export type Group =
   | {
-      kind: "nonCapturing" | "nonGroup"
+      kind: "nonCapturing"
     }
   | { kind: "namedCapturing" | "capturing"; name: string }
 
-export interface GroupNode extends NodeBase {
+export interface NonCapturingGroupNode extends NodeBase {
   type: "group"
-  value: Group
+  kind: "nonCapturing"
+  children: Node[]
+  quantifier: Quantifier | null
 }
+
+export interface NamedCapturingGroupNode extends NodeBase {
+  type: "group"
+  kind: "namedCapturing"
+  children: Node[]
+  name: string
+  quantifier: Quantifier | null
+}
+
+export interface CapturingGroupNode extends NodeBase {
+  type: "group"
+  kind: "capturing"
+  children: Node[]
+  name: string
+  quantifier: Quantifier | null
+}
+
+export type GroupNode =
+  | NonCapturingGroupNode
+  | NamedCapturingGroupNode
+  | CapturingGroupNode
 
 export interface ChoiceNode extends NodeBase {
   type: "choice"
+  branches: Node[][]
 }
 
-export interface BoundaryAssertionNode extends NodeBase {
+export interface BeginningBoundaryAssertionNode extends NodeBase {
   type: "boundaryAssertion"
-  value:
-    | { kind: "start" | "end" }
-    | {
-        kind: "word"
-        negate?: boolean
-      }
+  kind: "beginning"
+}
+export interface EndBoundaryAssertionNode extends NodeBase {
+  type: "boundaryAssertion"
+  kind: "end"
 }
 
-export interface LookaroundAssertionNode extends NodeBase {
-  type: "lookaroundAssertion"
-  value: {
-    kind: "lookahead" | "lookbehind"
-    negate: boolean
-  }
+export interface WordBoundaryAssertionNode extends NodeBase {
+  type: "boundaryAssertion"
+  kind: "word"
+  negate: boolean
 }
+
+export interface LookAroundAssertionNode extends NodeBase {
+  type: "lookAroundAssertion"
+  kind: "lookahead" | "lookbehind"
+  negate: boolean
+  children: Node[]
+}
+
+export type AssertionNode =
+  | BeginningBoundaryAssertionNode
+  | EndBoundaryAssertionNode
+  | WordBoundaryAssertionNode
+  | LookAroundAssertionNode
 
 export interface RootNode extends NodeBase {
   type: "root"
 }
+
+export type Node =
+  | CharacterNode
+  | GroupNode
+  | ChoiceNode
+  | RootNode
+  | AssertionNode
 
 export type NodeType =
   | "character"
@@ -116,4 +158,4 @@ export type NodeType =
   | "choice"
   | "group"
   | "edgeAssertion"
-  | "lookaroundAssertion"
+  | "lookAroundAssertion"

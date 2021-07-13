@@ -23,42 +23,6 @@ const tests = {
     type: "error",
     message: "Invalid regular expression: /(?!foo/: Unterminated group",
   },
-  "/(?=a)*/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a)*/: Nothing to repeat",
-  },
-  "/(?=a)+/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a)+/: Nothing to repeat",
-  },
-  "/(?=a)?/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a)?/: Nothing to repeat",
-  },
-  "/(?=a){/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a){/: Lone quantifier brackets",
-  },
-  "/(?=a){}/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a){}/: Lone quantifier brackets",
-  },
-  "/(?=a){a}/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a){a}/: Lone quantifier brackets",
-  },
-  "/(?=a){1}/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a){1}/: Nothing to repeat",
-  },
-  "/(?=a){1,}/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a){1,}/: Nothing to repeat",
-  },
-  "/(?=a){1,2}/u": {
-    type: "error",
-    message: "Invalid regular expression: /(?=a){1,2}/: Nothing to repeat",
-  },
   "/a{/u": {
     type: "error",
     message: "Invalid regular expression: /a{/: Incomplete quantifier",
@@ -221,11 +185,11 @@ const tests = {
   },
   "/\\c1/u": {
     type: "error",
-    message: "Invalid regular expression: /\\c1/: Invalid escape",
+    message: "Invalid regular expression: /\\c1/: Invalid Unicode escape",
   },
   "/\\c/u": {
     type: "error",
-    message: "Invalid regular expression: /\\c/: Invalid escape",
+    message: "Invalid regular expression: /\\c/: Invalid Unicode escape",
   },
   "/\\u/u": {
     type: "error",
@@ -284,11 +248,11 @@ const tests = {
   },
   "/[\\c1]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\c1]/: Invalid escape",
+    message: "Invalid regular expression: /[\\c1]/: Invalid class escape",
   },
   "/[\\c]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\c]/: Invalid escape",
+    message: "Invalid regular expression: /[\\c]/: Invalid class escape",
   },
   "/[\\x]/u": {
     type: "error",
@@ -337,15 +301,15 @@ const tests = {
   },
   "/[\\77]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\77]/: Invalid escape",
+    message: "Invalid regular expression: /[\\77]/: Invalid class escape",
   },
   "/[\\377]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\377]/: Invalid escape",
+    message: "Invalid regular expression: /[\\377]/: Invalid class escape",
   },
   "/[\\400]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\400]/: Invalid escape",
+    message: "Invalid regular expression: /[\\400]/: Invalid class escape",
   },
   "/[\\a]/u": {
     type: "error",
@@ -441,15 +405,16 @@ const tests = {
   },
   "/[\\c-a]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\c-a]/: Invalid escape",
+    message: "Invalid regular expression: /[\\c-a]/: Invalid class escape",
   },
   "/[\\c0-\u001f]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\c0-\u001f]/: Invalid escape",
+    message:
+      "Invalid regular expression: /[\\c0-\u001f]/: Invalid class escape",
   },
   "/[\\c_]/u": {
     type: "error",
-    message: "Invalid regular expression: /[\\c_]/: Invalid escape",
+    message: "Invalid regular expression: /[\\c_]/: Invalid class escape",
   },
   "/[🌸-🌷]/u": {
     type: "error",
@@ -459,7 +424,7 @@ const tests = {
   "/[\\d][\\12-\\14]{1,}[^\\d]/u": {
     type: "error",
     message:
-      "Invalid regular expression: /[\\d][\\12-\\14]{1,}[^\\d]/: Invalid escape",
+      "Invalid regular expression: /[\\d][\\12-\\14]{1,}[^\\d]/: Invalid class escape",
   },
 }
 

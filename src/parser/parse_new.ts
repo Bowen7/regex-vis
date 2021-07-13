@@ -1,15 +1,24 @@
 import { nanoid } from "nanoid"
 import * as AST from "./ast"
 
+const flagDict = {
+  d: "hasIndices",
+  g: "global",
+  i: "ignoreCase",
+  m: "multiline",
+  s: "dotAll",
+  u: "unicode",
+  y: "sticky",
+}
 class Parser {
   regex: string
   message: string = ""
   index = 0
-  groupStack = []
   ast: AST.Regex = { type: "regex", body: [], flags: [] }
   parent!: AST.Regex | AST.Node
   prev!: AST.Node
   groupIndex = 1
+  flagSet: Set<AST.FlagShortKind> = new Set()
   constructor(regex: string) {
     this.regex = regex.trim()
   }
@@ -49,6 +58,7 @@ class Parser {
           this.message = "Invalid regular expression flags"
           return false
         }
+        this.flagSet.add(this.regex[i] as AST.FlagShortKind)
       }
 
       new RegExp(this.regex.slice(start + 1, end), this.regex.slice(end + 1))
@@ -160,7 +170,11 @@ class Parser {
     }
 
     if (quantifier!) {
-      this.prev.quantifier = quantifier!
+      if (this.prev.type === "character" || this.prev.type === "group") {
+        this.prev.quantifier = quantifier!
+      } else {
+        // TODO: error handling
+      }
       return true
     }
     return false
@@ -171,10 +185,13 @@ class Parser {
       this.parent.body.push(node)
       return
     }
-    if (this.parent.children) {
+    if (
+      this.parent.type === "group" ||
+      this.parent.type === "lookAroundAssertion"
+    ) {
       this.parent.children.push(node)
     }
-    if (this.parent.branches) {
+    if (this.parent.type === "choice") {
       const { branches } = this.parent
       branches[branches.length - 1].push(node)
     }
@@ -192,35 +209,9 @@ class Parser {
   }
 
   private onFlags() {
-    for (let i = 0; i < this.regex.length; i++) {
-      const f = this.regex[i]
-      switch (f) {
-        case "d":
-          this.ast.flags.push({ kind: "hasIndices" })
-          break
-        case "g":
-          this.ast.flags.push({ kind: "global" })
-          break
-        case "i":
-          this.ast.flags.push({ kind: "ignoreCase" })
-          break
-        case "m":
-          this.ast.flags.push({ kind: "multiline" })
-          break
-        case "s":
-          this.ast.flags.push({ kind: "dotAll" })
-          break
-        case "u":
-          this.ast.flags.push({ kind: "unicode" })
-          break
-        case "y":
-          this.ast.flags.push({ kind: "sticky" })
-          break
-
-        default:
-          break
-      }
-    }
+    this.flagSet.forEach((flag) => {
+      this.ast.flags.push({ kind: flagDict[flag] as AST.FlagKind })
+    })
   }
 
   private eat(
@@ -269,7 +260,8 @@ class Parser {
       id: nanoid(),
       type: "group",
       children: [],
-      value: group!,
+      ...group!,
+      quantifier: null,
     }
     this.appendChild(groupNode)
 
