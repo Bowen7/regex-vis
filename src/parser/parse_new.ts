@@ -15,8 +15,12 @@ class Parser {
   message: string = ""
   index = 0
   ast: AST.Regex = { type: "regex", body: [], flags: [] }
-  parent!: AST.Regex | AST.Node
-  prev!: AST.Node
+  parent!:
+    | AST.Regex
+    | AST.ChoiceNode
+    | AST.GroupNode
+    | AST.LookAroundAssertionNode
+  prev: AST.Regex | AST.Node | null = null
   groupIndex = 1
   flagSet: Set<AST.FlagShortKind> = new Set()
   constructor(regex: string) {
@@ -95,10 +99,56 @@ class Parser {
         case "(":
           this.onGroup()
           break
+        case "|":
+          this.onChoice()
+          break
         default:
+          this.onStringCharacter()
           break
       }
     } while (this.advance())
+  }
+
+  private onChoice() {
+    if (this.parent.type === "choice") {
+      this.parent.branches.push([])
+      return
+    }
+    const branch =
+      this.parent.type === "regex" ? this.parent.body : this.parent.children
+
+    const choiceNode: AST.ChoiceNode = {
+      id: nanoid(),
+      type: "choice",
+      branches: [branch, []],
+    }
+
+    if (this.parent.type === "regex") {
+      this.parent.body = [choiceNode]
+    } else {
+      this.parent.children = [choiceNode]
+    }
+    this.parent = choiceNode
+    this.prev = null
+  }
+
+  private onStringCharacter() {
+    if (
+      this.prev &&
+      this.prev.type === "character" &&
+      this.prev.kind === "string"
+    ) {
+      this.prev.value += this.cur()
+    } else {
+      const node: AST.StringCharacterNode = {
+        id: nanoid(),
+        type: "character",
+        kind: "string",
+        value: this.cur(),
+        quantifier: null,
+      }
+      this.appendChild(node)
+    }
   }
 
   private consumeQuantifier() {
@@ -106,15 +156,12 @@ class Parser {
     switch (this.cur()) {
       case "?":
         quantifier = { kind: "?", min: 0, max: 1, greedy: true }
-        this.advance()
         break
       case "*":
         quantifier = { kind: "*", min: 0, max: Infinity, greedy: true }
-        this.advance()
         break
       case "+":
         quantifier = { kind: "+", min: 1, max: Infinity, greedy: true }
-        this.advance()
         break
       case "{":
         const min = this.eat("\\d+", "", 1)
@@ -128,7 +175,7 @@ class Parser {
             max: parseInt(min),
             greedy: true,
           }
-          this.advance(min.length + 2)
+          this.advance(min.length + 1)
           break
         }
 
@@ -141,7 +188,7 @@ class Parser {
               max: Infinity,
               greedy: true,
             }
-            this.advance(min.length + 3)
+            this.advance(min.length + 2)
             break
           }
         }
@@ -157,20 +204,23 @@ class Parser {
             max: parseInt(max),
             greedy: true,
           }
-          this.advance(min.length + max.length + 3)
+          this.advance(min.length + max.length + 2)
         }
         break
       default:
         break
     }
 
-    if (quantifier! && this.cur() === "?") {
+    if (quantifier! && this.cur(1) === "?") {
       quantifier!.greedy = false
       this.advance()
     }
 
     if (quantifier!) {
-      if (this.prev.type === "character" || this.prev.type === "group") {
+      if (
+        this.prev &&
+        (this.prev.type === "character" || this.prev.type === "group")
+      ) {
         this.prev.quantifier = quantifier!
       } else {
         // TODO: error handling
@@ -180,25 +230,27 @@ class Parser {
     return false
   }
 
-  private appendChild(node: AST.Node) {
-    if (this.parent.type === "regex") {
-      this.parent.body.push(node)
+  private appendChild(
+    node: AST.Node,
+    parent: AST.Node | AST.Regex = this.parent
+  ) {
+    this.prev = node
+    if (parent.type === "regex") {
+      parent.body.push(node)
       return
     }
-    if (
-      this.parent.type === "group" ||
-      this.parent.type === "lookAroundAssertion"
-    ) {
-      this.parent.children.push(node)
+    if (parent.type === "group" || parent.type === "lookAroundAssertion") {
+      parent.children.push(node)
     }
-    if (this.parent.type === "choice") {
-      const { branches } = this.parent
+    if (parent.type === "choice") {
+      const { branches } = parent
       branches[branches.length - 1].push(node)
     }
   }
 
   private onRegex() {
     this.parent = this.ast
+    this.prev = this.ast
     this.onRegexBody()
     this.onFlags()
   }
@@ -263,10 +315,13 @@ class Parser {
       ...group!,
       quantifier: null,
     }
-    this.appendChild(groupNode)
 
+    const parent = this.parent
+    this.parent = groupNode
     this.consume(")")
-    this.prev = groupNode
+    this.parent = parent
+
+    this.appendChild(groupNode, parent)
   }
 }
 
