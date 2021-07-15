@@ -22,6 +22,7 @@ class Parser {
     | AST.LookAroundAssertionNode
   prev: AST.Regex | AST.Node | null = null
   groupIndex = 1
+  escaped = false
   flagSet: Set<AST.FlagShortKind> = new Set()
   constructor(regex: string) {
     this.regex = regex.trim()
@@ -85,26 +86,134 @@ class Parser {
     return this.regex[this.index + advance]
   }
 
+  private onEscape() {
+    const cur = this.cur()
+    this.escaped = false
+    switch (cur) {
+      case "d":
+      case "D":
+      case "w":
+      case "W":
+      case "s":
+      case "S":
+      case "t":
+      case "r":
+      case "n":
+      case "v":
+      case "f":
+      case "0":
+        this.appendChild({
+          id: nanoid(),
+          type: "character",
+          kind: "class",
+          value: `\\${cur}`,
+          raw: `\\${cur}`,
+          quantifier: null,
+        })
+        break
+      // \cX
+      case "c":
+        const X = this.eat("[A-Z]")
+        if (X) {
+          this.appendChild({
+            id: nanoid(),
+            type: "character",
+            kind: "class",
+            value: "\\cX",
+            raw: `\\c${X}`,
+            quantifier: null,
+          })
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      // \xhh
+      case "x":
+        const hh = this.eat("[0-9A-Fa-f]{2}")
+        if (hh) {
+          this.appendChild({
+            id: nanoid(),
+            type: "character",
+            kind: "class",
+            value: "\\xhh",
+            raw: `\\x${hh}`,
+            quantifier: null,
+          })
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      // \uhhhh
+      case "u":
+        const hhhh = this.eat("[0-9A-Fa-f]{4}")
+        if (hhhh) {
+          this.appendChild({
+            id: nanoid(),
+            type: "character",
+            kind: "class",
+            value: "\\uhhhh",
+            raw: `\\u${hhhh}`,
+            quantifier: null,
+          })
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      default:
+        // back reference
+        const groupName = this.eat("\\d+")
+        if (groupName) {
+          this.appendChild({
+            id: nanoid(),
+            type: "backReference",
+            name: groupName,
+          })
+          this.advance(groupName.length - 1)
+          break
+        }
+        this.onStringCharacter()
+        break
+    }
+  }
+
   private consume(endPoint: string) {
     do {
-      switch (this.cur()) {
-        case endPoint:
-          return
-        case "{":
-        case "?":
-        case "*":
-        case "+":
-          this.consumeQuantifier()
-          break
-        case "(":
-          this.onGroup()
-          break
-        case "|":
-          this.onChoice()
-          break
-        default:
-          this.onStringCharacter()
-          break
+      if (this.escaped) {
+        this.onEscape()
+      } else {
+        switch (this.cur()) {
+          case endPoint:
+            return
+          case "{":
+          case "?":
+          case "*":
+          case "+":
+            this.consumeQuantifier()
+            break
+          case "(":
+            this.onGroup()
+            break
+          case "|":
+            this.onChoice()
+            break
+          case ".":
+            this.appendChild({
+              id: nanoid(),
+              type: "character",
+              kind: "class",
+              value: ".",
+              raw: ".",
+              quantifier: null,
+            })
+            break
+          case "\\":
+            this.escaped = true
+            break
+          // TODO: range includes [\b]
+          default:
+            this.onStringCharacter()
+            break
+        }
       }
     } while (this.advance())
   }

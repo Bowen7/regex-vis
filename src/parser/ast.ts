@@ -64,6 +64,7 @@ export interface ClassCharacterNode extends NodeBase {
   type: "character"
   kind: "class"
   value: string
+  raw: string
   quantifier: Quantifier | null
 }
 
@@ -141,6 +142,11 @@ export type AssertionNode =
   | WordBoundaryAssertionNode
   | LookAroundAssertionNode
 
+export interface BackReferenceNode extends NodeBase {
+  type: "backReference"
+  name: string
+}
+
 export interface RootNode extends NodeBase {
   type: "root"
 }
@@ -151,11 +157,4 @@ export type Node =
   | ChoiceNode
   | RootNode
   | AssertionNode
-
-export type NodeType =
-  | "character"
-  | "root"
-  | "choice"
-  | "group"
-  | "edgeAssertion"
-  | "lookAroundAssertion"
+  | BackReferenceNode
