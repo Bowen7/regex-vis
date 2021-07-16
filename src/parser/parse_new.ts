@@ -10,6 +10,19 @@ const flagDict = {
   u: "unicode",
   y: "sticky",
 }
+
+const lookAroundDict: {
+  "?=": AST.LookAround
+  "?!": AST.LookAround
+  "?<=": AST.LookAround
+  "?<!": AST.LookAround
+} = {
+  "?=": { kind: "lookahead", negate: false },
+  "?!": { kind: "lookahead", negate: true },
+  "?<=": { kind: "lookbehind", negate: false },
+  "?<!": { kind: "lookbehind", negate: true },
+}
+
 class Parser {
   regex: string
   message: string = ""
@@ -20,6 +33,7 @@ class Parser {
     | AST.ChoiceNode
     | AST.GroupNode
     | AST.LookAroundAssertionNode
+    | AST.RangesCharacterNode
   prev: AST.Regex | AST.Node | null = null
   groupIndex = 1
   escaped = false
@@ -107,8 +121,16 @@ class Parser {
           type: "character",
           kind: "class",
           value: `\\${cur}`,
-          raw: `\\${cur}`,
           quantifier: null,
+        })
+        break
+      case "b":
+      case "B":
+        this.appendChild({
+          id: nanoid(),
+          type: "boundaryAssertion",
+          kind: "word",
+          negate: cur === "b" ? false : true,
         })
         break
       // \cX
@@ -119,10 +141,10 @@ class Parser {
             id: nanoid(),
             type: "character",
             kind: "class",
-            value: "\\cX",
-            raw: `\\c${X}`,
+            value: `\\c${X}`,
             quantifier: null,
           })
+          this.advance(1)
         } else {
           this.onStringCharacter()
         }
@@ -135,10 +157,10 @@ class Parser {
             id: nanoid(),
             type: "character",
             kind: "class",
-            value: "\\xhh",
-            raw: `\\x${hh}`,
+            value: `\\x${hh}`,
             quantifier: null,
           })
+          this.advance(2)
         } else {
           this.onStringCharacter()
         }
@@ -151,10 +173,10 @@ class Parser {
             id: nanoid(),
             type: "character",
             kind: "class",
-            value: "\\uhhhh",
-            raw: `\\u${hhhh}`,
+            value: `\\u${hhhh}`,
             quantifier: null,
           })
+          this.advance(4)
         } else {
           this.onStringCharacter()
         }
@@ -181,7 +203,8 @@ class Parser {
       if (this.escaped) {
         this.onEscape()
       } else {
-        switch (this.cur()) {
+        const cur = this.cur()
+        switch (cur) {
           case endPoint:
             return
           case "{":
@@ -202,14 +225,23 @@ class Parser {
               type: "character",
               kind: "class",
               value: ".",
-              raw: ".",
               quantifier: null,
             })
             break
           case "\\":
             this.escaped = true
             break
-          // TODO: range includes [\b]
+          case "^":
+          case "$":
+            this.appendChild({
+              id: nanoid(),
+              type: "boundaryAssertion",
+              kind: cur === "^" ? "beginning" : "end",
+            })
+            break
+          case "[":
+            this.onRanges()
+            break
           default:
             this.onStringCharacter()
             break
@@ -221,6 +253,9 @@ class Parser {
   private onChoice() {
     if (this.parent.type === "choice") {
       this.parent.branches.push([])
+      return
+    }
+    if (this.parent.type === "character") {
       return
     }
     const branch =
@@ -399,38 +434,189 @@ class Parser {
     return false
   }
 
+  private onRanges() {
+    this.advance()
+
+    const parent = this.parent
+    const node: AST.RangesCharacterNode = {
+      id: nanoid(),
+      type: "character",
+      kind: "ranges",
+      ranges: [],
+      negate: false,
+      quantifier: null,
+    }
+    this.parent = node
+    this.consumeRanges()
+    this.parent = parent
+  }
+
+  private consumeRanges() {
+    let from = ""
+    let hyphen = false
+
+    const onRange = (range: string) => {
+      if (!from) {
+        from = range
+      } else if (!hyphen) {
+        this.appendRange(from)
+        from = range
+      } else {
+        this.appendRange(from, range)
+        from = ""
+        hyphen = false
+      }
+    }
+    do {
+      const cur = this.cur()
+      if (this.escaped) {
+        this.escaped = false
+        switch (cur) {
+          case "d":
+          case "D":
+          case "w":
+          case "W":
+          case "s":
+          case "S":
+          case "t":
+          case "r":
+          case "n":
+          case "v":
+          case "f":
+          case "0":
+          case "b":
+            onRange(`\\${cur}`)
+            break
+          // \cX
+          case "c":
+            const X = this.eat("[A-Z]")
+            if (X) {
+              onRange(`\\c${X}`)
+              this.advance(1)
+            } else {
+              onRange("c")
+            }
+            break
+          // \xhh
+          case "x":
+            const hh = this.eat("[0-9A-Fa-f]{2}")
+            if (hh) {
+              onRange(`\\c${hh}`)
+              this.advance(2)
+            } else {
+              onRange("x")
+            }
+            break
+          // \uhhhh
+          case "u":
+            const hhhh = this.eat("[0-9A-Fa-f]{4}")
+            if (hhhh) {
+              onRange(`\\c${hhhh}`)
+              this.advance(4)
+            } else {
+              onRange("u")
+            }
+            break
+          default:
+            onRange(cur)
+            break
+        }
+      } else {
+        switch (cur) {
+          case "]":
+            return
+          case "\\":
+            this.escaped = true
+            break
+          case "-":
+            if (!from) {
+              if (this.cur(1) === "-") {
+                from = cur
+              } else {
+                this.appendRange(cur)
+              }
+            } else {
+              hyphen = true
+            }
+            break
+          default:
+            onRange(cur)
+            break
+        }
+      }
+    } while (this.advance())
+    if (from) {
+      this.appendRange(from)
+    }
+    if (hyphen) {
+      this.appendRange("")
+    }
+  }
+
+  private appendRange(from: string, to?: string) {
+    to = to || from
+    if (this.parent.type === "character") {
+      this.parent.ranges.push({ from, to })
+    }
+  }
+
+  // group or lookAroundAssertion
   private onGroup() {
     this.advance()
 
+    let node: AST.GroupNode | AST.LookAroundAssertionNode
     let group: AST.Group
-    if (this.eat("\\?:")) {
-      this.advance(2)
-      group = { kind: "nonCapturing" }
-    } else {
-      const name = this.eat("\\?<", ">")
-      if (name) {
-        this.advance((name as string).length + 3)
-        group = { kind: "namedCapturing", name: name as string }
+    if (this.cur() === "?") {
+      const lookAround = this.eat("\\?=|\\?!|\\?<=|\\?<!")
+      if (lookAround) {
+        node = {
+          id: nanoid(),
+          type: "lookAroundAssertion",
+          ...lookAroundDict[lookAround as keyof typeof lookAroundDict],
+          children: [],
+        }
+        this.advance(lookAround.length)
+      } else {
+        if (this.eat("\\?:")) {
+          this.advance(2)
+          group = { kind: "nonCapturing" }
+        }
       }
     }
 
-    if (!group!) {
+    if (!node! && !group!) {
+      if (this.eat("\\?:")) {
+        this.advance(2)
+        group = { kind: "nonCapturing" }
+      } else {
+        const name = this.eat("\\?<", ">")
+        if (name) {
+          this.advance((name as string).length + 3)
+          group = { kind: "namedCapturing", name: name as string }
+        }
+      }
+    }
+
+    if (!node! && !group!) {
       group = { kind: "capturing", name: this.groupIndex++ + "" }
     }
-    const groupNode: AST.GroupNode = {
-      id: nanoid(),
-      type: "group",
-      children: [],
-      ...group!,
-      quantifier: null,
+
+    if (group!) {
+      node = {
+        id: nanoid(),
+        type: "group",
+        children: [],
+        ...group!,
+        quantifier: null,
+      }
     }
 
     const parent = this.parent
-    this.parent = groupNode
+    this.parent = node!
     this.consume(")")
     this.parent = parent
 
-    this.appendChild(groupNode, parent)
+    this.appendChild(node!, parent)
   }
 }
 

@@ -64,7 +64,6 @@ export interface ClassCharacterNode extends NodeBase {
   type: "character"
   kind: "class"
   value: string
-  raw: string
   quantifier: Quantifier | null
 }
 
@@ -129,6 +128,7 @@ export interface WordBoundaryAssertionNode extends NodeBase {
   negate: boolean
 }
 
+export type LookAround = { kind: "lookahead" | "lookbehind"; negate: boolean }
 export interface LookAroundAssertionNode extends NodeBase {
   type: "lookAroundAssertion"
   kind: "lookahead" | "lookbehind"
