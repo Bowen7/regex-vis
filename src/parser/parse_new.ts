@@ -38,8 +38,10 @@ class Parser {
   groupIndex = 1
   escaped = false
   flagSet: Set<AST.FlagShortKind> = new Set()
-  constructor(regex: string) {
+  idGenerator: (size?: number) => string
+  constructor(regex: string, idGenerator = nanoid) {
     this.regex = regex.trim()
+    this.idGenerator = idGenerator
   }
 
   public parse(): AST.Regex | AST.RegexError {
@@ -53,21 +55,9 @@ class Parser {
   public validate() {
     try {
       const start = this.regex.indexOf("/")
-      let end = -1
+      let end = this.regex.lastIndexOf("/")
 
-      if (start !== 0) {
-        this.message = "Invalid regular expression"
-        return false
-      }
-
-      for (let i = start + 1; i < this.regex.length; i++) {
-        if (this.regex[i] === "/") {
-          end = i
-          break
-        }
-      }
-
-      if (end === -1) {
+      if (start !== 0 || end <= start || this.regex[end - 1] === "\\") {
         this.message = "Invalid regular expression"
         return false
       }
@@ -86,6 +76,10 @@ class Parser {
       return false
     }
     return true
+  }
+
+  id() {
+    return this.idGenerator()
   }
 
   private advance(step = 1) {
@@ -117,7 +111,7 @@ class Parser {
       case "f":
       case "0":
         this.appendChild({
-          id: nanoid(),
+          id: this.id(),
           type: "character",
           kind: "class",
           value: `\\${cur}`,
@@ -127,7 +121,7 @@ class Parser {
       case "b":
       case "B":
         this.appendChild({
-          id: nanoid(),
+          id: this.id(),
           type: "boundaryAssertion",
           kind: "word",
           negate: cur === "b" ? false : true,
@@ -135,10 +129,10 @@ class Parser {
         break
       // \cX
       case "c":
-        const X = this.eat("[A-Z]")
+        const X = this.eat("[A-Z]", "", 1)
         if (X) {
           this.appendChild({
-            id: nanoid(),
+            id: this.id(),
             type: "character",
             kind: "class",
             value: `\\c${X}`,
@@ -151,10 +145,10 @@ class Parser {
         break
       // \xhh
       case "x":
-        const hh = this.eat("[0-9A-Fa-f]{2}")
+        const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
         if (hh) {
           this.appendChild({
-            id: nanoid(),
+            id: this.id(),
             type: "character",
             kind: "class",
             value: `\\x${hh}`,
@@ -167,10 +161,10 @@ class Parser {
         break
       // \uhhhh
       case "u":
-        const hhhh = this.eat("[0-9A-Fa-f]{4}")
+        const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
         if (hhhh) {
           this.appendChild({
-            id: nanoid(),
+            id: this.id(),
             type: "character",
             kind: "class",
             value: `\\u${hhhh}`,
@@ -186,7 +180,7 @@ class Parser {
         const groupName = this.eat("\\d+")
         if (groupName) {
           this.appendChild({
-            id: nanoid(),
+            id: this.id(),
             type: "backReference",
             name: groupName,
           })
@@ -221,7 +215,7 @@ class Parser {
             break
           case ".":
             this.appendChild({
-              id: nanoid(),
+              id: this.id(),
               type: "character",
               kind: "class",
               value: ".",
@@ -234,7 +228,7 @@ class Parser {
           case "^":
           case "$":
             this.appendChild({
-              id: nanoid(),
+              id: this.id(),
               type: "boundaryAssertion",
               kind: cur === "^" ? "beginning" : "end",
             })
@@ -262,7 +256,7 @@ class Parser {
       this.parent.type === "regex" ? this.parent.body : this.parent.children
 
     const choiceNode: AST.ChoiceNode = {
-      id: nanoid(),
+      id: this.id(),
       type: "choice",
       branches: [branch, []],
     }
@@ -280,12 +274,13 @@ class Parser {
     if (
       this.prev &&
       this.prev.type === "character" &&
-      this.prev.kind === "string"
+      this.prev.kind === "string" &&
+      !this.prev.quantifier
     ) {
       this.prev.value += this.cur()
     } else {
       const node: AST.StringCharacterNode = {
-        id: nanoid(),
+        id: this.id(),
         type: "character",
         kind: "string",
         value: this.cur(),
@@ -337,11 +332,11 @@ class Parser {
           }
         }
 
-        const max = this.eat("\\d+", "", 1)
+        const max = this.eat("\\d+", "", min.length + 2)
         if (!max) {
           break
         }
-        if (this.cur(min.length + 1) === "}") {
+        if (this.cur(min.length + max.length + 2) === "}") {
           quantifier = {
             kind: "custom",
             min: parseInt(min),
@@ -365,20 +360,34 @@ class Parser {
         this.prev &&
         (this.prev.type === "character" || this.prev.type === "group")
       ) {
+        if (this.prev.type === "character" && this.prev.kind === "string") {
+          const value = this.prev.value
+          if (value.length > 1) {
+            const node: AST.StringCharacterNode = {
+              id: this.id(),
+              type: "character",
+              kind: "string",
+              value: value.slice(-1),
+              quantifier: null,
+            }
+            this.prev.value = value.slice(0, value.length - 1)
+            this.appendChild(node)
+          }
+        }
         this.prev.quantifier = quantifier!
       } else {
         // TODO: error handling
       }
       return true
+    } else {
+      this.onStringCharacter()
     }
     return false
   }
 
-  private appendChild(
-    node: AST.Node,
-    parent: AST.Node | AST.Regex = this.parent
-  ) {
+  private appendChild(node: AST.Node) {
     this.prev = node
+    const parent = this.parent
     if (parent.type === "regex") {
       parent.body.push(node)
       return
@@ -439,16 +448,21 @@ class Parser {
 
     const parent = this.parent
     const node: AST.RangesCharacterNode = {
-      id: nanoid(),
+      id: this.id(),
       type: "character",
       kind: "ranges",
       ranges: [],
       negate: false,
       quantifier: null,
     }
+    if (this.cur() === "^") {
+      node.negate = true
+      this.advance()
+    }
     this.parent = node
     this.consumeRanges()
     this.parent = parent
+    this.appendChild(node)
   }
 
   private consumeRanges() {
@@ -467,6 +481,7 @@ class Parser {
         hyphen = false
       }
     }
+
     do {
       const cur = this.cur()
       if (this.escaped) {
@@ -522,9 +537,10 @@ class Parser {
             break
         }
       } else {
+        if (cur === "]") {
+          break
+        }
         switch (cur) {
-          case "]":
-            return
           case "\\":
             this.escaped = true
             break
@@ -535,6 +551,8 @@ class Parser {
               } else {
                 this.appendRange(cur)
               }
+            } else if (hyphen) {
+              onRange("-")
             } else {
               hyphen = true
             }
@@ -549,7 +567,7 @@ class Parser {
       this.appendRange(from)
     }
     if (hyphen) {
-      this.appendRange("")
+      this.appendRange("-")
     }
   }
 
@@ -570,7 +588,7 @@ class Parser {
       const lookAround = this.eat("\\?=|\\?!|\\?<=|\\?<!")
       if (lookAround) {
         node = {
-          id: nanoid(),
+          id: this.id(),
           type: "lookAroundAssertion",
           ...lookAroundDict[lookAround as keyof typeof lookAroundDict],
           children: [],
@@ -603,7 +621,7 @@ class Parser {
 
     if (group!) {
       node = {
-        id: nanoid(),
+        id: this.id(),
         type: "group",
         children: [],
         ...group!,
@@ -616,12 +634,15 @@ class Parser {
     this.consume(")")
     this.parent = parent
 
-    this.appendChild(node!, parent)
+    this.appendChild(node!)
   }
 }
 
-const parse = (regex: string) => {
-  const parser = new Parser(regex)
+const parse = (
+  regex: string,
+  idGenerator?: (size?: number | undefined) => string
+) => {
+  const parser = new Parser(regex, idGenerator)
   return parser.parse()
 }
 

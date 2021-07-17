@@ -1,19 +1,17 @@
-import { default as _parse } from "../../parse_new"
-import basicInvalid2015U from "./basic-invalid-2015-u"
-
-const parse = (regex: string) =>
-  JSON.parse(
-    JSON.stringify(_parse(regex), (k, v) => {
-      if (k !== "id") {
-        return v
-      }
-    })
-  )
+import parse from "../../parse_new"
+import invalid2015 from "./invalid-2015"
+import valid2015 from "./valid-2015"
 
 describe("Parse Regex String", function () {
-  Object.entries(basicInvalid2015U).forEach(([regex, result]) => {
+  Object.entries(invalid2015).forEach(([regex, result]) => {
     it(regex, () => {
-      expect(parse(regex)).toEqual(result)
+      expect(parse(regex, () => "")).toEqual(result)
+    })
+  })
+
+  Object.entries(valid2015).forEach(([regex, result]) => {
+    it(regex, () => {
+      expect(parse(regex, () => "")).toEqual(result)
     })
   })
 })
