@@ -1,31 +1,34 @@
 import parse from "../../parse_new"
+import gen from "../../gen_new"
 import invalid2015Tests from "./invalid-2015"
 import valid2015Tests from "./valid-2015"
-import flagTests from "./flag"
+import valid2015GenTests from "./valid-2015-gen"
+import flagTests, { validTests as validFlagTests } from "./flag"
 import lookbehindTests from "./lookbehind"
+import * as AST from "../../ast"
 
 describe("Parse Regex String", function () {
-  Object.entries(invalid2015Tests).forEach(([regex, result]) => {
+  Object.entries({
+    ...invalid2015Tests,
+    ...valid2015Tests,
+    ...flagTests,
+    ...lookbehindTests,
+  }).forEach(([regex, result]) => {
     it(regex, () => {
       expect(parse(regex, () => "")).toEqual(result)
     })
   })
+})
 
-  Object.entries(valid2015Tests).forEach(([regex, result]) => {
+describe("Gen Regex String", function () {
+  Object.entries({
+    ...valid2015GenTests,
+    ...validFlagTests,
+    ...lookbehindTests,
+  }).forEach(([regex, result]) => {
     it(regex, () => {
-      expect(parse(regex, () => "")).toEqual(result)
-    })
-  })
-
-  Object.entries(flagTests).forEach(([regex, result]) => {
-    it(regex, () => {
-      expect(parse(regex, () => "")).toEqual(result)
-    })
-  })
-
-  Object.entries(lookbehindTests).forEach(([regex, result]) => {
-    it(regex, () => {
-      expect(parse(regex, () => "")).toEqual(result)
+      const ast = result as AST.Regex
+      expect(gen(ast.body, true, ast.flags)).toEqual(regex)
     })
   })
 })
