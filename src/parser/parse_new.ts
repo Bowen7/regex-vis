@@ -1,16 +1,6 @@
 import { nanoid } from "nanoid"
 import * as AST from "./ast"
 
-const flagDict = {
-  d: "hasIndices",
-  g: "global",
-  i: "ignoreCase",
-  m: "multiline",
-  s: "dotAll",
-  u: "unicode",
-  y: "sticky",
-}
-
 const lookAroundDict: {
   "?=": AST.LookAround
   "?!": AST.LookAround
@@ -37,7 +27,7 @@ class Parser {
   prev: AST.Regex | AST.Node | null = null
   groupIndex = 1
   escaped = false
-  flagSet: Set<AST.FlagShortKind> = new Set()
+  flagSet: Set<AST.FlagKind> = new Set()
   idGenerator: (size?: number) => string
   constructor(regex: string, idGenerator = nanoid) {
     this.regex = regex.trim()
@@ -64,10 +54,10 @@ class Parser {
 
       for (let i = end + 1; i < this.regex.length; i++) {
         if (!/[gimsuy]/.test(this.regex[i])) {
-          this.message = "Invalid regular expression flags"
+          this.message = `Invalid regular expression flags '${this.regex[i]}'`
           return false
         }
-        this.flagSet.add(this.regex[i] as AST.FlagShortKind)
+        this.flagSet.add(this.regex[i] as AST.FlagKind)
       }
 
       new RegExp(this.regex.slice(start + 1, end), this.regex.slice(end + 1))
@@ -129,7 +119,7 @@ class Parser {
         break
       // \cX
       case "c":
-        const X = this.eat("[A-Z]", "", 1)
+        const X = this.eat("[A-Za-z]", "", 1)
         if (X) {
           this.appendChild({
             id: this.id(),
@@ -415,7 +405,7 @@ class Parser {
 
   private onFlags() {
     this.flagSet.forEach((flag) => {
-      this.ast.flags.push({ kind: flagDict[flag] as AST.FlagKind })
+      this.ast.flags.push({ kind: flag })
     })
   }
 
@@ -427,7 +417,7 @@ class Parser {
     if (!endPoint) {
       const match = this.regex
         .slice(this.index + advance)
-        .match(new RegExp(`^${startPoint}`))
+        .match(new RegExp(`^(${startPoint})`))
       if (match) {
         return match[0]
       }
@@ -435,10 +425,10 @@ class Parser {
     }
     const match = this.regex
       .slice(this.index + advance)
-      .match(new RegExp(`^${startPoint}(.*)${endPoint}`))
+      .match(new RegExp(`^(${startPoint}(.*)${endPoint})`))
 
     if (match) {
-      return match[1]
+      return match[2]
     }
     return false
   }
@@ -504,7 +494,7 @@ class Parser {
             break
           // \cX
           case "c":
-            const X = this.eat("[A-Z]")
+            const X = this.eat("[A-Za-z]", "", 1)
             if (X) {
               onRange(`\\c${X}`)
               this.advance(1)
@@ -514,9 +504,9 @@ class Parser {
             break
           // \xhh
           case "x":
-            const hh = this.eat("[0-9A-Fa-f]{2}")
+            const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
             if (hh) {
-              onRange(`\\c${hh}`)
+              onRange(`\\x${hh}`)
               this.advance(2)
             } else {
               onRange("x")
@@ -524,9 +514,9 @@ class Parser {
             break
           // \uhhhh
           case "u":
-            const hhhh = this.eat("[0-9A-Fa-f]{4}")
+            const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
             if (hhhh) {
-              onRange(`\\c${hhhh}`)
+              onRange(`\\u${hhhh}`)
               this.advance(4)
             } else {
               onRange("u")

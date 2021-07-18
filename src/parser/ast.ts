@@ -9,32 +9,36 @@ export type RegexError = {
   message: string
 }
 
-export type FlagShortKind = "d" | "g" | "i" | "m" | "s" | "u" | "y"
-export type FlagKind =
-  | "hasIndices"
-  | "global"
-  | "ignoreCase"
-  | "multiline"
-  | "dotAll"
-  | "unicode"
-  | "sticky"
+export type FlagKind = "d" | "g" | "i" | "m" | "s" | "u" | "y"
 export type Flag = {
-  kind:
-    | "hasIndices"
-    | "global"
-    | "ignoreCase"
-    | "multiline"
-    | "dotAll"
-    | "unicode"
-    | "sticky"
+  kind: FlagKind
 }
 
-export type Quantifier = {
-  kind: "?" | "*" | "+" | "custom"
-  min: number
-  max: number
-  greedy: boolean
-}
+export type Quantifier =
+  | {
+      kind: "?"
+      min: 0
+      max: 1
+      greedy: boolean
+    }
+  | {
+      kind: "*"
+      min: 0
+      max: typeof Infinity
+      greedy: boolean
+    }
+  | {
+      kind: "+"
+      min: 1
+      max: typeof Infinity
+      greedy: boolean
+    }
+  | {
+      kind: "custom"
+      min: number
+      max: number
+      greedy: boolean
+    }
 
 export interface NodeBase {
   id: string
