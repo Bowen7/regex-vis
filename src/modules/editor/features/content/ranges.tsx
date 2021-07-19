@@ -2,20 +2,20 @@ import React from "react"
 import { useTheme, ButtonDropdown } from "@geist-ui/react"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
-import { Range, RangesCharacter } from "@/types"
+import { AST } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
 type Prop = {
-  ranges: Range[]
+  ranges: AST.Range[]
 }
 const Ranges: React.FC<Prop> = ({ ranges }) => {
   const [, dispatch] = useMainReducer()
   const { palette } = useTheme()
 
-  const addRange = (newRanges: Range[]) => {
-    const val: RangesCharacter = {
+  const addRange = (newRanges: AST.Range[]) => {
+    const val: AST.RangesCharacter = {
       kind: "ranges",
-      value: ranges.concat(newRanges),
+      ranges: ranges.concat(newRanges),
       negate: false,
     }
     dispatch({
@@ -26,11 +26,11 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
     })
   }
 
-  const handleRangeChange = (index: number, range: Range) => {
+  const handleRangeChange = (index: number, range: AST.Range) => {
     // Todo: special action
-    const val: RangesCharacter = {
+    const val: AST.RangesCharacter = {
       kind: "ranges",
-      value: ranges.map((_range, _index) => {
+      ranges: ranges.map((_range, _index) => {
         if (_index === index) {
           return range
         }
@@ -47,9 +47,9 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
   }
 
   const handleRemove = (index: number) => {
-    const val: RangesCharacter = {
+    const val: AST.RangesCharacter = {
       kind: "ranges",
-      value: ranges.filter((_, _index) => {
+      ranges: ranges.filter((_, _index) => {
         return index !== _index
       }),
       negate: false,
@@ -68,7 +68,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
           <RangeOption
             range={range}
             key={index}
-            onChange={(range: Range) => handleRangeChange(index, range)}
+            onChange={(range: AST.Range) => handleRangeChange(index, range)}
             onRemove={() => handleRemove(index)}
           />
         ))}

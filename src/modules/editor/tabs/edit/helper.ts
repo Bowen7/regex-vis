@@ -1,6 +1,5 @@
-import { Node, Quantifier } from "@/types"
-import parser from "@/parser"
-import { NodesInfo, Group, Character } from "@/types"
+import { AST, gen } from "@/parser"
+import { NodesInfo } from "../../types"
 
 export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
@@ -10,7 +9,9 @@ export const genInitialNodesInfo = (): NodesInfo => ({
   id: "",
 })
 
-const getGroupInfo = (nodes: Node[]): Group => {
+const getGroupInfo = (
+  nodes: AST.Node[]
+): AST.Group | { kind: "nonGroup" } | null => {
   if (nodes.length !== 1) {
     return { kind: "nonGroup" }
   }
@@ -18,40 +19,49 @@ const getGroupInfo = (nodes: Node[]): Group => {
   if (node.type !== "group") {
     return { kind: "nonGroup" }
   }
-  const kind = node.value.kind
-  if (node.value.kind === "namedCapturing" || node.value.kind === "capturing") {
-    return { kind, name: node.value.name }
+  if (node.kind === "namedCapturing" || node.kind === "capturing") {
+    return { kind: node.kind, name: node.name }
   }
-  return { kind } as Group
+  return { kind: node.kind }
 }
 
-const getCharacterInfo = (nodes: Node[]): Character | null => {
+const getCharacterInfo = (nodes: AST.Node[]): AST.Character | null => {
   if (nodes.length === 1 && nodes[0].type === "character") {
-    return nodes[0].value
+    const node = nodes[0]
+    if (node.kind === "ranges") {
+      return {
+        kind: "ranges",
+        ranges: node.ranges,
+        negate: node.negate,
+      }
+    }
+    return { kind: node.kind, value: node.value }
   }
   return null
 }
 
-const getQuantifierInfo = (nodes: Node[]): Quantifier | null | undefined => {
-  let quantifier = null
-
-  if (nodes.length === 1 && !["choice", "root"].includes(nodes[0].type)) {
-    quantifier = undefined
-  } else if (nodes.length === 1 && nodes[0].quantifier) {
-    quantifier = nodes[0].quantifier
+const getQuantifierInfo = (
+  nodes: AST.Node[]
+): AST.Quantifier | null | undefined => {
+  if (nodes.length === 1) {
+    const node = nodes[0]
+    if (node.type === "character" || node.type === "group") {
+      return node.quantifier
+    }
+    return undefined
   }
-  return quantifier
+  return undefined
 }
 
-const getId = (nodes: Node[]): string => {
+const getId = (nodes: AST.Node[]): string => {
   if (nodes.length === 1) {
     return nodes[0].id
   }
   return ""
 }
 
-export function getInfoFromNodes(nodes: Node[]): NodesInfo {
-  const expression = parser.gen(nodes)
+export function getInfoFromNodes(nodes: AST.Node[]): NodesInfo {
+  const expression = gen(nodes)
   const group = getGroupInfo(nodes)
   const character = getCharacterInfo(nodes)
   const quantifier = getQuantifierInfo(nodes)

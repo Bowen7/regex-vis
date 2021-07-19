@@ -1,4 +1,4 @@
-import * as AST from "../../ast"
+import * as AST from "../ast"
 type Tests = {
   [key: string]: AST.Regex | AST.RegexError
 }

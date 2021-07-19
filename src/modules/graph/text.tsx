@@ -1,5 +1,5 @@
 import React from "react"
-import { Node } from "@/types"
+import { AST } from "@/parser"
 import {
   NODE_PADDING_HORIZONTAL,
   NODE_MARGIN_VERTICAL,
@@ -8,7 +8,7 @@ import {
 import { getTexts } from "./utils"
 const FONT = 16
 type TextProps = {
-  node: Node
+  node: AST.Node
   x: number
   y: number
 }

@@ -1,11 +1,11 @@
-import parse from "../../parse_new"
-import gen from "../../gen_new"
+import parse from "../parse"
+import gen from "../gen"
 import invalid2015Tests from "./invalid-2015"
 import valid2015Tests from "./valid-2015"
 import valid2015GenTests from "./valid-2015-gen"
 import flagTests, { validTests as validFlagTests } from "./flag"
 import lookbehindTests from "./lookbehind"
-import * as AST from "../../ast"
+import * as AST from "../ast"
 
 describe("Parse Regex String", function () {
   Object.entries({

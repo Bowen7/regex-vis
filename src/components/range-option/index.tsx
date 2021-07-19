@@ -1,17 +1,13 @@
 import React, { useState, useRef, useMemo } from "react"
 import { useClickAway, useTheme } from "@geist-ui/react"
 import { Trash2 } from "@geist-ui/react-icons"
-import { Range } from "@/types"
+import { AST } from "@/parser"
 import RangeInput from "./input"
 import { RangeError } from "./utils"
 type Prop = {
-  range: Range
-  onChange: (range: Range) => void
+  range: AST.Range
+  onChange: (range: AST.Range) => void
   onRemove: () => void
-}
-type Option = {
-  label: string
-  value: string
 }
 const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
   const { from, to } = range

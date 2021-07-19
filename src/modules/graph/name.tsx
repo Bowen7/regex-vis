@@ -1,5 +1,5 @@
 import React from "react"
-import { Node } from "@/types"
+import { AST } from "@/parser"
 import { getName } from "./utils"
 type Center = {
   x: number
@@ -7,7 +7,7 @@ type Center = {
 }
 type NameProps = {
   center: Center
-  node: Node
+  node: AST.Node
   y: number
 }
 

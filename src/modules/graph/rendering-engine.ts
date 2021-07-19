@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid"
-import { Node, RenderNode, RenderVirtualNode, Size } from "@/types"
+import { AST } from "@/parser"
+import { RenderNode, RenderVirtualNode, Size } from "./types"
 import {
   CHART_PADDING_HORIZONTAL,
   CHART_PADDING_VERTICAL,
@@ -30,6 +31,8 @@ class RenderEngine {
   minimum: boolean = false
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D | null
+  head: AST.RootNode = { id: nanoid(), type: "root" }
+  tail: AST.RootNode = { id: nanoid(), type: "root" }
   constructor() {
     // the `measureText` method use canvas.measureText
     if (process.env.EXPORT) {
@@ -41,8 +44,10 @@ class RenderEngine {
     this.context = this.canvas.getContext("2d")
   }
 
-  render(nodes: Node[], minimum = false) {
+  render(ast: AST.Regex, minimum = false) {
     this.minimum = minimum
+    const { body } = ast
+    const nodes = [this.head, ...body, this.tail]
     const { width, height } = this.getNodesSize(nodes)
     const paddingHorizontal = minimum
       ? MINIMUM_CHART_PADDING_HORIZONTAL
@@ -64,7 +69,10 @@ class RenderEngine {
     return rootRenderNode
   }
 
-  renderNodes(parentRenderNode: RenderNode | RenderVirtualNode, nodes: Node[]) {
+  renderNodes(
+    parentRenderNode: RenderNode | RenderVirtualNode,
+    nodes: AST.Node[]
+  ) {
     const {
       x: originX,
       y: originY,
@@ -137,9 +145,9 @@ class RenderEngine {
 
   renderNode(renderNode: RenderNode) {
     const { target, children } = renderNode
-    if (target.children) {
+    if (target.type === "group" || target.type === "lookAroundAssertion") {
       this.renderNodes(renderNode, target.children)
-    } else if (target?.branches) {
+    } else if (target.type === "choice") {
       const { branches } = target
       const { x: originX, y: originY, width, height } = renderNode
       let x = originX
@@ -212,7 +220,7 @@ class RenderEngine {
       )
   }
 
-  getSize(node: Node) {
+  getSize(node: AST.Node) {
     let width = 0
     let height = 0
     let offsetWidth = 0
@@ -220,11 +228,10 @@ class RenderEngine {
     let paddingTop = 0
     let paddingBottom = 0
 
-    const { value, branches, children } = node
     const texts = getTextsWithBacktick(node)
 
-    if (branches) {
-      branches.forEach((nodes) => {
+    if (node.type === "choice") {
+      node.branches.forEach((nodes) => {
         let { width: branchWidth, height: branchHeight } =
           this.getNodesSize(nodes)
         height += branchHeight
@@ -233,8 +240,8 @@ class RenderEngine {
           NODE_MARGIN_HORIZONTAL * 2 + BRANCH_PADDING_HORIZONTAL * 2
         width = Math.max(width, branchWidth)
       })
-    } else if (children) {
-      ;({ width, height } = this.getNodesSize(children))
+    } else if (node.type === "group" || node.type === "lookAroundAssertion") {
+      ;({ width, height } = this.getNodesSize(node.children))
       height += 2 * NODE_MARGIN_VERTICAL
       width += NODE_MARGIN_HORIZONTAL * 2
     } else if (texts) {
@@ -248,7 +255,10 @@ class RenderEngine {
       }
     }
 
-    if (node.quantifier) {
+    if (
+      (node.type === "character" || node.type === "group") &&
+      node.quantifier
+    ) {
       const { quantifier } = node
       paddingBottom += QUANTIFIER_HEIGHT
 
@@ -266,9 +276,8 @@ class RenderEngine {
     // handle name
     const name = getName(node)
     if (name) {
-      const { namePrefix = "" } = value
       const nameWidth =
-        this.measureText(name + namePrefix, NAME_TEXT_FONTSIZE).width +
+        this.measureText(name, NAME_TEXT_FONTSIZE).width +
         NODE_PADDING_VERTICAL * 2
 
       offsetWidth = Math.max(width, nameWidth, offsetWidth)
@@ -286,7 +295,7 @@ class RenderEngine {
     return size
   }
 
-  getNodesSize(nodes: Node[]) {
+  getNodesSize(nodes: AST.Node[]) {
     let height = 0
     let width = 0
     nodes.forEach((node) => {

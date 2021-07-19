@@ -5,13 +5,13 @@ import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
 import { options } from "./helper"
 import { CharacterClassKey } from "@/parser/utils/character-class"
-import { Character, ClassCharacter } from "@/types"
+import { AST } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { classOptions, labelMap } from "./helper"
 import Ranges from "./ranges"
 
 type Prop = {
-  character: Character
+  character: AST.Character
   id: string
 }
 const Characters: React.FC<Prop> = ({ character, id }) => {
@@ -46,7 +46,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
   }, [id, character])
 
   const handleTypeChange = (type: string | string[]) => {
-    let val!: Character
+    let val!: AST.Character
     switch (type) {
       case "string":
         val = { kind: "string", value: stringBindings.value }
@@ -55,7 +55,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
         val = { kind: "class", value: classValue }
         break
       case "ranges":
-        val = { kind: "ranges", value: [], negate: false }
+        val = { kind: "ranges", ranges: [], negate: false }
         break
       default:
         return
@@ -63,14 +63,14 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
     dispatch({
       type: MainActionTypes.UPDATE_CHARACTER,
       payload: {
-        value: val as Character,
+        value: val as AST.Character,
       },
     })
   }
 
   const handleClassValueChange = (value: string | string[]) => {
     setClassValue(value as CharacterClassKey)
-    const val: ClassCharacter = {
+    const val: AST.ClassCharacter = {
       kind: "class",
       value: value as string,
     }
@@ -104,7 +104,7 @@ const Characters: React.FC<Prop> = ({ character, id }) => {
             <Input size="small" {...stringBindings} />
           )}
 
-          {character.kind === "ranges" && <Ranges ranges={character.value} />}
+          {character.kind === "ranges" && <Ranges ranges={character.ranges} />}
           {character.kind === "class" && (
             <Select
               value={classValue}

@@ -1,36 +1,22 @@
 import React, { useRef, useState, useEffect } from "react"
 import { useTheme } from "@geist-ui/react"
-import { RenderVirtualNode, Node } from "@/types"
+import { RenderVirtualNode } from "./types"
+import { parse, gen, AST } from "@/parser"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
 import { useMainReducer, MainActionTypes } from "@/redux"
-import { useEffectOnce } from "@/utils/hooks"
-import parser from "@/parser"
-import { nanoid } from "nanoid"
 type Props = {
   regex: string
   minimum?: boolean
-  onMount?: (id: string, nodes: Node[]) => void
   onChange?: (regex: string) => void
 }
-const INITIAL_NODES: Node[] = []
-const Graph: React.FC<Props> = ({
-  regex: propRegex,
-  minimum = false,
-  onChange,
-  onMount,
-}) => {
+
+const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   const { palette } = useTheme()
-  const [
-    { nodes: propNodes, selectedIds: propSelectedIds, activeId: propActiveId },
-    dispatch,
-  ] = useMainReducer()
+  const [{ ast, selectedIds }, dispatch] = useMainReducer()
 
-  const regex = useRef<string>("")
+  const regexRef = useRef<string>("")
 
-  const id = useRef<string>(nanoid())
-  const [nodes, setNodes] = useState<Node[]>(INITIAL_NODES)
-  const [selectedIds, setSelectedIds] = useState<string[]>([])
   const [rootRenderNode, setRootRenderNode] = useState<RenderVirtualNode>({
     type: "virtual",
     x: 0,
@@ -40,53 +26,22 @@ const Graph: React.FC<Props> = ({
     children: [],
   })
 
-  if (process.env.EXPORT && regex.current !== propRegex) {
-    regex.current = propRegex
-    setRootRenderNode(renderEngine.render(parser.parse(propRegex)))
-  }
-
-  useEffectOnce(() => {
-    onMount && onMount(id.current, nodes)
-  })
-
   useEffect(() => {
-    if (propRegex !== regex.current) {
-      regex.current = propRegex
-      const nodes = parser.parse(propRegex)
-      setNodes(nodes)
-    }
-  }, [propRegex, propActiveId])
-
-  useEffect(() => {
-    if (propActiveId === id.current) {
-      dispatch({
-        type: MainActionTypes.SET_ACTIVE_CHART,
-        payload: { id: id.current, nodes, selectedIds: [] },
-      })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propActiveId])
-
-  useEffect(() => {
-    if (id.current !== propActiveId) {
-      if (selectedIds.length > 0) {
-        setSelectedIds([])
+    if (regex !== regexRef.current) {
+      const ast = parse(regex)
+      if (ast.type === "regex") {
+        dispatch({ type: MainActionTypes.SET_AST, payload: { ast } })
       }
-      return
     }
-    setNodes(propNodes)
-    setSelectedIds(propSelectedIds)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [propNodes, propActiveId, propSelectedIds])
+  }, [regex, dispatch])
 
   useEffect(() => {
-    if (nodes !== INITIAL_NODES) {
-      const rootRenderNode = renderEngine.render(nodes)
-      regex.current = parser.gen(nodes)
-      onChange && onChange(regex.current)
-      setRootRenderNode(rootRenderNode)
-    }
-  }, [onChange, nodes])
+    const rootRenderNode = renderEngine.render(ast)
+    regexRef.current = gen(ast.body)
+    onChange && onChange(regexRef.current)
+    setRootRenderNode(rootRenderNode)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ast])
 
   return (
     <>

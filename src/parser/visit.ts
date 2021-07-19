@@ -1,9 +1,9 @@
-import { Node } from "@/types"
-export type Path = { node: Node; nodeList: Node[] }[]
+import * as AST from "./ast"
+export type Path = { node: AST.Node; nodeList: AST.Node[] }[]
 function visit(
-  nodes: Node[],
+  nodes: AST.Node[],
   id: string,
-  callback: (node: Node, nodeList: Node[], path: Path) => void,
+  callback: (node: AST.Node, nodeList: AST.Node[], path: Path) => void,
   path: Path = []
 ): true | void {
   for (let i = 0; i < nodes.length; i++) {
@@ -13,19 +13,22 @@ function visit(
       return true
     }
 
-    if (node.children || node.branches) {
+    if (
+      node.type === "choice" ||
+      node.type === "group" ||
+      node.type === "lookAroundAssertion"
+    ) {
       path.push({ nodeList: nodes, node })
-      if (node.children) {
-        if (visit(node.children, id, callback, path)) {
-          return true
-        }
-      }
-      if (node.branches) {
+      if (node.type === "choice") {
         const branches = node.branches
         for (let i = 0; i < branches.length; i++) {
           if (visit(branches[i], id, callback, path)) {
             return true
           }
+        }
+      } else {
+        if (visit(node.children, id, callback, path)) {
+          return true
         }
       }
       path.pop()
@@ -33,15 +36,18 @@ function visit(
   }
 }
 
-export function visitTree(nodes: Node[], callback: (node: Node) => void) {
+export function visitTree(
+  nodes: AST.Node[],
+  callback: (node: AST.Node) => void
+) {
   let stack = nodes.slice()
   while (stack.length !== 0) {
-    const cur = stack.shift()
-    callback(cur as Node)
-    if (cur?.children) {
+    const cur = stack.shift() as AST.Node
+    callback(cur)
+    if (cur.type === "group" || cur.type === "lookAroundAssertion") {
       stack = cur.children.concat(stack)
     }
-    if (cur?.branches) {
+    if (cur.type === "choice") {
       const branches = cur.branches
       for (let i = branches.length - 1; i >= 0; i--) {
         const branch = branches[i]
@@ -51,43 +57,52 @@ export function visitTree(nodes: Node[], callback: (node: Node) => void) {
   }
 }
 
-export function getNodeById(nodes: Node[], id: string): Node {
-  let stack = nodes.slice()
+export function getNodeById(
+  nodes: AST.Node[],
+  id: string
+): { node: AST.Node; nodeList: AST.Node[]; index: number } {
+  let stack = nodes.map((node, index) => ({ node, nodeList: nodes, index }))
   while (stack.length !== 0) {
-    const cur = stack.shift() as Node
-    if (cur!.id === id) {
-      return cur
+    const item = stack.shift()!
+    const { node } = item
+    if (node.id === id) {
+      return item
     }
-    if (cur?.children) {
-      stack = stack.concat(cur.children)
+    if (node.type === "group" || node.type === "lookAroundAssertion") {
+      const { children } = node
+      stack = stack.concat(
+        children.map((node, index) => ({ node, nodeList: children, index }))
+      )
     }
-    if (cur?.branches) {
-      const branches = cur.branches
+    if (node.type === "choice") {
+      const branches = node.branches
       for (let i = branches.length - 1; i >= 0; i--) {
         const branch = branches[i]
-        stack = stack.concat(branch)
+        stack = stack.concat(
+          branch.map((node, index) => ({ node, nodeList: branch, index }))
+        )
       }
     }
   }
   throw new Error("unreachable")
 }
 
-export function getNodesByIds(nodes: Node[], ids: string[]): Node[] {
+export function getNodesByIds(nodes: AST.Node[], ids: string[]): AST.Node[] {
   if (ids.length === 0) {
     return []
   }
   const headId = ids[0]
-  let cur!: Node
+  let cur!: AST.Node
   let stack = nodes.slice()
   while (stack.length !== 0) {
-    cur = stack.shift() as Node
+    cur = stack.shift() as AST.Node
     if (cur!.id === headId) {
       break
     }
-    if (cur?.children) {
+    if (cur.type === "group" || cur.type === "lookAroundAssertion") {
       stack = stack.concat(cur.children)
     }
-    if (cur?.branches) {
+    if (cur.type === "choice") {
       const branches = cur.branches
       for (let i = branches.length - 1; i >= 0; i--) {
         const branch = branches[i]

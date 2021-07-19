@@ -6,7 +6,8 @@ import Group from "../../features/group"
 import Expression from "../../features/expression"
 import Quantifier from "../../features/quantifier"
 import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
-import { GroupKind, NodesInfo, Node } from "@/types"
+import { AST } from "@/parser"
+import { NodesInfo } from "../../types"
 import { getNodesByIds } from "@/parser/visit"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
@@ -15,12 +16,12 @@ export type InsertDirection = "prev" | "next" | "branch"
 const InfoItem: React.FC<{}> = () => {
   const { layout } = useTheme()
 
-  const [nodes, setNodes] = useState<Node[]>([])
-  const [{ selectedIds, nodes: rootNodes }, dispatch] = useMainReducer()
+  const [nodes, setNodes] = useState<AST.Node[]>([])
+  const [{ selectedIds, ast }, dispatch] = useMainReducer()
 
   useEffect(
-    () => setNodes(getNodesByIds(rootNodes, selectedIds)),
-    [rootNodes, selectedIds]
+    () => setNodes(getNodesByIds(ast.body, selectedIds)),
+    [ast, selectedIds]
   )
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
@@ -32,7 +33,10 @@ const InfoItem: React.FC<{}> = () => {
   const handleGroup = (groupType: string, groupName: string) =>
     dispatch({
       type: MainActionTypes.UPDATE_GROUP,
-      payload: { groupType: groupType as GroupKind | "nonGroup", groupName },
+      payload: {
+        groupType: groupType as AST.GroupKind | "nonGroup",
+        groupName,
+      },
     })
 
   useEffect(() => {

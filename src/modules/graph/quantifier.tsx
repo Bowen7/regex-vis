@@ -1,5 +1,5 @@
 import React from "react"
-import { Node } from "@/types"
+import { AST } from "@/parser"
 import { getQuantifierText } from "@/parser/utils/quantifier"
 import renderEngine from "@/modules/graph/rendering-engine"
 import {
@@ -10,7 +10,7 @@ import {
   QUANTIFIER_ICON_MARGIN_VERTICAL,
 } from "@/constants/graph"
 type QuantifierProps = {
-  node: Node
+  node: AST.Node
   x: number
   y: number
   width: number
@@ -25,7 +25,9 @@ const dy =
     2
 const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
   ({ node, x, y, width, height }) => {
-    if (!node.quantifier) {
+    if (
+      !((node.type === "group" || node.type === "character") && node.quantifier)
+    ) {
       return null
     }
     const text = getQuantifierText(node.quantifier)

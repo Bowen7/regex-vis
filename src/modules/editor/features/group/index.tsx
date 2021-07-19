@@ -3,12 +3,12 @@ import { Select, Spacer } from "@geist-ui/react"
 import Guider from "@/components/guider"
 import Input from "@/components/input"
 import { groupData } from "./helper"
-import { Group } from "@/types"
+import { AST } from "@/parser"
 import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
 
 type GroupSelectProps = {
-  group: Group
+  group: AST.Group | { kind: "nonGroup" }
   onGroupChange: (groupType: string, groupName: string) => void
 }
 

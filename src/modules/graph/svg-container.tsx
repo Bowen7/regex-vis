@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback } from "react"
 import { useEventListener } from "@/utils/hooks"
-import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "@/types"
-import { Node } from "@/types"
+import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "./types"
+import { AST } from "@/parser"
 import RailNode from "./node"
 import Connect from "./connect"
 import { MainActionTypes, useMainReducer } from "@/redux"
@@ -111,7 +111,7 @@ const SvgContainer: React.FC<Props> = (props) => {
   }
 
   const handleClick = useCallback(
-    (node: Node) => {
+    (node: AST.Node) => {
       if (!moving.current) {
         dispatch({
           type: MainActionTypes.SELECT_NODES,
@@ -164,7 +164,7 @@ const SvgContainer: React.FC<Props> = (props) => {
         )
       }
 
-      if (renderNode.type === "node" && renderNode.target.branches) {
+      if (renderNode.type === "node" && renderNode.target.type === "choice") {
         const { target } = renderNode
         children.forEach((item, index) => {
           if (target.branches && item.type === "connect") {

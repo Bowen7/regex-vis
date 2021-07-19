@@ -1,43 +1,20 @@
 import produce from "immer"
-import { Node, Quantifier } from "@/types"
-import { getNodesByIds } from "../visit"
-import { group } from "./group"
-export default (
-  nodes: Node[],
-  selectedIds: string[],
-  quantifier: Quantifier | null
-) => {
-  let nextSelectedIds: string[] = selectedIds
-  const nextNodes = produce(nodes, (draft) => {
-    let selectedNodes = getNodesByIds(draft, selectedIds)
-    if (!quantifier) {
-      const node = selectedNodes[0]
-      delete node.quantifier
-      return
+import * as AST from "../ast"
+import { getNodeById } from "../visit"
+const updateQuantifier = (
+  nodes: AST.Node[],
+  selectedId: string,
+  quantifier: AST.Quantifier | null
+) =>
+  produce(nodes, (draft) => {
+    const { node } = getNodeById(draft, selectedId)
+    if (node.type === "character" || node.type === "group") {
+      node.quantifier = quantifier
     }
-
-    if (selectedNodes.length === 1) {
-      const node = selectedNodes[0]
-      if (
-        node.type === "character" &&
-        node.value.kind === "string" &&
-        node.value.value.length > 1
-      ) {
-        nextSelectedIds = group(draft, selectedNodes, "capturing", "")
-        selectedNodes = getNodesByIds(draft, nextSelectedIds)
-      }
-    } else if (selectedNodes.length > 1) {
-      nextSelectedIds = group(draft, selectedNodes, "capturing", "")
-      selectedNodes = getNodesByIds(draft, nextSelectedIds)
-    }
-
-    const node = selectedNodes[0]
-    node.quantifier = quantifier
   })
-  return { nextNodes, nextSelectedIds }
-}
+export default updateQuantifier
 
-export const getQuantifierText = (quantifier: Quantifier): string => {
+export const getQuantifierText = (quantifier: AST.Quantifier): string => {
   let { min, max } = quantifier
   let minText = `${min}`
   let maxText = `${max}`

@@ -1,4 +1,4 @@
-import { Node, GroupKind, Character, Quantifier } from "@/types"
+import { AST } from "@/parser"
 import { remove, insert, group, character, quantifier } from "@/parser/utils"
 type GuideConfig = {
   visible: boolean
@@ -6,18 +6,16 @@ type GuideConfig = {
   content: JSX.Element | string
 }
 export type InitialStateType = {
-  activeId: string
-  nodes: Node[]
+  ast: AST.Regex
   selectedIds: string[]
-  undoStack: Node[][]
-  redoStack: Node[][]
+  undoStack: AST.Regex[]
+  redoStack: AST.Regex[]
   editorCollapsed: Boolean
   guiderConfig: GuideConfig
 }
 
 export const initialState: InitialStateType = {
-  activeId: "",
-  nodes: [],
+  ast: { type: "regex", body: [], flags: [] },
   selectedIds: [],
   undoStack: [],
   redoStack: [],
@@ -26,11 +24,10 @@ export const initialState: InitialStateType = {
 }
 
 export enum ActionTypes {
-  SET_ACTIVE_CHART,
   INSERT,
   REMOVE,
   UPDATE_GROUP,
-  SET_NODES,
+  SET_AST,
   UNDO,
   REDO,
   SELECT_NODES,
@@ -42,19 +39,15 @@ export enum ActionTypes {
 
 export type Action =
   | {
-      type: ActionTypes.SET_ACTIVE_CHART
-      payload: { id: string; nodes: Node[]; selectedIds: string[] }
-    }
-  | {
       type: ActionTypes.INSERT
       payload: { direction: "prev" | "next" | "branch" }
     }
   | { type: ActionTypes.REMOVE }
   | {
       type: ActionTypes.UPDATE_GROUP
-      payload: { groupType: GroupKind | "nonGroup"; groupName: string }
+      payload: { groupType: AST.GroupKind | "nonGroup"; groupName: string }
     }
-  | { type: ActionTypes.SET_NODES; payload: { nodes: Node[] } }
+  | { type: ActionTypes.SET_AST; payload: { ast: AST.Regex } }
   | { type: ActionTypes.UNDO }
   | { type: ActionTypes.REDO }
   | {
@@ -63,69 +56,66 @@ export type Action =
     }
   | {
       type: ActionTypes.UPDATE_CHARACTER
-      payload: { value: Character }
+      payload: { value: AST.Character }
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
-  | { type: ActionTypes.UPDATE_QUANTIFIER; payload: Quantifier | null }
+  | { type: ActionTypes.UPDATE_QUANTIFIER; payload: AST.Quantifier | null }
 
 const setNodes = (
   state: InitialStateType,
-  nextNodes: Node[],
+  nextNodes: AST.Node[],
   attachState: Partial<InitialStateType> = {}
-) => {
-  const { undoStack, nodes } = state
-  undoStack.push(nodes)
+): InitialStateType => {
+  const { undoStack, ast } = state
+  const { flags } = ast
+  undoStack.push(ast)
   return {
     ...state,
     ...attachState,
-    nodes: nextNodes,
+    ast: { type: "regex", body: nextNodes, flags },
     undoStack,
   }
 }
 
 export const reducer = (state: InitialStateType, action: Action) => {
   switch (action.type) {
-    case ActionTypes.SET_ACTIVE_CHART: {
-      const { id, nodes, selectedIds } = action.payload
-      return { ...state, activeId: id, nodes, selectedIds }
-    }
     case ActionTypes.INSERT: {
-      const { nodes, selectedIds } = state
+      const { ast, selectedIds } = state
       const { direction } = action.payload
-      const nextNodes = insert(nodes, selectedIds, direction)
+      const nextNodes = insert(ast.body, selectedIds, direction)
       return setNodes(state, nextNodes)
     }
     case ActionTypes.REMOVE: {
-      const { nodes, selectedIds } = state
-      const nextNodes = remove(nodes, selectedIds)
+      const { ast, selectedIds } = state
+      const nextNodes = remove(ast.body, selectedIds)
       return setNodes(state, nextNodes, { selectedIds: [] })
     }
     case ActionTypes.UPDATE_GROUP: {
-      const { nodes, selectedIds } = state
+      const { ast, selectedIds } = state
       const { groupType, groupName } = action.payload
       const { nextNodes, nextSelectedIds } = group(
-        nodes,
+        ast.body,
         selectedIds,
         groupType,
         groupName
       )
       return setNodes(state, nextNodes, { selectedIds: nextSelectedIds })
     }
-    case ActionTypes.SET_NODES: {
-      const { undoStack, nodes } = state
-      const { nodes: nextNodes } = action.payload
-      undoStack.push(nodes)
-      return setNodes(state, nextNodes, { undoStack })
+    case ActionTypes.SET_AST: {
+      const { undoStack, ast } = state
+      const { ast: nextAst } = action.payload
+      undoStack.push(ast)
+      return setNodes(state, nextAst.body, { undoStack })
     }
     case ActionTypes.UNDO: {
-      const { undoStack, redoStack, nodes } = state
+      const { undoStack, redoStack, ast } = state
       if (undoStack.length > 0) {
-        const nextNodes = undoStack.pop()
-        redoStack.push(nodes)
+        const nextAst = undoStack.pop()!
+        redoStack.push(ast)
         return {
           ...state,
-          nodes: nextNodes as Node[],
+          ast: nextAst,
           undoStack,
           redoStack,
         }
@@ -133,13 +123,13 @@ export const reducer = (state: InitialStateType, action: Action) => {
       return state
     }
     case ActionTypes.REDO: {
-      const { undoStack, redoStack, nodes } = state
+      const { undoStack, redoStack, ast } = state
       if (redoStack.length > 0) {
-        const nextNodes = redoStack.pop()
-        undoStack.push(nodes)
+        const nextAst = redoStack.pop()!
+        undoStack.push(ast)
         return {
           ...state,
-          nodes: nextNodes as Node[],
+          ast: nextAst,
           undoStack,
           redoStack,
         }
@@ -169,10 +159,10 @@ export const reducer = (state: InitialStateType, action: Action) => {
       }
     }
     case ActionTypes.UPDATE_CHARACTER: {
-      const { nodes, selectedIds } = state
+      const { ast, selectedIds } = state
       const { value } = action.payload
       const id = selectedIds[0]
-      const nextNodes = character(nodes, id, value)
+      const nextNodes = character(ast.body, id, value)
       return setNodes(state, nextNodes)
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {
@@ -183,13 +173,9 @@ export const reducer = (state: InitialStateType, action: Action) => {
       return { ...state, guiderConfig: action.payload }
     }
     case ActionTypes.UPDATE_QUANTIFIER: {
-      const { nodes, selectedIds } = state
-      const { nextNodes, nextSelectedIds } = quantifier(
-        nodes,
-        selectedIds,
-        action.payload
-      )
-      return setNodes(state, nextNodes, { selectedIds: nextSelectedIds })
+      const { ast, selectedIds } = state
+      const nextNodes = quantifier(ast.body, selectedIds[0], action.payload)
+      return setNodes(state, nextNodes)
     }
     default:
       return state

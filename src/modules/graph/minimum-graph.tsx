@@ -1,15 +1,19 @@
 import React from "react"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
-import parser from "@/parser"
-import { RenderNode } from "@/types"
+import { parse } from "@/parser"
+import { RenderNode } from "./types"
 type Props = {
   regex: string
   selected?: boolean
 }
 
 const MinimumGraph: React.FC<Props> = ({ regex, selected = false }) => {
-  const rootRenderNode = renderEngine.render(parser.parse(regex), true)
+  const ast = parse(regex)
+  if (ast.type === "error") {
+    return null
+  }
+  const rootRenderNode = renderEngine.render(ast, true)
 
   const selectedIds = selected
     ? rootRenderNode.children

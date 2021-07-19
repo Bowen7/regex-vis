@@ -1,34 +1,31 @@
-import { Node } from "@/types"
+import { AST } from "@/parser"
 import {
   characterClassTextMap,
   CharacterClassKey,
 } from "@/parser/utils/character-class"
 
 const assertionNameMap = {
-  start: "Start of line",
+  beginning: "Start of line",
   end: "End of line",
   lookahead: ["Followed by:", "Not followed by"],
   lookbehind: ["Preceded by", "Not Preceded by"],
   word: ["WordBoundary", "NonWordBoundary"],
 }
 
-export const getName = (node: Node): string | null => {
+export const getName = (node: AST.Node): string | null => {
   switch (node.type) {
     case "character":
-      if (node.value.kind === "ranges") {
-        return node.value.negate ? "None of" : "One of"
+      if (node.kind === "ranges") {
+        return node.negate ? "None of" : "One of"
       }
       return null
     case "group":
-      if (
-        node.value.kind === "capturing" ||
-        node.value.kind === "namedCapturing"
-      ) {
-        return "Group #" + node.value.name
+      if (node.kind === "capturing" || node.kind === "namedCapturing") {
+        return "Group #" + node.name
       }
       return null
-    case "lookaroundAssertion": {
-      const { kind, negate } = node.value
+    case "lookAroundAssertion": {
+      const { kind, negate } = node
       return assertionNameMap[kind][negate ? 1 : 0]
     }
 
@@ -37,23 +34,25 @@ export const getName = (node: Node): string | null => {
   }
 }
 
-export const getTextsWithBacktick = (node: Node): null | string | string[] => {
+export const getTextsWithBacktick = (
+  node: AST.Node
+): null | string | string[] => {
   switch (node.type) {
     case "character":
-      if (node.value.kind === "ranges") {
-        return node.value.value.map(({ from, to }) =>
+      if (node.kind === "ranges") {
+        return node.ranges.map(({ from, to }) =>
           from === to ? `\`${from}\`` : `\`${from}\` - \`${to}\``
         )
-      } else if (node.value.kind === "class") {
-        return characterClassTextMap[node.value.value as CharacterClassKey]
+      } else if (node.kind === "class") {
+        return characterClassTextMap[node.value as CharacterClassKey]
       }
-      return `\`${node.value.value}\``
+      return `\`${node.value}\``
     case "boundaryAssertion":
-      if (node.value.kind === "word") {
-        const negate = node.value.negate
+      if (node.kind === "word") {
+        const negate = node.negate
         return assertionNameMap.word[negate ? 1 : 0]
       } else {
-        const kind = node.value.kind
+        const kind = node.kind
         return assertionNameMap[kind]
       }
     default:
@@ -61,11 +60,11 @@ export const getTextsWithBacktick = (node: Node): null | string | string[] => {
   }
 }
 
-export const getTexts = (node: Node) => {
+export const getTexts = (node: AST.Node) => {
   switch (node.type) {
     case "character":
-      if (node.value.kind === "ranges") {
-        return node.value.value.map(({ from, to }) =>
+      if (node.kind === "ranges") {
+        return node.ranges.map(({ from, to }) =>
           from === to
             ? [
                 { type: "backtick" },
@@ -82,14 +81,12 @@ export const getTexts = (node: Node) => {
                 { type: "backtick" },
               ]
         )
-      } else if (node.value.kind === "class") {
+      } else if (node.kind === "class") {
         return [
           [
             {
               type: "text",
-              text: characterClassTextMap[
-                node.value.value as CharacterClassKey
-              ],
+              text: characterClassTextMap[node.value as CharacterClassKey],
             },
           ],
         ]
@@ -97,16 +94,16 @@ export const getTexts = (node: Node) => {
       return [
         [
           { type: "backtick" },
-          { type: "text", text: node.value.value },
+          { type: "text", text: node.value },
           { type: "backtick" },
         ],
       ]
     case "boundaryAssertion":
-      if (node.value.kind === "word") {
-        const negate = node.value.negate
+      if (node.kind === "word") {
+        const negate = node.negate
         return [[{ type: "text", text: assertionNameMap.word[negate ? 1 : 0] }]]
       } else {
-        const kind = node.value.kind
+        const kind = node.kind
         return [[{ type: "text", text: assertionNameMap[kind] }]]
       }
     default:

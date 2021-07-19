@@ -1,17 +1,17 @@
 import React, { useMemo } from "react"
 import { NODE_BORDER_RADIUS } from "@/constants/graph"
-import { Node } from "@/types"
+import { AST } from "@/parser"
 import NodeText from "./text"
 import NodeQuantifier from "./quantifier"
 import NodeName from "./name"
 type Props = {
-  node: Node
+  node: AST.Node
   x: number
   y: number
   width: number
   height: number
   selected: boolean
-  onClick?: (node: Node) => void
+  onClick?: (node: AST.Node) => void
 }
 
 const RailNode: React.FC<Props> = React.memo((props) => {
@@ -25,9 +25,9 @@ const RailNode: React.FC<Props> = React.memo((props) => {
       ry: NODE_BORDER_RADIUS,
     }
     switch (node.type) {
-      case "lookaroundAssertion":
+      case "lookAroundAssertion":
       case "group":
-        if (node.value.kind === "nonCapturing") {
+        if (node.kind === "nonCapturing") {
           attrs.strokeDasharray = "4,4"
         }
         break

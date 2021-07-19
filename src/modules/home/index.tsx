@@ -2,24 +2,14 @@ import React, { useCallback } from "react"
 import { useTheme } from "@geist-ui/react"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
-import { Node } from "@/types"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { useMainReducer } from "@/redux"
 const DEFAULT_REGEX = `/([a-zA-Z_])*?@[a-zA-Z](\\.[a-zA-Z-]{0,10})?(a|b)/`
 // const DEFAULT_REGEX = `/x(?=aaa)/`
 
 const Home: React.FC<{}> = () => {
   const handleChange = useCallback((regex: string) => console.log(regex), [])
-  const [{ editorCollapsed }, dispatch] = useMainReducer()
+  const [{ editorCollapsed }] = useMainReducer()
   const { palette } = useTheme()
-
-  const handleMount = useCallback(
-    (id: string, nodes: Node[]) =>
-      dispatch({
-        type: MainActionTypes.SET_ACTIVE_CHART,
-        payload: { id, nodes, selectedIds: [] },
-      }),
-    [dispatch]
-  )
 
   const style = editorCollapsed ? { width: "100%" } : {}
 
@@ -27,11 +17,7 @@ const Home: React.FC<{}> = () => {
     <>
       <div className="graph" style={style}>
         <div className="content">
-          <Graph
-            regex={DEFAULT_REGEX}
-            onChange={handleChange}
-            onMount={handleMount}
-          />
+          <Graph regex={DEFAULT_REGEX} onChange={handleChange} />
         </div>
       </div>
       <Editor />

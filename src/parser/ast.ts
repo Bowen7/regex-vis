@@ -71,6 +71,16 @@ export interface ClassCharacterNode extends NodeBase {
   quantifier: Quantifier | null
 }
 
+export type RangesCharacter = {
+  kind: "ranges"
+  ranges: Range[]
+  negate: boolean
+}
+export type ClassCharacter = { kind: "class"; value: string }
+export type StringCharacter = { kind: "string"; value: string }
+
+export type Character = RangesCharacter | ClassCharacter | StringCharacter
+
 export type CharacterNode =
   | StringCharacterNode
   | RangesCharacterNode

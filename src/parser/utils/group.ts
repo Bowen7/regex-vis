@@ -1,94 +1,89 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
-import { Node, GroupNode, GroupKind } from "@/types"
-import { visitTree, getNodesByIds } from "@/parser/visit"
+import * as AST from "../ast"
+import { visitTree, getNodeById, getNodesByIds } from "@/parser/visit"
 import { replace } from "./replace"
 
 export function group(
-  nodes: Node[],
-  selectedNodes: Node[],
-  type: GroupKind | "nonGroup",
+  nodes: AST.Node[],
+  selectedIds: string[],
+  kind: AST.GroupKind | "nonGroup",
   name?: string
 ) {
-  let nextSelectedIds: string[] = []
-  if (selectedNodes.length === 1 && selectedNodes[0].type === "group") {
-    nextSelectedIds = changeGroupType(nodes, selectedNodes[0], type, name)
-  } else {
-    const groupNode: GroupNode = {
-      id: nanoid(),
-      type: "group",
-      value: {
-        kind: "capturing",
-        name: "",
-      },
-      children: selectedNodes,
+  if (selectedIds.length === 1) {
+    const { node, nodeList, index } = getNodeById(nodes, selectedIds[0])
+    if (node.type === "group") {
+      const { id, quantifier, children, type } = node
+      let groupNode: AST.GroupNode
+      switch (kind) {
+        case "nonGroup":
+          return removeGroupWrap(nodes, node)
+        case "capturing":
+          groupNode = { id, type, kind, name: "", children, quantifier }
+          break
+        case "nonCapturing":
+          groupNode = { id, type, kind, children, quantifier }
+          break
+        case "namedCapturing":
+          groupNode = { id, type, kind, name: name!, children, quantifier }
+          break
+      }
+      nodeList[index] = groupNode
+      return selectedIds
     }
-
-    replace(nodes, selectedNodes, [groupNode])
-    nextSelectedIds = changeGroupType(nodes, groupNode, type, name)
   }
-  refreshGroupName(nodes)
+  let nextSelectedIds: string[] = selectedIds
+  const selectedNodes = getNodesByIds(nodes, selectedIds)
+  let groupNode: AST.GroupNode
+  const id = nanoid()
+  const type = "group"
+  const quantifier = null
+  const children = selectedNodes
+  switch (kind) {
+    case "capturing":
+      groupNode = { id, type, kind, name: "", children, quantifier }
+      break
+    case "nonCapturing":
+      groupNode = { id, type, kind, children, quantifier }
+      break
+    case "namedCapturing":
+      groupNode = { id, type, kind, name: name!, children, quantifier }
+      break
+  }
+  if (groupNode!) {
+    replace(nodes, selectedNodes, [groupNode!])
+    return [id]
+  }
   return nextSelectedIds
 }
 
-function changeGroupType(
-  nodes: Node[],
-  selectedNode: GroupNode,
-  type: GroupKind | "nonGroup",
-  name?: string
-) {
-  switch (type) {
-    case "nonGroup":
-      return removeGroupWrap(nodes, selectedNode)
-    case "capturing":
-      selectedNode.value = {
-        kind: "capturing",
-        name: "",
-      }
-      break
-    case "namedCapturing":
-      selectedNode.value = {
-        kind: "namedCapturing",
-        name: name as string,
-      }
-      break
-    case "nonCapturing":
-      selectedNode.value = {
-        kind: "nonCapturing",
-      }
-      break
-    default:
-      return []
-  }
-  return [selectedNode.id]
-}
-
-function removeGroupWrap(nodes: Node[], selectNode: GroupNode) {
+function removeGroupWrap(nodes: AST.Node[], selectNode: AST.GroupNode) {
   const { children } = selectNode
   replace(nodes, [selectNode], children!)
-  return children!.map(({ id }) => id)
+  return children.map(({ id }) => id)
 }
 
-function refreshGroupName(nodes: Node[]) {
+function refreshGroupName(nodes: AST.Node[]) {
   let groupIndex = 1
-  visitTree(nodes, (node: Node) => {
-    if (node.type === "group" && node.value.kind === "capturing") {
-      node.value.name = groupIndex++ + ""
+  visitTree(nodes, (node: AST.Node) => {
+    if (node.type === "group" && node.kind === "capturing") {
+      node.name = groupIndex++ + ""
     }
   })
 }
 
-export default (
-  nodes: Node[],
+const updateGroup = (
+  nodes: AST.Node[],
   selectedIds: string[],
-  type: GroupKind | "nonGroup",
+  type: AST.GroupKind | "nonGroup",
   name?: string
 ) => {
   let nextSelectedIds: string[] = []
   const nextNodes = produce(nodes, (draft) => {
-    const selectedNodes = getNodesByIds(draft, selectedIds)
-    nextSelectedIds = group(draft, selectedNodes, type, name)
+    nextSelectedIds = group(draft, selectedIds, type, name)
+    refreshGroupName(nodes)
   })
 
   return { nextNodes, nextSelectedIds }
 }
+export default updateGroup

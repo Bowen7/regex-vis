@@ -2,15 +2,15 @@ import React, { useState, useEffect, useRef } from "react"
 import { Select, Spacer, Radio } from "@geist-ui/react"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
-import { Quantifier } from "@/types"
+import { AST } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 import { quantifierOptions } from "./helper"
 type Props = {
-  quantifier: Quantifier | null
+  quantifier: AST.Quantifier | null
 }
 
 const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
-  const quantifierRef = useRef<Quantifier | null>(quantifier)
+  const quantifierRef = useRef<AST.Quantifier | null>(quantifier)
   const [kind, setKind] = useState("non")
   const [min, setMin] = useState("")
   const [max, setMax] = useState("")
@@ -33,7 +33,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
 
   const handleChange = (value: string | string[]) => {
     const greedy = quantifier?.greedy || false
-    let nextQuantifier: Quantifier | null = null
+    let nextQuantifier: AST.Quantifier | null = null
     switch (value) {
       case "?":
         nextQuantifier = { kind: "?", min: 0, max: 1, greedy }
@@ -102,7 +102,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
     }
     dispatch({
       type: MainActionTypes.UPDATE_QUANTIFIER,
-      payload: { ...(quantifierRef.current as Quantifier), greedy },
+      payload: { ...(quantifierRef.current as AST.Quantifier), greedy },
     })
   }
   return (
