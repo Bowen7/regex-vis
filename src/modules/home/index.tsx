@@ -1,101 +1,42 @@
-import React, { useState } from "react"
-import { Input, Button } from "@geist-ui/react"
-import Repeat from "@geist-ui/react-icons/repeat"
-import { Node, RootNode, Root, GroupKind } from "@types"
-import EditPanel from "../editPanel"
-import { remove, insert, group } from "../../parser/handler"
-import Railroad from "../railroad"
-import parser from "@parser"
-const DEFAULT_REGEX = `/[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+/`
-// const DEFAULT_REGEX = `/([.]{1,33333})(aa)/`
-// const DEFAULT_REGEX = `/a/`
-const Home: React.FC<{}> = () => {
-  const [regex, setRegex] = useState<string>(DEFAULT_REGEX)
-  const [root, _setRoot] = useState<Root>({ r: parser.parse(DEFAULT_REGEX) })
-  const [selectedNodes, setSelectedNodes] = useState<Node[]>([])
+import React, { useCallback } from "react"
+import { useTheme } from "@geist-ui/react"
+import Graph from "@/modules/graph"
+import Editor from "@/modules/editor"
+import { useMainReducer } from "@/redux"
+const DEFAULT_REGEX = `/([a-zA-Z_])*?@[a-zA-Z](\\.[a-zA-Z-]{0,10})?(a|b)/`
+// const DEFAULT_REGEX = `/x(?=aaa)/`
 
-  function setRoot(r: RootNode) {
-    _setRoot({
-      r,
-    })
-  }
-  function handleRegexChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setRegex(e.target.value)
-  }
-  function handleRenderClick() {
-    const root = parser.parse(regex)
-    setRoot(root)
-  }
-  function onRemove() {
-    remove(root.r, selectedNodes)
-    setRoot(root.r)
-    onSelect([])
-  }
-  function onSelect(nodes: Node[]) {
-    setSelectedNodes(nodes)
-  }
-  function onInsert(direction: "prev" | "next" | "parallel") {
-    insert(root.r, selectedNodes, direction)
-    setRoot(root.r)
-  }
-  function onGroup(type: string, name: string) {
-    group(root.r, selectedNodes, type as GroupKind | "nonGroup", name)
-    setRoot(root.r)
-  }
-  function onKeyDown(e: React.KeyboardEvent) {
-    e.stopPropagation()
-  }
+const Home: React.FC<{}> = () => {
+  const handleChange = useCallback((regex: string) => console.log(regex), [])
+  const [{ editorCollapsed }] = useMainReducer()
+  const { palette } = useTheme()
+
+  const style = editorCollapsed ? { width: "100%" } : {}
+
   return (
     <>
-      <div style={{ width: "100%", display: "flex", justifyContent: "center" }}>
-        <Railroad
-          root={root}
-          onSelect={onSelect}
-          selectedNodes={selectedNodes}
-        />
+      <div className="graph" style={style}>
+        <div className="content">
+          <Graph regex={DEFAULT_REGEX} onChange={handleChange} />
+        </div>
       </div>
+      <Editor />
+      <style jsx>{`
+        .graph {
+          width: calc(100% - 275px);
+          height: calc(100vh - 72px);
+          background: ${palette.accents_1};
+          display: flex;
+          overflow: auto;
+          transition: width 0.3s ease-out;
+        }
 
-      <EditPanel
-        nodes={selectedNodes}
-        onInsert={onInsert}
-        onRemove={onRemove}
-        onGroup={onGroup}
-      />
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        {/* <Repeat transform="rotate(90)" /> */}
-      </div>
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <Input
-          placeholder="输入正则"
-          width="500px"
-          value={regex}
-          onChange={handleRegexChange}
-          onKeyDown={onKeyDown}
-        />
-        <Button
-          auto
-          style={{
-            marginLeft: "20px",
-          }}
-          onClick={handleRenderClick}
-        >
-          Render
-        </Button>
-      </div>
+        .content {
+          /* https://stackoverflow.com/questions/33454533/cant-scroll-to-top-of-flex-item-that-is-overflowing-container */
+          margin: auto;
+          padding: 24px;
+        }
+      `}</style>
     </>
   )
 }

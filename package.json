@@ -3,34 +3,28 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@geist-ui/react": "^2.1.0-canary.1",
+    "@geist-ui/react": "^2.1.5",
     "@geist-ui/react-icons": "^1.0.1",
-    "@testing-library/jest-dom": "^4.2.4",
-    "@testing-library/react": "^9.3.2",
-    "@testing-library/user-event": "^7.1.2",
-    "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
-    "@types/react": "^16.9.0",
-    "@types/react-dom": "^16.9.0",
-    "@types/react-redux": "^7.1.9",
-    "@types/react-router-dom": "^5.1.5",
-    "@types/styled-components": "^5.1.4",
-    "immer": "^7.0.9",
+    "canvas": "^2.8.0",
+    "immer": "^8.0.1",
+    "lodash": "^4.17.21",
     "nanoid": "^3.1.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.3",
-    "regexpp": "^3.1.0",
-    "styled-components": "^5.2.1",
+    "react-scripts": "4.0.3",
+    "regexpp": "Bowen7/regexpp#8fb9c550810a37b8c4486cc547635518a2e4f57e",
+    "styled-jsx": "3.3.0",
     "typescript": "~3.7.2"
   },
   "scripts": {
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
-    "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "test": "jest --config .jest.config.js --no-cache",
+    "eject": "react-scripts eject",
+    "build:graph": "rm -rf dest && rollup -c",
+    "export:svg": "npm run build:graph && node scripts/export.js"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -48,7 +42,28 @@
     ]
   },
   "devDependencies": {
+    "@babel/preset-env": "^7.14.2",
+    "@babel/preset-react": "^7.13.13",
+    "@babel/preset-typescript": "^7.13.0",
+    "@rollup/plugin-alias": "^3.1.2",
+    "@rollup/plugin-babel": "^5.3.0",
+    "@rollup/plugin-commonjs": "^19.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.0",
+    "@rollup/plugin-replace": "^2.4.2",
+    "@svgr/webpack": "^5.5.0",
+    "@types/jest": "^24.9.1",
+    "@types/lodash": "^4.14.168",
+    "@types/node": "^12.0.0",
+    "@types/react": "^16.9.0",
+    "@types/react-dom": "^16.9.0",
+    "@types/react-redux": "^7.1.9",
+    "@types/react-router-dom": "^5.1.5",
+    "@types/styled-jsx": "^2.2.8",
+    "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.1.6"
+    "jest": "^26.6.0",
+    "react-app-rewired": "^2.1.6",
+    "rollup": "^2.48.0",
+    "ts-node": "^10.0.0"
   }
 }

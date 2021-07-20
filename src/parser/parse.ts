@@ -1,394 +1,642 @@
-import { parseRegExpLiteral, AST } from "regexpp"
 import { nanoid } from "nanoid"
-import {
-  Node,
-  RootNode,
-  SingleNode,
-  GroupNode,
-  CharCollection,
-  Char,
-  CharRange,
-  CharContent,
-  NodeParent,
-  NodePrev,
-  ChoiceNode,
-  NodeQuantifier,
-  BoundaryAssertionNode,
-  LookaroundAssertionNode,
-} from "@types"
-import { genPlaceholderNode } from "./helper"
-const AssertionNameMap = {
-  start: "Start of line",
-  end: "End of line",
-  lookahead: ["Followed by:", "Not followed by"],
-  lookbehind: ["Preceded by", "Not Preceded by"],
-  word: "",
-}
-let groupName = 1
-function parse(regex: string | RegExp) {
-  groupName = 1
-  const ast = parseRegExpLiteral(regex)
-  const startNode = genStartNode()
-  const lastNode = genBodyNode(ast, startNode, null)
-  genEndNode(lastNode)
-  return startNode
-}
-function genStartNode() {
-  const node: RootNode = {
-    id: nanoid(),
-    type: "root",
-    prev: null,
-    next: null,
-    parent: null,
-    text: "start",
-  }
-  return node
-}
-function genBodyNode(ast: AST.RegExpLiteral, prev: Node, parent: NodeParent) {
-  const alternatives = ast.pattern.alternatives
-  if (alternatives.length === 1) {
-    return parseAlternative(alternatives[0], prev, null)
-  } else {
-    return parseAlternatives(alternatives, prev, null)
-  }
-}
-function genEndNode(lastNode: NodePrev) {
-  const node: RootNode = {
-    id: nanoid(),
-    type: "root",
-    prev: lastNode,
-    next: null,
-    parent: null,
-    text: "end",
-  }
-  lastNode && (lastNode.next = node)
-  return node
-}
-function parseAlternative(
-  ast: AST.Alternative,
-  prev: NodePrev,
-  parent: NodeParent
-) {
-  const elements = mergeElements(ast.elements)
+import * as AST from "./ast"
 
-  elements.forEach((element, index) => {
-    const _prev = parseElement(element, prev, parent)
-    if (prev === null && parent) {
-      if (parent.type === "choice") {
-        parent.chains.push(_prev)
-      } else {
-        parent.chain = _prev
-      }
-    }
-    prev = _prev
-  })
-  return prev
+const lookAroundDict: {
+  "?=": AST.LookAround
+  "?!": AST.LookAround
+  "?<=": AST.LookAround
+  "?<!": AST.LookAround
+} = {
+  "?=": { kind: "lookahead", negate: false },
+  "?!": { kind: "lookahead", negate: true },
+  "?<=": { kind: "lookbehind", negate: false },
+  "?<!": { kind: "lookbehind", negate: true },
 }
-function parseElement(
-  ast: AST.Element,
-  prev: NodePrev,
-  parent: NodeParent
-): Node {
-  let node!: Node
-  switch (ast.type) {
-    case "Character":
-      node = parseCharacter(ast, prev, parent)
-      break
-    case "CapturingGroup":
-    case "Group":
-      node = parseGroup(ast, prev, parent)
-      break
-    case "Quantifier":
-      const { min, max, element } = ast
-      node = parseElement(element, prev, parent) as NodeQuantifier
-      let text = ""
-      if (max !== Infinity) {
-        text += Math.max(0, min - 1)
-        if (max !== min) {
-          text += " - "
-          text += max - 1
+
+class Parser {
+  regex: string
+  message: string = ""
+  index = 0
+  ast: AST.Regex = { type: "regex", body: [], flags: [] }
+  parent!:
+    | AST.Regex
+    | AST.ChoiceNode
+    | AST.GroupNode
+    | AST.LookAroundAssertionNode
+    | AST.RangesCharacterNode
+  prev: AST.Regex | AST.Node | null = null
+  groupIndex = 1
+  escaped = false
+  flagSet: Set<AST.FlagKind> = new Set()
+  idGenerator: (size?: number) => string
+  constructor(regex: string, idGenerator = nanoid) {
+    this.regex = regex.trim()
+    this.idGenerator = idGenerator
+  }
+
+  public parse(): AST.Regex | AST.RegexError {
+    if (!this.validate()) {
+      return { type: "error", message: this.message }
+    }
+    this.onRegex()
+    return this.ast
+  }
+
+  public validate() {
+    try {
+      const start = this.regex.indexOf("/")
+      let end = this.regex.lastIndexOf("/")
+
+      if (start !== 0 || end <= start || this.regex[end - 1] === "\\") {
+        this.message = "Invalid regular expression"
+        return false
+      }
+
+      for (let i = end + 1; i < this.regex.length; i++) {
+        if (!/[gimsuy]/.test(this.regex[i])) {
+          this.message = `Invalid regular expression flags '${this.regex[i]}'`
+          return false
         }
-        text += " times"
+        this.flagSet.add(this.regex[i] as AST.FlagKind)
       }
-      node.quantifier = {
-        min,
-        max,
-        text,
-      }
-      break
-    case "CharacterClass":
-      node = parseCharacterClass(ast, prev, parent)
-      break
-    case "Assertion":
-      node = parseAssertion(ast, prev, parent)
-      break
-    case "CharacterSet":
-      node = parseCharacterSet(ast, prev, parent)
-      break
-    default:
-      break
-  }
-  prev && (prev.next = node)
-  return node
-}
-function parseAlternatives(
-  ast: AST.Alternative[],
-  prev: NodePrev,
-  parent: NodeParent
-) {
-  const node: ChoiceNode = {
-    id: nanoid(),
-    type: "choice",
-    prev,
-    next: null,
-    parent,
-    chains: [],
-  }
-  ast.forEach(alternative => {
-    parseAlternative(alternative, null, node)
-  })
-  prev && (prev.next = node)
-  return node
-}
-function parseCharacter(
-  character: AST.Character,
-  prev: NodePrev,
-  parent: NodeParent
-): Node {
-  return {
-    id: nanoid(),
-    type: "single",
-    text: character.raw,
-    prev,
-    next: null,
-    parent,
-    content: {
-      kind: "simple",
-      text: character.raw,
-    },
-  }
-}
-function parseCharacterSet(
-  characterSet: AST.CharacterSet,
-  prev: NodePrev,
-  parent: NodeParent
-): SingleNode {
-  let content!: CharContent
-  switch (characterSet.kind) {
-    case "any":
-      content = {
-        kind: "any",
-        text: "any character",
-        raw: ".",
-      }
-      break
 
-    default:
-      break
+      new RegExp(this.regex.slice(start + 1, end), this.regex.slice(end + 1))
+    } catch (error) {
+      this.message = error.message
+      return false
+    }
+    return true
   }
-  return {
-    id: nanoid(),
-    type: "single",
-    prev,
-    next: null,
-    parent,
-    content: content,
-    text: content.text,
+
+  id() {
+    return this.idGenerator()
   }
-}
-// EdgeAssertion will convert to EdgeAssertionNode
-// LookaroundAssertion assertions will convert to GroupNode
-function parseAssertion(
-  assertion: AST.Assertion,
-  prev: NodePrev,
-  parent: NodeParent
-) {
-  let node!: Node
-  switch (assertion.kind) {
-    case "start":
-    case "end":
-      node = parseEdgeAssertion(assertion, prev, parent)
-      break
-    case "lookahead":
-    case "lookbehind":
-      node = parseLookaroundAssertion(assertion, prev, parent)
-      break
-    case "word":
-      node = parseWordBoundaryAssertion(assertion, prev, parent)
-      break
-    default:
-      break
+
+  private advance(step = 1) {
+    if (this.index === this.regex.length - 1) {
+      return false
+    }
+    this.index += step
+    return true
   }
-  return node
-}
-function parseLookaroundAssertion(
-  assertion: AST.LookaroundAssertion,
-  prev: NodePrev,
-  parent: NodeParent
-): LookaroundAssertionNode {
-  const { alternatives, negate, kind } = assertion
-  const name = AssertionNameMap[assertion.kind][negate ? 1 : 0]
-  const node: LookaroundAssertionNode = {
-    id: nanoid(),
-    type: "lookaroundAssertion",
-    prev: prev,
-    next: null,
-    parent,
-    chain: genPlaceholderNode(),
-    kind,
-    negate,
-    name,
+
+  private cur(advance = 0) {
+    return this.regex[this.index + advance]
   }
-  if (alternatives.length === 1) {
-    parseAlternative(alternatives[0], null, node)
-  } else {
-    parseAlternatives(alternatives, null, node)
-  }
-  return node
-}
-function parseWordBoundaryAssertion(
-  assertion: AST.WordBoundaryAssertion,
-  prev: NodePrev,
-  parent: NodeParent
-): BoundaryAssertionNode {
-  const { kind, negate } = assertion
-  return {
-    id: nanoid(),
-    type: "boundaryAssertion",
-    text: negate ? "NonWordBoundary" : "WordBoundary",
-    prev,
-    next: null,
-    parent,
-    kind,
-    negate,
-  }
-}
-function parseEdgeAssertion(
-  assertion: AST.EdgeAssertion,
-  prev: NodePrev,
-  parent: NodeParent
-): BoundaryAssertionNode {
-  const text = assertion.kind === "start" ? "Start of line" : "End of line"
-  return {
-    id: nanoid(),
-    type: "boundaryAssertion",
-    text: text,
-    prev: prev,
-    next: null,
-    parent,
-    kind: assertion.kind,
-  }
-}
-function parseGroup(
-  ast: AST.CapturingGroup | AST.Group,
-  prev: NodePrev,
-  parent: NodeParent
-) {
-  const alternatives = ast.alternatives
-  const node: GroupNode = {
-    id: nanoid(),
-    type: "group",
-    prev,
-    next: null,
-    chain: genPlaceholderNode(),
-    parent,
-    kind: "nonCapturing",
-  }
-  if (ast.type === "CapturingGroup") {
-    if (ast.name) {
-      node.kind = "namedCapturing"
-      node.rawName = ast.name
-      node.name = "Group #" + ast.name
-    } else {
-      node.kind = "capturing"
-      node.rawName = groupName.toString()
-      node.name = "Group #" + groupName++
+
+  private onEscape() {
+    const cur = this.cur()
+    this.escaped = false
+    switch (cur) {
+      case "d":
+      case "D":
+      case "w":
+      case "W":
+      case "s":
+      case "S":
+      case "t":
+      case "r":
+      case "n":
+      case "v":
+      case "f":
+      case "0":
+        this.appendChild({
+          id: this.id(),
+          type: "character",
+          kind: "class",
+          value: `\\${cur}`,
+          quantifier: null,
+        })
+        break
+      case "b":
+      case "B":
+        this.appendChild({
+          id: this.id(),
+          type: "boundaryAssertion",
+          kind: "word",
+          negate: cur === "b" ? false : true,
+        })
+        break
+      // \cX
+      case "c":
+        const X = this.eat("[A-Za-z]", "", 1)
+        if (X) {
+          this.appendChild({
+            id: this.id(),
+            type: "character",
+            kind: "class",
+            value: `\\c${X}`,
+            quantifier: null,
+          })
+          this.advance(1)
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      // \xhh
+      case "x":
+        const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
+        if (hh) {
+          this.appendChild({
+            id: this.id(),
+            type: "character",
+            kind: "class",
+            value: `\\x${hh}`,
+            quantifier: null,
+          })
+          this.advance(2)
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      // \uhhhh
+      case "u":
+        const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
+        if (hhhh) {
+          this.appendChild({
+            id: this.id(),
+            type: "character",
+            kind: "class",
+            value: `\\u${hhhh}`,
+            quantifier: null,
+          })
+          this.advance(4)
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      default:
+        // back reference
+        const groupName = this.eat("\\d+")
+        if (groupName) {
+          this.appendChild({
+            id: this.id(),
+            type: "backReference",
+            name: groupName,
+          })
+          this.advance(groupName.length - 1)
+          break
+        }
+        this.onStringCharacter()
+        break
     }
   }
-  if (alternatives.length === 1) {
-    parseAlternative(alternatives[0], null, node)
-  } else {
-    parseAlternatives(alternatives, null, node)
-  }
-  return node
-}
-function parseCharacterClass(
-  ast: AST.CharacterClass,
-  prev: NodePrev,
-  parent: NodeParent
-): SingleNode {
-  const { elements, negate } = ast
-  const charCollection: CharCollection = {
-    kind: "collection",
-    collections: [],
-    text: "",
-    negate,
-  }
-  elements.forEach(element => {
-    if (element.type === "Character") {
-      const text = String.fromCharCode(element.value)
-      const char: Char = {
-        kind: "simple",
-        text,
-      }
-      charCollection.collections.push(char)
-    } else if (element.type === "CharacterClassRange") {
-      const { min, max } = element
-      const minText = String.fromCharCode(min.value)
-      const maxText = String.fromCharCode(max.value)
-      const from: Char = {
-        kind: "simple",
-        text: minText,
-      }
-      const to: Char = {
-        kind: "simple",
-        text: maxText,
-      }
-      const charRange: CharRange = {
-        kind: "range",
-        from,
-        to,
-        text: minText + "-" + maxText,
-      }
-      charCollection.collections.push(charRange)
-    }
-  })
-  const text = charCollection.collections.map(item => item.text).join(", ")
-  const name = negate ? "None of " : "One of "
-  charCollection.text = text
-  return {
-    id: nanoid(),
-    type: "single",
-    prev: prev,
-    next: null,
-    parent,
-    content: charCollection,
-    text: charCollection.text,
-    name,
-  }
-}
-function mergeElements(elements: AST.Element[]) {
-  const result: AST.Element[] = []
-  let lastElement: AST.Element | null = null
-  elements.forEach(element => {
-    if (element.type === "Character") {
-      const raw = String.fromCharCode(element.value)
-      if (lastElement) {
-        lastElement.raw += raw
+
+  private consume(endPoint: string) {
+    do {
+      if (this.escaped) {
+        this.onEscape()
       } else {
-        lastElement = { ...element, raw }
+        const cur = this.cur()
+        switch (cur) {
+          case endPoint:
+            return
+          case "{":
+          case "?":
+          case "*":
+          case "+":
+            this.consumeQuantifier()
+            break
+          case "(":
+            this.onGroup()
+            break
+          case "|":
+            this.onChoice()
+            break
+          case ".":
+            this.appendChild({
+              id: this.id(),
+              type: "character",
+              kind: "class",
+              value: ".",
+              quantifier: null,
+            })
+            break
+          case "\\":
+            this.escaped = true
+            break
+          case "^":
+          case "$":
+            this.appendChild({
+              id: this.id(),
+              type: "boundaryAssertion",
+              kind: cur === "^" ? "beginning" : "end",
+            })
+            break
+          case "[":
+            this.onRanges()
+            break
+          default:
+            this.onStringCharacter()
+            break
+        }
       }
-    } else {
-      if (lastElement) {
-        result.push(lastElement)
-        lastElement = null
-      }
-      result.push(element)
-    }
-  })
-  if (lastElement) {
-    result.push(lastElement)
+    } while (this.advance())
   }
-  return result
+
+  private onChoice() {
+    if (this.parent.type === "choice") {
+      this.parent.branches.push([])
+      return
+    }
+    if (this.parent.type === "character") {
+      return
+    }
+    const branch =
+      this.parent.type === "regex" ? this.parent.body : this.parent.children
+
+    const choiceNode: AST.ChoiceNode = {
+      id: this.id(),
+      type: "choice",
+      branches: [branch, []],
+    }
+
+    if (this.parent.type === "regex") {
+      this.parent.body = [choiceNode]
+    } else {
+      this.parent.children = [choiceNode]
+    }
+    this.parent = choiceNode
+    this.prev = null
+  }
+
+  private onStringCharacter() {
+    if (
+      this.prev &&
+      this.prev.type === "character" &&
+      this.prev.kind === "string" &&
+      !this.prev.quantifier
+    ) {
+      this.prev.value += this.cur()
+    } else {
+      const node: AST.StringCharacterNode = {
+        id: this.id(),
+        type: "character",
+        kind: "string",
+        value: this.cur(),
+        quantifier: null,
+      }
+      this.appendChild(node)
+    }
+  }
+
+  private consumeQuantifier() {
+    let quantifier: AST.Quantifier
+    switch (this.cur()) {
+      case "?":
+        quantifier = { kind: "?", min: 0, max: 1, greedy: true }
+        break
+      case "*":
+        quantifier = { kind: "*", min: 0, max: Infinity, greedy: true }
+        break
+      case "+":
+        quantifier = { kind: "+", min: 1, max: Infinity, greedy: true }
+        break
+      case "{":
+        const min = this.eat("\\d+", "", 1)
+        if (!min) {
+          break
+        }
+        if (this.cur(min.length + 1) === "}") {
+          quantifier = {
+            kind: "custom",
+            min: parseInt(min),
+            max: parseInt(min),
+            greedy: true,
+          }
+          this.advance(min.length + 1)
+          break
+        }
+
+        const comma = this.eat(",", "", min.length + 1)
+        if (comma) {
+          if (this.cur(min.length + 2) === "}") {
+            quantifier = {
+              kind: "custom",
+              min: parseInt(min),
+              max: Infinity,
+              greedy: true,
+            }
+            this.advance(min.length + 2)
+            break
+          }
+        }
+
+        const max = this.eat("\\d+", "", min.length + 2)
+        if (!max) {
+          break
+        }
+        if (this.cur(min.length + max.length + 2) === "}") {
+          quantifier = {
+            kind: "custom",
+            min: parseInt(min),
+            max: parseInt(max),
+            greedy: true,
+          }
+          this.advance(min.length + max.length + 2)
+        }
+        break
+      default:
+        break
+    }
+
+    if (quantifier! && this.cur(1) === "?") {
+      quantifier!.greedy = false
+      this.advance()
+    }
+
+    if (quantifier!) {
+      if (
+        this.prev &&
+        (this.prev.type === "character" || this.prev.type === "group")
+      ) {
+        if (this.prev.type === "character" && this.prev.kind === "string") {
+          const value = this.prev.value
+          if (value.length > 1) {
+            const node: AST.StringCharacterNode = {
+              id: this.id(),
+              type: "character",
+              kind: "string",
+              value: value.slice(-1),
+              quantifier: null,
+            }
+            this.prev.value = value.slice(0, value.length - 1)
+            this.appendChild(node)
+          }
+        }
+        this.prev.quantifier = quantifier!
+      } else {
+        // TODO: error handling
+      }
+      return true
+    } else {
+      this.onStringCharacter()
+    }
+    return false
+  }
+
+  private appendChild(node: AST.Node) {
+    this.prev = node
+    const parent = this.parent
+    if (parent.type === "regex") {
+      parent.body.push(node)
+      return
+    }
+    if (parent.type === "group" || parent.type === "lookAroundAssertion") {
+      parent.children.push(node)
+    }
+    if (parent.type === "choice") {
+      const { branches } = parent
+      branches[branches.length - 1].push(node)
+    }
+  }
+
+  private onRegex() {
+    this.parent = this.ast
+    this.prev = this.ast
+    this.onRegexBody()
+    this.onFlags()
+  }
+
+  private onRegexBody() {
+    this.advance()
+    this.consume("/")
+  }
+
+  private onFlags() {
+    this.flagSet.forEach((flag) => {
+      this.ast.flags.push({ kind: flag })
+    })
+  }
+
+  private eat(
+    startPoint: string,
+    endPoint: string = "",
+    advance = 0
+  ): string | false {
+    if (!endPoint) {
+      const match = this.regex
+        .slice(this.index + advance)
+        .match(new RegExp(`^(${startPoint})`))
+      if (match) {
+        return match[0]
+      }
+      return false
+    }
+    const match = this.regex
+      .slice(this.index + advance)
+      .match(new RegExp(`^(${startPoint}(.*)${endPoint})`))
+
+    if (match) {
+      return match[2]
+    }
+    return false
+  }
+
+  private onRanges() {
+    this.advance()
+
+    const parent = this.parent
+    const node: AST.RangesCharacterNode = {
+      id: this.id(),
+      type: "character",
+      kind: "ranges",
+      ranges: [],
+      negate: false,
+      quantifier: null,
+    }
+    if (this.cur() === "^") {
+      node.negate = true
+      this.advance()
+    }
+    this.parent = node
+    this.consumeRanges()
+    this.parent = parent
+    this.appendChild(node)
+  }
+
+  private consumeRanges() {
+    let from = ""
+    let hyphen = false
+
+    const onRange = (range: string) => {
+      if (!from) {
+        from = range
+      } else if (!hyphen) {
+        this.appendRange(from)
+        from = range
+      } else {
+        this.appendRange(from, range)
+        from = ""
+        hyphen = false
+      }
+    }
+
+    do {
+      const cur = this.cur()
+      if (this.escaped) {
+        this.escaped = false
+        switch (cur) {
+          case "d":
+          case "D":
+          case "w":
+          case "W":
+          case "s":
+          case "S":
+          case "t":
+          case "r":
+          case "n":
+          case "v":
+          case "f":
+          case "0":
+          case "b":
+            onRange(`\\${cur}`)
+            break
+          // \cX
+          case "c":
+            const X = this.eat("[A-Za-z]", "", 1)
+            if (X) {
+              onRange(`\\c${X}`)
+              this.advance(1)
+            } else {
+              onRange("c")
+            }
+            break
+          // \xhh
+          case "x":
+            const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
+            if (hh) {
+              onRange(`\\x${hh}`)
+              this.advance(2)
+            } else {
+              onRange("x")
+            }
+            break
+          // \uhhhh
+          case "u":
+            const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
+            if (hhhh) {
+              onRange(`\\u${hhhh}`)
+              this.advance(4)
+            } else {
+              onRange("u")
+            }
+            break
+          default:
+            onRange(cur)
+            break
+        }
+      } else {
+        if (cur === "]") {
+          break
+        }
+        switch (cur) {
+          case "\\":
+            this.escaped = true
+            break
+          case "-":
+            if (!from) {
+              if (this.cur(1) === "-") {
+                from = cur
+              } else {
+                this.appendRange(cur)
+              }
+            } else if (hyphen) {
+              onRange("-")
+            } else {
+              hyphen = true
+            }
+            break
+          default:
+            onRange(cur)
+            break
+        }
+      }
+    } while (this.advance())
+    if (from) {
+      this.appendRange(from)
+    }
+    if (hyphen) {
+      this.appendRange("-")
+    }
+  }
+
+  private appendRange(from: string, to?: string) {
+    to = to || from
+    if (this.parent.type === "character") {
+      this.parent.ranges.push({ from, to })
+    }
+  }
+
+  // group or lookAroundAssertion
+  private onGroup() {
+    this.advance()
+
+    let node: AST.GroupNode | AST.LookAroundAssertionNode
+    let group: AST.Group
+    if (this.cur() === "?") {
+      const lookAround = this.eat("\\?=|\\?!|\\?<=|\\?<!")
+      if (lookAround) {
+        node = {
+          id: this.id(),
+          type: "lookAroundAssertion",
+          ...lookAroundDict[lookAround as keyof typeof lookAroundDict],
+          children: [],
+        }
+        this.advance(lookAround.length)
+      } else {
+        if (this.eat("\\?:")) {
+          this.advance(2)
+          group = { kind: "nonCapturing" }
+        }
+      }
+    }
+
+    if (!node! && !group!) {
+      if (this.eat("\\?:")) {
+        this.advance(2)
+        group = { kind: "nonCapturing" }
+      } else {
+        const name = this.eat("\\?<", ">")
+        if (name) {
+          this.advance((name as string).length + 3)
+          group = { kind: "namedCapturing", name: name as string }
+        }
+      }
+    }
+
+    if (!node! && !group!) {
+      group = { kind: "capturing", name: this.groupIndex++ + "" }
+    }
+
+    if (group!) {
+      node = {
+        id: this.id(),
+        type: "group",
+        children: [],
+        ...group!,
+        quantifier: null,
+      }
+    }
+
+    const parent = this.parent
+    this.parent = node!
+    this.consume(")")
+    this.parent = parent
+
+    this.appendChild(node!)
+  }
 }
+
+const parse = (
+  regex: string | RegExp,
+  idGenerator?: (size?: number | undefined) => string
+) => {
+  if (typeof regex !== "string") {
+    regex = String(regex)
+  }
+  const parser = new Parser(regex, idGenerator)
+  return parser.parse()
+}
+
 export default parse

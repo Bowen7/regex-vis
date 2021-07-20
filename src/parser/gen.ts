@@ -1,81 +1,61 @@
-import {
-  Node,
-  ChoiceNode,
-  GroupNode,
-  Char,
-  Quantifier,
-  SingleNode,
-  BoundaryAssertionNode,
-  LookaroundAssertionNode,
-} from "@types"
-import { hasQuantifier } from "../utils"
+import * as AST from "./ast"
 
-function gen(start: Node, end: Node | null = null) {
-  let reStr = ""
-  const isSingleChoice = judgeSingleChoice(start, end)
-  let cur: Node | null = start
-  while (cur !== null && cur !== end?.next) {
-    switch (cur.type) {
-      case "choice":
-        const r = genChoice(cur)
-        if (isSingleChoice) {
-          reStr = r
-        } else {
-          reStr += `(${r})`
-        }
-        break
-      case "group":
-        reStr += genGroup(cur)
-        break
-      case "single":
-        reStr += genSingle(cur)
-        break
-      case "boundaryAssertion":
-        reStr += genBoundaryAssertionNode(cur)
-        break
-      case "lookaroundAssertion":
-        reStr += genLookaroundAssertionNode(cur)
-        break
-      default:
-        break
-    }
-    if (hasQuantifier(cur) && cur.quantifier) {
-      reStr += genQuantifier(cur)
-    }
-    cur = cur.next
-  }
-  return reStr
-}
-function judgeSingleChoice(start: Node, end: Node | null) {
-  let cur: Node | null = start
-  let flag = false
-  while (cur !== null && cur !== end?.next) {
-    if (cur.type !== "root") {
-      if (flag) {
-        return false
+function gen(nodes: AST.Node[], withSlash = false, flags: AST.Flag[] = []) {
+  const r = nodes
+    .map((node) => {
+      let regex = ""
+      switch (node.type) {
+        case "choice":
+          regex = genChoice(node)
+          break
+        case "group":
+          regex += genGroup(node)
+          break
+        case "character":
+          regex += genCharacter(node)
+          break
+        case "boundaryAssertion":
+          regex += genBoundaryAssertionNode(node)
+          break
+        case "lookAroundAssertion":
+          regex += genLookaroundAssertionNode(node)
+          break
+        case "backReference":
+          regex += genBackReference(node)
+          break
+        default:
+          break
       }
-      flag = true
-    }
-    cur = cur.next
+      if (node.type === "character" || node.type === "group") {
+        regex += genQuantifier(node)
+      }
+      return regex
+    })
+    .join("")
+  if (withSlash) {
+    const f = flags.map((flag) => flag.kind).join("")
+    return `/${r}/${f}`
   }
-}
-function genChoice(node: ChoiceNode) {
-  const { chains } = node
-  const chainsRes: string[] = []
-  chains.forEach(chain => {
-    chainsRes.push(gen(chain as Node))
-  })
-  return chainsRes.join("|")
+  return r
 }
 
-function genGroup(node: GroupNode) {
-  const { chain, kind, rawName } = node
-  const content = gen(chain)
-  switch (kind) {
+function genChoice(node: AST.ChoiceNode) {
+  const { branches } = node
+  return branches
+    .map((branch) => {
+      return gen(branch)
+    })
+    .join("|")
+}
+
+function genGroup(node: AST.GroupNode) {
+  const { children } = node
+  const content = gen(children)
+  switch (node.kind) {
     case "capturing":
       return "(" + content + ")"
     case "namedCapturing":
-      return "(?<" + rawName + ">" + content + ")"
+      return "(?<" + node.name + ">" + content + ")"
     case "nonCapturing":
       return "(?:" + content + ")"
 
@@ -83,57 +63,88 @@ function genGroup(node: GroupNode) {
       break
   }
 }
-function genChar(node: Char, prefix: boolean) {
-  if (prefix) {
-    return node.text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
-  }
-  return node.text
+
+function prefix(value: string) {
+  return value.replace(/[|\\{}()[\]^$+*?./]/g, "\\$&")
 }
-function genSingle(node: SingleNode) {
-  const { content } = node
-  switch (content.kind) {
-    case "collection":
-      const { negate } = content
+
+function genCharacter(node: AST.CharacterNode) {
+  switch (node.kind) {
+    case "ranges":
+      const { negate, ranges } = node
       let str = ""
-      content.collections.forEach(collection => {
-        if (collection.kind === "range") {
-          str +=
-            genChar(collection.from, false) +
-            "-" +
-            genChar(collection.to, false)
+      ranges.forEach(({ from, to }, index) => {
+        if (from === "]") {
+          from = "\\]"
+        }
+        if (to === "]") {
+          to = "\\]"
+        }
+        if (!(index === 0 || index === ranges.length - 1)) {
+          if (from === "-") {
+            from = "\\-"
+          }
+          if (to === "-") {
+            to = "\\-"
+          }
+        }
+        if (from !== to) {
+          str += from + "-" + to
         } else {
-          str += genChar(collection, false)
+          str += from
         }
       })
       return (negate ? "[^" : "[") + str + "]"
-    case "simple":
-      return genChar(content, true)
-    case "any":
-      return content.raw
+    case "string":
+      return prefix(node.value)
+    case "class":
+      return node.value
     default:
       return ""
   }
 }
-function genQuantifier(node: GroupNode | SingleNode) {
+
+function genQuantifier(node: AST.CharacterNode | AST.GroupNode) {
   const { quantifier } = node
-  const { min, max } = quantifier as Quantifier
-  if (min === 0 && max === Infinity) {
-    return "*"
-  } else if (min === 1 && max === Infinity) {
-    return "+"
-  } else if (min === 0 && max === 1) {
-    return "?"
-  } else if (min === max) {
-    return "{" + min + "}"
-  } else if (max === Infinity) {
-    return "{" + min + ",}"
-  } else {
-    return "{" + min + "-" + max + "}"
+  if (!quantifier) {
+    return ""
   }
+  const { kind, min, max, greedy } = quantifier
+  let result = ""
+
+  switch (kind) {
+    case "*":
+      result = "*"
+      break
+    case "+":
+      result = "+"
+      break
+    case "?":
+      result = "?"
+      break
+    case "custom":
+      if (min === max) {
+        result = `{${min}}`
+      } else if (max === Infinity) {
+        result = `{${min},}`
+      } else {
+        result = `{${min},${max}}`
+      }
+      break
+    default:
+      break
+  }
+  return result + (greedy ? "" : "?")
 }
-function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
+
+function genBoundaryAssertionNode(
+  node:
+    | AST.BeginningBoundaryAssertionNode
+    | AST.EndBoundaryAssertionNode
+    | AST.WordBoundaryAssertionNode
+) {
   switch (node.kind) {
-    case "start":
+    case "beginning":
       return "^"
     case "end":
       return "$"
@@ -143,12 +154,19 @@ function genBoundaryAssertionNode(node: BoundaryAssertionNode) {
       return ""
   }
 }
-const LookaroundMap = {
+
+const lookAroundMap = {
   lookahead: ["(?=", "(?!"],
-  lookbehind: ["(?=<", "(?<!"],
+  lookbehind: ["(?<=", "(?<!"],
 }
-function genLookaroundAssertionNode(node: LookaroundAssertionNode) {
-  const { chain, kind, negate } = node
-  return LookaroundMap[kind][negate ? 1 : 0] + gen(chain as Node) + ")"
+
+function genLookaroundAssertionNode(node: AST.LookAroundAssertionNode) {
+  const { children, kind, negate } = node
+  return lookAroundMap[kind][negate ? 1 : 0] + gen(children) + ")"
+}
+
+function genBackReference(node: AST.BackReferenceNode) {
+  const { name } = node
+  return `\\${name}`
 }
 export default gen
