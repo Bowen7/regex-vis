@@ -29,6 +29,7 @@ const labelMap = {
   string: "Value",
   ranges: "Ranges",
   class: "Class",
+  backRef: "Back Reference",
 }
 
 export { classOptions, labelMap }

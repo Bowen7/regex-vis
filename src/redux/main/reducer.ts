@@ -31,7 +31,7 @@ export enum ActionTypes {
   UNDO,
   REDO,
   SELECT_NODES,
-  UPDATE_CHARACTER,
+  UPDATE_CONTENT,
   SET_EDITOR_COLLAPSED,
   UPDATE_GUIDE_CONFIG,
   UPDATE_QUANTIFIER,
@@ -55,8 +55,10 @@ export type Action =
       payload: { selected: string[] | string }
     }
   | {
-      type: ActionTypes.UPDATE_CHARACTER
-      payload: { value: AST.Character }
+      type: ActionTypes.UPDATE_CONTENT
+      payload:
+        | { kind: "string" | "class"; value: string }
+        | { kind: "ranges"; ranges: AST.Range[]; negate: boolean }
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
@@ -158,11 +160,11 @@ export const reducer = (state: InitialStateType, action: Action) => {
         selectedIds: nextSelected,
       }
     }
-    case ActionTypes.UPDATE_CHARACTER: {
+    case ActionTypes.UPDATE_CONTENT: {
       const { ast, selectedIds } = state
-      const { value } = action.payload
+      const payload = action.payload
       const id = selectedIds[0]
-      const nextNodes = character(ast.body, id, value)
+      const nextNodes = character(ast.body, id, payload)
       return setNodes(state, nextNodes)
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {

@@ -13,22 +13,20 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
   const { palette } = useTheme()
 
   const addRange = (newRanges: AST.Range[]) => {
-    const val: AST.RangesCharacter = {
+    const payload: AST.RangesCharacter = {
       kind: "ranges",
       ranges: ranges.concat(newRanges),
       negate: false,
     }
     dispatch({
-      type: MainActionTypes.UPDATE_CHARACTER,
-      payload: {
-        value: val,
-      },
+      type: MainActionTypes.UPDATE_CONTENT,
+      payload,
     })
   }
 
   const handleRangeChange = (index: number, range: AST.Range) => {
     // Todo: special action
-    const val: AST.RangesCharacter = {
+    const payload: AST.RangesCharacter = {
       kind: "ranges",
       ranges: ranges.map((_range, _index) => {
         if (_index === index) {
@@ -39,15 +37,13 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       negate: false,
     }
     dispatch({
-      type: MainActionTypes.UPDATE_CHARACTER,
-      payload: {
-        value: val,
-      },
+      type: MainActionTypes.UPDATE_CONTENT,
+      payload,
     })
   }
 
   const handleRemove = (index: number) => {
-    const val: AST.RangesCharacter = {
+    const payload: AST.RangesCharacter = {
       kind: "ranges",
       ranges: ranges.filter((_, _index) => {
         return index !== _index
@@ -55,10 +51,8 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
       negate: false,
     }
     dispatch({
-      type: MainActionTypes.UPDATE_CHARACTER,
-      payload: {
-        value: val,
-      },
+      type: MainActionTypes.UPDATE_CONTENT,
+      payload,
     })
   }
   return (
@@ -79,7 +73,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
             main
             onClick={() => addRange([{ from: "", to: "" }])}
           >
-            A Hyphen Range
+            A Empty Range
           </ButtonDropdown.Item>
           <ButtonDropdown.Item
             onClick={() => addRange([{ from: "a", to: "z" }])}

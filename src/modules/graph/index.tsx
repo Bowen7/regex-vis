@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react"
 import { useTheme } from "@geist-ui/react"
 import { RenderVirtualNode } from "./types"
-import { parse, gen, AST } from "@/parser"
+import { parse, gen } from "@/parser"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
 import { useMainReducer, MainActionTypes } from "@/redux"
