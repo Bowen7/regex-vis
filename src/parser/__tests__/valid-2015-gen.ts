@@ -622,7 +622,7 @@ const tests: Tests = {
       {
         id: "",
         type: "backReference",
-        name: "1",
+        ref: "1",
       },
     ],
     flags: [],
@@ -650,7 +650,7 @@ const tests: Tests = {
       {
         id: "",
         type: "backReference",
-        name: "1",
+        ref: "1",
       },
     ],
     flags: [],
@@ -661,7 +661,7 @@ const tests: Tests = {
       {
         id: "",
         type: "backReference",
-        name: "1",
+        ref: "1",
       },
       {
         id: "",
@@ -704,7 +704,7 @@ const tests: Tests = {
       {
         id: "",
         type: "backReference",
-        name: "1",
+        ref: "1",
       },
     ],
     flags: [],
@@ -1094,7 +1094,7 @@ const tests: Tests = {
       {
         id: "",
         type: "backReference",
-        name: "377",
+        ref: "377",
       },
     ],
     flags: [],
@@ -1105,7 +1105,7 @@ const tests: Tests = {
       {
         id: "",
         type: "backReference",
-        name: "400",
+        ref: "400",
       },
     ],
     flags: [],

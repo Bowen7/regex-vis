@@ -37,7 +37,7 @@ const getContentInfo = (nodes: AST.Node[]): Content | null => {
       }
     }
     if (node.type === "backReference") {
-      return { kind: "backRef", name: node.name }
+      return { kind: "backRef", ref: node.ref }
     }
   }
   return null
@@ -52,7 +52,7 @@ const getQuantifierInfo = (
       return { hasQuantifier: true, quantifier: node.quantifier }
     }
   }
-  return { hasQuantifier: true, quantifier: null }
+  return { hasQuantifier: false, quantifier: null }
 }
 
 const getId = (nodes: AST.Node[]): string => {

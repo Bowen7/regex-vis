@@ -1,5 +1,5 @@
 import { AST } from "@/parser"
-import { remove, insert, group, character, quantifier } from "@/parser/utils"
+import { remove, insert, group, quantifier, contentIt } from "@/parser/utils"
 type GuideConfig = {
   visible: boolean
   title: string
@@ -8,6 +8,7 @@ type GuideConfig = {
 export type InitialStateType = {
   ast: AST.Regex
   selectedIds: string[]
+  maxGroupIndex: number
   undoStack: AST.Regex[]
   redoStack: AST.Regex[]
   editorCollapsed: Boolean
@@ -17,6 +18,7 @@ export type InitialStateType = {
 export const initialState: InitialStateType = {
   ast: { type: "regex", body: [], flags: [] },
   selectedIds: [],
+  maxGroupIndex: 0,
   undoStack: [],
   redoStack: [],
   editorCollapsed: false,
@@ -59,6 +61,7 @@ export type Action =
       payload:
         | { kind: "string" | "class"; value: string }
         | { kind: "ranges"; ranges: AST.Range[]; negate: boolean }
+        | { kind: "backReference"; ref: string }
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
@@ -164,7 +167,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const { ast, selectedIds } = state
       const payload = action.payload
       const id = selectedIds[0]
-      const nextNodes = character(ast.body, id, payload)
+      const nextNodes = contentIt(ast.body, id, payload)
       return setNodes(state, nextNodes)
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {

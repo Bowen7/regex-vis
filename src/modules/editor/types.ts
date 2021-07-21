@@ -3,7 +3,7 @@ import { AST } from "@/parser"
 export type Content =
   | { kind: "string" | "class"; value: string }
   | { kind: "ranges"; ranges: AST.Range[]; negate: boolean }
-  | { kind: "backRef"; name: string }
+  | { kind: "backRef"; ref: string }
 
 export type NodesInfo = {
   id: string

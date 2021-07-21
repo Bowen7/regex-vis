@@ -160,7 +160,7 @@ export type AssertionNode =
 
 export interface BackReferenceNode extends NodeBase {
   type: "backReference"
-  name: string
+  ref: string
 }
 
 export interface RootNode extends NodeBase {

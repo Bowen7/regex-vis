@@ -19,6 +19,8 @@ const characterClassTextMap = {
   "\\cK": "\\v Vertical Tab",
   "\\cL": "\\f Form Feed",
   "\\cM": "\\r Carriage Return",
+  "\\xhh": "",
+  "\\uhhhh": "",
 }
 export type CharacterClassKey = keyof typeof characterClassTextMap
 export { characterClassTextMap }

@@ -166,7 +166,7 @@ function genLookaroundAssertionNode(node: AST.LookAroundAssertionNode) {
 }
 
 function genBackReference(node: AST.BackReferenceNode) {
-  const { name } = node
-  return `\\${name}`
+  const { ref } = node
+  return `\\${ref}`
 }
 export default gen

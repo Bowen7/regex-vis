@@ -172,7 +172,7 @@ class Parser {
           this.appendChild({
             id: this.id(),
             type: "backReference",
-            name: groupName,
+            ref: groupName,
           })
           this.advance(groupName.length - 1)
           break

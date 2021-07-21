@@ -1,13 +1,27 @@
-import React, { useState } from "react"
-import { Input as GeistInput } from "@geist-ui/react"
+import React, { useState, useEffect } from "react"
+import { Input as GeistInput, useTheme } from "@geist-ui/react"
 type Props = React.ComponentProps<typeof GeistInput> & {
   validation?: RegExp
   errMsg?: string
 }
 
 const Input: React.FC<Props> = (props) => {
-  const { onChange, validation, errMsg = "Invalid input", ...restProps } = props
+  const {
+    onChange,
+    validation,
+    errMsg = "Invalid input",
+    value,
+    ...restProps
+  } = props
   const [invalid, setInvalid] = useState(false)
+  const [innerValue, setInnerValue] = useState(value)
+
+  const { palette } = useTheme()
+
+  useEffect(() => {
+    setInnerValue(value)
+  }, [value])
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     const metaKey = e.ctrlKey || e.metaKey
     if (metaKey && e.key === "z") {
@@ -19,6 +33,8 @@ const Input: React.FC<Props> = (props) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
+    setInnerValue(value)
+
     if (validation) {
       if (!validation.test(value)) {
         setInvalid(true)
@@ -33,12 +49,25 @@ const Input: React.FC<Props> = (props) => {
 
   return (
     <>
-      {invalid && <p>{errMsg}</p>}
-      <GeistInput
-        onKeyDown={handleKeyDown}
-        {...restProps}
-        onChange={handleChange}
-      />
+      <div className="wrapper">
+        {invalid && <p className="error-msg">{errMsg}</p>}
+        <GeistInput
+          onKeyDown={handleKeyDown}
+          {...restProps}
+          value={innerValue}
+          onChange={handleChange}
+        />
+      </div>
+      <style jsx>{`
+        .wrapper :global(input) {
+          font-size: 0.75rem;
+        }
+
+        .error-msg {
+          margin: 0;
+          color: ${palette.error};
+        }
+      `}</style>
     </>
   )
 }
