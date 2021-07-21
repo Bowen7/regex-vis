@@ -635,6 +635,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -667,6 +668,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2652,6 +2654,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2681,6 +2684,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2710,6 +2714,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2815,6 +2820,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2846,6 +2852,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2893,6 +2900,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "2",
+        index: 2,
         children: [
           {
             id: "",
@@ -2932,6 +2940,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2979,6 +2988,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "2",
+        index: 2,
         children: [
           {
             id: "",
@@ -3181,6 +3191,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "1",
+                index: 1,
                 children: [
                   {
                     id: "",
@@ -3192,6 +3203,7 @@ const tests: Tests = {
                           type: "group",
                           kind: "capturing",
                           name: "2",
+                          index: 2,
                           children: [
                             {
                               id: "",
@@ -3222,6 +3234,7 @@ const tests: Tests = {
                           type: "group",
                           kind: "capturing",
                           name: "3",
+                          index: 3,
                           children: [
                             {
                               id: "",
@@ -3260,6 +3273,7 @@ const tests: Tests = {
                           type: "group",
                           kind: "capturing",
                           name: "4",
+                          index: 4,
                           children: [
                             {
                               id: "",
@@ -3282,6 +3296,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "5",
+                index: 5,
                 children: [
                   {
                     id: "",
@@ -3309,6 +3324,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "6",
+                index: 6,
                 children: [
                   {
                     id: "",
@@ -3336,6 +3352,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "7",
+                index: 7,
                 children: [
                   {
                     id: "",
@@ -3421,6 +3438,63 @@ const tests: Tests = {
             { id: "", type: "boundaryAssertion", kind: "end" },
           ],
         ],
+      },
+    ],
+    flags: [],
+  },
+  "/(a)(?<n>b)(c)/": {
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "group",
+        kind: "capturing",
+        name: "1",
+        index: 1,
+        children: [
+          {
+            id: "",
+            type: "character",
+            kind: "string",
+            value: "a",
+            quantifier: null,
+          },
+        ],
+        quantifier: null,
+      },
+      {
+        id: "",
+        type: "group",
+        kind: "namedCapturing",
+        name: "n",
+        index: 2,
+        children: [
+          {
+            id: "",
+            type: "character",
+            kind: "string",
+            value: "b",
+            quantifier: null,
+          },
+        ],
+        quantifier: null,
+      },
+      {
+        id: "",
+        type: "group",
+        kind: "capturing",
+        name: "3",
+        index: 3,
+        children: [
+          {
+            id: "",
+            type: "character",
+            kind: "string",
+            value: "c",
+            quantifier: null,
+          },
+        ],
+        quantifier: null,
       },
     ],
     flags: [],

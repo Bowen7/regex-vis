@@ -19,7 +19,7 @@ const getGroupInfo = (nodes: AST.Node[]): AST.Group | null => {
     return null
   }
   if (node.kind === "namedCapturing" || node.kind === "capturing") {
-    return { kind: node.kind, name: node.name }
+    return { kind: node.kind, name: node.name, index: node.index }
   }
   return { kind: node.kind }
 }

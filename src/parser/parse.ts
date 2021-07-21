@@ -600,13 +600,18 @@ class Parser {
         const name = this.eat("\\?<", ">")
         if (name) {
           this.advance((name as string).length + 3)
-          group = { kind: "namedCapturing", name: name as string }
+          group = {
+            kind: "namedCapturing",
+            name: name,
+            index: this.groupIndex++,
+          }
         }
       }
     }
 
     if (!node! && !group!) {
-      group = { kind: "capturing", name: this.groupIndex++ + "" }
+      const index = this.groupIndex++
+      group = { kind: "capturing", name: index.toString(), index }
     }
 
     if (group!) {

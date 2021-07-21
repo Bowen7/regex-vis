@@ -53,6 +53,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -90,6 +91,7 @@ const tests: Tests = {
         type: "group",
         kind: "namedCapturing",
         name: "a",
+        index: 1,
         children: [
           {
             id: "",
@@ -133,6 +135,7 @@ const tests: Tests = {
             type: "group",
             kind: "namedCapturing",
             name: "a",
+            index: 1,
             children: [
               {
                 id: "",
@@ -169,6 +172,7 @@ const tests: Tests = {
               type: "group",
               kind: "namedCapturing",
               name: "a",
+              index: 1,
               children: [
                 {
                   id: "",

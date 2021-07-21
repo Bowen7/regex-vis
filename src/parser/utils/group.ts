@@ -19,13 +19,29 @@ export function group(
         case "nonGroup":
           return removeGroupWrap(nodes, node)
         case "capturing":
-          groupNode = { id, type, kind, name: "", children, quantifier }
+          groupNode = {
+            id,
+            type,
+            kind,
+            name: "",
+            index: 0,
+            children,
+            quantifier,
+          }
           break
         case "nonCapturing":
           groupNode = { id, type, kind, children, quantifier }
           break
         case "namedCapturing":
-          groupNode = { id, type, kind, name: name!, children, quantifier }
+          groupNode = {
+            id,
+            type,
+            kind,
+            name: name!,
+            index: 0,
+            children,
+            quantifier,
+          }
           break
       }
       nodeList[index] = groupNode
@@ -41,13 +57,21 @@ export function group(
   const children = selectedNodes
   switch (kind) {
     case "capturing":
-      groupNode = { id, type, kind, name: "", children, quantifier }
+      groupNode = { id, type, kind, name: "", index: 0, children, quantifier }
       break
     case "nonCapturing":
       groupNode = { id, type, kind, children, quantifier }
       break
     case "namedCapturing":
-      groupNode = { id, type, kind, name: name!, children, quantifier }
+      groupNode = {
+        id,
+        type,
+        kind,
+        name: name!,
+        index: 0,
+        children,
+        quantifier,
+      }
       break
   }
   if (groupNode!) {
@@ -66,8 +90,15 @@ function removeGroupWrap(nodes: AST.Node[], selectNode: AST.GroupNode) {
 function refreshGroupName(nodes: AST.Node[]) {
   let groupIndex = 1
   visitTree(nodes, (node: AST.Node) => {
-    if (node.type === "group" && node.kind === "capturing") {
-      node.name = groupIndex++ + ""
+    if (
+      node.type === "group" &&
+      (node.kind === "capturing" || node.kind === "namedCapturing")
+    ) {
+      const index = groupIndex++
+      node.index = index
+      if (node.kind === "capturing") {
+        node.name = index.toString()
+      }
     }
   })
 }

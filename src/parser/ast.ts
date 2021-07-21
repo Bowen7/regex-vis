@@ -92,7 +92,7 @@ export type Group =
   | {
       kind: "nonCapturing"
     }
-  | { kind: "namedCapturing" | "capturing"; name: string }
+  | { kind: "namedCapturing" | "capturing"; name: string; index: number }
 
 export interface NonCapturingGroupNode extends NodeBase {
   type: "group"
@@ -106,6 +106,7 @@ export interface NamedCapturingGroupNode extends NodeBase {
   kind: "namedCapturing"
   children: Node[]
   name: string
+  index: number
   quantifier: Quantifier | null
 }
 
@@ -114,6 +115,7 @@ export interface CapturingGroupNode extends NodeBase {
   kind: "capturing"
   children: Node[]
   name: string
+  index: number
   quantifier: Quantifier | null
 }
 

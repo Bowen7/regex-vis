@@ -635,6 +635,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -667,6 +668,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2572,6 +2574,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2601,6 +2604,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2630,6 +2634,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2735,6 +2740,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2766,6 +2772,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2813,6 +2820,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "2",
+        index: 2,
         children: [
           {
             id: "",
@@ -2852,6 +2860,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "1",
+        index: 1,
         children: [
           {
             id: "",
@@ -2899,6 +2908,7 @@ const tests: Tests = {
         type: "group",
         kind: "capturing",
         name: "2",
+        index: 2,
         children: [
           {
             id: "",
@@ -3101,6 +3111,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "1",
+                index: 1,
                 children: [
                   {
                     id: "",
@@ -3112,6 +3123,7 @@ const tests: Tests = {
                           type: "group",
                           kind: "capturing",
                           name: "2",
+                          index: 2,
                           children: [
                             {
                               id: "",
@@ -3142,6 +3154,7 @@ const tests: Tests = {
                           type: "group",
                           kind: "capturing",
                           name: "3",
+                          index: 3,
                           children: [
                             {
                               id: "",
@@ -3180,6 +3193,7 @@ const tests: Tests = {
                           type: "group",
                           kind: "capturing",
                           name: "4",
+                          index: 4,
                           children: [
                             {
                               id: "",
@@ -3202,6 +3216,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "5",
+                index: 5,
                 children: [
                   {
                     id: "",
@@ -3229,6 +3244,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "6",
+                index: 6,
                 children: [
                   {
                     id: "",
@@ -3256,6 +3272,7 @@ const tests: Tests = {
                 type: "group",
                 kind: "capturing",
                 name: "7",
+                index: 7,
                 children: [
                   {
                     id: "",
