@@ -22,7 +22,7 @@ import {
   NAME_TEXT_FONTSIZE,
 } from "@/constants/graph"
 import { font } from "@/constants/style"
-import { getQuantifierText } from "@/parser/utils/quantifier"
+import { getQuantifierText } from "@/parser"
 import { getTextsWithBacktick, getName } from "./utils"
 
 type TextSize = { width: number; height: number }

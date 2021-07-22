@@ -38,11 +38,11 @@ const Editor: React.FC<{}> = () => {
       return remove()
     }
     const metaKey = event.ctrlKey || event.metaKey
-    if (metaKey && key === "z") {
-      return undo()
-    }
     if (metaKey && event.shiftKey && key === "z") {
       return redo()
+    }
+    if (metaKey && key === "z") {
+      return undo()
     }
   })
 

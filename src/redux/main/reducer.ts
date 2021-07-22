@@ -1,5 +1,13 @@
+import produce from "immer"
 import { AST } from "@/parser"
-import { remove, insert, group, quantifier, contentIt } from "@/parser/utils"
+import {
+  removeIt,
+  insertIt,
+  groupIt,
+  quantifierIt,
+  contentIt,
+  visitTree,
+} from "@/parser"
 type GuideConfig = {
   visible: boolean
   title: string
@@ -67,19 +75,44 @@ export type Action =
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
   | { type: ActionTypes.UPDATE_QUANTIFIER; payload: AST.Quantifier | null }
 
-const setNodes = (
+const refreshGroupIndex = (ast: AST.Regex) => {
+  let groupIndex = 0
+  const nextAst = produce(ast, (draft) => {
+    visitTree(draft, (node: AST.Node) => {
+      if (
+        node.type === "group" &&
+        (node.kind === "capturing" || node.kind === "namedCapturing")
+      ) {
+        const index = ++groupIndex
+        node.index = index
+        if (node.kind === "capturing") {
+          node.name = index.toString()
+        }
+      }
+    })
+  })
+  return { maxGroupIndex: groupIndex, nextAst }
+}
+
+const setAst = (
   state: InitialStateType,
-  nextNodes: AST.Node[],
-  attachState: Partial<InitialStateType> = {}
+  nextAst: AST.Regex,
+  attachState: Partial<InitialStateType> = {},
+  shouldRefreshGroupIndex = false
 ): InitialStateType => {
-  const { undoStack, ast } = state
-  const { flags } = ast
-  undoStack.push(ast)
+  let { undoStack, ast, maxGroupIndex } = state
+  if (shouldRefreshGroupIndex) {
+    ;({ nextAst, maxGroupIndex } = refreshGroupIndex(nextAst))
+  }
+  if (!attachState.undoStack) {
+    undoStack.push(ast)
+  }
   return {
     ...state,
-    ...attachState,
-    ast: { type: "regex", body: nextNodes, flags },
+    ast: nextAst,
+    maxGroupIndex,
     undoStack,
+    ...attachState,
   }
 }
 
@@ -88,42 +121,38 @@ export const reducer = (state: InitialStateType, action: Action) => {
     case ActionTypes.INSERT: {
       const { ast, selectedIds } = state
       const { direction } = action.payload
-      const nextNodes = insert(ast.body, selectedIds, direction)
-      return setNodes(state, nextNodes)
+      const nextAst = insertIt(ast, selectedIds, direction)
+      return setAst(state, nextAst)
     }
     case ActionTypes.REMOVE: {
       const { ast, selectedIds } = state
-      const nextNodes = remove(ast.body, selectedIds)
-      return setNodes(state, nextNodes, { selectedIds: [] })
+      const nextAst = removeIt(ast, selectedIds)
+      return setAst(state, nextAst, { selectedIds: [] }, true)
     }
     case ActionTypes.UPDATE_GROUP: {
       const { ast, selectedIds } = state
       const { groupType, groupName } = action.payload
-      const { nextNodes, nextSelectedIds } = group(
-        ast.body,
+      const { nextAst, nextSelectedIds } = groupIt(
+        ast,
         selectedIds,
         groupType,
         groupName
       )
-      return setNodes(state, nextNodes, { selectedIds: nextSelectedIds })
+      return setAst(state, nextAst, { selectedIds: nextSelectedIds }, true)
     }
     case ActionTypes.SET_AST: {
       const { undoStack, ast } = state
       const { ast: nextAst } = action.payload
       undoStack.push(ast)
-      return setNodes(state, nextAst.body, { undoStack })
+      return setAst(state, nextAst, { undoStack }, true)
     }
     case ActionTypes.UNDO: {
-      const { undoStack, redoStack, ast } = state
+      let { undoStack, redoStack, ast } = state
       if (undoStack.length > 0) {
-        const nextAst = undoStack.pop()!
+        let nextAst = undoStack.pop()!
         redoStack.push(ast)
-        return {
-          ...state,
-          ast: nextAst,
-          undoStack,
-          redoStack,
-        }
+
+        return setAst(state, nextAst, { undoStack, redoStack }, true)
       }
       return state
     }
@@ -132,12 +161,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       if (redoStack.length > 0) {
         const nextAst = redoStack.pop()!
         undoStack.push(ast)
-        return {
-          ...state,
-          ast: nextAst,
-          undoStack,
-          redoStack,
-        }
+        return setAst(state, nextAst, { undoStack, redoStack }, true)
       }
       return state
     }
@@ -167,8 +191,8 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const { ast, selectedIds } = state
       const payload = action.payload
       const id = selectedIds[0]
-      const nextNodes = contentIt(ast.body, id, payload)
-      return setNodes(state, nextNodes)
+      const nextAst = contentIt(ast, id, payload)
+      return setAst(state, nextAst)
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {
       const { collapsed } = action.payload
@@ -179,8 +203,8 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_QUANTIFIER: {
       const { ast, selectedIds } = state
-      const nextNodes = quantifier(ast.body, selectedIds[0], action.payload)
-      return setNodes(state, nextNodes)
+      const nextAst = quantifierIt(ast, selectedIds[0], action.payload)
+      return setAst(state, nextAst)
     }
     default:
       return state

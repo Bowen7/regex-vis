@@ -1,23 +1,23 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
 import * as AST from "../ast"
-import { visitTree, getNodeById, getNodesByIds } from "@/parser/visit"
-import { replace } from "./replace"
+import { getNodeById, getNodesByIds } from "../visit"
+import replaceIt from "./replace"
 
 export function group(
-  nodes: AST.Node[],
+  ast: AST.Regex,
   selectedIds: string[],
   kind: AST.GroupKind | "nonGroup",
   name?: string
 ) {
   if (selectedIds.length === 1) {
-    const { node, nodeList, index } = getNodeById(nodes, selectedIds[0])
+    const { node, nodeList, index } = getNodeById(ast, selectedIds[0])
     if (node.type === "group") {
       const { id, quantifier, children, type } = node
       let groupNode: AST.GroupNode
       switch (kind) {
         case "nonGroup":
-          return removeGroupWrap(nodes, node)
+          return removeGroupWrap(ast, node)
         case "capturing":
           groupNode = {
             id,
@@ -49,7 +49,7 @@ export function group(
     }
   }
   let nextSelectedIds: string[] = selectedIds
-  const selectedNodes = getNodesByIds(nodes, selectedIds)
+  const selectedNodes = getNodesByIds(ast, selectedIds)
   let groupNode: AST.GroupNode
   const id = nanoid()
   const type = "group"
@@ -75,46 +75,29 @@ export function group(
       break
   }
   if (groupNode!) {
-    replace(nodes, selectedNodes, [groupNode!])
+    replaceIt(ast, selectedNodes, [groupNode!])
     return [id]
   }
   return nextSelectedIds
 }
 
-function removeGroupWrap(nodes: AST.Node[], selectNode: AST.GroupNode) {
+function removeGroupWrap(ast: AST.Regex, selectNode: AST.GroupNode) {
   const { children } = selectNode
-  replace(nodes, [selectNode], children!)
+  replaceIt(ast, [selectNode], children!)
   return children.map(({ id }) => id)
 }
 
-function refreshGroupName(nodes: AST.Node[]) {
-  let groupIndex = 1
-  visitTree(nodes, (node: AST.Node) => {
-    if (
-      node.type === "group" &&
-      (node.kind === "capturing" || node.kind === "namedCapturing")
-    ) {
-      const index = groupIndex++
-      node.index = index
-      if (node.kind === "capturing") {
-        node.name = index.toString()
-      }
-    }
-  })
-}
-
-const updateGroup = (
-  nodes: AST.Node[],
+const groupIt = (
+  ast: AST.Regex,
   selectedIds: string[],
   type: AST.GroupKind | "nonGroup",
   name?: string
 ) => {
   let nextSelectedIds: string[] = []
-  const nextNodes = produce(nodes, (draft) => {
+  const nextAst = produce(ast, (draft) => {
     nextSelectedIds = group(draft, selectedIds, type, name)
-    refreshGroupName(nodes)
   })
 
-  return { nextNodes, nextSelectedIds }
+  return { nextAst, nextSelectedIds }
 }
-export default updateGroup
+export default groupIt

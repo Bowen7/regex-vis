@@ -1,6 +1,6 @@
 import React from "react"
 import { AST } from "@/parser"
-import { getQuantifierText } from "@/parser/utils/quantifier"
+import { getQuantifierText } from "@/parser"
 import renderEngine from "@/modules/graph/rendering-engine"
 import {
   QUANTIFIER_ICON_HEIGHT,

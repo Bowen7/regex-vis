@@ -1,18 +1,19 @@
 import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById } from "../visit"
-const updateQuantifier = (
-  nodes: AST.Node[],
+const quantifierIt = (
+  ast: AST.Regex,
   selectedId: string,
   quantifier: AST.Quantifier | null
 ) =>
-  produce(nodes, (draft) => {
+  produce(ast, (draft) => {
     const { node } = getNodeById(draft, selectedId)
     if (node.type === "character" || node.type === "group") {
       node.quantifier = quantifier
     }
   })
-export default updateQuantifier
+
+export default quantifierIt
 
 export const getQuantifierText = (quantifier: AST.Quantifier): string => {
   let { min, max } = quantifier

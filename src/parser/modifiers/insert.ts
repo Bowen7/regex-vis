@@ -1,12 +1,12 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
 import * as AST from "../ast"
-import visit, { getNodesByIds } from "@/parser/visit"
+import { visit, getNodesByIds } from "../visit"
 import { replaceFromLists } from "./replace"
 type InsertDirection = "prev" | "next" | "branch"
 
 function insert(
-  nodes: AST.Node[],
+  ast: AST.Regex,
   selectedNodes: AST.Node[],
   direction: InsertDirection
 ) {
@@ -14,7 +14,7 @@ function insert(
     return
   }
   const start = selectedNodes[0]
-  visit(nodes, start.id, (_, nodeList) => {
+  visit(ast, start.id, (_, nodeList) => {
     const startIndex = nodeList.findIndex(({ id }) => id === start.id)
     if (startIndex === -1) {
       return
@@ -57,13 +57,13 @@ function genChoiceNode(): AST.ChoiceNode {
   }
 }
 
-const insertNode = (
-  nodes: AST.Node[],
+const insertIt = (
+  ast: AST.Regex,
   selectedIds: string[],
   direction: InsertDirection
 ) =>
-  produce(nodes, (draft) =>
+  produce(ast, (draft) =>
     insert(draft, getNodesByIds(draft, selectedIds), direction)
   )
 
-export default insertNode
+export default insertIt

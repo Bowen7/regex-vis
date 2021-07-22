@@ -19,10 +19,7 @@ const InfoItem: React.FC<{}> = () => {
   const [nodes, setNodes] = useState<AST.Node[]>([])
   const [{ selectedIds, ast }, dispatch] = useMainReducer()
 
-  useEffect(
-    () => setNodes(getNodesByIds(ast.body, selectedIds)),
-    [ast, selectedIds]
-  )
+  useEffect(() => setNodes(getNodesByIds(ast, selectedIds)), [ast, selectedIds])
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 

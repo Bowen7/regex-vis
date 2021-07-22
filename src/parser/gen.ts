@@ -1,6 +1,12 @@
 import * as AST from "./ast"
 
-function gen(nodes: AST.Node[], withSlash = false, flags: AST.Flag[] = []) {
+function gen(
+  ast: AST.Regex | AST.Node[],
+  withSlash = false,
+  flags: AST.Flag[] = []
+) {
+  const nodes = Array.isArray(ast) ? ast : ast.body
+
   const r = nodes
     .map((node) => {
       let regex = ""

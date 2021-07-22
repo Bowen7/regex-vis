@@ -1,10 +1,7 @@
 import React, { useMemo } from "react"
 import { Spacer, Select, Code } from "@geist-ui/react"
 import Input from "@/components/input"
-import {
-  characterClassTextMap,
-  CharacterClassKey,
-} from "@/parser/utils/character-class"
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []

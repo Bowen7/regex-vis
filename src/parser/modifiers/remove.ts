@@ -1,13 +1,13 @@
 import produce from "immer"
 import * as AST from "../ast"
-import visit, { getNodesByIds } from "../visit"
+import { visit, getNodesByIds } from "../visit"
 import { replaceFromLists } from "./replace"
-function remove(nodes: AST.Node[], selectedNodes: AST.Node[]) {
+function remove(ast: AST.Regex, selectedNodes: AST.Node[]) {
   if (selectedNodes.length === 0) {
     return
   }
 
-  visit(nodes, selectedNodes[0].id, (_, nodeList, path) => {
+  visit(ast, selectedNodes[0].id, (_, nodeList, path) => {
     removeFromList(nodeList, selectedNodes)
     while (path.length !== 0) {
       const { node, nodeList } = path.pop()!
@@ -36,7 +36,7 @@ function removeFromList(nodeList: AST.Node[], nodes: AST.Node[]) {
   nodeList.splice(index, nodes.length)
 }
 
-const removeNodes = (nodes: AST.Node[], selectedIds: string[]) =>
-  produce(nodes, (draft) => remove(draft, getNodesByIds(draft, selectedIds)))
+const removeIt = (ast: AST.Regex, selectedIds: string[]) =>
+  produce(ast, (draft) => remove(draft, getNodesByIds(draft, selectedIds)))
 
-export default removeNodes
+export default removeIt

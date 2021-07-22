@@ -1,11 +1,12 @@
 import * as AST from "./ast"
 export type Path = { node: AST.Node; nodeList: AST.Node[] }[]
-function visit(
-  nodes: AST.Node[],
+export function visit(
+  ast: AST.Regex | AST.Node[],
   id: string,
   callback: (node: AST.Node, nodeList: AST.Node[], path: Path) => void,
   path: Path = []
 ): true | void {
+  const nodes = Array.isArray(ast) ? ast : ast.body
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i]
     if (node.id === id) {
@@ -36,11 +37,8 @@ function visit(
   }
 }
 
-export function visitTree(
-  nodes: AST.Node[],
-  callback: (node: AST.Node) => void
-) {
-  let stack = nodes.slice()
+export function visitTree(ast: AST.Regex, callback: (node: AST.Node) => void) {
+  let stack = ast.body.slice()
   while (stack.length !== 0) {
     const cur = stack.shift() as AST.Node
     callback(cur)
@@ -58,10 +56,11 @@ export function visitTree(
 }
 
 export function getNodeById(
-  nodes: AST.Node[],
+  ast: AST.Regex,
   id: string
 ): { node: AST.Node; nodeList: AST.Node[]; index: number } {
-  let stack = nodes.map((node, index) => ({ node, nodeList: nodes, index }))
+  const { body } = ast
+  let stack = body.map((node, index) => ({ node, nodeList: body, index }))
   while (stack.length !== 0) {
     const item = stack.shift()!
     const { node } = item
@@ -87,13 +86,13 @@ export function getNodeById(
   throw new Error("unreachable")
 }
 
-export function getNodesByIds(nodes: AST.Node[], ids: string[]): AST.Node[] {
+export function getNodesByIds(ast: AST.Regex, ids: string[]): AST.Node[] {
   if (ids.length === 0) {
     return []
   }
   const headId = ids[0]
   let cur!: AST.Node
-  let stack = nodes.slice()
+  let stack = ast.body.slice()
   while (stack.length !== 0) {
     cur = stack.shift() as AST.Node
     if (cur!.id === headId) {
@@ -112,4 +111,3 @@ export function getNodesByIds(nodes: AST.Node[], ids: string[]): AST.Node[] {
   }
   return [cur, ...stack.slice(0, ids.length - 1)]
 }
-export default visit

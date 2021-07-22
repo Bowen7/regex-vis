@@ -1,21 +1,22 @@
-import {
-  characterClassTextMap,
-  CharacterClassKey,
-} from "@/parser/utils/character-class"
-export const options = [
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
+export const characterOptions = [
   {
     label: "Simple string",
     value: "string",
   },
   {
-    label: "Character range",
-    value: "ranges",
-  },
-  {
     label: "Character class",
     value: "class",
   },
+  {
+    label: "Character range",
+    value: "ranges",
+  },
 ]
+export const backRefOption = {
+  label: "Back reference",
+  value: "backRef",
+}
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
 for (let key in characterClassTextMap) {

@@ -1,8 +1,5 @@
 import { AST } from "@/parser"
-import {
-  characterClassTextMap,
-  CharacterClassKey,
-} from "@/parser/utils/character-class"
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
 
 const assertionNameMap = {
   beginning: "Start of line",

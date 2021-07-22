@@ -37,7 +37,7 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
 
   useEffect(() => {
     const rootRenderNode = renderEngine.render(ast)
-    regexRef.current = gen(ast.body)
+    regexRef.current = gen(ast)
     onChange && onChange(regexRef.current)
     setRootRenderNode(rootRenderNode)
     // eslint-disable-next-line react-hooks/exhaustive-deps

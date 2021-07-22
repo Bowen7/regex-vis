@@ -2,14 +2,14 @@ import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById } from "../visit"
 const contentIt = (
-  nodes: AST.Node[],
+  ast: AST.Regex,
   id: string,
   content:
     | { kind: "string" | "class"; value: string }
     | { kind: "ranges"; ranges: AST.Range[]; negate: boolean }
     | { kind: "backReference"; ref: string }
 ) =>
-  produce(nodes, (draft) => {
+  produce(ast, (draft) => {
     const { node, nodeList, index } = getNodeById(draft, id)
 
     const quantifier = node.type === "character" ? node.quantifier : null

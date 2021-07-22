@@ -1,14 +1,12 @@
-import React, { useState, useEffect } from "react"
-import { Spacer, Select, Code, useTheme } from "@geist-ui/react"
-import Input from "@/components/input"
+import React, { useMemo } from "react"
+import { Select, useTheme } from "@geist-ui/react"
 import Cell from "@/components/cell"
 import SimpleString from "./simple-string"
 import ClassCharacter from "./class-character"
-import { options } from "./helper"
-import { CharacterClassKey } from "@/parser/utils/character-class"
-import { AST } from "@/parser"
+import BackRef from "./back-ref"
+import { characterOptions, backRefOption } from "./helper"
 import { useMainReducer, MainActionTypes } from "@/redux"
-import { classOptions, labelMap } from "./helper"
+import { labelMap } from "./helper"
 import Ranges from "./ranges"
 import { Content } from "../../types"
 
@@ -17,8 +15,16 @@ type Prop = {
   id: string
 }
 const ContentEditor: React.FC<Prop> = ({ content }) => {
-  const [, dispatch] = useMainReducer()
+  const [{ maxGroupIndex }, dispatch] = useMainReducer()
   const { palette } = useTheme()
+  const { kind } = content
+
+  const options = useMemo(() => {
+    if (maxGroupIndex === 0 && kind !== "backRef") {
+      return characterOptions
+    }
+    return [...characterOptions, backRefOption]
+  }, [maxGroupIndex, kind])
 
   const handleTypeChange = (type: string | string[]) => {
     let payload: Content
@@ -63,6 +69,7 @@ const ContentEditor: React.FC<Prop> = ({ content }) => {
           {content.kind === "string" && <SimpleString value={content.value} />}
           {content.kind === "ranges" && <Ranges ranges={content.ranges} />}
           {content.kind === "class" && <ClassCharacter value={content.value} />}
+          {content.kind === "backRef" && <BackRef reference={content.ref} />}
         </Cell.Item>
       </Cell>
       <style jsx>{`
