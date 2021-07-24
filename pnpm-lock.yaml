@@ -33,7 +33,6 @@ specifiers:
   react-redux: ^7.2.1
   react-router-dom: ^5.2.0
   react-scripts: 4.0.3
-  regexpp: Bowen7/regexpp#8fb9c550810a37b8c4486cc547635518a2e4f57e
   rollup: ^2.48.0
   styled-jsx: 3.3.0
   ts-node: ^10.0.0
@@ -51,7 +50,6 @@ dependencies:
   react-redux: registry.npmjs.org/react-redux/7.2.4_react-dom@16.14.0+react@16.14.0
   react-router-dom: registry.npmjs.org/react-router-dom/5.2.0_react@16.14.0
   react-scripts: registry.npmjs.org/react-scripts/4.0.3_88327ee41b98283f5a62260d2fa3abbf
-  regexpp: github.com/Bowen7/regexpp/8fb9c550810a37b8c4486cc547635518a2e4f57e
   styled-jsx: registry.npmjs.org/styled-jsx/3.3.0_react@16.14.0
   typescript: registry.npmjs.org/typescript/3.7.7
 
@@ -81,13 +79,6 @@ devDependencies:
   ts-node: registry.npmjs.org/ts-node/10.0.0_ec74eb3a23918bd7c13ddef943f94054
 
 packages:
-
-  github.com/Bowen7/regexpp/8fb9c550810a37b8c4486cc547635518a2e4f57e:
-    resolution: {tarball: https://codeload.github.com/Bowen7/regexpp/tar.gz/8fb9c550810a37b8c4486cc547635518a2e4f57e}
-    name: regexpp
-    version: 3.1.0
-    engines: {node: '>=8'}
-    dev: false
 
   registry.npmjs.org/@babel/code-frame/7.10.4:
     resolution: {integrity: sha512-vG6SvB6oYEhvgisZNFRmRCUkLz11c7rp+tbNTynGqc6mS1d5ATd/sGyV6W0KZZnXRKMTzZDRgQT3Ou9jhpAfUg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.10.4.tgz}
