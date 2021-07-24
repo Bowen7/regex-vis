@@ -49,20 +49,14 @@ const Input: React.FC<Props> = (props) => {
 
   return (
     <>
-      <div className="wrapper">
-        {invalid && <p className="error-msg">{errMsg}</p>}
-        <GeistInput
-          onKeyDown={handleKeyDown}
-          {...restProps}
-          value={innerValue}
-          onChange={handleChange}
-        />
-      </div>
+      {invalid && <p className="error-msg">{errMsg}</p>}
+      <GeistInput
+        onKeyDown={handleKeyDown}
+        {...restProps}
+        value={innerValue}
+        onChange={handleChange}
+      />
       <style jsx>{`
-        .wrapper :global(input) {
-          font-size: 0.75rem;
-        }
-
         .error-msg {
           margin: 0;
           color: ${palette.error};
