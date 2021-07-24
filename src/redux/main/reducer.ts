@@ -66,10 +66,7 @@ export type Action =
     }
   | {
       type: ActionTypes.UPDATE_CONTENT
-      payload:
-        | { kind: "string" | "class"; value: string }
-        | { kind: "ranges"; ranges: AST.Range[]; negate: boolean }
-        | { kind: "backReference"; ref: string }
+      payload: AST.Content
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
   | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }

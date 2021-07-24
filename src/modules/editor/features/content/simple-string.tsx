@@ -1,5 +1,7 @@
 import React, { useEffect } from "react"
+import { Note, Spacer } from "@geist-ui/react"
 import Input from "@/components/input"
+import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
@@ -27,9 +29,13 @@ const SimpleString: React.FC<Props> = ({ value }) => {
   }, [value])
 
   return (
-    <>
+    <Cell.Item label="Value">
+      <Note type="secondary" small style={{ lineHeight: 1.5 }}>
+        The input will be escaped automatically.
+      </Note>
+      <Spacer y={0.5} />
       <Input size="small" {...stringBindings} />
-    </>
+    </Cell.Item>
   )
 }
 

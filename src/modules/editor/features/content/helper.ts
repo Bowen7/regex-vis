@@ -15,7 +15,22 @@ export const characterOptions = [
 ]
 export const backRefOption = {
   label: "Back reference",
-  value: "backRef",
+  value: "backReference",
+}
+
+export const beginningAssertionOption = {
+  label: "Beginning Assertion",
+  value: "beginningAssertion",
+}
+
+export const endAssertionOption = {
+  label: "End Assertion",
+  value: "endAssertion",
+}
+
+export const wordBoundaryAssertionOption = {
+  label: "Word Boundary Assertion",
+  value: "wordBoundaryAssertion",
 }
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
@@ -26,11 +41,4 @@ for (let key in characterClassTextMap) {
   })
 }
 
-const labelMap = {
-  string: "Value",
-  ranges: "Ranges",
-  class: "Class",
-  backRef: "Back Reference",
-}
-
-export { classOptions, labelMap }
+export { classOptions }

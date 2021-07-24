@@ -56,7 +56,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
     })
   }
   return (
-    <>
+    <Cell.Item label="Ranges">
       <div className="range-options">
         {ranges.map((range, index) => (
           <RangeOption
@@ -96,7 +96,7 @@ const Ranges: React.FC<Prop> = ({ ranges }) => {
           margin-top: 12px;
         }
       `}</style>
-    </>
+    </Cell.Item>
   )
 }
 

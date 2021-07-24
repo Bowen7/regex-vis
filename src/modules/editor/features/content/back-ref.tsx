@@ -1,5 +1,6 @@
 import React, { useMemo } from "react"
 import { Select } from "@geist-ui/react"
+import Cell from "@/components/cell"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
 type Props = { reference: string }
@@ -24,7 +25,7 @@ const BackRef: React.FC<Props> = ({ reference }) => {
     })
   }
   return (
-    <>
+    <Cell.Item label="Back Reference">
       <Select
         placeholder="Choose one"
         value={reference}
@@ -38,7 +39,7 @@ const BackRef: React.FC<Props> = ({ reference }) => {
           </Select.Option>
         ))}
       </Select>
-    </>
+    </Cell.Item>
   )
 }
 

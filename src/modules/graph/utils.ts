@@ -2,8 +2,8 @@ import { AST } from "@/parser"
 import { characterClassTextMap, CharacterClassKey } from "@/parser"
 
 const assertionNameMap = {
-  beginning: "Start of line",
-  end: "End of line",
+  beginning: "Begin with",
+  end: "End with",
   lookahead: ["Followed by:", "Not followed by"],
   lookbehind: ["Preceded by", "Not Preceded by"],
   word: ["WordBoundary", "NonWordBoundary"],

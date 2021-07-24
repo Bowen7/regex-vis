@@ -51,6 +51,7 @@ const RailNode: React.FC<Props> = React.memo((props) => {
       case "choice":
         return "none-stroke"
       case "group":
+      case "lookAroundAssertion":
         return "second-stroke"
       default:
         return "stroke"

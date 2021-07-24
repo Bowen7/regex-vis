@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { Spacer, Select, Code } from "@geist-ui/react"
 import Input from "@/components/input"
+import Cell from "@/components/cell"
 import { characterClassTextMap, CharacterClassKey } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
@@ -55,7 +56,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
       },
     })
   return (
-    <>
+    <Cell.Item label="Class">
       <Select
         value={classKind}
         onChange={handleSelectChange}
@@ -87,7 +88,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
           onChange={handleInputChange}
         />
       )}
-    </>
+    </Cell.Item>
   )
 }
 

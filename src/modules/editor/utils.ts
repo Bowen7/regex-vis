@@ -1,5 +1,5 @@
 import { AST, gen } from "@/parser"
-import { NodesInfo, Content } from "./types"
+import { NodesInfo } from "./types"
 
 export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
@@ -24,20 +24,25 @@ const getGroupInfo = (nodes: AST.Node[]): AST.Group | null => {
   return { kind: node.kind }
 }
 
-const getContentInfo = (nodes: AST.Node[]): Content | null => {
+const getContentInfo = (nodes: AST.Node[]): AST.Content | null => {
   if (nodes.length === 1) {
     const node = nodes[0]
-    if (node.type === "character") {
-      switch (node.kind) {
-        case "string":
-        case "class":
-          return { kind: node.kind, value: node.value }
-        case "ranges":
+    switch (node.type) {
+      case "character":
+        if (node.kind === "ranges") {
           return { kind: node.kind, ranges: node.ranges, negate: node.negate }
-      }
-    }
-    if (node.type === "backReference") {
-      return { kind: "backRef", ref: node.ref }
+        }
+        return { kind: node.kind, value: node.value }
+      case "backReference":
+        return { kind: "backReference", ref: node.ref }
+      case "boundaryAssertion":
+        if (node.kind === "word") {
+          return { kind: "wordBoundaryAssertion", negate: node.negate }
+        } else if (node.kind === "beginning") {
+          return { kind: "beginningAssertion" }
+        } else {
+          return { kind: "endAssertion" }
+        }
     }
   }
   return null

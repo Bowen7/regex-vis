@@ -6,7 +6,6 @@ const contentIt = (ast: AST.Regex, id: string, content: AST.Content) =>
     const { node, nodeList, index } = getNodeById(draft, id)
 
     const quantifier = node.type === "character" ? node.quantifier : null
-
     switch (content.kind) {
       case "ranges":
         {
@@ -47,6 +46,7 @@ const contentIt = (ast: AST.Regex, id: string, content: AST.Content) =>
           kind: "word",
           negate: content.negate,
         }
+        break
       }
     }
   })
