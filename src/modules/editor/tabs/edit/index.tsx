@@ -98,6 +98,9 @@ const InfoItem: React.FC<{}> = () => {
         .container :global(input) {
           font-size: 0.75rem;
         }
+        .container :global(button) {
+          font-size: 0.75rem;
+        }
 
         .container :global(.btn-dropdown button) {
           height: calc(1.687 * 16pt);

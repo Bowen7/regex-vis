@@ -93,7 +93,9 @@ const ContentEditor: React.FC<Prop> = ({ content, id }) => {
         </Cell.Item>
 
         {content.kind === "string" && <SimpleString value={content.value} />}
-        {content.kind === "ranges" && <Ranges ranges={content.ranges} />}
+        {content.kind === "ranges" && (
+          <Ranges ranges={content.ranges} negate={content.negate} />
+        )}
         {content.kind === "class" && <ClassCharacter value={content.value} />}
         {content.kind === "backReference" && (
           <BackRef reference={content.ref} />
