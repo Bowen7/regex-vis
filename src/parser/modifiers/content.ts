@@ -1,14 +1,7 @@
 import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById } from "../visit"
-const contentIt = (
-  ast: AST.Regex,
-  id: string,
-  content:
-    | { kind: "string" | "class"; value: string }
-    | { kind: "ranges"; ranges: AST.Range[]; negate: boolean }
-    | { kind: "backReference"; ref: string }
-) =>
+const contentIt = (ast: AST.Regex, id: string, content: AST.Content) =>
   produce(ast, (draft) => {
     const { node, nodeList, index } = getNodeById(draft, id)
 
@@ -34,12 +27,27 @@ const contentIt = (
         nodeList[index] = { id, type: "character", kind, value, quantifier }
         break
       }
-      case "backReference":
-        {
-          const { ref } = content
-          nodeList[index] = { id, type: "backReference", ref }
-        }
+      case "backReference": {
+        const { ref } = content
+        nodeList[index] = { id, type: "backReference", ref }
         break
+      }
+      case "beginningAssertion": {
+        nodeList[index] = { id, type: "boundaryAssertion", kind: "beginning" }
+        break
+      }
+      case "endAssertion": {
+        nodeList[index] = { id, type: "boundaryAssertion", kind: "end" }
+        break
+      }
+      case "wordBoundaryAssertion": {
+        nodeList[index] = {
+          id,
+          type: "boundaryAssertion",
+          kind: "word",
+          negate: content.negate,
+        }
+      }
     }
   })
 

@@ -365,6 +365,7 @@ class Parser {
           }
         }
         this.prev.quantifier = quantifier!
+        this.prev = null
       } else {
         // TODO: error handling
       }
@@ -571,6 +572,7 @@ class Parser {
   // group or lookAroundAssertion
   private onGroup() {
     this.advance()
+    this.prev = null
 
     let node: AST.GroupNode | AST.LookAroundAssertionNode
     let group: AST.Group

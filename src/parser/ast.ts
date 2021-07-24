@@ -76,10 +76,6 @@ export type RangesCharacter = {
   ranges: Range[]
   negate: boolean
 }
-export type ClassCharacter = { kind: "class"; value: string }
-export type StringCharacter = { kind: "string"; value: string }
-
-export type Character = RangesCharacter | ClassCharacter | StringCharacter
 
 export type CharacterNode =
   | StringCharacterNode
@@ -162,6 +158,13 @@ export interface BackReferenceNode extends NodeBase {
   type: "backReference"
   ref: string
 }
+
+export type Content =
+  | { kind: "string" | "class"; value: string }
+  | { kind: "ranges"; ranges: Range[]; negate: boolean }
+  | { kind: "backReference"; ref: string }
+  | { kind: "beginningAssertion" | "endAssertion" }
+  | { kind: "wordBoundaryAssertion"; negate: boolean }
 
 export interface RootNode extends NodeBase {
   type: "root"

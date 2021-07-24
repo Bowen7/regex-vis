@@ -3499,6 +3499,54 @@ const tests: Tests = {
     ],
     flags: [],
   },
+  "/x(?=y)/": {
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "character",
+        kind: "string",
+        value: "x",
+        quantifier: null,
+      },
+      {
+        id: "",
+        type: "lookAroundAssertion",
+        kind: "lookahead",
+        children: [
+          {
+            id: "",
+            type: "character",
+            kind: "string",
+            value: "y",
+            quantifier: null,
+          },
+        ],
+        negate: false,
+      },
+    ],
+    flags: [],
+  },
+  "/x?y/": {
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "character",
+        kind: "string",
+        value: "x",
+        quantifier: { kind: "?", min: 0, max: 1, greedy: true },
+      },
+      {
+        id: "",
+        type: "character",
+        kind: "string",
+        value: "y",
+        quantifier: null,
+      },
+    ],
+    flags: [],
+  },
 }
 
 export default tests
