@@ -13,7 +13,7 @@ const lookAroundDict: {
   "?<!": { kind: "lookbehind", negate: true },
 }
 
-class Parser {
+class Lexer {
   regex: string
   message: string = ""
   index = 0
@@ -637,13 +637,13 @@ class Parser {
 
 const parse = (
   regex: string | RegExp,
-  idGenerator?: (size?: number | undefined) => string
+  idGenerator?: (size?: number) => string
 ) => {
   if (typeof regex !== "string") {
     regex = String(regex)
   }
-  const parser = new Parser(regex, idGenerator)
-  return parser.parse()
+  const lexer = new Lexer(regex, idGenerator)
+  return lexer.parse()
 }
 
 export default parse

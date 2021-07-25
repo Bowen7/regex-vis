@@ -1,7 +1,7 @@
 export const groupData = [
   {
     value: "nonGroup",
-    label: "Non-Group",
+    label: "Cancel the Group",
   },
   {
     value: "capturing",

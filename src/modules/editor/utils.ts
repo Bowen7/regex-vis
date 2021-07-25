@@ -4,6 +4,7 @@ import { NodesInfo } from "./types"
 export const genInitialNodesInfo = (): NodesInfo => ({
   expression: "",
   group: null,
+  lookAround: null,
   content: null,
   hasQuantifier: false,
   quantifier: null,
@@ -60,6 +61,19 @@ const getQuantifierInfo = (
   return { hasQuantifier: false, quantifier: null }
 }
 
+const getLookAroundInfo = (
+  nodes: AST.Node[]
+): { kind: "lookahead" | "lookbehind"; negate: boolean } | null => {
+  if (nodes.length === 1) {
+    const node = nodes[0]
+    if (node.type === "lookAroundAssertion") {
+      const { kind, negate } = node
+      return { kind, negate }
+    }
+  }
+  return null
+}
+
 const getId = (nodes: AST.Node[]): string => {
   if (nodes.length === 1) {
     return nodes[0].id
@@ -72,6 +86,7 @@ export function getInfoFromNodes(nodes: AST.Node[]): NodesInfo {
   const group = getGroupInfo(nodes)
   const content = getContentInfo(nodes)
   const quantifierInfo = getQuantifierInfo(nodes)
+  const lookAround = getLookAroundInfo(nodes)
   const id = getId(nodes)
-  return { id, expression, group, content, ...quantifierInfo }
+  return { id, expression, group, content, lookAround, ...quantifierInfo }
 }

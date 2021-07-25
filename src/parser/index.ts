@@ -7,6 +7,9 @@ export {
   removeIt,
   insertIt,
   groupIt,
+  wrapGroupIt,
+  lookAroundAssertionIt,
+  wrapLookAroundAssertionIt,
   quantifierIt,
   getQuantifierText,
 } from "./modifiers"

@@ -31,8 +31,6 @@ class RenderEngine {
   minimum: boolean = false
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D | null
-  head: AST.RootNode = { id: nanoid(), type: "root" }
-  tail: AST.RootNode = { id: nanoid(), type: "root" }
   constructor() {
     // the `measureText` method use canvas.measureText
     if (process.env.EXPORT) {
@@ -46,8 +44,7 @@ class RenderEngine {
 
   render(ast: AST.Regex, minimum = false) {
     this.minimum = minimum
-    const { body } = ast
-    const nodes = [this.head, ...body, this.tail]
+    const { body: nodes } = ast
     const { width, height } = this.getNodesSize(nodes)
     const paddingHorizontal = minimum
       ? MINIMUM_CHART_PADDING_HORIZONTAL

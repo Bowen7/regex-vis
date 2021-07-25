@@ -1,112 +1,59 @@
-import React, { useEffect, useState, useMemo } from "react"
-import { Divider, ButtonDropdown, useTheme } from "@geist-ui/react"
-import Cell from "@/components/cell"
+import React, { useEffect, useState } from "react"
+import { Divider, Collapse, useTheme } from "@geist-ui/react"
 import ContentEditor from "../../features/content"
 import Group from "../../features/group"
 import Expression from "../../features/expression"
 import Quantifier from "../../features/quantifier"
+import LookAround from "../../features/look-around"
+import Insert from "../../features/insert"
 import { getInfoFromNodes, genInitialNodesInfo } from "../../utils"
 import { AST } from "@/parser"
 import { NodesInfo } from "../../types"
 import { getNodesByIds } from "@/parser/visit"
-import { useMainReducer, MainActionTypes } from "@/redux"
-
-export type InsertDirection = "prev" | "next" | "branch"
+import { useMainReducer } from "@/redux"
 
 const InfoItem: React.FC<{}> = () => {
   const { layout, palette } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
-  const [{ selectedIds, ast }, dispatch] = useMainReducer()
+  const [{ selectedIds, ast }] = useMainReducer()
 
   useEffect(() => setNodes(getNodesByIds(ast, selectedIds)), [ast, selectedIds])
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
-  const { id, expression, group, content, hasQuantifier, quantifier } =
-    nodesInfo
-
-  const handleInsert = (direction: InsertDirection) =>
-    dispatch({ type: MainActionTypes.INSERT, payload: { direction } })
-  const handleGroup = (groupType: string, groupName: string) =>
-    dispatch({
-      type: MainActionTypes.UPDATE_GROUP,
-      payload: {
-        groupType: groupType as AST.GroupKind | "nonGroup",
-        groupName,
-      },
-    })
+  const {
+    id,
+    expression,
+    group,
+    content,
+    hasQuantifier,
+    quantifier,
+    lookAround,
+  } = nodesInfo
 
   useEffect(() => {
     const nodesInfo = getInfoFromNodes(nodes)
     setNodesInfo(nodesInfo)
   }, [nodes])
 
-  const insertOptions = useMemo(() => {
-    const options: { direction: InsertDirection; desc: string }[] = []
-    const { body } = ast
-    if (nodes.length === 0) {
-      return []
-    }
-    if (body[body.length - 1].id !== nodes[nodes.length - 1].id) {
-      options.push({
-        direction: "next",
-        desc: "Insert after",
-      })
-    }
-    if (body[0].id !== nodes[0].id) {
-      options.push({
-        direction: "prev",
-        desc: "Insert before",
-      })
-    }
-    options.push({
-      direction: "branch",
-      desc: "Insert as a branch",
-    })
-    return options
-  }, [ast, nodes])
   return (
     <>
       <div className="container">
-        <Cell label="Insert a empty node">
-          <ButtonDropdown size="small">
-            {insertOptions.map(({ direction, desc }, index) => (
-              <ButtonDropdown.Item
-                main={index === 0}
-                key={direction}
-                onClick={() => handleInsert(direction)}
-              >
-                {desc}
-              </ButtonDropdown.Item>
-            ))}
-          </ButtonDropdown>
-        </Cell>
-        {/* <Cell label="Wrap with a group">
-          <ButtonDropdown size="small">
-            <ButtonDropdown.Item
-              main
-              onClick={() => handleGroup("capturing", "")}
-            >
-              Capturing group
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              onClick={() => handleGroup("nonCapturing", "")}
-            >
-              Non-capturing group
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              onClick={() => handleGroup("namedCapturing", "")}
-            >
-              Named-capturing group
-            </ButtonDropdown.Item>
-          </ButtonDropdown>
-        </Cell> */}
-        <Divider />
-        <Expression expression={expression} />
-        {content && <ContentEditor content={content} id={id} />}
-        {group && <Group group={group} onGroupChange={handleGroup} />}
-        {hasQuantifier && <Quantifier quantifier={quantifier} />}
+        <Collapse.Group>
+          <Collapse title="Insert">
+            <Insert ast={ast} nodes={nodes} />
+          </Collapse>
+          <Collapse title="Modify" initialVisible>
+            <Expression expression={expression} />
+            {content && <ContentEditor content={content} id={id} />}
+            {group && <Group group={group} />}
+            {hasQuantifier && <Quantifier quantifier={quantifier} />}
+            {lookAround && (
+              <LookAround kind={lookAround.kind} negate={lookAround.negate} />
+            )}
+          </Collapse>
+        </Collapse.Group>
       </div>
       <style jsx>{`
         .container {
@@ -126,6 +73,16 @@ const InfoItem: React.FC<{}> = () => {
         .container :global(button) {
           font-size: 0.75rem;
           color: ${palette.foreground};
+        }
+
+        .container :global(.collapse-group) {
+          padding: 0;
+        }
+        .container :global(.collapse:first-child) {
+          border-top: none;
+        }
+        .container :global(.collapse:last-child) {
+          border-bottom: none;
         }
 
         .container :global(.btn-dropdown button) {

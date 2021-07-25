@@ -1,7 +1,8 @@
 import React, { useRef, useState, useEffect } from "react"
 import { useTheme } from "@geist-ui/react"
+import { nanoid } from "nanoid"
 import { RenderVirtualNode } from "./types"
-import { parse, gen } from "@/parser"
+import { parse, gen, AST } from "@/parser"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
 import { useMainReducer, MainActionTypes } from "@/redux"
@@ -10,7 +11,8 @@ type Props = {
   minimum?: boolean
   onChange?: (regex: string) => void
 }
-
+const head: AST.RootNode = { id: nanoid(), type: "root" }
+const tail: AST.RootNode = { id: nanoid(), type: "root" }
 const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   const { palette } = useTheme()
   const [{ ast, selectedIds }, dispatch] = useMainReducer()
@@ -30,7 +32,11 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
     if (regex !== regexRef.current) {
       const ast = parse(regex)
       if (ast.type === "regex") {
-        dispatch({ type: MainActionTypes.SET_AST, payload: { ast } })
+        const { type, body, flags } = ast
+        dispatch({
+          type: MainActionTypes.SET_AST,
+          payload: { type, body: [head, ...body, tail], flags },
+        })
       }
     }
   }, [regex, dispatch])

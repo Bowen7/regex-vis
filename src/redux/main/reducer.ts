@@ -1,18 +1,16 @@
 import produce from "immer"
-import { AST } from "@/parser"
 import {
+  AST,
   removeIt,
   insertIt,
   groupIt,
+  wrapGroupIt,
   quantifierIt,
+  lookAroundAssertionIt,
+  wrapLookAroundAssertionIt,
   contentIt,
   visitTree,
 } from "@/parser"
-type GuideConfig = {
-  visible: boolean
-  title: string
-  content: JSX.Element | string
-}
 export type InitialStateType = {
   ast: AST.Regex
   selectedIds: string[]
@@ -20,7 +18,6 @@ export type InitialStateType = {
   undoStack: AST.Regex[]
   redoStack: AST.Regex[]
   editorCollapsed: Boolean
-  guiderConfig: GuideConfig
 }
 
 export const initialState: InitialStateType = {
@@ -30,21 +27,22 @@ export const initialState: InitialStateType = {
   undoStack: [],
   redoStack: [],
   editorCollapsed: false,
-  guiderConfig: { visible: false, title: "", content: "" },
 }
 
 export enum ActionTypes {
   INSERT,
   REMOVE,
   UPDATE_GROUP,
+  WRAP_GROUP,
   SET_AST,
   UNDO,
   REDO,
   SELECT_NODES,
   UPDATE_CONTENT,
   SET_EDITOR_COLLAPSED,
-  UPDATE_GUIDE_CONFIG,
   UPDATE_QUANTIFIER,
+  WRAP_LOOKAROUND_ASSERTION,
+  UPDATE_LOOKAROUND_ASSERTION,
 }
 
 export type Action =
@@ -55,9 +53,13 @@ export type Action =
   | { type: ActionTypes.REMOVE }
   | {
       type: ActionTypes.UPDATE_GROUP
-      payload: { groupType: AST.GroupKind | "nonGroup"; groupName: string }
+      payload: AST.Group | null
     }
-  | { type: ActionTypes.SET_AST; payload: { ast: AST.Regex } }
+  | {
+      type: ActionTypes.WRAP_GROUP
+      payload: AST.Group
+    }
+  | { type: ActionTypes.SET_AST; payload: AST.Regex }
   | { type: ActionTypes.UNDO }
   | { type: ActionTypes.REDO }
   | {
@@ -69,8 +71,15 @@ export type Action =
       payload: AST.Content
     }
   | { type: ActionTypes.SET_EDITOR_COLLAPSED; payload: { collapsed: boolean } }
-  | { type: ActionTypes.UPDATE_GUIDE_CONFIG; payload: GuideConfig }
   | { type: ActionTypes.UPDATE_QUANTIFIER; payload: AST.Quantifier | null }
+  | {
+      type: ActionTypes.WRAP_LOOKAROUND_ASSERTION
+      payload: "lookahead" | "lookbehind"
+    }
+  | {
+      type: ActionTypes.UPDATE_LOOKAROUND_ASSERTION
+      payload: { kind: "lookahead" | "lookbehind" | "non"; negate: boolean }
+    }
 
 const refreshGroupIndex = (ast: AST.Regex) => {
   let groupIndex = 0
@@ -128,18 +137,25 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_GROUP: {
       const { ast, selectedIds } = state
-      const { groupType, groupName } = action.payload
       const { nextAst, nextSelectedIds } = groupIt(
         ast,
         selectedIds,
-        groupType,
-        groupName
+        action.payload
+      )
+      return setAst(state, nextAst, { selectedIds: nextSelectedIds }, true)
+    }
+    case ActionTypes.WRAP_GROUP: {
+      const { ast, selectedIds } = state
+      const { nextAst, nextSelectedIds } = wrapGroupIt(
+        ast,
+        selectedIds,
+        action.payload
       )
       return setAst(state, nextAst, { selectedIds: nextSelectedIds }, true)
     }
     case ActionTypes.SET_AST: {
       const { undoStack, ast } = state
-      const { ast: nextAst } = action.payload
+      const nextAst = action.payload
       undoStack.push(ast)
       return setAst(state, nextAst, { undoStack }, true)
     }
@@ -195,13 +211,30 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const { collapsed } = action.payload
       return { ...state, editorCollapsed: collapsed }
     }
-    case ActionTypes.UPDATE_GUIDE_CONFIG: {
-      return { ...state, guiderConfig: action.payload }
-    }
     case ActionTypes.UPDATE_QUANTIFIER: {
       const { ast, selectedIds } = state
       const nextAst = quantifierIt(ast, selectedIds[0], action.payload)
       return setAst(state, nextAst)
+    }
+    case ActionTypes.WRAP_LOOKAROUND_ASSERTION: {
+      const { ast, selectedIds } = state
+      const { nextAst, nextSelectedIds } = wrapLookAroundAssertionIt(
+        ast,
+        selectedIds,
+        action.payload
+      )
+      return setAst(state, nextAst, { selectedIds: nextSelectedIds })
+    }
+    case ActionTypes.UPDATE_LOOKAROUND_ASSERTION: {
+      const { ast, selectedIds } = state
+      const { kind, negate } = action.payload
+      const { nextAst, nextSelectedIds } = lookAroundAssertionIt(
+        ast,
+        selectedIds,
+        kind,
+        negate
+      )
+      return setAst(state, nextAst, { selectedIds: nextSelectedIds })
     }
     default:
       return state

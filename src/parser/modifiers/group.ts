@@ -4,83 +4,6 @@ import * as AST from "../ast"
 import { getNodeById, getNodesByIds } from "../visit"
 import replaceIt from "./replace"
 
-export function group(
-  ast: AST.Regex,
-  selectedIds: string[],
-  kind: AST.GroupKind | "nonGroup",
-  name?: string
-) {
-  if (selectedIds.length === 1) {
-    const { node, nodeList, index } = getNodeById(ast, selectedIds[0])
-    if (node.type === "group") {
-      const { id, quantifier, children, type } = node
-      let groupNode: AST.GroupNode
-      switch (kind) {
-        case "nonGroup":
-          return removeGroupWrap(ast, node)
-        case "capturing":
-          groupNode = {
-            id,
-            type,
-            kind,
-            name: "",
-            index: 0,
-            children,
-            quantifier,
-          }
-          break
-        case "nonCapturing":
-          groupNode = { id, type, kind, children, quantifier }
-          break
-        case "namedCapturing":
-          groupNode = {
-            id,
-            type,
-            kind,
-            name: name!,
-            index: 0,
-            children,
-            quantifier,
-          }
-          break
-      }
-      nodeList[index] = groupNode
-      return selectedIds
-    }
-  }
-  let nextSelectedIds: string[] = selectedIds
-  const selectedNodes = getNodesByIds(ast, selectedIds)
-  let groupNode: AST.GroupNode
-  const id = nanoid()
-  const type = "group"
-  const quantifier = null
-  const children = selectedNodes
-  switch (kind) {
-    case "capturing":
-      groupNode = { id, type, kind, name: "", index: 0, children, quantifier }
-      break
-    case "nonCapturing":
-      groupNode = { id, type, kind, children, quantifier }
-      break
-    case "namedCapturing":
-      groupNode = {
-        id,
-        type,
-        kind,
-        name: name!,
-        index: 0,
-        children,
-        quantifier,
-      }
-      break
-  }
-  if (groupNode!) {
-    replaceIt(ast, selectedNodes, [groupNode!])
-    return [id]
-  }
-  return nextSelectedIds
-}
-
 function removeGroupWrap(ast: AST.Regex, selectNode: AST.GroupNode) {
   const { children } = selectNode
   replaceIt(ast, [selectNode], children!)
@@ -90,14 +13,78 @@ function removeGroupWrap(ast: AST.Regex, selectNode: AST.GroupNode) {
 const groupIt = (
   ast: AST.Regex,
   selectedIds: string[],
-  type: AST.GroupKind | "nonGroup",
-  name?: string
+  group: AST.Group | null
 ) => {
-  let nextSelectedIds: string[] = []
+  let nextSelectedIds: string[] = selectedIds
   const nextAst = produce(ast, (draft) => {
-    nextSelectedIds = group(draft, selectedIds, type, name)
+    const { node, nodeList, index } = getNodeById(draft, selectedIds[0])
+    if (node.type === "group") {
+      if (group === null) {
+        nextSelectedIds = removeGroupWrap(draft, node)
+      } else {
+        const { id, type, children, quantifier } = node
+        const groupNode: AST.GroupNode = {
+          id,
+          type,
+          children,
+          quantifier,
+          ...group,
+        }
+        nodeList[index] = groupNode
+      }
+    }
   })
 
   return { nextAst, nextSelectedIds }
 }
+
+export const wrapGroupIt = (
+  ast: AST.Regex,
+  selectedIds: string[],
+  group: AST.Group
+) => {
+  const id = nanoid()
+  const nextSelectedIds: string[] = [id]
+  const nextAst = produce(ast, (draft) => {
+    let groupNode: AST.GroupNode
+    const nodes = getNodesByIds(draft, selectedIds)
+    switch (group.kind) {
+      case "capturing":
+        groupNode = {
+          id,
+          type: "group",
+          kind: "capturing",
+          children: [],
+          name: "",
+          index: 0,
+          quantifier: null,
+        }
+        break
+      case "nonCapturing":
+        groupNode = {
+          id,
+          type: "group",
+          kind: "nonCapturing",
+          children: [],
+          quantifier: null,
+        }
+        break
+      case "namedCapturing":
+        groupNode = {
+          id,
+          type: "group",
+          kind: "namedCapturing",
+          children: [],
+          name: group.name,
+          index: 0,
+          quantifier: null,
+        }
+        break
+    }
+    groupNode.children = nodes
+    replaceIt(draft, nodes, [groupNode])
+  })
+  return { nextAst, nextSelectedIds }
+}
+
 export default groupIt
