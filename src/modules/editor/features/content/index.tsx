@@ -21,13 +21,13 @@ type Prop = {
   id: string
 }
 const ContentEditor: React.FC<Prop> = ({ content, id }) => {
-  const [{ maxGroupIndex, ast }, dispatch] = useMainReducer()
+  const [{ groupNames, ast }, dispatch] = useMainReducer()
   const { palette } = useTheme()
   const { kind } = content
 
   const options = useMemo(() => {
     const options = [...characterOptions, wordBoundaryAssertionOption]
-    if (maxGroupIndex !== 0 || kind === "backReference") {
+    if (groupNames.length !== 0 || kind === "backReference") {
       options.push(backRefOption)
     }
     if (ast.body[0].id === id || kind === "beginningAssertion") {
@@ -37,7 +37,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id }) => {
       options.push(endAssertionOption)
     }
     return options
-  }, [maxGroupIndex, kind, ast, id])
+  }, [groupNames, kind, ast, id])
 
   const handleTypeChange = (type: string | string[]) => {
     let payload: AST.Content

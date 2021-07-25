@@ -3362,6 +3362,17 @@ const tests: Tests = {
     ],
     flags: [],
   },
+  "/\\k<Name>/": {
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "backReference",
+        ref: "Name",
+      },
+    ],
+    flags: [],
+  },
 }
 
 export default tests

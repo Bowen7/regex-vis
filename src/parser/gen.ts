@@ -1,5 +1,5 @@
 import * as AST from "./ast"
-
+const digitRegex = /\d+/
 function gen(
   ast: AST.Regex | AST.Node[],
   withSlash = false,
@@ -173,6 +173,9 @@ function genLookaroundAssertionNode(node: AST.LookAroundAssertionNode) {
 
 function genBackReference(node: AST.BackReferenceNode) {
   const { ref } = node
-  return `\\${ref}`
+  if (digitRegex.test(ref)) {
+    return `\\${ref}`
+  }
+  return `\\k<${ref}>`
 }
 export default gen

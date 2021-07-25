@@ -5,18 +5,14 @@ import { useMainReducer, MainActionTypes } from "@/redux"
 
 type Props = { reference: string }
 const BackRef: React.FC<Props> = ({ reference }) => {
-  const [{ maxGroupIndex }, dispatch] = useMainReducer()
+  const [{ groupNames }, dispatch] = useMainReducer()
 
   const options = useMemo(() => {
-    const refNum = Number(reference)
-    const options = [...new Array(maxGroupIndex)].map((_, index) =>
-      (index + 1).toString()
-    )
-    if (refNum > maxGroupIndex) {
-      options.push(reference)
+    if (groupNames.includes(reference)) {
+      return groupNames
     }
-    return options
-  }, [maxGroupIndex, reference])
+    return [reference, ...groupNames]
+  }, [groupNames, reference])
 
   const handleChange = (value: string | string[]) => {
     dispatch({

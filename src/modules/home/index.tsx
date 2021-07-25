@@ -3,7 +3,7 @@ import { useTheme } from "@geist-ui/react"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import { useMainReducer } from "@/redux"
-const DEFAULT_REGEX = `/^([a-zA-Z_])*?@[a-zA-Z](\\.[a-zA-Z-]{0,10})?(a|b)x(?=yyy)\\1/`
+const DEFAULT_REGEX = `/^([a-zA-Z_])*?@[a-zA-Z](\\.[a-zA-Z-]{0,10})?(?<Name>a|b)x(?=yyy)\\1/`
 // const DEFAULT_REGEX = `/x(?=aaa)/`
 
 const Home: React.FC<{}> = () => {

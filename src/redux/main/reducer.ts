@@ -14,7 +14,7 @@ import {
 export type InitialStateType = {
   ast: AST.Regex
   selectedIds: string[]
-  maxGroupIndex: number
+  groupNames: string[]
   undoStack: AST.Regex[]
   redoStack: AST.Regex[]
   editorCollapsed: Boolean
@@ -23,7 +23,7 @@ export type InitialStateType = {
 export const initialState: InitialStateType = {
   ast: { type: "regex", body: [], flags: [] },
   selectedIds: [],
-  maxGroupIndex: 0,
+  groupNames: [],
   undoStack: [],
   redoStack: [],
   editorCollapsed: false,
@@ -83,6 +83,7 @@ export type Action =
 
 const refreshGroupIndex = (ast: AST.Regex) => {
   let groupIndex = 0
+  const groupNames: string[] = []
   const nextAst = produce(ast, (draft) => {
     visitTree(draft, (node: AST.Node) => {
       if (
@@ -93,11 +94,14 @@ const refreshGroupIndex = (ast: AST.Regex) => {
         node.index = index
         if (node.kind === "capturing") {
           node.name = index.toString()
+          groupNames.push(index.toString())
+        } else {
+          groupNames.push(node.name)
         }
       }
     })
   })
-  return { maxGroupIndex: groupIndex, nextAst }
+  return { groupNames, nextAst }
 }
 
 const setAst = (
@@ -106,9 +110,9 @@ const setAst = (
   attachState: Partial<InitialStateType> = {},
   shouldRefreshGroupIndex = false
 ): InitialStateType => {
-  let { undoStack, ast, maxGroupIndex } = state
+  let { undoStack, ast, groupNames } = state
   if (shouldRefreshGroupIndex) {
-    ;({ nextAst, maxGroupIndex } = refreshGroupIndex(nextAst))
+    ;({ nextAst, groupNames } = refreshGroupIndex(nextAst))
   }
   if (!attachState.undoStack) {
     undoStack.push(ast)
@@ -116,7 +120,7 @@ const setAst = (
   return {
     ...state,
     ast: nextAst,
-    maxGroupIndex,
+    groupNames,
     undoStack,
     ...attachState,
   }

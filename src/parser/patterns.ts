@@ -1,0 +1,10 @@
+export const flag = /[gimsuy]/
+export const cX = /^([A-Za-z])/
+export const xhh = /^([0-9A-Fa-f]{2})/
+export const uhhhh = /^([0-9A-Fa-f]{4})/
+export const digit = /^(\d+)/
+export const comma = /^,/
+export const lookAround = /^(\?=|\?!|\?<=|\?<!)/
+export const nonCapturing = /^\?:/
+export const namedCapturing = /^\?<(\w+)>/
+export const namedBackRef = /^<(\w+)>/

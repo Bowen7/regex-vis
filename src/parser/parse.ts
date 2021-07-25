@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid"
 import * as AST from "./ast"
+import * as patterns from "./patterns"
 
 const lookAroundDict: {
   "?=": AST.LookAround
@@ -53,7 +54,7 @@ class Lexer {
       }
 
       for (let i = end + 1; i < this.regex.length; i++) {
-        if (!/[gimsuy]/.test(this.regex[i])) {
+        if (!patterns.flag.test(this.regex[i])) {
           this.message = `Invalid regular expression flags '${this.regex[i]}'`
           return false
         }
@@ -118,9 +119,10 @@ class Lexer {
         })
         break
       // \cX
-      case "c":
-        const X = this.eat("[A-Za-z]", "", 1)
-        if (X) {
+      case "c": {
+        const matches = this.eat(patterns.cX, 1)
+        if (matches) {
+          const X = matches[1]
           this.appendChild({
             id: this.id(),
             type: "character",
@@ -133,10 +135,12 @@ class Lexer {
           this.onStringCharacter()
         }
         break
+      }
       // \xhh
-      case "x":
-        const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
-        if (hh) {
+      case "x": {
+        const matches = this.eat(patterns.xhh, 1)
+        if (matches) {
+          const hh = matches[0]
           this.appendChild({
             id: this.id(),
             type: "character",
@@ -149,10 +153,12 @@ class Lexer {
           this.onStringCharacter()
         }
         break
+      }
       // \uhhhh
-      case "u":
-        const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
-        if (hhhh) {
+      case "u": {
+        const matches = this.eat(patterns.uhhhh, 1)
+        if (matches) {
+          const hhhh = matches[1]
           this.appendChild({
             id: this.id(),
             type: "character",
@@ -165,10 +171,27 @@ class Lexer {
           this.onStringCharacter()
         }
         break
-      default:
+      }
+      case "k": {
+        const matches = this.eat(patterns.namedBackRef, 1)
+        if (matches) {
+          const ref = matches[1]
+          this.appendChild({
+            id: this.id(),
+            type: "backReference",
+            ref,
+          })
+          this.advance(2 + ref.length)
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      }
+      default: {
         // back reference
-        const groupName = this.eat("\\d+")
-        if (groupName) {
+        const matches = this.eat(patterns.digit)
+        if (matches) {
+          const groupName = matches[0]
           this.appendChild({
             id: this.id(),
             type: "backReference",
@@ -179,6 +202,7 @@ class Lexer {
         }
         this.onStringCharacter()
         break
+      }
     }
   }
 
@@ -293,10 +317,11 @@ class Lexer {
         quantifier = { kind: "+", min: 1, max: Infinity, greedy: true }
         break
       case "{":
-        const min = this.eat("\\d+", "", 1)
-        if (!min) {
+        const minMatches = this.eat(patterns.digit, 1)
+        if (!minMatches) {
           break
         }
+        const min = minMatches[1]
         if (this.cur(min.length + 1) === "}") {
           quantifier = {
             kind: "custom",
@@ -308,8 +333,8 @@ class Lexer {
           break
         }
 
-        const comma = this.eat(",", "", min.length + 1)
-        if (comma) {
+        const commaMatches = this.eat(patterns.comma, min.length + 1)
+        if (commaMatches) {
           if (this.cur(min.length + 2) === "}") {
             quantifier = {
               kind: "custom",
@@ -322,10 +347,11 @@ class Lexer {
           }
         }
 
-        const max = this.eat("\\d+", "", min.length + 2)
-        if (!max) {
+        const maxMatches = this.eat(patterns.digit, min.length + 2)
+        if (!maxMatches) {
           break
         }
+        const max = maxMatches[1]
         if (this.cur(min.length + max.length + 2) === "}") {
           quantifier = {
             kind: "custom",
@@ -410,28 +436,8 @@ class Lexer {
     })
   }
 
-  private eat(
-    startPoint: string,
-    endPoint: string = "",
-    advance = 0
-  ): string | false {
-    if (!endPoint) {
-      const match = this.regex
-        .slice(this.index + advance)
-        .match(new RegExp(`^(${startPoint})`))
-      if (match) {
-        return match[0]
-      }
-      return false
-    }
-    const match = this.regex
-      .slice(this.index + advance)
-      .match(new RegExp(`^(${startPoint}(.*)${endPoint})`))
-
-    if (match) {
-      return match[2]
-    }
-    return false
+  private eat(pattern: RegExp, advance = 0) {
+    return this.regex.slice(this.index + advance).match(pattern)
   }
 
   private onRanges() {
@@ -494,35 +500,41 @@ class Lexer {
             onRange(`\\${cur}`)
             break
           // \cX
-          case "c":
-            const X = this.eat("[A-Za-z]", "", 1)
-            if (X) {
+          case "c": {
+            const matches = this.eat(patterns.cX, 1)
+            if (matches) {
+              const X = matches[1]
               onRange(`\\c${X}`)
               this.advance(1)
             } else {
               onRange("c")
             }
             break
+          }
           // \xhh
-          case "x":
-            const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
-            if (hh) {
+          case "x": {
+            const matches = this.eat(patterns.xhh, 1)
+            if (matches) {
+              const hh = matches[1]
               onRange(`\\x${hh}`)
               this.advance(2)
             } else {
               onRange("x")
             }
             break
+          }
           // \uhhhh
-          case "u":
-            const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
-            if (hhhh) {
+          case "u": {
+            const matches = this.eat(patterns.uhhhh, 1)
+            if (matches) {
+              const hhhh = matches[1]
               onRange(`\\u${hhhh}`)
               this.advance(4)
             } else {
               onRange("u")
             }
             break
+          }
           default:
             onRange(cur)
             break
@@ -577,8 +589,9 @@ class Lexer {
     let node: AST.GroupNode | AST.LookAroundAssertionNode
     let group: AST.Group
     if (this.cur() === "?") {
-      const lookAround = this.eat("\\?=|\\?!|\\?<=|\\?<!")
-      if (lookAround) {
+      const matches = this.eat(patterns.lookAround)
+      if (matches) {
+        const lookAround = matches[1]
         node = {
           id: this.id(),
           type: "lookAroundAssertion",
@@ -587,7 +600,7 @@ class Lexer {
         }
         this.advance(lookAround.length)
       } else {
-        if (this.eat("\\?:")) {
+        if (this.eat(patterns.nonCapturing)) {
           this.advance(2)
           group = { kind: "nonCapturing" }
         }
@@ -595,18 +608,14 @@ class Lexer {
     }
 
     if (!node! && !group!) {
-      if (this.eat("\\?:")) {
-        this.advance(2)
-        group = { kind: "nonCapturing" }
-      } else {
-        const name = this.eat("\\?<", ">")
-        if (name) {
-          this.advance((name as string).length + 3)
-          group = {
-            kind: "namedCapturing",
-            name: name,
-            index: this.groupIndex++,
-          }
+      const matches = this.eat(patterns.namedCapturing)
+      if (matches) {
+        const name = matches[1]
+        this.advance(name.length + 3)
+        group = {
+          kind: "namedCapturing",
+          name: name,
+          index: this.groupIndex++,
         }
       }
     }

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Divider, Collapse, useTheme } from "@geist-ui/react"
+import { Collapse, useTheme } from "@geist-ui/react"
 import ContentEditor from "../../features/content"
 import Group from "../../features/group"
 import Expression from "../../features/expression"
