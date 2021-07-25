@@ -248,11 +248,14 @@ class RenderEngine {
       const size = this.measureTexts(texts, NODE_TEXT_FONTSIZE)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
-    } else {
+    } else if (node.type === "root") {
       if (!this.minimum) {
         width = ROOT_RADIUS
         height = ROOT_RADIUS
       }
+    } else {
+      width = 2 * NODE_PADDING_HORIZONTAL
+      height = NODE_TEXT_FONTSIZE + 2 * NODE_PADDING_VERTICAL
     }
 
     if (

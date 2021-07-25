@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useMemo } from "react"
 import { Divider, ButtonDropdown, useTheme } from "@geist-ui/react"
 import Cell from "@/components/cell"
 import ContentEditor from "../../features/content"
@@ -14,7 +14,7 @@ import { useMainReducer, MainActionTypes } from "@/redux"
 export type InsertDirection = "prev" | "next" | "branch"
 
 const InfoItem: React.FC<{}> = () => {
-  const { layout } = useTheme()
+  const { layout, palette } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
   const [{ selectedIds, ast }, dispatch] = useMainReducer()
@@ -41,20 +41,45 @@ const InfoItem: React.FC<{}> = () => {
     const nodesInfo = getInfoFromNodes(nodes)
     setNodesInfo(nodesInfo)
   }, [nodes])
+
+  const insertOptions = useMemo(() => {
+    const options: { direction: InsertDirection; desc: string }[] = []
+    const { body } = ast
+    if (nodes.length === 0) {
+      return []
+    }
+    if (body[body.length - 1].id !== nodes[nodes.length - 1].id) {
+      options.push({
+        direction: "next",
+        desc: "Insert after",
+      })
+    }
+    if (body[0].id !== nodes[0].id) {
+      options.push({
+        direction: "prev",
+        desc: "Insert before",
+      })
+    }
+    options.push({
+      direction: "branch",
+      desc: "Insert as a branch",
+    })
+    return options
+  }, [ast, nodes])
   return (
     <>
       <div className="container">
         <Cell label="Insert a empty node">
           <ButtonDropdown size="small">
-            <ButtonDropdown.Item main onClick={() => handleInsert("next")}>
-              Insert after
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item onClick={() => handleInsert("prev")}>
-              Insert before
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item onClick={() => handleInsert("branch")}>
-              Insert as a branch
-            </ButtonDropdown.Item>
+            {insertOptions.map(({ direction, desc }, index) => (
+              <ButtonDropdown.Item
+                main={index === 0}
+                key={direction}
+                onClick={() => handleInsert(direction)}
+              >
+                {desc}
+              </ButtonDropdown.Item>
+            ))}
           </ButtonDropdown>
         </Cell>
         {/* <Cell label="Wrap with a group">
@@ -100,6 +125,7 @@ const InfoItem: React.FC<{}> = () => {
         }
         .container :global(button) {
           font-size: 0.75rem;
+          color: ${palette.foreground};
         }
 
         .container :global(.btn-dropdown button) {
