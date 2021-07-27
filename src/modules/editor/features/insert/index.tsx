@@ -116,7 +116,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
   }
   return (
     <div id="test">
-      <Cell label="Insert a empty node">
+      <Cell label="Insert around">
         <ButtonGroup>
           {insertOptions.map(({ value, desc, Icon }) => (
             <Button onClick={() => handleInsert(value)} key={value}>
@@ -127,7 +127,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
           ))}
         </ButtonGroup>
       </Cell>
-      <Cell label="Group selection">
+      <Cell label="Group selection" question="group">
         <ButtonGroup>
           {groupOptions.map(({ value, desc, Icon }) => (
             <Button onClick={() => handleWrapGroup(value)} key={value}>

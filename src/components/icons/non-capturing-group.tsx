@@ -18,8 +18,8 @@ const NonCapturingGroup = () => {
           width="35"
           height="15"
           rx="5"
-          stroke-width="2"
-          stroke-dasharray="4 4"
+          strokeWidth="1.5"
+          strokeDasharray="4 4"
         />
       </svg>
 
