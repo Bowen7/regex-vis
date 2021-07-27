@@ -58,9 +58,32 @@ export function visitTree(ast: AST.Regex, callback: (node: AST.Node) => void) {
 export function getNodeById(
   ast: AST.Regex,
   id: string
-): { node: AST.Node; nodeList: AST.Node[]; index: number } {
+): {
+  node: AST.Node
+  parent:
+    | AST.GroupNode
+    | AST.Regex
+    | AST.LookAroundAssertionNode
+    | AST.ChoiceNode
+  nodeList: AST.Node[]
+  index: number
+} {
   const { body } = ast
-  let stack = body.map((node, index) => ({ node, nodeList: body, index }))
+  let stack: {
+    node: AST.Node
+    parent:
+      | AST.GroupNode
+      | AST.Regex
+      | AST.LookAroundAssertionNode
+      | AST.ChoiceNode
+    nodeList: AST.Node[]
+    index: number
+  }[] = body.map((node, index) => ({
+    node,
+    parent: ast,
+    nodeList: body,
+    index,
+  }))
   while (stack.length !== 0) {
     const item = stack.shift()!
     const { node } = item
@@ -70,7 +93,12 @@ export function getNodeById(
     if (node.type === "group" || node.type === "lookAroundAssertion") {
       const { children } = node
       stack = stack.concat(
-        children.map((node, index) => ({ node, nodeList: children, index }))
+        children.map((cur, index) => ({
+          node: cur,
+          parent: node,
+          nodeList: children,
+          index,
+        }))
       )
     }
     if (node.type === "choice") {
@@ -78,7 +106,12 @@ export function getNodeById(
       for (let i = branches.length - 1; i >= 0; i--) {
         const branch = branches[i]
         stack = stack.concat(
-          branch.map((node, index) => ({ node, nodeList: branch, index }))
+          branch.map((cur, index) => ({
+            node: cur,
+            parent: node,
+            nodeList: branch,
+            index,
+          }))
         )
       }
     }

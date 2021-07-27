@@ -34,7 +34,7 @@ const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
         <div className="content">{children}</div>
       </div>
       <style jsx>{`
-        .container {
+        .container:not(:last-of-type) {
           margin-bottom: 30px;
         }
         .content {

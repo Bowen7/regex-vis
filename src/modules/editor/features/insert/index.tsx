@@ -1,6 +1,16 @@
 import React, { useMemo } from "react"
-import { ButtonDropdown } from "@geist-ui/react"
+import { ButtonDropdown, Button, ButtonGroup, Tooltip } from "@geist-ui/react"
 import Cell from "@/components/cell"
+import {
+  InsertBefore,
+  InsertAfter,
+  InsertBranch,
+  CapturingGroup,
+  NonCapturingGroup,
+  NamedCapturingGroup,
+  Lookahead,
+  Lookbehind,
+} from "@/components/icons"
 import { AST } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 type Props = {
@@ -11,39 +21,69 @@ type Props = {
 type InsertDirection = "prev" | "next" | "branch"
 
 const groupOptions = [
-  { desc: "Capturing group", kind: "capturing" },
-  { desc: "Non-capturing group", kind: "nonCapturing" },
-  { desc: "Named capturing group", kind: "namedCapturing" },
+  { desc: "Capturing group", value: "capturing", Icon: CapturingGroup },
+  {
+    desc: "Non-capturing group",
+    value: "nonCapturing",
+    Icon: NonCapturingGroup,
+  },
+  {
+    desc: "Named capturing group",
+    value: "namedCapturing",
+    Icon: NamedCapturingGroup,
+  },
 ]
 const lookAroundAssertionOptions = [
-  { desc: "Lookahead assertion", kind: "lookahead" },
-  { desc: "Lookbehind assertion", kind: "lookbehind" },
+  { desc: "Lookahead assertion", value: "lookahead", Icon: Lookahead },
+  { desc: "Lookbehind assertion", value: "lookbehind", Icon: Lookbehind },
 ]
 
 const Insert: React.FC<Props> = ({ ast, nodes }) => {
   const [, dispatch] = useMainReducer()
+
   const insertOptions = useMemo(() => {
-    const options: { direction: InsertDirection; desc: string }[] = []
+    const options: {
+      value: InsertDirection
+      desc: string
+      Icon: () => JSX.Element
+    }[] = []
     const { body } = ast
     if (nodes.length === 0) {
       return []
     }
-    if (body[body.length - 1].id !== nodes[nodes.length - 1].id) {
+    const bodyHead = body[0]
+    const head = nodes[0]
+    const bodyTail = body[nodes.length - 1]
+    const tail = nodes[nodes.length - 1]
+
+    if (
+      bodyHead.id !== head.id &&
+      !(head.type === "boundaryAssertion" && head.kind === "beginning")
+    ) {
+      console.log(head)
       options.push({
-        direction: "next",
-        desc: "Insert after",
-      })
-    }
-    if (body[0].id !== nodes[0].id) {
-      options.push({
-        direction: "prev",
+        value: "prev",
         desc: "Insert before",
+        Icon: InsertBefore,
       })
     }
+
     options.push({
-      direction: "branch",
+      value: "branch",
       desc: "Insert as a branch",
+      Icon: InsertBranch,
     })
+
+    if (
+      bodyTail.id !== tail.id &&
+      !(tail.type === "boundaryAssertion" && tail.kind === "end")
+    ) {
+      options.push({
+        value: "next",
+        desc: "Insert after",
+        Icon: InsertAfter,
+      })
+    }
     return options
   }, [ast, nodes])
 
@@ -75,47 +115,44 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
     })
   }
   return (
-    <>
+    <div id="test">
       <Cell label="Insert a empty node">
-        <ButtonDropdown size="small">
-          {insertOptions.map(({ direction, desc }, index) => (
-            <ButtonDropdown.Item
-              main={index === 0}
-              key={direction}
-              onClick={() => handleInsert(direction)}
-            >
-              {desc}
-            </ButtonDropdown.Item>
+        <ButtonGroup>
+          {insertOptions.map(({ value, desc, Icon }) => (
+            <Button onClick={() => handleInsert(value)} key={value}>
+              <Tooltip text={desc} placement="topEnd">
+                <Icon />
+              </Tooltip>
+            </Button>
           ))}
-        </ButtonDropdown>
+        </ButtonGroup>
       </Cell>
-      <Cell label="Wrap with a group">
-        <ButtonDropdown size="small">
-          {groupOptions.map(({ kind, desc }, index) => (
-            <ButtonDropdown.Item
-              main={index === 0}
-              key={kind}
-              onClick={() => handleWrapGroup(kind)}
-            >
-              {desc}
-            </ButtonDropdown.Item>
+      <Cell label="Group selection">
+        <ButtonGroup>
+          {groupOptions.map(({ value, desc, Icon }) => (
+            <Button onClick={() => handleWrapGroup(value)} key={value}>
+              <Tooltip text={desc} placement="topEnd">
+                <Icon />
+              </Tooltip>
+            </Button>
           ))}
-        </ButtonDropdown>
+        </ButtonGroup>
       </Cell>
-      <Cell label="Wrap with a lookAround Assertion">
-        <ButtonDropdown size="small">
-          {lookAroundAssertionOptions.map(({ kind, desc }, index) => (
-            <ButtonDropdown.Item
-              main={index === 0}
-              key={kind}
-              onClick={() => handleWrapLookAroundAssertion(kind)}
+      <Cell label="LookAround selection">
+        <ButtonGroup>
+          {lookAroundAssertionOptions.map(({ value, desc, Icon }) => (
+            <Button
+              onClick={() => handleWrapLookAroundAssertion(value)}
+              key={value}
             >
-              {desc}
-            </ButtonDropdown.Item>
+              <Tooltip text={desc} placement="topEnd">
+                <Icon />
+              </Tooltip>
+            </Button>
           ))}
-        </ButtonDropdown>
+        </ButtonGroup>
       </Cell>
-    </>
+    </div>
   )
 }
 

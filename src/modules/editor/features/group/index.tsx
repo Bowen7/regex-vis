@@ -73,7 +73,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
         {group.kind === "namedCapturing" && (
           <>
             <Spacer y={0.5} />
-            <Input label="The Group's name" {...nameBindings} />
+            <Input label="Group's name" {...nameBindings} />
           </>
         )}
       </Cell>

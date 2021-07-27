@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Collapse, useTheme } from "@geist-ui/react"
+import { Divider, useTheme } from "@geist-ui/react"
 import ContentEditor from "../../features/content"
 import Group from "../../features/group"
 import Expression from "../../features/expression"
@@ -13,7 +13,7 @@ import { getNodesByIds } from "@/parser/visit"
 import { useMainReducer } from "@/redux"
 
 const InfoItem: React.FC<{}> = () => {
-  const { layout, palette } = useTheme()
+  const { layout } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
   const [{ selectedIds, ast }] = useMainReducer()
@@ -40,20 +40,15 @@ const InfoItem: React.FC<{}> = () => {
   return (
     <>
       <div className="container">
-        <Collapse.Group>
-          <Collapse title="Insert">
-            <Insert ast={ast} nodes={nodes} />
-          </Collapse>
-          <Collapse title="Modify" initialVisible>
-            <Expression expression={expression} />
-            {content && <ContentEditor content={content} id={id} />}
-            {group && <Group group={group} />}
-            {hasQuantifier && <Quantifier quantifier={quantifier} />}
-            {lookAround && (
-              <LookAround kind={lookAround.kind} negate={lookAround.negate} />
-            )}
-          </Collapse>
-        </Collapse.Group>
+        <Insert ast={ast} nodes={nodes} />
+        <Divider />
+        <Expression expression={expression} />
+        {content && <ContentEditor content={content} id={id} />}
+        {group && <Group group={group} />}
+        {hasQuantifier && <Quantifier quantifier={quantifier} />}
+        {lookAround && (
+          <LookAround kind={lookAround.kind} negate={lookAround.negate} />
+        )}
       </div>
       <style jsx>{`
         .container {
@@ -70,19 +65,19 @@ const InfoItem: React.FC<{}> = () => {
         .container :global(input) {
           font-size: 0.75rem;
         }
-        .container :global(button) {
-          font-size: 0.75rem;
-          color: ${palette.foreground};
-        }
 
-        .container :global(.collapse-group) {
+        .container :global(.btn-group) {
+          margin: 0;
+        }
+        .container :global(.btn-group .btn) {
+          width: 80px;
           padding: 0;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
         }
-        .container :global(.collapse:first-child) {
-          border-top: none;
-        }
-        .container :global(.collapse:last-child) {
-          border-bottom: none;
+        .container :global(.btn-group .tooltip) {
+          display: inline-flex;
         }
 
         .container :global(.btn-dropdown button) {

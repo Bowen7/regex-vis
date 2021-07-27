@@ -1,42 +1,54 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
 import * as AST from "../ast"
-import { visit, getNodesByIds } from "../visit"
+import { getNodeById } from "../visit"
 import { replaceFromLists } from "./replace"
 type InsertDirection = "prev" | "next" | "branch"
 
 function insert(
   ast: AST.Regex,
-  selectedNodes: AST.Node[],
+  selectedIds: string[],
   direction: InsertDirection
 ) {
-  if (selectedNodes.length === 0) {
+  if (selectedIds.length === 0) {
     return
   }
-  const start = selectedNodes[0]
-  visit(ast, start.id, (_, nodeList) => {
-    const startIndex = nodeList.findIndex(({ id }) => id === start.id)
-    if (startIndex === -1) {
-      return
-    }
-    const endIndex = startIndex + selectedNodes.length - 1
+  const node = genNode()
+  const startId = selectedIds[0]
+  const { nodeList, index, parent } = getNodeById(ast, startId)
 
-    const node = genNode()
-    if (direction === "prev") {
-      nodeList.splice(startIndex, 0, node)
-    } else if (direction === "next") {
-      nodeList.splice(endIndex + 1, 0, node)
+  if (direction === "prev") {
+    nodeList.splice(index, 0, node)
+  } else if (direction === "next") {
+    nodeList.splice(index + selectedIds.length, 0, node)
+  } else {
+    const selectedNodes = nodeList.slice(index, index + selectedIds.length)
+    if (selectedNodes.length === 0 && selectedNodes[0].type === "choice") {
+      selectedNodes[0].branches.push([node])
     } else {
-      if (selectedNodes.length === 1 && selectedNodes[0].type === "choice") {
-        selectedNodes[0].branches.push([node])
+      const nodeListWithoutRoot = nodeList.filter(
+        (node) => node.type !== "root"
+      )
+      if (
+        nodeListWithoutRoot.length === selectedNodes.length &&
+        startId === nodeListWithoutRoot[0].id
+      ) {
+        if (parent.type === "choice") {
+          parent.branches.push([node])
+        } else {
+          const choiceNode = genChoiceNode()
+          choiceNode.branches = [[node], selectedNodes]
+          replaceFromLists(nodeList, selectedNodes, [choiceNode])
+        }
       } else {
+        const groupNode = genGroupNode()
         const choiceNode = genChoiceNode()
         choiceNode.branches = [[node], selectedNodes]
-
-        replaceFromLists(nodeList, selectedNodes, [choiceNode])
+        groupNode.children = [choiceNode]
+        replaceFromLists(nodeList, selectedNodes, [groupNode])
       }
     }
-  })
+  }
 }
 
 function genNode(): AST.CharacterNode {
@@ -57,13 +69,20 @@ function genChoiceNode(): AST.ChoiceNode {
   }
 }
 
+function genGroupNode(): AST.GroupNode {
+  return {
+    id: nanoid(),
+    type: "group",
+    kind: "nonCapturing",
+    children: [],
+    quantifier: null,
+  }
+}
+
 const insertIt = (
   ast: AST.Regex,
   selectedIds: string[],
   direction: InsertDirection
-) =>
-  produce(ast, (draft) =>
-    insert(draft, getNodesByIds(draft, selectedIds), direction)
-  )
+) => produce(ast, (draft) => insert(draft, selectedIds, direction))
 
 export default insertIt
