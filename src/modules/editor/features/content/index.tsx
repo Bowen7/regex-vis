@@ -1,7 +1,9 @@
 import React, { useMemo } from "react"
-import { Select, useTheme } from "@geist-ui/react"
+import { Select, useTheme, Spacer } from "@geist-ui/react"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
+import QuestionCircle from "@geist-ui/react-icons/questionCircle"
+import questions, { isQuestionKey } from "@/utils/questions"
 import SimpleString from "./simple-string"
 import ClassCharacter from "./class-character"
 import BackRef from "./back-ref"
@@ -78,18 +80,32 @@ const ContentEditor: React.FC<Prop> = ({ content, id }) => {
     <>
       <Cell label="Content">
         <Cell.Item label="Type">
-          <Select
-            value={content.kind}
-            onChange={handleTypeChange}
-            getPopupContainer={() => document.getElementById("editor-content")}
-            disableMatchWidth
-          >
-            {options.map(({ value, label }) => (
-              <Select.Option value={value} key={value}>
-                <div>{label}</div>
-              </Select.Option>
-            ))}
-          </Select>
+          <div className="type">
+            <Select
+              value={content.kind}
+              onChange={handleTypeChange}
+              getPopupContainer={() =>
+                document.getElementById("editor-content")
+              }
+              disableMatchWidth
+            >
+              {options.map(({ value, label }) => (
+                <Select.Option value={value} key={value}>
+                  <div>{label}</div>
+                </Select.Option>
+              ))}
+            </Select>
+            <Spacer inline x={0.5} />
+            {isQuestionKey(content.kind) && (
+              <a
+                href={questions[content.kind]}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <QuestionCircle size={16} />
+              </a>
+            )}
+          </div>
         </Cell.Item>
 
         {content.kind === "string" && <SimpleString value={content.value} />}
@@ -107,6 +123,14 @@ const ContentEditor: React.FC<Prop> = ({ content, id }) => {
       <style jsx>{`
         h6 {
           color: ${palette.secondary};
+        }
+        .type {
+          display: flex;
+          align-items: center;
+        }
+        .type a {
+          color: ${palette.foreground};
+          font-size: 0;
         }
       `}</style>
     </>

@@ -77,7 +77,7 @@ const InfoItem: React.FC<{}> = () => {
           align-items: center;
         }
         .container :global(.btn-group .tooltip) {
-          display: inline-flex;
+          line-height: 0;
         }
 
         .container :global(.btn-dropdown button) {

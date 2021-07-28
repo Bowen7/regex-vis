@@ -18,7 +18,7 @@ const Lookahead = () => {
           cy="10"
           r="4"
           fill={palette.success}
-          fill-opacity="0.6"
+          fillOpacity="0.6"
           strokeWidth="1.5"
         />
         <line y1="10" x2="9" y2="10" strokeWidth="2" />
