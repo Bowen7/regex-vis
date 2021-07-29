@@ -1,7 +1,7 @@
 import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById } from "../visit"
-const quantifierIt = (
+const updateQuantifier = (
   ast: AST.Regex,
   selectedId: string,
   quantifier: AST.Quantifier | null
@@ -13,7 +13,7 @@ const quantifierIt = (
     }
   })
 
-export default quantifierIt
+export default updateQuantifier
 
 export const getQuantifierText = (quantifier: AST.Quantifier): string => {
   let { min, max } = quantifier

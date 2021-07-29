@@ -1,9 +1,10 @@
 export { default as removeIt } from "./remove"
 export { default as insertIt } from "./insert"
-export { default as groupIt, wrapGroupIt } from "./group"
-export { default as contentIt } from "./content"
-export { default as quantifierIt, getQuantifierText } from "./quantifier"
+export { updateGroup, groupIt } from "./group"
+export { default as updateContent } from "./content"
+export { default as updateQuantifier, getQuantifierText } from "./quantifier"
 export {
-  default as lookAroundAssertionIt,
-  wrapLookAroundAssertionIt,
+  updateLookAroundAssertion,
+  lookAroundAssertionIt,
+  unLookAroundAssertion,
 } from "./lookaround"

@@ -3,12 +3,13 @@ import {
   AST,
   removeIt,
   insertIt,
+  updateGroup,
   groupIt,
-  wrapGroupIt,
-  quantifierIt,
+  updateQuantifier,
+  updateLookAroundAssertion,
   lookAroundAssertionIt,
-  wrapLookAroundAssertionIt,
-  contentIt,
+  unLookAroundAssertion,
+  updateContent,
   visitTree,
 } from "@/parser"
 export type InitialStateType = {
@@ -78,7 +79,7 @@ export type Action =
     }
   | {
       type: ActionTypes.UPDATE_LOOKAROUND_ASSERTION
-      payload: { kind: "lookahead" | "lookbehind" | "non"; negate: boolean }
+      payload: { kind: "lookahead" | "lookbehind"; negate: boolean } | null
     }
 
 const refreshGroupIndex = (ast: AST.Regex) => {
@@ -141,7 +142,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_GROUP: {
       const { ast, selectedIds } = state
-      const { nextAst, nextSelectedIds } = groupIt(
+      const { nextAst, nextSelectedIds } = updateGroup(
         ast,
         selectedIds,
         action.payload
@@ -150,7 +151,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.WRAP_GROUP: {
       const { ast, selectedIds } = state
-      const { nextAst, nextSelectedIds } = wrapGroupIt(
+      const { nextAst, nextSelectedIds } = groupIt(
         ast,
         selectedIds,
         action.payload
@@ -208,7 +209,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const { ast, selectedIds } = state
       const payload = action.payload
       const id = selectedIds[0]
-      const nextAst = contentIt(ast, id, payload)
+      const nextAst = updateContent(ast, id, payload)
       return setAst(state, nextAst)
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {
@@ -217,12 +218,12 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_QUANTIFIER: {
       const { ast, selectedIds } = state
-      const nextAst = quantifierIt(ast, selectedIds[0], action.payload)
+      const nextAst = updateQuantifier(ast, selectedIds[0], action.payload)
       return setAst(state, nextAst)
     }
     case ActionTypes.WRAP_LOOKAROUND_ASSERTION: {
       const { ast, selectedIds } = state
-      const { nextAst, nextSelectedIds } = wrapLookAroundAssertionIt(
+      const { nextAst, nextSelectedIds } = lookAroundAssertionIt(
         ast,
         selectedIds,
         action.payload
@@ -231,14 +232,23 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_LOOKAROUND_ASSERTION: {
       const { ast, selectedIds } = state
-      const { kind, negate } = action.payload
-      const { nextAst, nextSelectedIds } = lookAroundAssertionIt(
-        ast,
-        selectedIds,
-        kind,
-        negate
-      )
-      return setAst(state, nextAst, { selectedIds: nextSelectedIds })
+      const { payload } = action
+      if (payload) {
+        const { kind, negate } = payload
+        const { nextAst, nextSelectedIds } = updateLookAroundAssertion(
+          ast,
+          selectedIds,
+          kind,
+          negate
+        )
+        return setAst(state, nextAst, { selectedIds: nextSelectedIds })
+      } else {
+        const { nextAst, nextSelectedIds } = unLookAroundAssertion(
+          ast,
+          selectedIds
+        )
+        return setAst(state, nextAst, { selectedIds: nextSelectedIds })
+      }
     }
     default:
       return state

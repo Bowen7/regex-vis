@@ -1,22 +1,35 @@
 import React, { useEffect } from "react"
 import { Select, Spacer } from "@geist-ui/react"
 import Input from "@/components/input"
-import { groupData } from "./helper"
 import { AST } from "@/parser"
 import Cell from "@/components/cell"
 import { useDebounceInput } from "@/utils/hooks"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
 type GroupSelectProps = {
-  group: AST.Group | { kind: "nonGroup" }
+  group: AST.Group
 }
+export const groupOptions = [
+  {
+    value: "capturing",
+    label: "Capturing Group",
+  },
+  {
+    value: "nonCapturing",
+    label: "Non-capturing group",
+  },
+  {
+    value: "namedCapturing",
+    label: "Named capturing group",
+  },
+]
 
 const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   const { kind } = group
   const [, dispatch] = useMainReducer()
 
-  const handleGroupChange = (kind: AST.GroupKind | "nonGroup", name = "") => {
-    let payload: AST.Group | null = null
+  const handleGroupChange = (kind: AST.GroupKind, name = "") => {
+    let payload: AST.Group
     switch (kind) {
       case "capturing":
         payload = { kind, name: "", index: 0 }
@@ -53,18 +66,28 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   }, [kind])
 
   const onSelectChange = (value: string | string[]) =>
-    handleGroupChange(value as AST.GroupKind | "nonGroup")
+    handleGroupChange(value as AST.GroupKind)
+
+  const handleUnGroup = () =>
+    dispatch({
+      type: MainActionTypes.UPDATE_GROUP,
+      payload: null,
+    })
 
   return (
     <>
-      <Cell label="Group">
+      <Cell
+        label="Group"
+        rightLabel="UnGroup"
+        onRightLabelClick={handleUnGroup}
+      >
         <Select
           value={kind}
           onChange={onSelectChange}
           getPopupContainer={() => document.getElementById("editor-content")}
           disableMatchWidth
         >
-          {groupData.map(({ value, label, tip }) => (
+          {groupOptions.map(({ value, label }) => (
             <Select.Option value={value} key={value}>
               <span>{label}</span>
             </Select.Option>

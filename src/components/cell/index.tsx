@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Text } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
 import questions, { QuestionKey } from "@/utils/questions"
 
@@ -24,11 +24,15 @@ const CellItem: React.FC<ItemProps> = ({ label, children }) => {
 type Props = {
   label: string
   question?: QuestionKey
+  rightLabel?: string
+  onRightLabelClick?: () => void
 }
 const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
   label,
   question,
   children,
+  rightLabel,
+  onRightLabelClick,
 }) => {
   const { palette } = useTheme()
   return (
@@ -43,6 +47,11 @@ const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
               </a>
             )}
           </div>
+          {rightLabel && (
+            <span className="right" onClick={onRightLabelClick}>
+              {rightLabel}
+            </span>
+          )}
         </div>
         <div className="content">{children}</div>
       </div>
@@ -53,6 +62,7 @@ const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
         .title {
           display: flex;
           align-items: flex-end;
+          justify-content: space-between;
           margin-bottom: 0.625rem;
         }
         h5 {
@@ -67,6 +77,11 @@ const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
         .left {
           display: flex;
           align-items: center;
+        }
+        .right {
+          font-size: 0.75rem;
+          color: ${palette.secondary};
+          cursor: pointer;
         }
 
         .content {

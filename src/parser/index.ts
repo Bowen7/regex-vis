@@ -3,14 +3,15 @@ export { default as gen } from "./gen"
 export { default as AST } from "./ast"
 export { visit, visitTree, getNodeById, getNodesByIds } from "./visit"
 export {
-  contentIt,
+  updateContent,
   removeIt,
   insertIt,
+  updateGroup,
   groupIt,
-  wrapGroupIt,
+  updateLookAroundAssertion,
   lookAroundAssertionIt,
-  wrapLookAroundAssertionIt,
-  quantifierIt,
+  updateQuantifier,
   getQuantifierText,
+  unLookAroundAssertion,
 } from "./modifiers"
 export * from "./character-class"

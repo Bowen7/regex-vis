@@ -1,7 +1,7 @@
 import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById } from "../visit"
-const contentIt = (ast: AST.Regex, id: string, content: AST.Content) =>
+const updateContent = (ast: AST.Regex, id: string, content: AST.Content) =>
   produce(ast, (draft) => {
     const { node, nodeList, index } = getNodeById(draft, id)
 
@@ -51,4 +51,4 @@ const contentIt = (ast: AST.Regex, id: string, content: AST.Content) =>
     }
   })
 
-export default contentIt
+export default updateContent

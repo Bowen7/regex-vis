@@ -15,7 +15,7 @@ const LookAround: React.FC<Props> = ({ kind, negate }) => {
     dispatch({
       type: MainActionTypes.UPDATE_LOOKAROUND_ASSERTION,
       payload: {
-        kind: value as "lookahead" | "lookbehind" | "non",
+        kind: value as "lookahead" | "lookbehind",
         negate,
       },
     })
@@ -29,9 +29,18 @@ const LookAround: React.FC<Props> = ({ kind, negate }) => {
       },
     })
   }
+  const handleUnLookAround = () =>
+    dispatch({
+      type: MainActionTypes.UPDATE_LOOKAROUND_ASSERTION,
+      payload: null,
+    })
 
   return (
-    <Cell.Item label="Value">
+    <Cell
+      label="LookAround"
+      rightLabel="UnLookAround"
+      onRightLabelClick={handleUnLookAround}
+    >
       <Select
         value={kind}
         onChange={onSelectChange}
@@ -40,13 +49,12 @@ const LookAround: React.FC<Props> = ({ kind, negate }) => {
       >
         <Select.Option value="lookahead">Lookahead assertion</Select.Option>
         <Select.Option value="lookbehind">Lookbehind assertion</Select.Option>
-        <Select.Option value="non">Cancel the assertion</Select.Option>
       </Select>
       <Spacer y={0.5} />
       <Checkbox checked={negate} onChange={handleNegateChange}>
         negate
       </Checkbox>
-    </Cell.Item>
+    </Cell>
   )
 }
 

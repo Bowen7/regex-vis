@@ -4,45 +4,32 @@ import * as AST from "../ast"
 import { getNodeById, getNodesByIds } from "../visit"
 import replaceIt from "./replace"
 
-function removeLookAroundAssertionWrap(
-  ast: AST.Regex,
-  selectNode: AST.LookAroundAssertionNode
-) {
-  const { children } = selectNode
-  replaceIt(ast, [selectNode], children!)
-  return children.map(({ id }) => id)
-}
-
-const lookAroundAssertionIt = (
+export const updateLookAroundAssertion = (
   ast: AST.Regex,
   selectedIds: string[],
-  kind: "lookahead" | "lookbehind" | "non",
+  kind: "lookahead" | "lookbehind",
   negate: boolean
 ) => {
   let nextSelectedIds: string[] = selectedIds
   const nextAst = produce(ast, (draft) => {
     const { node, nodeList, index } = getNodeById(draft, selectedIds[0])
     if (node.type === "lookAroundAssertion") {
-      if (kind === "non") {
-        nextSelectedIds = removeLookAroundAssertionWrap(draft, node)
-      } else {
-        const { id, type, children } = node
-        const lookAroundAssertionNode: AST.LookAroundAssertionNode = {
-          id,
-          type,
-          children,
-          kind,
-          negate,
-        }
-        nodeList[index] = lookAroundAssertionNode
+      const { id, type, children } = node
+      const lookAroundAssertionNode: AST.LookAroundAssertionNode = {
+        id,
+        type,
+        children,
+        kind,
+        negate,
       }
+      nodeList[index] = lookAroundAssertionNode
     }
   })
 
   return { nextAst, nextSelectedIds }
 }
 
-export const wrapLookAroundAssertionIt = (
+export const lookAroundAssertionIt = (
   ast: AST.Regex,
   selectedIds: string[],
   kind: "lookahead" | "lookbehind"
@@ -63,4 +50,19 @@ export const wrapLookAroundAssertionIt = (
   return { nextAst, nextSelectedIds }
 }
 
-export default lookAroundAssertionIt
+export const unLookAroundAssertion = (
+  ast: AST.Regex,
+  selectedIds: string[]
+) => {
+  let nextSelectedIds: string[] = selectedIds
+  const nextAst = produce(ast, (draft) => {
+    const { node } = getNodeById(draft, selectedIds[0])
+    if (node.type === "lookAroundAssertion") {
+      const { children } = node
+      replaceIt(draft, [node], children)
+      nextSelectedIds = children.map(({ id }) => id)
+    }
+  })
+
+  return { nextAst, nextSelectedIds }
+}

@@ -4,13 +4,13 @@ import * as AST from "../ast"
 import { getNodeById, getNodesByIds } from "../visit"
 import replaceIt from "./replace"
 
-function removeGroupWrap(ast: AST.Regex, selectNode: AST.GroupNode) {
+function unGroup(ast: AST.Regex, selectNode: AST.GroupNode) {
   const { children } = selectNode
   replaceIt(ast, [selectNode], children!)
   return children.map(({ id }) => id)
 }
 
-const groupIt = (
+export const updateGroup = (
   ast: AST.Regex,
   selectedIds: string[],
   group: AST.Group | null
@@ -20,7 +20,7 @@ const groupIt = (
     const { node, nodeList, index } = getNodeById(draft, selectedIds[0])
     if (node.type === "group") {
       if (group === null) {
-        nextSelectedIds = removeGroupWrap(draft, node)
+        nextSelectedIds = unGroup(draft, node)
       } else {
         const { id, type, children, quantifier } = node
         const groupNode: AST.GroupNode = {
@@ -38,7 +38,7 @@ const groupIt = (
   return { nextAst, nextSelectedIds }
 }
 
-export const wrapGroupIt = (
+export const groupIt = (
   ast: AST.Regex,
   selectedIds: string[],
   group: AST.Group
@@ -86,5 +86,3 @@ export const wrapGroupIt = (
   })
   return { nextAst, nextSelectedIds }
 }
-
-export default groupIt
