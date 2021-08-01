@@ -1,10 +1,13 @@
 import React from "react"
 import { parse } from "@/parser"
+import MinimumGraph from "../graph/minimum-graph"
 // const r = "/[\\z-\\a]/u"
-const r = "/(?<a>(?<=\\w{3}))f/"
+const r = "/abc/"
 const Playground: React.FC<{}> = () => {
-  const re = parse(r)
-  console.log(re)
-  return <>{/* <RangeOption range={range} /> */}</>
+  return (
+    <>
+      <MinimumGraph regex={r} />
+    </>
+  )
 }
 export default Playground

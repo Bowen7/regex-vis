@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
-import { Tabs, useTheme, Button, Modal } from "@geist-ui/react"
+import { Tabs, useTheme, Button } from "@geist-ui/react"
 import { useMainReducer, MainActionTypes } from "@/redux/"
 import EditTab from "./tabs/edit"
 import LegendTab from "./tabs/legend"
@@ -10,8 +10,7 @@ import { useEventListener } from "@/utils/hooks"
 type Tab = "legend" | "edit" | "test"
 
 const Editor: React.FC<{}> = () => {
-  const [{ selectedIds, editorCollapsed, guiderConfig }, dispatch] =
-    useMainReducer()
+  const [{ selectedIds, editorCollapsed }, dispatch] = useMainReducer()
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -38,11 +37,11 @@ const Editor: React.FC<{}> = () => {
       return remove()
     }
     const metaKey = event.ctrlKey || event.metaKey
-    if (metaKey && key === "z") {
-      return undo()
-    }
     if (metaKey && event.shiftKey && key === "z") {
       return redo()
+    }
+    if (metaKey && key === "z") {
+      return undo()
     }
   })
 
@@ -57,13 +56,6 @@ const Editor: React.FC<{}> = () => {
       type: MainActionTypes.SET_EDITOR_COLLAPSED,
       payload: { collapsed: false },
     })
-
-  const closeGuideModal = () => {
-    dispatch({
-      type: MainActionTypes.UPDATE_GUIDE_CONFIG,
-      payload: { ...guiderConfig, visible: false },
-    })
-  }
 
   const containerClassName =
     "container" + (editorCollapsed ? " collapsed-container" : "")
@@ -101,17 +93,6 @@ const Editor: React.FC<{}> = () => {
           />
         </span>
       )}
-      <Modal open={guiderConfig.visible} onClose={closeGuideModal}>
-        <Modal.Title>{guiderConfig.title}</Modal.Title>
-        <Modal.Content>
-          {typeof guiderConfig.content === "string" ? (
-            <p>{guiderConfig.content}</p>
-          ) : (
-            guiderConfig.content
-          )}
-        </Modal.Content>
-        <Modal.Action onClick={closeGuideModal}>I got it</Modal.Action>
-      </Modal>
       <style jsx>{`
         .container {
           position: fixed;

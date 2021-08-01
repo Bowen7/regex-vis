@@ -1,6 +1,8 @@
 import * as AST from "./ast"
+const digitRegex = /\d+/
+function gen(ast: AST.Regex | AST.Node[]) {
+  const nodes = Array.isArray(ast) ? ast : ast.body
 
-function gen(nodes: AST.Node[], withSlash = false, flags: AST.Flag[] = []) {
   const r = nodes
     .map((node) => {
       let regex = ""
@@ -32,8 +34,8 @@ function gen(nodes: AST.Node[], withSlash = false, flags: AST.Flag[] = []) {
       return regex
     })
     .join("")
-  if (withSlash) {
-    const f = flags.map((flag) => flag.kind).join("")
+  if (!Array.isArray(ast) && ast.withSlash) {
+    const f = ast.flags.map((flag) => flag).join("")
     return `/${r}/${f}`
   }
   return r
@@ -166,7 +168,10 @@ function genLookaroundAssertionNode(node: AST.LookAroundAssertionNode) {
 }
 
 function genBackReference(node: AST.BackReferenceNode) {
-  const { name } = node
-  return `\\${name}`
+  const { ref } = node
+  if (digitRegex.test(ref)) {
+    return `\\${ref}`
+  }
+  return `\\k<${ref}>`
 }
 export default gen

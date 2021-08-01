@@ -1,23 +1,24 @@
 import React from "react"
 import { Route } from "react-router-dom"
 import Home from "./modules/home"
-import Playground from "@/modules/playground"
+import Samples from "./modules/samples"
+// import Playground from "@/modules/playground"
 export default function Routes() {
   return (
     <>
       <Route exact path="/" component={Home} />
-      <Route path="/guide">
+      {/* <Route path="/guide">
         <p>Todo</p>
-      </Route>
+      </Route> */}
       <Route path="/samples">
-        <p>Todo</p>
+        <Samples />
       </Route>
-      <Route path="/about">
+      {/* <Route path="/about">
         <p>Todo</p>
-      </Route>
-      <Route path="/playground">
+      </Route> */}
+      {/* <Route path="/playground">
         <Playground />
-      </Route>
+      </Route> */}
     </>
   )
 }

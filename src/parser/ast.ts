@@ -2,6 +2,7 @@ export type Regex = {
   type: "regex"
   body: Node[]
   flags: Flag[]
+  withSlash: boolean
 }
 
 export type RegexError = {
@@ -9,10 +10,7 @@ export type RegexError = {
   message: string
 }
 
-export type FlagKind = "d" | "g" | "i" | "m" | "s" | "u" | "y"
-export type Flag = {
-  kind: FlagKind
-}
+export type Flag = "d" | "g" | "i" | "m" | "s" | "u" | "y"
 
 export type Quantifier =
   | {
@@ -76,10 +74,6 @@ export type RangesCharacter = {
   ranges: Range[]
   negate: boolean
 }
-export type ClassCharacter = { kind: "class"; value: string }
-export type StringCharacter = { kind: "string"; value: string }
-
-export type Character = RangesCharacter | ClassCharacter | StringCharacter
 
 export type CharacterNode =
   | StringCharacterNode
@@ -92,7 +86,7 @@ export type Group =
   | {
       kind: "nonCapturing"
     }
-  | { kind: "namedCapturing" | "capturing"; name: string }
+  | { kind: "namedCapturing" | "capturing"; name: string; index: number }
 
 export interface NonCapturingGroupNode extends NodeBase {
   type: "group"
@@ -106,6 +100,7 @@ export interface NamedCapturingGroupNode extends NodeBase {
   kind: "namedCapturing"
   children: Node[]
   name: string
+  index: number
   quantifier: Quantifier | null
 }
 
@@ -114,6 +109,7 @@ export interface CapturingGroupNode extends NodeBase {
   kind: "capturing"
   children: Node[]
   name: string
+  index: number
   quantifier: Quantifier | null
 }
 
@@ -158,8 +154,15 @@ export type AssertionNode =
 
 export interface BackReferenceNode extends NodeBase {
   type: "backReference"
-  name: string
+  ref: string
 }
+
+export type Content =
+  | { kind: "string" | "class"; value: string }
+  | { kind: "ranges"; ranges: Range[]; negate: boolean }
+  | { kind: "backReference"; ref: string }
+  | { kind: "beginningAssertion" | "endAssertion" }
+  | { kind: "wordBoundaryAssertion"; negate: boolean }
 
 export interface RootNode extends NodeBase {
   type: "root"

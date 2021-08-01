@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid"
 import * as AST from "./ast"
+import * as patterns from "./patterns"
 
 const lookAroundDict: {
   "?=": AST.LookAround
@@ -13,11 +14,11 @@ const lookAroundDict: {
   "?<!": { kind: "lookbehind", negate: true },
 }
 
-class Parser {
+class Lexer {
   regex: string
   message: string = ""
   index = 0
-  ast: AST.Regex = { type: "regex", body: [], flags: [] }
+  ast: AST.Regex = { type: "regex", body: [], flags: [], withSlash: true }
   parent!:
     | AST.Regex
     | AST.ChoiceNode
@@ -27,7 +28,7 @@ class Parser {
   prev: AST.Regex | AST.Node | null = null
   groupIndex = 1
   escaped = false
-  flagSet: Set<AST.FlagKind> = new Set()
+  flagSet: Set<AST.Flag> = new Set()
   idGenerator: (size?: number) => string
   constructor(regex: string, idGenerator = nanoid) {
     this.regex = regex.trim()
@@ -43,24 +44,27 @@ class Parser {
   }
 
   public validate() {
+    if (this.regex[0] !== "/") {
+      this.regex = `/${this.regex}/`
+      this.ast.withSlash = false
+    }
     try {
-      const start = this.regex.indexOf("/")
       let end = this.regex.lastIndexOf("/")
-
-      if (start !== 0 || end <= start || this.regex[end - 1] === "\\") {
+      // TODO: /\/ /\\/
+      if (end <= 0) {
         this.message = "Invalid regular expression"
         return false
       }
 
       for (let i = end + 1; i < this.regex.length; i++) {
-        if (!/[gimsuy]/.test(this.regex[i])) {
+        if (!patterns.flag.test(this.regex[i])) {
           this.message = `Invalid regular expression flags '${this.regex[i]}'`
           return false
         }
-        this.flagSet.add(this.regex[i] as AST.FlagKind)
+        this.flagSet.add(this.regex[i] as AST.Flag)
       }
 
-      new RegExp(this.regex.slice(start + 1, end), this.regex.slice(end + 1))
+      new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
     } catch (error) {
       this.message = error.message
       return false
@@ -118,9 +122,10 @@ class Parser {
         })
         break
       // \cX
-      case "c":
-        const X = this.eat("[A-Za-z]", "", 1)
-        if (X) {
+      case "c": {
+        const matches = this.eat(patterns.cX, 1)
+        if (matches) {
+          const X = matches[1]
           this.appendChild({
             id: this.id(),
             type: "character",
@@ -133,10 +138,12 @@ class Parser {
           this.onStringCharacter()
         }
         break
+      }
       // \xhh
-      case "x":
-        const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
-        if (hh) {
+      case "x": {
+        const matches = this.eat(patterns.xhh, 1)
+        if (matches) {
+          const hh = matches[0]
           this.appendChild({
             id: this.id(),
             type: "character",
@@ -149,10 +156,12 @@ class Parser {
           this.onStringCharacter()
         }
         break
+      }
       // \uhhhh
-      case "u":
-        const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
-        if (hhhh) {
+      case "u": {
+        const matches = this.eat(patterns.uhhhh, 1)
+        if (matches) {
+          const hhhh = matches[1]
           this.appendChild({
             id: this.id(),
             type: "character",
@@ -165,20 +174,38 @@ class Parser {
           this.onStringCharacter()
         }
         break
-      default:
-        // back reference
-        const groupName = this.eat("\\d+")
-        if (groupName) {
+      }
+      case "k": {
+        const matches = this.eat(patterns.namedBackRef, 1)
+        if (matches) {
+          const ref = matches[1]
           this.appendChild({
             id: this.id(),
             type: "backReference",
-            name: groupName,
+            ref,
+          })
+          this.advance(2 + ref.length)
+        } else {
+          this.onStringCharacter()
+        }
+        break
+      }
+      default: {
+        // back reference
+        const matches = this.eat(patterns.digit)
+        if (matches) {
+          const groupName = matches[0]
+          this.appendChild({
+            id: this.id(),
+            type: "backReference",
+            ref: groupName,
           })
           this.advance(groupName.length - 1)
           break
         }
         this.onStringCharacter()
         break
+      }
     }
   }
 
@@ -293,10 +320,11 @@ class Parser {
         quantifier = { kind: "+", min: 1, max: Infinity, greedy: true }
         break
       case "{":
-        const min = this.eat("\\d+", "", 1)
-        if (!min) {
+        const minMatches = this.eat(patterns.digit, 1)
+        if (!minMatches) {
           break
         }
+        const min = minMatches[1]
         if (this.cur(min.length + 1) === "}") {
           quantifier = {
             kind: "custom",
@@ -308,8 +336,8 @@ class Parser {
           break
         }
 
-        const comma = this.eat(",", "", min.length + 1)
-        if (comma) {
+        const commaMatches = this.eat(patterns.comma, min.length + 1)
+        if (commaMatches) {
           if (this.cur(min.length + 2) === "}") {
             quantifier = {
               kind: "custom",
@@ -322,10 +350,11 @@ class Parser {
           }
         }
 
-        const max = this.eat("\\d+", "", min.length + 2)
-        if (!max) {
+        const maxMatches = this.eat(patterns.digit, min.length + 2)
+        if (!maxMatches) {
           break
         }
+        const max = maxMatches[1]
         if (this.cur(min.length + max.length + 2) === "}") {
           quantifier = {
             kind: "custom",
@@ -365,6 +394,7 @@ class Parser {
           }
         }
         this.prev.quantifier = quantifier!
+        this.prev = null
       } else {
         // TODO: error handling
       }
@@ -405,32 +435,12 @@ class Parser {
 
   private onFlags() {
     this.flagSet.forEach((flag) => {
-      this.ast.flags.push({ kind: flag })
+      this.ast.flags.push(flag)
     })
   }
 
-  private eat(
-    startPoint: string,
-    endPoint: string = "",
-    advance = 0
-  ): string | false {
-    if (!endPoint) {
-      const match = this.regex
-        .slice(this.index + advance)
-        .match(new RegExp(`^(${startPoint})`))
-      if (match) {
-        return match[0]
-      }
-      return false
-    }
-    const match = this.regex
-      .slice(this.index + advance)
-      .match(new RegExp(`^(${startPoint}(.*)${endPoint})`))
-
-    if (match) {
-      return match[2]
-    }
-    return false
+  private eat(pattern: RegExp, advance = 0) {
+    return this.regex.slice(this.index + advance).match(pattern)
   }
 
   private onRanges() {
@@ -493,35 +503,41 @@ class Parser {
             onRange(`\\${cur}`)
             break
           // \cX
-          case "c":
-            const X = this.eat("[A-Za-z]", "", 1)
-            if (X) {
+          case "c": {
+            const matches = this.eat(patterns.cX, 1)
+            if (matches) {
+              const X = matches[1]
               onRange(`\\c${X}`)
               this.advance(1)
             } else {
               onRange("c")
             }
             break
+          }
           // \xhh
-          case "x":
-            const hh = this.eat("[0-9A-Fa-f]{2}", "", 1)
-            if (hh) {
+          case "x": {
+            const matches = this.eat(patterns.xhh, 1)
+            if (matches) {
+              const hh = matches[1]
               onRange(`\\x${hh}`)
               this.advance(2)
             } else {
               onRange("x")
             }
             break
+          }
           // \uhhhh
-          case "u":
-            const hhhh = this.eat("[0-9A-Fa-f]{4}", "", 1)
-            if (hhhh) {
+          case "u": {
+            const matches = this.eat(patterns.uhhhh, 1)
+            if (matches) {
+              const hhhh = matches[1]
               onRange(`\\u${hhhh}`)
               this.advance(4)
             } else {
               onRange("u")
             }
             break
+          }
           default:
             onRange(cur)
             break
@@ -571,12 +587,14 @@ class Parser {
   // group or lookAroundAssertion
   private onGroup() {
     this.advance()
+    this.prev = null
 
     let node: AST.GroupNode | AST.LookAroundAssertionNode
     let group: AST.Group
     if (this.cur() === "?") {
-      const lookAround = this.eat("\\?=|\\?!|\\?<=|\\?<!")
-      if (lookAround) {
+      const matches = this.eat(patterns.lookAround)
+      if (matches) {
+        const lookAround = matches[1]
         node = {
           id: this.id(),
           type: "lookAroundAssertion",
@@ -585,7 +603,7 @@ class Parser {
         }
         this.advance(lookAround.length)
       } else {
-        if (this.eat("\\?:")) {
+        if (this.eat(patterns.nonCapturing)) {
           this.advance(2)
           group = { kind: "nonCapturing" }
         }
@@ -593,20 +611,21 @@ class Parser {
     }
 
     if (!node! && !group!) {
-      if (this.eat("\\?:")) {
-        this.advance(2)
-        group = { kind: "nonCapturing" }
-      } else {
-        const name = this.eat("\\?<", ">")
-        if (name) {
-          this.advance((name as string).length + 3)
-          group = { kind: "namedCapturing", name: name as string }
+      const matches = this.eat(patterns.namedCapturing)
+      if (matches) {
+        const name = matches[1]
+        this.advance(name.length + 3)
+        group = {
+          kind: "namedCapturing",
+          name: name,
+          index: this.groupIndex++,
         }
       }
     }
 
     if (!node! && !group!) {
-      group = { kind: "capturing", name: this.groupIndex++ + "" }
+      const index = this.groupIndex++
+      group = { kind: "capturing", name: index.toString(), index }
     }
 
     if (group!) {
@@ -630,13 +649,13 @@ class Parser {
 
 const parse = (
   regex: string | RegExp,
-  idGenerator?: (size?: number | undefined) => string
+  idGenerator?: (size?: number) => string
 ) => {
   if (typeof regex !== "string") {
     regex = String(regex)
   }
-  const parser = new Parser(regex, idGenerator)
-  return parser.parse()
+  const lexer = new Lexer(regex, idGenerator)
+  return lexer.parse()
 }
 
 export default parse

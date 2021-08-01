@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect } from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Code, Dot } from "@geist-ui/react"
+import { nanoid } from "nanoid"
 import { RenderVirtualNode } from "./types"
 import { parse, gen, AST } from "@/parser"
 import renderEngine from "./rendering-engine"
@@ -10,12 +11,14 @@ type Props = {
   minimum?: boolean
   onChange?: (regex: string) => void
 }
-
+const head: AST.RootNode = { id: nanoid(), type: "root" }
+const tail: AST.RootNode = { id: nanoid(), type: "root" }
 const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   const { palette } = useTheme()
   const [{ ast, selectedIds }, dispatch] = useMainReducer()
+  const [error, setError] = useState<null | string>(null)
 
-  const regexRef = useRef<string>("")
+  const regexRef = useRef<string>()
 
   const [rootRenderNode, setRootRenderNode] = useState<RenderVirtualNode>({
     type: "virtual",
@@ -30,27 +33,43 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
     if (regex !== regexRef.current) {
       const ast = parse(regex)
       if (ast.type === "regex") {
-        dispatch({ type: MainActionTypes.SET_AST, payload: { ast } })
+        setError(null)
+        const { type, body, flags, withSlash } = ast
+        dispatch({
+          type: MainActionTypes.SET_AST,
+          payload: { type, body: [head, ...body, tail], flags, withSlash },
+        })
+      } else {
+        setError(ast.message)
       }
     }
   }, [regex, dispatch])
 
   useEffect(() => {
     const rootRenderNode = renderEngine.render(ast)
-    regexRef.current = gen(ast.body)
-    onChange && onChange(regexRef.current)
     setRootRenderNode(rootRenderNode)
+    const nextRegex = gen(ast)
+    if (nextRegex !== regexRef.current) {
+      regexRef.current = nextRegex
+      onChange && onChange(nextRegex)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ast])
 
   return (
     <>
       <div className="graph">
-        <SvgContainer
-          rootRenderNode={rootRenderNode}
-          selectedIds={selectedIds}
-          minimum={minimum}
-        />
+        {error ? (
+          <p>
+            <Dot type="error">Error</Dot>(<Code>{regex}</Code>): {error}
+          </p>
+        ) : (
+          <SvgContainer
+            rootRenderNode={rootRenderNode}
+            selectedIds={selectedIds}
+            minimum={minimum}
+          />
+        )}
       </div>
       <style jsx>{`
         .graph {

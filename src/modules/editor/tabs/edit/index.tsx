@@ -1,89 +1,58 @@
 import React, { useEffect, useState } from "react"
-import { Divider, ButtonDropdown, useTheme } from "@geist-ui/react"
-import Cell from "@/components/cell"
-import Characters from "../../features/content"
+import { Divider, useTheme } from "@geist-ui/react"
+import ContentEditor from "../../features/content"
 import Group from "../../features/group"
 import Expression from "../../features/expression"
 import Quantifier from "../../features/quantifier"
-import { getInfoFromNodes, genInitialNodesInfo } from "./helper"
+import LookAround from "../../features/look-around"
+import Insert from "../../features/insert"
+import { getInfoFromNodes, genInitialNodesInfo } from "../../utils"
 import { AST } from "@/parser"
 import { NodesInfo } from "../../types"
 import { getNodesByIds } from "@/parser/visit"
-import { useMainReducer, MainActionTypes } from "@/redux"
-
-export type InsertDirection = "prev" | "next" | "branch"
+import { useMainReducer } from "@/redux"
 
 const InfoItem: React.FC<{}> = () => {
   const { layout } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
-  const [{ selectedIds, ast }, dispatch] = useMainReducer()
+  const [{ selectedIds, ast }] = useMainReducer()
 
-  useEffect(
-    () => setNodes(getNodesByIds(ast.body, selectedIds)),
-    [ast, selectedIds]
-  )
+  useEffect(() => setNodes(getNodesByIds(ast, selectedIds)), [ast, selectedIds])
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
-  const { id, expression, group, character, quantifier } = nodesInfo
-
-  const handleInsert = (direction: InsertDirection) =>
-    dispatch({ type: MainActionTypes.INSERT, payload: { direction } })
-  const handleGroup = (groupType: string, groupName: string) =>
-    dispatch({
-      type: MainActionTypes.UPDATE_GROUP,
-      payload: {
-        groupType: groupType as AST.GroupKind | "nonGroup",
-        groupName,
-      },
-    })
+  const {
+    id,
+    expression,
+    group,
+    content,
+    hasQuantifier,
+    quantifier,
+    lookAround,
+  } = nodesInfo
 
   useEffect(() => {
     const nodesInfo = getInfoFromNodes(nodes)
     setNodesInfo(nodesInfo)
   }, [nodes])
+
   return (
     <>
       <div className="container">
-        <Cell label="Insert a empty node">
-          <ButtonDropdown size="small">
-            <ButtonDropdown.Item main onClick={() => handleInsert("next")}>
-              Insert after
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item onClick={() => handleInsert("prev")}>
-              Insert before
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item onClick={() => handleInsert("branch")}>
-              Insert as a branch
-            </ButtonDropdown.Item>
-          </ButtonDropdown>
-        </Cell>
-        {/* <Cell label="Wrap with a group">
-          <ButtonDropdown size="small">
-            <ButtonDropdown.Item
-              main
-              onClick={() => handleGroup("capturing", "")}
-            >
-              Capturing group
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              onClick={() => handleGroup("nonCapturing", "")}
-            >
-              Non-capturing group
-            </ButtonDropdown.Item>
-            <ButtonDropdown.Item
-              onClick={() => handleGroup("namedCapturing", "")}
-            >
-              Named-capturing group
-            </ButtonDropdown.Item>
-          </ButtonDropdown>
-        </Cell> */}
+        <Insert ast={ast} nodes={nodes} />
         <Divider />
         <Expression expression={expression} />
-        {character && <Characters character={character} id={id} />}
-        {group && <Group group={group} onGroupChange={handleGroup} />}
-        {quantifier !== undefined && <Quantifier quantifier={quantifier} />}
+        {content && (
+          <ContentEditor content={content} id={id} quantifier={quantifier} />
+        )}
+        {group && <Group group={group} />}
+        {hasQuantifier && (
+          <Quantifier node={nodes[0]} quantifier={quantifier} />
+        )}
+        {lookAround && (
+          <LookAround kind={lookAround.kind} negate={lookAround.negate} />
+        )}
       </div>
       <style jsx>{`
         .container {
@@ -95,6 +64,24 @@ const InfoItem: React.FC<{}> = () => {
 
         .container :global(h3) {
           font-size: 1.15rem;
+        }
+
+        .container :global(input) {
+          font-size: 0.75rem;
+        }
+
+        .container :global(.btn-group) {
+          margin: 0;
+        }
+        .container :global(.btn-group .btn) {
+          width: 80px;
+          padding: 0;
+          display: inline-flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .container :global(.btn-group .tooltip) {
+          line-height: 0;
         }
 
         .container :global(.btn-dropdown button) {

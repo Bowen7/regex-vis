@@ -1,9 +1,10 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Text } from "@geist-ui/react"
+import QuestionCircle from "@geist-ui/react-icons/questionCircle"
+import questions, { QuestionKey } from "@/utils/questions"
 
 type ItemProps = {
   label: string
-  space?: boolean
 }
 const CellItem: React.FC<ItemProps> = ({ label, children }) => {
   const { palette } = useTheme()
@@ -22,21 +23,67 @@ const CellItem: React.FC<ItemProps> = ({ label, children }) => {
 
 type Props = {
   label: string
+  question?: QuestionKey
+  rightLabel?: string
+  onRightLabelClick?: () => void
 }
 const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
   label,
+  question,
   children,
+  rightLabel,
+  onRightLabelClick,
 }) => {
+  const { palette } = useTheme()
   return (
     <>
       <div className="container">
-        <h5>{label}</h5>
+        <div className="title">
+          <div className="left">
+            <h5>{label}</h5>
+            {question && (
+              <a href={questions[question]} target="_blank" rel="noreferrer">
+                <QuestionCircle size={16} />
+              </a>
+            )}
+          </div>
+          {rightLabel && (
+            <span className="right" onClick={onRightLabelClick}>
+              {rightLabel}
+            </span>
+          )}
+        </div>
         <div className="content">{children}</div>
       </div>
       <style jsx>{`
-        .container {
+        .container:not(:last-of-type) {
           margin-bottom: 30px;
         }
+        .title {
+          display: flex;
+          align-items: flex-end;
+          justify-content: space-between;
+          margin-bottom: 0.625rem;
+        }
+        h5 {
+          margin: 0;
+        }
+        h5 + :global(a) {
+          margin-left: 6px;
+          cursor: pointer;
+          color: ${palette.foreground};
+          line-height: 0;
+        }
+        .left {
+          display: flex;
+          align-items: center;
+        }
+        .right {
+          font-size: 0.75rem;
+          color: ${palette.secondary};
+          cursor: pointer;
+        }
+
         .content {
           font-size: 14px;
         }

@@ -1,36 +1,72 @@
-import React, { useCallback } from "react"
+import React from "react"
+import { useHistory, useLocation } from "react-router-dom"
 import { useTheme } from "@geist-ui/react"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
-import { useMainReducer } from "@/redux"
-const DEFAULT_REGEX = `/([a-zA-Z_])*?@[a-zA-Z](\\.[a-zA-Z-]{0,10})?(a|b)/`
-// const DEFAULT_REGEX = `/x(?=aaa)/`
+import RegexInput from "./regex-input"
+import { useMainReducer, MainActionTypes } from "@/redux"
 
 const Home: React.FC<{}> = () => {
-  const handleChange = useCallback((regex: string) => console.log(regex), [])
-  const [{ editorCollapsed }] = useMainReducer()
+  const history = useHistory()
+  const location = useLocation()
+  const params = new URLSearchParams(location.search)
+  const regex = params.get("r")
+
+  const [{ editorCollapsed, ast }, dispatch] = useMainReducer()
   const { palette } = useTheme()
 
-  const style = editorCollapsed ? { width: "100%" } : {}
+  const style = editorCollapsed || regex === null ? { width: "100%" } : {}
+
+  const handleChange = (nextRegex: string) => {
+    if (regex === nextRegex) {
+      return
+    }
+    const nextParams = new URLSearchParams()
+    nextParams.append("r", nextRegex)
+    history.push({ search: nextParams.toString() })
+  }
+
+  const handleFlagsChange = (flags: string[]) =>
+    dispatch({ type: MainActionTypes.UPDATE_FLAGS, payload: flags })
 
   return (
     <>
-      <div className="graph" style={style}>
-        <div className="content">
-          <Graph regex={DEFAULT_REGEX} onChange={handleChange} />
-        </div>
+      <div className="wrapper" style={style}>
+        {regex !== null && (
+          <div className="graph">
+            <div className="content">
+              <Graph regex={regex} onChange={handleChange} />
+            </div>
+          </div>
+        )}
+        <RegexInput
+          regex={regex}
+          flags={ast.flags}
+          onChange={handleChange}
+          onFlagsChange={handleFlagsChange}
+        />
       </div>
-      <Editor />
+      {regex !== null && <Editor />}
       <style jsx>{`
-        .graph {
+        .wrapper {
           width: calc(100% - 275px);
           height: calc(100vh - 72px);
           background: ${palette.accents_1};
           display: flex;
-          overflow: auto;
+          flex-direction: column;
+          justify-content: center;
           transition: width 0.3s ease-out;
         }
+        ::-webkit-scrollbar {
+          display: none;
+        }
 
+        .graph {
+          flex: 1;
+          display: flex;
+          overflow: auto;
+          border-bottom: 1px solid ${palette.accents_2};
+        }
         .content {
           /* https://stackoverflow.com/questions/33454533/cant-scroll-to-top-of-flex-item-that-is-overflowing-container */
           margin: auto;

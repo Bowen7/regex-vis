@@ -1,12 +1,9 @@
 import { AST } from "@/parser"
-import {
-  characterClassTextMap,
-  CharacterClassKey,
-} from "@/parser/utils/character-class"
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
 
 const assertionNameMap = {
-  beginning: "Start of line",
-  end: "End of line",
+  beginning: "Begin with",
+  end: "End with",
   lookahead: ["Followed by:", "Not followed by"],
   lookbehind: ["Preceded by", "Not Preceded by"],
   word: ["WordBoundary", "NonWordBoundary"],
@@ -44,7 +41,9 @@ export const getTextsWithBacktick = (
           from === to ? `\`${from}\`` : `\`${from}\` - \`${to}\``
         )
       } else if (node.kind === "class") {
-        return characterClassTextMap[node.value as CharacterClassKey]
+        return (
+          characterClassTextMap[node.value as CharacterClassKey] || node.value
+        )
       }
       return `\`${node.value}\``
     case "boundaryAssertion":
@@ -55,12 +54,18 @@ export const getTextsWithBacktick = (
         const kind = node.kind
         return assertionNameMap[kind]
       }
+    case "backReference":
+      return `BackReference #${node.ref}`
     default:
       return null
   }
 }
 
-export const getTexts = (node: AST.Node) => {
+export const getTexts = (
+  node: AST.Node
+):
+  | ({ type: "backtick" | "hyphen" } | { type: "text"; text: string })[][]
+  | null => {
   switch (node.type) {
     case "character":
       if (node.kind === "ranges") {
@@ -86,7 +91,9 @@ export const getTexts = (node: AST.Node) => {
           [
             {
               type: "text",
-              text: characterClassTextMap[node.value as CharacterClassKey],
+              text:
+                characterClassTextMap[node.value as CharacterClassKey] ||
+                node.value,
             },
           ],
         ]
@@ -106,6 +113,8 @@ export const getTexts = (node: AST.Node) => {
         const kind = node.kind
         return [[{ type: "text", text: assertionNameMap[kind] }]]
       }
+    case "backReference":
+      return [[{ type: "text", text: `BackReference #${node.ref}` }]]
     default:
       return null
   }

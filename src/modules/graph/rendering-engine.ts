@@ -22,7 +22,7 @@ import {
   NAME_TEXT_FONTSIZE,
 } from "@/constants/graph"
 import { font } from "@/constants/style"
-import { getQuantifierText } from "@/parser/utils/quantifier"
+import { getQuantifierText } from "@/parser"
 import { getTextsWithBacktick, getName } from "./utils"
 
 type TextSize = { width: number; height: number }
@@ -31,8 +31,6 @@ class RenderEngine {
   minimum: boolean = false
   canvas: HTMLCanvasElement
   context: CanvasRenderingContext2D | null
-  head: AST.RootNode = { id: nanoid(), type: "root" }
-  tail: AST.RootNode = { id: nanoid(), type: "root" }
   constructor() {
     // the `measureText` method use canvas.measureText
     if (process.env.EXPORT) {
@@ -46,8 +44,7 @@ class RenderEngine {
 
   render(ast: AST.Regex, minimum = false) {
     this.minimum = minimum
-    const { body } = ast
-    const nodes = [this.head, ...body, this.tail]
+    const { body: nodes } = ast
     const { width, height } = this.getNodesSize(nodes)
     const paddingHorizontal = minimum
       ? MINIMUM_CHART_PADDING_HORIZONTAL
@@ -248,11 +245,12 @@ class RenderEngine {
       const size = this.measureTexts(texts, NODE_TEXT_FONTSIZE)
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
+    } else if (node.type === "root") {
+      width = ROOT_RADIUS
+      height = ROOT_RADIUS
     } else {
-      if (!this.minimum) {
-        width = ROOT_RADIUS
-        height = ROOT_RADIUS
-      }
+      width = 2 * NODE_PADDING_HORIZONTAL
+      height = NODE_TEXT_FONTSIZE + 2 * NODE_PADDING_VERTICAL
     }
 
     if (

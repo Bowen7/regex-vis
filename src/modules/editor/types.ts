@@ -1,8 +1,11 @@
 import { AST } from "@/parser"
+
 export type NodesInfo = {
   id: string
   expression: string
-  group: AST.Group | { kind: "nonGroup" } | null
-  character: AST.Character | null
-  quantifier: AST.Quantifier | null | undefined
+  group: AST.Group | null
+  lookAround: { kind: "lookahead" | "lookbehind"; negate: boolean } | null
+  content: AST.Content | null
+  hasQuantifier: boolean
+  quantifier: AST.Quantifier | null
 }

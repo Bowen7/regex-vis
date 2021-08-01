@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Select, Spacer, Radio } from "@geist-ui/react"
+import { Select, Spacer, Checkbox, useToasts } from "@geist-ui/react"
+import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
 import { AST } from "@/parser"
@@ -7,9 +8,10 @@ import { useMainReducer, MainActionTypes } from "@/redux"
 import { quantifierOptions } from "./helper"
 type Props = {
   quantifier: AST.Quantifier | null
+  node: AST.Node
 }
 
-const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
+const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   const quantifierRef = useRef<AST.Quantifier | null>(quantifier)
   const [kind, setKind] = useState("non")
   const [min, setMin] = useState("")
@@ -17,6 +19,8 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   const [minPlaceholder, setMinPlaceholder] = useState("")
   const [maxPlaceholder, setMaxPlaceholder] = useState("")
   const [, dispatch] = useMainReducer()
+  const [, setToast] = useToasts()
+
   useEffect(() => {
     quantifierRef.current = quantifier
     if (!quantifier) {
@@ -32,7 +36,15 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   }, [quantifier])
 
   const handleChange = (value: string | string[]) => {
-    const greedy = quantifier?.greedy || false
+    if (
+      node.type === "character" &&
+      node.kind === "string" &&
+      node.value.length > 1 &&
+      value !== "non"
+    ) {
+      setToast({ text: "Group selection automatically" })
+    }
+    const greedy = quantifier?.greedy || true
     let nextQuantifier: AST.Quantifier | null = null
     switch (value) {
       case "?":
@@ -95,11 +107,8 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
     })
   }
 
-  const handleGreedyChange = (value: string | number) => {
-    let greedy = true
-    if (value === "non-greedy") {
-      greedy = false
-    }
+  const handleGreedyChange = (e: CheckboxEvent) => {
+    const greedy = e.target.checked
     dispatch({
       type: MainActionTypes.UPDATE_QUANTIFIER,
       payload: { ...(quantifierRef.current as AST.Quantifier), greedy },
@@ -138,25 +147,15 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
         </Cell.Item>
         {kind !== "non" && (
           <Cell.Item label="greedy">
-            <div className="greedy">
-              <Radio.Group
-                useRow
-                size="mini"
-                value={quantifier?.greedy ? "greedy" : "non-greedy"}
-                onChange={handleGreedyChange}
-              >
-                <Radio value="greedy">greedy</Radio>
-                <Radio value="non-greedy">non-greedy</Radio>
-              </Radio.Group>
-            </div>
+            <Checkbox
+              checked={quantifier?.greedy}
+              onChange={handleGreedyChange}
+            >
+              greedy
+            </Checkbox>
           </Cell.Item>
         )}
       </Cell>
-      <style jsx>{`
-        .greedy :global(.name) {
-          font-weight: normal;
-        }
-      `}</style>
     </>
   )
 }

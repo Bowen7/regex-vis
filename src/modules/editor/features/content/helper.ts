@@ -1,21 +1,37 @@
-import {
-  characterClassTextMap,
-  CharacterClassKey,
-} from "@/parser/utils/character-class"
-export const options = [
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
+export const characterOptions = [
   {
     label: "Simple string",
     value: "string",
   },
   {
-    label: "Character range",
-    value: "ranges",
-  },
-  {
     label: "Character class",
     value: "class",
   },
+  {
+    label: "Character range",
+    value: "ranges",
+  },
 ]
+export const backRefOption = {
+  label: "Back reference",
+  value: "backReference",
+}
+
+export const beginningAssertionOption = {
+  label: "Beginning Assertion",
+  value: "beginningAssertion",
+}
+
+export const endAssertionOption = {
+  label: "End Assertion",
+  value: "endAssertion",
+}
+
+export const wordBoundaryAssertionOption = {
+  label: "Word Boundary Assertion",
+  value: "wordBoundaryAssertion",
+}
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
 for (let key in characterClassTextMap) {
@@ -25,10 +41,4 @@ for (let key in characterClassTextMap) {
   })
 }
 
-const labelMap = {
-  string: "Value",
-  ranges: "Ranges",
-  class: "Class",
-}
-
-export { classOptions, labelMap }
+export { classOptions }

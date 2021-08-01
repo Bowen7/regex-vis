@@ -11,9 +11,10 @@ type TextProps = {
   node: AST.Node
   x: number
   y: number
+  width: number
 }
 
-const NodeText: React.FC<TextProps> = React.memo(({ x, y, node }) => {
+const NodeText: React.FC<TextProps> = React.memo(({ x, y, width, node }) => {
   let texts = getTexts(node)
   if (!texts) {
     return null
@@ -30,8 +31,9 @@ const NodeText: React.FC<TextProps> = React.memo(({ x, y, node }) => {
             NODE_MARGIN_VERTICAL / 2 +
             index * TEXT_PADDING_VERTICAL
           }
-          dx={NODE_PADDING_HORIZONTAL}
+          dx={width / 2}
           className="text"
+          textAnchor="middle"
           key={index}
         >
           {spans.map((span, index) => {

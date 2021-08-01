@@ -14,7 +14,6 @@
     "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
-    "regexpp": "Bowen7/regexpp#8fb9c550810a37b8c4486cc547635518a2e4f57e",
     "styled-jsx": "3.3.0",
     "typescript": "~3.7.2"
   },
@@ -23,7 +22,7 @@
     "build": "react-app-rewired build",
     "test": "jest --config .jest.config.js --no-cache",
     "eject": "react-scripts eject",
-    "build:graph": "rm -rf dest && rollup -c",
+    "build:graph": "node scripts/graph.js",
     "export:svg": "npm run build:graph && node scripts/export.js"
   },
   "eslintConfig": {
@@ -45,11 +44,6 @@
     "@babel/preset-env": "^7.14.2",
     "@babel/preset-react": "^7.13.13",
     "@babel/preset-typescript": "^7.13.0",
-    "@rollup/plugin-alias": "^3.1.2",
-    "@rollup/plugin-babel": "^5.3.0",
-    "@rollup/plugin-commonjs": "^19.0.0",
-    "@rollup/plugin-node-resolve": "^13.0.0",
-    "@rollup/plugin-replace": "^2.4.2",
     "@svgr/webpack": "^5.5.0",
     "@types/jest": "^24.9.1",
     "@types/lodash": "^4.14.168",
@@ -61,6 +55,7 @@
     "@types/styled-jsx": "^2.2.8",
     "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
+    "esbuild": "^0.12.17",
     "jest": "^26.6.0",
     "react-app-rewired": "^2.1.6",
     "rollup": "^2.48.0",
