@@ -1,3 +1,3 @@
 export { default as useEventListener } from "./use-event-listener"
-export { default as useDebounceInput } from "./use-debounce-input"
+export { default as useUpdateEffect } from "./use-update-effect"
 export { default as useEffectOnce } from "./use-effect-once"

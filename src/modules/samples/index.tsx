@@ -47,7 +47,7 @@ const Samples: React.FC<{}> = () => {
       <div className="wrapper">
         <div className="content">
           {samples.map(({ desc, Svg, regex }) => (
-            <Link to={`/?r=${encodeURIComponent(regex)}`} key={regex} replace>
+            <Link to={`/?r=${encodeURIComponent(regex)}`} key={regex}>
               <div className="sample">
                 <p>{desc}</p>
                 <div className="svg-wrapper">
