@@ -3,6 +3,7 @@ import { useTheme, Code, Dot } from "@geist-ui/react"
 import { nanoid } from "nanoid"
 import { RenderVirtualNode } from "./types"
 import { parse, gen, AST } from "@/parser"
+import { useUpdateEffect } from "@/utils/hooks"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
 import { useMainReducer, MainActionTypes } from "@/redux"
@@ -43,9 +44,10 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
         setError(ast.message)
       }
     }
-  }, [regex, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [regex])
 
-  useEffect(() => {
+  useUpdateEffect(() => {
     const rootRenderNode = renderEngine.render(ast)
     setRootRenderNode(rootRenderNode)
     const nextRegex = gen(ast)
