@@ -18,7 +18,6 @@ const Home: React.FC<{}> = () => {
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
   const handleChange = (nextRegex: string) => {
-    console.log(123)
     if (regex === nextRegex) {
       return
     }

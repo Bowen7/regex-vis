@@ -4,15 +4,15 @@ import { useTheme } from "@geist-ui/react"
 import Sun from "@geist-ui/react-icons/sun"
 import Moon from "@geist-ui/react-icons/moon"
 
-const activeStyle = {
-  color: "#0070F3",
-}
 type Props = {
   theme: string
   onThemeChange: (theme: string) => void
 }
 const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
   const { palette } = useTheme()
+  const activeStyle = {
+    color: palette.success,
+  }
   return (
     <>
       <header>
@@ -21,15 +21,15 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           <NavLink to="/" exact activeStyle={activeStyle}>
             Home
           </NavLink>
-          <NavLink to="/guide" activeStyle={activeStyle}>
+          {/* <NavLink to="/guide" activeStyle={activeStyle}>
             Guide
-          </NavLink>
+          </NavLink> */}
           <NavLink to="/samples" activeStyle={activeStyle}>
             Samples
           </NavLink>
-          <NavLink to="/about" activeStyle={activeStyle}>
+          {/* <NavLink to="/about" activeStyle={activeStyle}>
             About
-          </NavLink>
+          </NavLink> */}
           <a
             href="https://github.com/Bowen7/regex-vis"
             target="_blank"
@@ -66,7 +66,7 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           font-weight: bold;
         }
         .nav :global(a:not(:last-child)) {
-          margin-right: 24px;
+          margin-right: 48px;
         }
         .nav :global(a) {
           color: ${palette.accents_4};

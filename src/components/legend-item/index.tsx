@@ -9,6 +9,7 @@ type Props = {
 }
 const LegendItem: React.FC<Props> = ({ name, infos }) => {
   const { palette } = useTheme()
+  console.log(infos)
   return (
     <>
       <div className="wrapper">
@@ -34,7 +35,7 @@ const LegendItem: React.FC<Props> = ({ name, infos }) => {
             color: ${palette.accents_6};
           }
           .wrapper > span:not(:last-of-type) {
-            margin-bottom: 10px;
+            margin-bottom: 24px;
           }
         `}
       </style>

@@ -246,10 +246,8 @@ class RenderEngine {
       width = size.width + 2 * NODE_PADDING_HORIZONTAL
       height = size.height + 2 * NODE_PADDING_VERTICAL
     } else if (node.type === "root") {
-      if (!this.minimum) {
-        width = ROOT_RADIUS
-        height = ROOT_RADIUS
-      }
+      width = ROOT_RADIUS
+      height = ROOT_RADIUS
     } else {
       width = 2 * NODE_PADDING_HORIZONTAL
       height = NODE_TEXT_FONTSIZE + 2 * NODE_PADDING_VERTICAL

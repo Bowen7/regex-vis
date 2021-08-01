@@ -1,17 +1,29 @@
 import React from "react"
+import { nanoid } from "nanoid"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
-import { parse } from "@/parser"
+import { parse, AST } from "@/parser"
 import { RenderNode } from "./types"
 type Props = {
   regex: string
   selected?: boolean
+  withRoot?: boolean
 }
 
-const MinimumGraph: React.FC<Props> = ({ regex, selected = false }) => {
+const head: AST.RootNode = { id: nanoid(), type: "root" }
+const tail: AST.RootNode = { id: nanoid(), type: "root" }
+const MinimumGraph: React.FC<Props> = ({
+  regex,
+  selected = false,
+  withRoot = false,
+}) => {
   const ast = parse(regex)
   if (ast.type === "error") {
     return null
+  }
+  if (withRoot) {
+    ast.body.unshift(head)
+    ast.body.push(tail)
   }
   const rootRenderNode = renderEngine.render(ast, true)
 
