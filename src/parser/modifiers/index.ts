@@ -8,3 +8,4 @@ export {
   lookAroundAssertionIt,
   unLookAroundAssertion,
 } from "./lookaround"
+export { default as updateFlags } from "./flags"

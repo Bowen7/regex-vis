@@ -2,6 +2,7 @@ export type Regex = {
   type: "regex"
   body: Node[]
   flags: Flag[]
+  withSlash: boolean
 }
 
 export type RegexError = {
@@ -9,10 +10,7 @@ export type RegexError = {
   message: string
 }
 
-export type FlagKind = "d" | "g" | "i" | "m" | "s" | "u" | "y"
-export type Flag = {
-  kind: FlagKind
-}
+export type Flag = "d" | "g" | "i" | "m" | "s" | "u" | "y"
 
 export type Quantifier =
   | {

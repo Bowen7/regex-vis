@@ -1,6 +1,5 @@
-import React, { useEffect } from "react"
+import React from "react"
 import Input from "@/components/input"
-import { useDebounceInput } from "@/utils/hooks"
 import { checkInputValid, RangeError } from "./utils"
 type Props = {
   value: string
@@ -8,19 +7,13 @@ type Props = {
   onError: (err: RangeError) => void
 }
 const RangeInput: React.FC<Props> = ({ value, onChange, onError }) => {
-  const [setValue, valueBindings] = useDebounceInput((value: string) => {
+  const handleChange = () => {
     const error = checkInputValid(value)
     if (error !== null) {
       return onError(error)
     }
     onChange(value)
-  }, [])
-  useEffect(() => {
-    if (value !== valueBindings.value) {
-      setValue(value)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
-  return <Input {...valueBindings} width="85px" />
+  }
+  return <Input value={value} onChange={handleChange} width="85px" />
 }
 export default RangeInput

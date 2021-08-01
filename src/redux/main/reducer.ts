@@ -10,6 +10,7 @@ import {
   lookAroundAssertionIt,
   unLookAroundAssertion,
   updateContent,
+  updateFlags,
   visitTree,
 } from "@/parser"
 export type InitialStateType = {
@@ -22,7 +23,7 @@ export type InitialStateType = {
 }
 
 export const initialState: InitialStateType = {
-  ast: { type: "regex", body: [], flags: [] },
+  ast: { type: "regex", body: [], flags: [], withSlash: true },
   selectedIds: [],
   groupNames: [],
   undoStack: [],
@@ -44,6 +45,7 @@ export enum ActionTypes {
   UPDATE_QUANTIFIER,
   WRAP_LOOKAROUND_ASSERTION,
   UPDATE_LOOKAROUND_ASSERTION,
+  UPDATE_FLAGS,
 }
 
 export type Action =
@@ -80,6 +82,10 @@ export type Action =
   | {
       type: ActionTypes.UPDATE_LOOKAROUND_ASSERTION
       payload: { kind: "lookahead" | "lookbehind"; negate: boolean } | null
+    }
+  | {
+      type: ActionTypes.UPDATE_FLAGS
+      payload: string[]
     }
 
 const refreshGroupIndex = (ast: AST.Regex) => {
@@ -209,8 +215,8 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const { ast, selectedIds } = state
       const payload = action.payload
       const id = selectedIds[0]
-      const nextAst = updateContent(ast, id, payload)
-      return setAst(state, nextAst)
+      const { nextAst, nextSelectedIds } = updateContent(ast, id, payload)
+      return setAst(state, nextAst, { selectedIds: nextSelectedIds })
     }
     case ActionTypes.SET_EDITOR_COLLAPSED: {
       const { collapsed } = action.payload
@@ -218,8 +224,12 @@ export const reducer = (state: InitialStateType, action: Action) => {
     }
     case ActionTypes.UPDATE_QUANTIFIER: {
       const { ast, selectedIds } = state
-      const nextAst = updateQuantifier(ast, selectedIds[0], action.payload)
-      return setAst(state, nextAst)
+      const { nextAst, nextSelectedIds } = updateQuantifier(
+        ast,
+        selectedIds[0],
+        action.payload
+      )
+      return setAst(state, nextAst, { selectedIds: nextSelectedIds })
     }
     case ActionTypes.WRAP_LOOKAROUND_ASSERTION: {
       const { ast, selectedIds } = state
@@ -249,6 +259,12 @@ export const reducer = (state: InitialStateType, action: Action) => {
         )
         return setAst(state, nextAst, { selectedIds: nextSelectedIds })
       }
+    }
+    case ActionTypes.UPDATE_FLAGS: {
+      const { ast } = state
+      const { payload } = action
+      const nextAst = updateFlags(ast, payload)
+      return setAst(state, nextAst)
     }
     default:
       return state

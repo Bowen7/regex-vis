@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { Input as GeistInput, useTheme } from "@geist-ui/react"
-// import debounce from "lodash/debounce"
-type Props = React.ComponentProps<typeof GeistInput> & {
+import debounce from "lodash/debounce"
+type Props = Omit<React.ComponentProps<typeof GeistInput>, "onChange"> & {
   validation?: RegExp
   errMsg?: string
+  onChange: (value: string) => void
 }
 
 const Input: React.FC<Props> = (props) => {
@@ -19,16 +20,21 @@ const Input: React.FC<Props> = (props) => {
 
   const { palette } = useTheme()
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedHelper = useCallback(
+    debounce(
+      (caller: (value: string) => void, value: string) =>
+        caller.call(null, value),
+      500
+    ),
+    []
+  )
+
   useEffect(() => {
     setInnerValue(value)
   }, [value])
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    const metaKey = e.ctrlKey || e.metaKey
-    if (metaKey && e.key === "z") {
-      e.preventDefault()
-      return
-    }
     e.stopPropagation()
   }
 
@@ -45,7 +51,7 @@ const Input: React.FC<Props> = (props) => {
     if (invalid) {
       setInvalid(false)
     }
-    onChange && onChange(e)
+    onChange && debouncedHelper(onChange, value)
   }
 
   return (

@@ -23,6 +23,7 @@ const tests: Tests = {
       },
     ],
     flags: [],
+    withSlash: true,
   },
   "/(?<!a)/": {
     type: "regex",
@@ -44,6 +45,7 @@ const tests: Tests = {
       },
     ],
     flags: [],
+    withSlash: true,
   },
   "/((?<=\\w{3}))f/": {
     type: "regex",
@@ -82,6 +84,7 @@ const tests: Tests = {
       },
     ],
     flags: [],
+    withSlash: true,
   },
   "/(?<a>(?<=\\w{3}))f/": {
     type: "regex",
@@ -120,6 +123,7 @@ const tests: Tests = {
       },
     ],
     flags: [],
+    withSlash: true,
   },
   "/(?<!(?<a>\\d){3})f/": {
     type: "regex",
@@ -158,6 +162,7 @@ const tests: Tests = {
       },
     ],
     flags: [],
+    withSlash: true,
   },
   "/(?<a>(?<!\\D{3}))f|f/": {
     type: "regex",
@@ -218,6 +223,7 @@ const tests: Tests = {
       },
     ],
     flags: [],
+    withSlash: true,
   },
 }
 export default tests

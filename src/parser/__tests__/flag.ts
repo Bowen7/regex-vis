@@ -20,7 +20,8 @@ export const validTests: Tests = {
         quantifier: null,
       },
     ],
-    flags: [{ kind: "g" }],
+    flags: ["g"],
+    withSlash: true,
   },
 }
 

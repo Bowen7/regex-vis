@@ -43,9 +43,13 @@ const InfoItem: React.FC<{}> = () => {
         <Insert ast={ast} nodes={nodes} />
         <Divider />
         <Expression expression={expression} />
-        {content && <ContentEditor content={content} id={id} />}
+        {content && (
+          <ContentEditor content={content} id={id} quantifier={quantifier} />
+        )}
         {group && <Group group={group} />}
-        {hasQuantifier && <Quantifier quantifier={quantifier} />}
+        {hasQuantifier && (
+          <Quantifier node={nodes[0]} quantifier={quantifier} />
+        )}
         {lookAround && (
           <LookAround kind={lookAround.kind} negate={lookAround.negate} />
         )}

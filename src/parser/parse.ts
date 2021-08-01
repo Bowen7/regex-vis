@@ -18,7 +18,7 @@ class Lexer {
   regex: string
   message: string = ""
   index = 0
-  ast: AST.Regex = { type: "regex", body: [], flags: [] }
+  ast: AST.Regex = { type: "regex", body: [], flags: [], withSlash: true }
   parent!:
     | AST.Regex
     | AST.ChoiceNode
@@ -28,7 +28,7 @@ class Lexer {
   prev: AST.Regex | AST.Node | null = null
   groupIndex = 1
   escaped = false
-  flagSet: Set<AST.FlagKind> = new Set()
+  flagSet: Set<AST.Flag> = new Set()
   idGenerator: (size?: number) => string
   constructor(regex: string, idGenerator = nanoid) {
     this.regex = regex.trim()
@@ -44,11 +44,14 @@ class Lexer {
   }
 
   public validate() {
+    if (this.regex[0] !== "/") {
+      this.regex = `/${this.regex}/`
+      this.ast.withSlash = false
+    }
     try {
-      const start = this.regex.indexOf("/")
       let end = this.regex.lastIndexOf("/")
-
-      if (start !== 0 || end <= start || this.regex[end - 1] === "\\") {
+      // TODO: /\/ /\\/
+      if (end <= 0) {
         this.message = "Invalid regular expression"
         return false
       }
@@ -58,10 +61,10 @@ class Lexer {
           this.message = `Invalid regular expression flags '${this.regex[i]}'`
           return false
         }
-        this.flagSet.add(this.regex[i] as AST.FlagKind)
+        this.flagSet.add(this.regex[i] as AST.Flag)
       }
 
-      new RegExp(this.regex.slice(start + 1, end), this.regex.slice(end + 1))
+      new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
     } catch (error) {
       this.message = error.message
       return false
@@ -432,7 +435,7 @@ class Lexer {
 
   private onFlags() {
     this.flagSet.forEach((flag) => {
-      this.ast.flags.push({ kind: flag })
+      this.ast.flags.push(flag)
     })
   }
 

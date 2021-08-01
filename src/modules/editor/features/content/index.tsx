@@ -21,8 +21,9 @@ import Ranges from "./ranges"
 type Prop = {
   content: AST.Content
   id: string
+  quantifier: AST.Quantifier | null
 }
-const ContentEditor: React.FC<Prop> = ({ content, id }) => {
+const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
   const [{ groupNames, ast }, dispatch] = useMainReducer()
   const { palette } = useTheme()
   const { kind } = content
@@ -108,7 +109,9 @@ const ContentEditor: React.FC<Prop> = ({ content, id }) => {
           </div>
         </Cell.Item>
 
-        {content.kind === "string" && <SimpleString value={content.value} />}
+        {content.kind === "string" && (
+          <SimpleString value={content.value} quantifier={quantifier} />
+        )}
         {content.kind === "ranges" && (
           <Ranges ranges={content.ranges} negate={content.negate} />
         )}

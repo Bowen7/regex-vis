@@ -1,9 +1,8 @@
-import React, { useEffect } from "react"
+import React from "react"
 import { Select, Spacer } from "@geist-ui/react"
 import Input from "@/components/input"
 import { AST } from "@/parser"
 import Cell from "@/components/cell"
-import { useDebounceInput } from "@/utils/hooks"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
 type GroupSelectProps = {
@@ -50,20 +49,8 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
     })
   }
 
-  const [setName, nameBindings, cancelNameChange] = useDebounceInput(
-    (value) => handleGroupChange(kind, value),
-    [kind]
-  )
-
-  useEffect(() => {
-    cancelNameChange && cancelNameChange()
-    if (group.kind === "namedCapturing") {
-      setName(group.name)
-    } else {
-      setName("")
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind])
+  const handleGroupNameChange = (value: string) =>
+    handleGroupChange(kind, value)
 
   const onSelectChange = (value: string | string[]) =>
     handleGroupChange(value as AST.GroupKind)
@@ -96,7 +83,11 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
         {group.kind === "namedCapturing" && (
           <>
             <Spacer y={0.5} />
-            <Input label="Group's name" {...nameBindings} />
+            <Input
+              label="Group's name"
+              value={group.name}
+              onChange={handleGroupNameChange}
+            />
           </>
         )}
       </Cell>

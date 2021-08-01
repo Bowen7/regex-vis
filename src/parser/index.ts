@@ -13,5 +13,6 @@ export {
   updateQuantifier,
   getQuantifierText,
   unLookAroundAssertion,
+  updateFlags,
 } from "./modifiers"
 export * from "./character-class"

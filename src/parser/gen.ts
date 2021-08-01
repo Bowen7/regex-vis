@@ -1,10 +1,6 @@
 import * as AST from "./ast"
 const digitRegex = /\d+/
-function gen(
-  ast: AST.Regex | AST.Node[],
-  withSlash = false,
-  flags: AST.Flag[] = []
-) {
+function gen(ast: AST.Regex | AST.Node[]) {
   const nodes = Array.isArray(ast) ? ast : ast.body
 
   const r = nodes
@@ -38,8 +34,8 @@ function gen(
       return regex
     })
     .join("")
-  if (withSlash) {
-    const f = flags.map((flag) => flag.kind).join("")
+  if (!Array.isArray(ast) && ast.withSlash) {
+    const f = ast.flags.map((flag) => flag).join("")
     return `/${r}/${f}`
   }
   return r

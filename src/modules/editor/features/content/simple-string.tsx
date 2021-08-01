@@ -1,32 +1,30 @@
-import React, { useEffect } from "react"
-import { Note, Spacer } from "@geist-ui/react"
+import React from "react"
+import { Note, Spacer, useToasts } from "@geist-ui/react"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
-import { useDebounceInput } from "@/utils/hooks"
+import { AST } from "@/parser"
 import { useMainReducer, MainActionTypes } from "@/redux"
 
 type Props = {
   value: string
+  quantifier: AST.Quantifier | null
 }
-const SimpleString: React.FC<Props> = ({ value }) => {
+const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
+  const [, setToast] = useToasts()
   const [, dispatch] = useMainReducer()
 
-  const [setString, stringBindings] = useDebounceInput(
-    (value: string) =>
-      dispatch({
-        type: MainActionTypes.UPDATE_CONTENT,
-        payload: {
-          kind: "string",
-          value,
-        },
-      }),
-    []
-  )
-
-  useEffect(() => {
-    setString(value)
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [value])
+  const handleChange = (value: string) => {
+    if (value.length > 1 && quantifier) {
+      setToast({ text: "Group selection automatically" })
+    }
+    dispatch({
+      type: MainActionTypes.UPDATE_CONTENT,
+      payload: {
+        kind: "string",
+        value,
+      },
+    })
+  }
 
   return (
     <Cell.Item label="Value">
@@ -34,7 +32,7 @@ const SimpleString: React.FC<Props> = ({ value }) => {
         The input will be escaped automatically.
       </Note>
       <Spacer y={0.5} />
-      <Input size="small" {...stringBindings} />
+      <Input size="small" value={value} onChange={handleChange} />
     </Cell.Item>
   )
 }

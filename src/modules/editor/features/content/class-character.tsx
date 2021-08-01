@@ -47,12 +47,12 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
     })
   }
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  const handleInputChange = (value: string) =>
     dispatch({
       type: MainActionTypes.UPDATE_CONTENT,
       payload: {
         kind: "class",
-        value: e.target.value,
+        value: value,
       },
     })
   return (

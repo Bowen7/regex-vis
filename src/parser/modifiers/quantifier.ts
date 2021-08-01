@@ -1,17 +1,36 @@
 import produce from "immer"
+import { nanoid } from "nanoid"
 import * as AST from "../ast"
+import replaceIt from "./replace"
 import { getNodeById } from "../visit"
 const updateQuantifier = (
   ast: AST.Regex,
   selectedId: string,
   quantifier: AST.Quantifier | null
-) =>
-  produce(ast, (draft) => {
+) => {
+  let nextSelectedIds = [selectedId]
+  const nextAst = produce(ast, (draft) => {
     const { node } = getNodeById(draft, selectedId)
-    if (node.type === "character" || node.type === "group") {
+    if (
+      node.type === "character" &&
+      node.kind === "string" &&
+      node.value.length > 1
+    ) {
+      const groupNode: AST.GroupNode = {
+        id: nanoid(),
+        type: "group",
+        kind: "nonCapturing",
+        children: [node],
+        quantifier,
+      }
+      nextSelectedIds = [groupNode.id]
+      replaceIt(draft, [node], [groupNode])
+    } else if (node.type === "character" || node.type === "group") {
       node.quantifier = quantifier
     }
   })
+  return { nextAst, nextSelectedIds }
+}
 
 export default updateQuantifier
 
