@@ -1,5 +1,8 @@
 lockfileVersion: 5.3
 
+overrides:
+  '@svgr/hast-util-to-babel-ast': https://github.com/Bowen7/hast-util-to-babel-ast.git
+
 specifiers:
   '@babel/preset-env': ^7.14.2
   '@babel/preset-react': ^7.13.13
@@ -71,6 +74,15 @@ devDependencies:
   ts-node: registry.npmjs.org/ts-node/10.0.0_ec74eb3a23918bd7c13ddef943f94054
 
 packages:
+
+  github.com/Bowen7/hast-util-to-babel-ast/29729bd53973ea51eb86a8fcc1ddc1651ce51013:
+    resolution: {tarball: https://codeload.github.com/Bowen7/hast-util-to-babel-ast/tar.gz/29729bd53973ea51eb86a8fcc1ddc1651ce51013}
+    name: '@svgr/hast-util-to-babel-ast'
+    version: 5.5.0
+    engines: {node: '>=10'}
+    dependencies:
+      '@babel/types': registry.npmjs.org/@babel/types/7.14.5
+      entities: registry.npmjs.org/entities/2.2.0
 
   registry.npmjs.org/@babel/code-frame/7.10.4:
     resolution: {integrity: sha512-vG6SvB6oYEhvgisZNFRmRCUkLz11c7rp+tbNTynGqc6mS1d5ATd/sGyV6W0KZZnXRKMTzZDRgQT3Ou9jhpAfUg==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@babel/code-frame/-/code-frame-7.10.4.tgz}
@@ -5523,14 +5535,6 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  registry.npmjs.org/@svgr/hast-util-to-babel-ast/5.5.0:
-    resolution: {integrity: sha512-cAaR/CAiZRB8GP32N+1jocovUtvlj0+e65TB50/6Lcime+EA49m/8l+P2ko+XPJ4dw3xaPS3jOL4F2X4KWxoeQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@svgr/hast-util-to-babel-ast/-/hast-util-to-babel-ast-5.5.0.tgz}
-    name: '@svgr/hast-util-to-babel-ast'
-    version: 5.5.0
-    engines: {node: '>=10'}
-    dependencies:
-      '@babel/types': registry.npmjs.org/@babel/types/7.14.4
-
   registry.npmjs.org/@svgr/plugin-jsx/5.5.0:
     resolution: {integrity: sha512-V/wVh33j12hGh05IDg8GpIUXbjAPnTdPTKuP4VNLggnwaHMPNQNae2pRnyTAILWCQdz5GyMqtO488g7CKM8CBA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@svgr/plugin-jsx/-/plugin-jsx-5.5.0.tgz}
     name: '@svgr/plugin-jsx'
@@ -5539,7 +5543,7 @@ packages:
     dependencies:
       '@babel/core': registry.npmjs.org/@babel/core/7.14.3
       '@svgr/babel-preset': registry.npmjs.org/@svgr/babel-preset/5.5.0
-      '@svgr/hast-util-to-babel-ast': registry.npmjs.org/@svgr/hast-util-to-babel-ast/5.5.0
+      '@svgr/hast-util-to-babel-ast': github.com/Bowen7/hast-util-to-babel-ast/29729bd53973ea51eb86a8fcc1ddc1651ce51013
       svg-parser: registry.npmjs.org/svg-parser/2.0.4
     transitivePeerDependencies:
       - supports-color
