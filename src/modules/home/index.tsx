@@ -50,7 +50,7 @@ const Home: React.FC<{}> = () => {
       <style jsx>{`
         .wrapper {
           width: calc(100% - 275px);
-          height: calc(100vh - 72px);
+          height: calc(100vh - 64px);
           background: ${palette.accents_1};
           display: flex;
           flex-direction: column;

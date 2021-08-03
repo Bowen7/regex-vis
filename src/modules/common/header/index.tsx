@@ -1,8 +1,9 @@
 import React from "react"
-import { NavLink } from "react-router-dom"
+import { NavLink, Link } from "react-router-dom"
 import { useTheme } from "@geist-ui/react"
 import Sun from "@geist-ui/react-icons/sun"
 import Moon from "@geist-ui/react-icons/moon"
+import { LogoSvg } from "@/assets"
 
 type Props = {
   theme: string
@@ -16,7 +17,12 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
   return (
     <>
       <header>
-        <span className="logo">Regex-Vis</span>
+        <Link to="/">
+          <div className="logo">
+            <LogoSvg />
+            <span>Regex-Vis</span>
+          </div>
+        </Link>
         <div className="nav">
           <NavLink to="/" exact activeStyle={activeStyle}>
             Home
@@ -59,12 +65,29 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           justify-content: space-between;
           align-items: center;
           padding: 24px 36px;
-          height: 72px;
+          height: 64px;
           border-bottom: 1px solid ${palette.accents_2};
         }
-        .logo {
+        .logo span {
           font-weight: bold;
+          color: ${palette.foreground};
         }
+        .logo :global(svg) {
+          width: 32px;
+          height: 32px;
+          margin-right: 24px;
+          vertical-align: bottom;
+        }
+        .logo :global(.fill-accents-8) {
+          fill: ${palette.accents_8};
+        }
+        .logo :global(.stroke-accents-8) {
+          stroke: ${palette.accents_8};
+        }
+        .logo :global(.fill-success) {
+          fill: ${palette.success};
+        }
+
         .nav :global(a:not(:last-child)) {
           margin-right: 48px;
         }

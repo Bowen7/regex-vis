@@ -96,9 +96,9 @@ const Editor: React.FC<{}> = () => {
       <style jsx>{`
         .container {
           position: fixed;
-          top: 72px;
+          top: 64px;
           right: 0;
-          height: calc(100% - 72px);
+          height: calc(100% - 64px);
           width: 275px;
           border-left: 1px solid ${palette.accents_2};
           transition: transform 0.3s ease-out;

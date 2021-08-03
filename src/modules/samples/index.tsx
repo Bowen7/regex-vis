@@ -60,7 +60,7 @@ const Samples: React.FC<{}> = () => {
       </div>
       <style jsx>{`
         .wrapper {
-          height: calc(100vh - 72px);
+          height: calc(100vh - 64px);
           overflow-y: auto;
           background-color: ${palette.accents_1};
         }
