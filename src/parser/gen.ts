@@ -76,11 +76,11 @@ function genCharacter(node: AST.CharacterNode) {
       const { negate, ranges } = node
       let str = ""
       ranges.forEach(({ from, to }, index) => {
-        if (from === "]") {
-          from = "\\]"
+        if (from === "]" || from === "\\") {
+          from = "\\" + from
         }
-        if (to === "]") {
-          to = "\\]"
+        if (to === "]" || to === "\\") {
+          to = "\\" + to
         }
         if (!(index === 0 || index === ranges.length - 1)) {
           if (from === "-") {
