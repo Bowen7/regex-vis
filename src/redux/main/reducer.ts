@@ -168,7 +168,7 @@ export const reducer = (state: InitialStateType, action: Action) => {
       const { undoStack, ast } = state
       const nextAst = action.payload
       undoStack.push(ast)
-      return setAst(state, nextAst, { undoStack }, true)
+      return setAst(state, nextAst, { undoStack, selectedIds: [] }, true)
     }
     case ActionTypes.UNDO: {
       let { undoStack, redoStack, ast } = state
