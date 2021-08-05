@@ -3,12 +3,12 @@ import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/react"
 import { useMainReducer, MainActionTypes } from "@/redux/"
-import EditTab from "./tabs/edit"
-import LegendTab from "./tabs/legend"
+import EditTab from "./edit-tab"
+import LegendTab from "./legend-tab"
+import TestTab from "./test-tab"
 import { useEventListener } from "@/utils/hooks"
 
 type Tab = "legend" | "edit" | "test"
-
 const Editor: React.FC<{}> = () => {
   const [{ selectedIds, editorCollapsed }, dispatch] = useMainReducer()
 
@@ -75,7 +75,7 @@ const Editor: React.FC<{}> = () => {
               <EditTab />
             </Tabs.Item>
             <Tabs.Item value="test" label="Test">
-              Todo
+              <TestTab />
             </Tabs.Item>
           </div>
         </Tabs>
