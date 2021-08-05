@@ -37,9 +37,25 @@ export const getTextsWithBacktick = (
   switch (node.type) {
     case "character":
       if (node.kind === "ranges") {
-        return node.ranges.map(({ from, to }) =>
-          from === to ? `\`${from}\`` : `\`${from}\` - \`${to}\``
-        )
+        let singleRangeSet = new Set<string>()
+        const texts: string[] = []
+        node.ranges.forEach(({ from, to }) => {
+          if (from === to) {
+            if (from.length === 1) {
+              singleRangeSet.add(from)
+            } else {
+              texts.push(from)
+            }
+          } else {
+            const text = `\`${from}\` - \`${to}\``
+            texts.push(text)
+          }
+        })
+        if (singleRangeSet.size > 0) {
+          const text = Array.from(singleRangeSet).join("")
+          texts.unshift(`\`${text}\``)
+        }
+        return texts
       } else if (node.kind === "class") {
         return (
           characterClassTextMap[node.value as CharacterClassKey] || node.value
@@ -69,23 +85,43 @@ export const getTexts = (
   switch (node.type) {
     case "character":
       if (node.kind === "ranges") {
-        return node.ranges.map(({ from, to }) =>
-          from === to
-            ? [
+        let singleRangeSet = new Set<string>()
+        const texts: (
+          | { type: "backtick" | "hyphen" }
+          | { type: "text"; text: string }
+        )[][] = []
+        node.ranges.forEach(({ from, to }) => {
+          if (from === to) {
+            if (from.length === 1) {
+              singleRangeSet.add(from)
+            } else {
+              texts.push([
                 { type: "backtick" },
                 { type: "text", text: from },
                 { type: "backtick" },
-              ]
-            : [
-                { type: "backtick" },
-                { type: "text", text: from },
-                { type: "backtick" },
-                { type: "hyphen" },
-                { type: "backtick" },
-                { type: "text", text: to },
-                { type: "backtick" },
-              ]
-        )
+              ])
+            }
+          } else {
+            texts.push([
+              { type: "backtick" },
+              { type: "text", text: from },
+              { type: "backtick" },
+              { type: "hyphen" },
+              { type: "backtick" },
+              { type: "text", text: to },
+              { type: "backtick" },
+            ])
+          }
+        })
+        if (singleRangeSet.size > 0) {
+          const text = Array.from(singleRangeSet).join("")
+          texts.unshift([
+            { type: "backtick" },
+            { type: "text", text },
+            { type: "backtick" },
+          ])
+        }
+        return texts
       } else if (node.kind === "class") {
         return [
           [
