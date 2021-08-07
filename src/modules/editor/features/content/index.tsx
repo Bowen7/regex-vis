@@ -15,7 +15,12 @@ import {
   endAssertionOption,
   wordBoundaryAssertionOption,
 } from "./helper"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import {
+  astAtom,
+  groupNamesAtom,
+  useAtomValue,
+  dispatchUpdateContent,
+} from "@/atom"
 import Ranges from "./ranges"
 
 type Prop = {
@@ -24,7 +29,8 @@ type Prop = {
   quantifier: AST.Quantifier | null
 }
 const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
-  const [{ groupNames, ast }, dispatch] = useMainReducer()
+  const groupNames = useAtomValue(groupNamesAtom)
+  const ast = useAtomValue(astAtom)
   const { palette } = useTheme()
   const { kind } = content
 
@@ -71,10 +77,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
       default:
         return
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload,
-    })
+    dispatchUpdateContent(payload)
   }
 
   return (

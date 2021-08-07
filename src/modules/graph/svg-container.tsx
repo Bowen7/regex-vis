@@ -4,7 +4,7 @@ import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "./types"
 import { AST } from "@/parser"
 import RailNode from "./node"
 import Connect from "./connect"
-import { MainActionTypes, useMainReducer } from "@/redux"
+import { dispatchSelectNodes } from "@/atom"
 type Props = {
   rootRenderNode: RenderVirtualNode
   selectedIds: string[]
@@ -13,7 +13,6 @@ type Props = {
 const SvgContainer: React.FC<Props> = (props) => {
   const { rootRenderNode, selectedIds, minimum } = props
   const { width, height } = rootRenderNode
-  const [, dispatch] = useMainReducer()
   const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
   const startX = useRef<number>(0)
@@ -54,10 +53,7 @@ const SvgContainer: React.FC<Props> = (props) => {
       }
     }
     dfs(rootRenderNode)
-    dispatch({
-      type: MainActionTypes.SELECT_NODES,
-      payload: { selected: selectedIds },
-    })
+    dispatchSelectNodes(selectedIds)
   }
 
   function onMouseDown(e: React.MouseEvent<SVGSVGElement>) {
@@ -110,17 +106,11 @@ const SvgContainer: React.FC<Props> = (props) => {
     setRect({ x: 0, y: 0, width: 0, height: 0 })
   }
 
-  const handleClick = useCallback(
-    (node: AST.Node) => {
-      if (!moving.current) {
-        dispatch({
-          type: MainActionTypes.SELECT_NODES,
-          payload: { selected: node.id },
-        })
-      }
-    },
-    [dispatch]
-  )
+  const handleClick = useCallback((node: AST.Node) => {
+    if (!moving.current) {
+      dispatchSelectNodes(node.id)
+    }
+  }, [])
 
   function captureClick(e: MouseEvent) {
     e.stopPropagation()

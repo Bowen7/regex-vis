@@ -9,7 +9,6 @@ type Props = {
 }
 const LegendItem: React.FC<Props> = ({ name, infos }) => {
   const { palette } = useTheme()
-  console.log(infos)
   return (
     <>
       <div className="wrapper">

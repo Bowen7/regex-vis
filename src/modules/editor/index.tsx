@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/react"
-import { useMainReducer, MainActionTypes } from "@/redux/"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
 import { useEventListener } from "@/utils/hooks"
+import {
+  dispatchRemove,
+  dispatchUndo,
+  dispatchRedo,
+  dispatchCollapseEditor,
+  useAtomValue,
+  selectedIdsAtom,
+  editorCollapsedAtom,
+} from "@/atom"
 
 type Tab = "legend" | "edit" | "test"
 const Editor: React.FC<{}> = () => {
-  const [{ selectedIds, editorCollapsed }, dispatch] = useMainReducer()
+  const selectedIds = useAtomValue(selectedIdsAtom)
+  const editorCollapsed = useAtomValue(editorCollapsedAtom)
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -26,9 +35,9 @@ const Editor: React.FC<{}> = () => {
 
   const editDisabled = selectedIds.length === 0
 
-  const remove = () => dispatch({ type: MainActionTypes.REMOVE })
-  const undo = () => dispatch({ type: MainActionTypes.UNDO })
-  const redo = () => dispatch({ type: MainActionTypes.REDO })
+  const remove = () => dispatchRemove()
+  const undo = () => dispatchUndo()
+  const redo = () => dispatchRedo()
 
   useEventListener("keydown", (e: Event) => {
     const event = e as KeyboardEvent
@@ -45,17 +54,9 @@ const Editor: React.FC<{}> = () => {
     }
   })
 
-  const collapseEditor = () =>
-    dispatch({
-      type: MainActionTypes.SET_EDITOR_COLLAPSED,
-      payload: { collapsed: true },
-    })
+  const collapseEditor = () => dispatchCollapseEditor(true)
 
-  const unCollapseEditor = () =>
-    dispatch({
-      type: MainActionTypes.SET_EDITOR_COLLAPSED,
-      payload: { collapsed: false },
-    })
+  const unCollapseEditor = () => dispatchCollapseEditor(false)
 
   const containerClassName =
     "container" + (editorCollapsed ? " collapsed-container" : "")

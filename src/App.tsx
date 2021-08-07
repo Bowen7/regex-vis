@@ -4,7 +4,6 @@ import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
 import Header from "@/modules/common/header"
 import { font } from "@/constants/style"
 import Routes from "./routes"
-import { MainProvider } from "@/redux"
 const defaultTheme = localStorage.getItem("theme") || "dark"
 export default function App() {
   const [themeType, setThemeType] = useState(defaultTheme)
@@ -17,14 +16,12 @@ export default function App() {
     <>
       <GeistProvider themeType={themeType}>
         <CssBaseline />
-        <MainProvider>
-          <Router>
-            <Header theme={themeType} onThemeChange={handleThemeChange} />
-            <Switch>
-              <Routes />
-            </Switch>
-          </Router>
-        </MainProvider>
+        <Router>
+          <Header theme={themeType} onThemeChange={handleThemeChange} />
+          <Switch>
+            <Routes />
+          </Switch>
+        </Router>
       </GeistProvider>
 
       <style jsx global>{`

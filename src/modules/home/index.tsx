@@ -4,7 +4,12 @@ import { useTheme } from "@geist-ui/react"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import RegexInput from "./regex-input"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import {
+  editorCollapsedAtom,
+  astAtom,
+  useAtomValue,
+  dispatchUpdateFlags,
+} from "@/atom"
 
 const Home: React.FC<{}> = () => {
   const history = useHistory()
@@ -12,7 +17,8 @@ const Home: React.FC<{}> = () => {
   const params = new URLSearchParams(location.search)
   const regex = params.get("r")
 
-  const [{ editorCollapsed, ast }, dispatch] = useMainReducer()
+  const editorCollapsed = useAtomValue(editorCollapsedAtom)
+  const ast = useAtomValue(astAtom)
   const { palette } = useTheme()
 
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
@@ -26,8 +32,7 @@ const Home: React.FC<{}> = () => {
     history.push({ search: nextParams.toString() })
   }
 
-  const handleFlagsChange = (flags: string[]) =>
-    dispatch({ type: MainActionTypes.UPDATE_FLAGS, payload: flags })
+  const handleFlagsChange = (flags: string[]) => dispatchUpdateFlags(flags)
 
   return (
     <>

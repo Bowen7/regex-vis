@@ -3,7 +3,7 @@ import { Spacer, Select, Code } from "@geist-ui/react"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { characterClassTextMap, CharacterClassKey } from "@/parser"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateContent } from "@/atom"
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
 for (let key in characterClassTextMap) {
@@ -20,8 +20,6 @@ type Props = {
   value: string
 }
 const ClassCharacter: React.FC<Props> = ({ value }) => {
-  const [, dispatch] = useMainReducer()
-
   const classKind = useMemo(() => {
     if (xhhRegex.test(value)) {
       return "\\xhh"
@@ -38,22 +36,16 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
     } else if (value === "\\uhhhh") {
       value = "\\u0000"
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload: {
-        kind: "class",
-        value,
-      },
+    dispatchUpdateContent({
+      kind: "class",
+      value,
     })
   }
 
   const handleInputChange = (value: string) =>
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload: {
-        kind: "class",
-        value: value,
-      },
+    dispatchUpdateContent({
+      kind: "class",
+      value: value,
     })
   return (
     <Cell.Item label="Class">

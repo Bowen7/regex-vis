@@ -1,11 +1,11 @@
 import React, { useMemo } from "react"
 import { Select } from "@geist-ui/react"
 import Cell from "@/components/cell"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateContent, groupNamesAtom, useAtomValue } from "@/atom"
 
 type Props = { reference: string }
 const BackRef: React.FC<Props> = ({ reference }) => {
-  const [{ groupNames }, dispatch] = useMainReducer()
+  const groupNames = useAtomValue(groupNamesAtom)
 
   const options = useMemo(() => {
     if (groupNames.includes(reference)) {
@@ -14,12 +14,8 @@ const BackRef: React.FC<Props> = ({ reference }) => {
     return [reference, ...groupNames]
   }, [groupNames, reference])
 
-  const handleChange = (value: string | string[]) => {
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload: { kind: "backReference", ref: value as string },
-    })
-  }
+  const handleChange = (value: string | string[]) =>
+    dispatchUpdateContent({ kind: "backReference", ref: value as string })
   return (
     <Cell.Item label="Back Reference">
       <Select

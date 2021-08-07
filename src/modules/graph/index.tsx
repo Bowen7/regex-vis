@@ -6,7 +6,7 @@ import { parse, gen, AST } from "@/parser"
 import { useUpdateEffect } from "@/utils/hooks"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { astAtom, selectedIdsAtom, useAtomValue, dispatchSetAst } from "@/atom"
 type Props = {
   regex: string
   minimum?: boolean
@@ -16,7 +16,8 @@ const head: AST.RootNode = { id: nanoid(), type: "root" }
 const tail: AST.RootNode = { id: nanoid(), type: "root" }
 const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   const { palette } = useTheme()
-  const [{ ast, selectedIds }, dispatch] = useMainReducer()
+  const ast = useAtomValue(astAtom)
+  const selectedIds = useAtomValue(selectedIdsAtom)
   const [error, setError] = useState<null | string>(null)
 
   const regexRef = useRef<string>()
@@ -36,10 +37,7 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
       if (ast.type === "regex") {
         setError(null)
         const { type, body, flags, withSlash } = ast
-        dispatch({
-          type: MainActionTypes.SET_AST,
-          payload: { type, body: [head, ...body, tail], flags, withSlash },
-        })
+        dispatchSetAst({ type, body: [head, ...body, tail], flags, withSlash })
       } else {
         setError(ast.message)
       }

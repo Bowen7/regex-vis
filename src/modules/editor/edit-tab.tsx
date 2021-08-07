@@ -10,13 +10,14 @@ import { getInfoFromNodes, genInitialNodesInfo } from "./utils"
 import { AST } from "@/parser"
 import { NodesInfo } from "./utils"
 import { getNodesByIds } from "@/parser/visit"
-import { useMainReducer } from "@/redux"
+import { astAtom, selectedIdsAtom, useAtomValue } from "@/atom"
 
 const InfoItem: React.FC<{}> = () => {
   const { layout } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
-  const [{ selectedIds, ast }] = useMainReducer()
+  const selectedIds = useAtomValue(selectedIdsAtom)
+  const ast = useAtomValue(astAtom)
 
   useEffect(() => setNodes(getNodesByIds(ast, selectedIds)), [ast, selectedIds])
 

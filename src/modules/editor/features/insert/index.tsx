@@ -12,7 +12,7 @@ import {
   Lookbehind,
 } from "@/components/icons"
 import { AST } from "@/parser"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchInsert, dispatchGroupIt, dispatchLookAroundIt } from "@/atom"
 type Props = {
   ast: AST.Regex
   nodes: AST.Node[]
@@ -23,8 +23,6 @@ type InsertDirection = "prev" | "next" | "branch"
 type Option = { desc: string; value: string; Icon: () => JSX.Element }
 
 const Insert: React.FC<Props> = ({ ast, nodes }) => {
-  const [, dispatch] = useMainReducer()
-
   const insertOptions = useMemo(() => {
     const options: Option[] = []
     const { body } = ast
@@ -94,8 +92,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
     ]
   }, [nodes])
 
-  const handleInsert = (direction: InsertDirection) =>
-    dispatch({ type: MainActionTypes.INSERT, payload: { direction } })
+  const handleInsert = (direction: InsertDirection) => dispatchInsert(direction)
 
   const handleWrapGroup = (kind: string) => {
     let payload: AST.Group
@@ -112,15 +109,12 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       default:
         return
     }
-    dispatch({ type: MainActionTypes.WRAP_GROUP, payload })
+    dispatchGroupIt(payload)
   }
 
-  const handleWrapLookAroundAssertion = (kind: string) => {
-    dispatch({
-      type: MainActionTypes.WRAP_LOOKAROUND_ASSERTION,
-      payload: kind as "lookahead" | "lookbehind",
-    })
-  }
+  const handleWrapLookAroundAssertion = (kind: string) =>
+    dispatchLookAroundIt(kind as "lookahead" | "lookbehind")
+
   return (
     <div id="test">
       {insertOptions.length > 1 && (

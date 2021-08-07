@@ -1,15 +1,14 @@
 import React, { useEffect, useState } from "react"
-import { useTheme, Button, Spacer } from "@geist-ui/react"
+import { Button, Spacer } from "@geist-ui/react"
 import XCircle from "@geist-ui/react-icons/xCircle"
 import { useStorageState } from "@/utils/hooks"
 import produce from "immer"
 import Input from "@/components/input"
-import { useMainReducer } from "@/redux"
 import { gen } from "@/parser"
+import { astAtom, useAtomValue } from "@/atom"
 const TestTab: React.FC<{}> = () => {
-  const { palette } = useTheme()
   const [cases, setCases] = useStorageState<string[]>("test-case", [""])
-  const [{ ast }] = useMainReducer()
+  const ast = useAtomValue(astAtom)
   const [regExp, setRegExp] = useState<RegExp>(() => {
     const regex = gen(ast, false)
     return new RegExp(regex, ast.flags.join(""))
