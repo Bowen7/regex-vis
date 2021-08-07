@@ -36,17 +36,8 @@ export default function App() {
           box-sizing: border-box;
           font-family: ${font.family};
         }
-
         svg {
           user-select: none;
-        }
-
-        .max-z-index {
-          z-index: 1200 !important;
-        }
-
-        button {
-          vertical-align: middle;
         }
       `}</style>
     </>
