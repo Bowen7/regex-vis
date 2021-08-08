@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { Button, ButtonGroup, Tooltip } from "@geist-ui/react"
 import Cell from "@/components/cell"
+import ShowMore from "@/components/show-more"
 import {
   InsertBefore,
   InsertAfter,
@@ -44,11 +45,17 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       })
     }
 
-    options.push({
-      value: "branch",
-      desc: "Insert as a branch",
-      Icon: InsertBranch,
-    })
+    if (
+      bodyHead.id !== head.id &&
+      bodyTail.id !== tail.id &&
+      tail.type !== "boundaryAssertion"
+    ) {
+      options.push({
+        value: "branch",
+        desc: "Insert as a branch",
+        Icon: InsertBranch,
+      })
+    }
 
     if (
       bodyTail.id !== tail.id &&
@@ -117,7 +124,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
 
   return (
     <div id="test">
-      {insertOptions.length > 1 && (
+      {insertOptions.length > 0 && (
         <Cell label="Insert around">
           <ButtonGroup>
             {insertOptions.map(({ value, desc, Icon }) => (
@@ -146,21 +153,24 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
           </ButtonGroup>
         </Cell>
       )}
+
       {lookAroundOptions.length > 0 && (
-        <Cell label="LookAround selection" question="lookAround">
-          <ButtonGroup>
-            {lookAroundOptions.map(({ value, desc, Icon }) => (
-              <Button
-                onClick={() => handleWrapLookAroundAssertion(value)}
-                key={value}
-              >
-                <Tooltip text={desc} placement="topEnd">
-                  <Icon />
-                </Tooltip>
-              </Button>
-            ))}
-          </ButtonGroup>
-        </Cell>
+        <ShowMore id="lookAround">
+          <Cell label="LookAround selection" question="lookAround">
+            <ButtonGroup>
+              {lookAroundOptions.map(({ value, desc, Icon }) => (
+                <Button
+                  onClick={() => handleWrapLookAroundAssertion(value)}
+                  key={value}
+                >
+                  <Tooltip text={desc} placement="topEnd">
+                    <Icon />
+                  </Tooltip>
+                </Button>
+              ))}
+            </ButtonGroup>
+          </Cell>
+        </ShowMore>
       )}
     </div>
   )
