@@ -36,6 +36,9 @@ export default function App() {
         svg {
           user-select: none;
         }
+        .tooltip-content {
+          width: max-content !important;
+        }
       `}</style>
     </>
   )
