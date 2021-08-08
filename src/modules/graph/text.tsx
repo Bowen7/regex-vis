@@ -1,10 +1,6 @@
 import React from "react"
 import { AST } from "@/parser"
-import {
-  NODE_PADDING_HORIZONTAL,
-  NODE_MARGIN_VERTICAL,
-  TEXT_PADDING_VERTICAL,
-} from "@/constants/graph"
+import { NODE_MARGIN_VERTICAL, TEXT_PADDING_VERTICAL } from "./constants"
 import { getTexts } from "./utils"
 const FONT = 16
 type TextProps = {

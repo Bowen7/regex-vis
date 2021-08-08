@@ -2,15 +2,24 @@ import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/react"
-import { useMainReducer, MainActionTypes } from "@/redux/"
-import EditTab from "./tabs/edit"
-import LegendTab from "./tabs/legend"
+import EditTab from "./edit-tab"
+import LegendTab from "./legend-tab"
+import TestTab from "./test-tab"
 import { useEventListener } from "@/utils/hooks"
+import {
+  dispatchRemove,
+  dispatchUndo,
+  dispatchRedo,
+  dispatchCollapseEditor,
+  useAtomValue,
+  selectedIdsAtom,
+  editorCollapsedAtom,
+} from "@/atom"
 
 type Tab = "legend" | "edit" | "test"
-
 const Editor: React.FC<{}> = () => {
-  const [{ selectedIds, editorCollapsed }, dispatch] = useMainReducer()
+  const selectedIds = useAtomValue(selectedIdsAtom)
+  const editorCollapsed = useAtomValue(editorCollapsedAtom)
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -26,9 +35,9 @@ const Editor: React.FC<{}> = () => {
 
   const editDisabled = selectedIds.length === 0
 
-  const remove = () => dispatch({ type: MainActionTypes.REMOVE })
-  const undo = () => dispatch({ type: MainActionTypes.UNDO })
-  const redo = () => dispatch({ type: MainActionTypes.REDO })
+  const remove = () => dispatchRemove()
+  const undo = () => dispatchUndo()
+  const redo = () => dispatchRedo()
 
   useEventListener("keydown", (e: Event) => {
     const event = e as KeyboardEvent
@@ -45,17 +54,9 @@ const Editor: React.FC<{}> = () => {
     }
   })
 
-  const collapseEditor = () =>
-    dispatch({
-      type: MainActionTypes.SET_EDITOR_COLLAPSED,
-      payload: { collapsed: true },
-    })
+  const collapseEditor = () => dispatchCollapseEditor(true)
 
-  const unCollapseEditor = () =>
-    dispatch({
-      type: MainActionTypes.SET_EDITOR_COLLAPSED,
-      payload: { collapsed: false },
-    })
+  const unCollapseEditor = () => dispatchCollapseEditor(false)
 
   const containerClassName =
     "container" + (editorCollapsed ? " collapsed-container" : "")
@@ -75,7 +76,7 @@ const Editor: React.FC<{}> = () => {
               <EditTab />
             </Tabs.Item>
             <Tabs.Item value="test" label="Test">
-              Todo
+              <TestTab />
             </Tabs.Item>
           </div>
         </Tabs>
@@ -96,9 +97,9 @@ const Editor: React.FC<{}> = () => {
       <style jsx>{`
         .container {
           position: fixed;
-          top: 72px;
+          top: 64px;
           right: 0;
-          height: calc(100% - 72px);
+          height: calc(100% - 64px);
           width: 275px;
           border-left: 1px solid ${palette.accents_2};
           transition: transform 0.3s ease-out;

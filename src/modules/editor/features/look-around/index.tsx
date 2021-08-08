@@ -2,38 +2,26 @@ import React from "react"
 import { Select, Spacer, Checkbox } from "@geist-ui/react"
 import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateLookAround } from "@/atom"
 
 type Props = {
   kind: "lookahead" | "lookbehind"
   negate: boolean
 }
 const LookAround: React.FC<Props> = ({ kind, negate }) => {
-  const [, dispatch] = useMainReducer()
-
   const onSelectChange = (value: string | string[]) =>
-    dispatch({
-      type: MainActionTypes.UPDATE_LOOKAROUND_ASSERTION,
-      payload: {
-        kind: value as "lookahead" | "lookbehind",
-        negate,
-      },
+    dispatchUpdateLookAround({
+      kind: value as "lookahead" | "lookbehind",
+      negate,
     })
   const handleNegateChange = (e: CheckboxEvent) => {
     const negate = e.target.checked
-    dispatch({
-      type: MainActionTypes.UPDATE_LOOKAROUND_ASSERTION,
-      payload: {
-        kind: kind,
-        negate,
-      },
+    dispatchUpdateLookAround({
+      kind: kind,
+      negate,
     })
   }
-  const handleUnLookAround = () =>
-    dispatch({
-      type: MainActionTypes.UPDATE_LOOKAROUND_ASSERTION,
-      payload: null,
-    })
+  const handleUnLookAround = () => dispatchUpdateLookAround(null)
 
   return (
     <Cell

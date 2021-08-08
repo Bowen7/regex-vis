@@ -1,6 +1,6 @@
 import * as AST from "./ast"
 const digitRegex = /\d+/
-function gen(ast: AST.Regex | AST.Node[]) {
+function gen(ast: AST.Regex | AST.Node[], withSlash?: boolean) {
   const nodes = Array.isArray(ast) ? ast : ast.body
 
   const r = nodes
@@ -34,9 +34,11 @@ function gen(ast: AST.Regex | AST.Node[]) {
       return regex
     })
     .join("")
-  if (!Array.isArray(ast) && ast.withSlash) {
-    const f = ast.flags.map((flag) => flag).join("")
-    return `/${r}/${f}`
+  if (!Array.isArray(ast)) {
+    if ((withSlash === undefined && ast.withSlash) || withSlash) {
+      const f = ast.flags.map((flag) => flag).join("")
+      return `/${r}/${f}`
+    }
   }
   return r
 }
@@ -76,11 +78,11 @@ function genCharacter(node: AST.CharacterNode) {
       const { negate, ranges } = node
       let str = ""
       ranges.forEach(({ from, to }, index) => {
-        if (from === "]") {
-          from = "\\]"
+        if (from === "]" || from === "\\") {
+          from = "\\" + from
         }
-        if (to === "]") {
-          to = "\\]"
+        if (to === "]" || to === "\\") {
+          to = "\\" + to
         }
         if (!(index === 0 || index === ranges.length - 1)) {
           if (from === "-") {

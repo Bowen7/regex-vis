@@ -11,7 +11,6 @@
     "nanoid": "^3.1.16",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-redux": "^7.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
     "styled-jsx": "3.3.0",
@@ -58,7 +57,11 @@
     "esbuild": "^0.12.17",
     "jest": "^26.6.0",
     "react-app-rewired": "^2.1.6",
-    "rollup": "^2.48.0",
     "ts-node": "^10.0.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "@svgr/hast-util-to-babel-ast": "https://github.com/Bowen7/hast-util-to-babel-ast.git"
+    }
   }
 }

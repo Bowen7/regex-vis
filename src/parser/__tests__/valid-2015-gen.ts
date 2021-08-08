@@ -3562,6 +3562,21 @@ const tests: Tests = {
     flags: [],
     withSlash: true,
   },
+  "/[\\\\]/": {
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "character",
+        kind: "ranges",
+        ranges: [{ from: "\\", to: "\\" }],
+        negate: false,
+        quantifier: null,
+      },
+    ],
+    flags: [],
+    withSlash: true,
+  },
 }
 
 export default tests

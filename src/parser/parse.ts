@@ -50,7 +50,6 @@ class Lexer {
     }
     try {
       let end = this.regex.lastIndexOf("/")
-      // TODO: /\/ /\\/
       if (end <= 0) {
         this.message = "Invalid regular expression"
         return false

@@ -4,7 +4,7 @@ import debounce from "lodash/debounce"
 type Props = Omit<React.ComponentProps<typeof GeistInput>, "onChange"> & {
   validation?: RegExp
   errMsg?: string
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
 }
 
 const Input: React.FC<Props> = (props) => {

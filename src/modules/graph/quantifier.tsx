@@ -8,7 +8,7 @@ import {
   QUANTIFIER_ICON_WIDTH,
   QUANTIFIER_TEXT_FONTSIZE,
   QUANTIFIER_ICON_MARGIN_VERTICAL,
-} from "@/constants/graph"
+} from "./constants"
 type QuantifierProps = {
   node: AST.Node
   x: number

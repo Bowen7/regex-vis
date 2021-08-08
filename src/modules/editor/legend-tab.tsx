@@ -1,5 +1,6 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Divider } from "@geist-ui/react"
+import ArrowLeftCircle from "@geist-ui/react-icons/arrowLeftCircle"
 import LegendItem from "@/components/legend-item"
 import legends from "./legends"
 function Legend() {
@@ -7,6 +8,11 @@ function Legend() {
   return (
     <>
       <div className="container">
+        <div className="tip">
+          <ArrowLeftCircle size={14} />
+          You can select nodes by dragging or clicking
+        </div>
+        <Divider y={0.5} />
         {legends.map(({ name, infos }) => (
           <LegendItem name={name} infos={infos} key={name} />
         ))}
@@ -14,6 +20,13 @@ function Legend() {
       <style jsx>{`
         .container {
           padding: 0 12px;
+        }
+        .tip {
+          font-size: 14px;
+        }
+        .tip :global(svg) {
+          margin-right: 6px;
+          vertical-align: middle;
         }
 
         .container :global(.box-fill) {

@@ -4,7 +4,7 @@ import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
 import { AST } from "@/parser"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateQuantifier } from "@/atom"
 import { quantifierOptions } from "./helper"
 type Props = {
   quantifier: AST.Quantifier | null
@@ -18,7 +18,6 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   const [max, setMax] = useState("")
   const [minPlaceholder, setMinPlaceholder] = useState("")
   const [maxPlaceholder, setMaxPlaceholder] = useState("")
-  const [, dispatch] = useMainReducer()
   const [, setToast] = useToasts()
 
   useEffect(() => {
@@ -60,10 +59,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
         break
     }
     if (["non", "*", "?", "+"].includes(value as string)) {
-      return dispatch({
-        type: MainActionTypes.UPDATE_QUANTIFIER,
-        payload: nextQuantifier,
-      })
+      dispatchUpdateQuantifier(nextQuantifier)
     } else {
       setKind(value as string)
     }
@@ -101,17 +97,19 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
       max = "Infinity"
     }
     const greedy = quantifier?.greedy || false
-    dispatch({
-      type: MainActionTypes.UPDATE_QUANTIFIER,
-      payload: { kind: "custom", min: Number(min), max: Number(max), greedy },
+    dispatchUpdateQuantifier({
+      kind: "custom",
+      min: Number(min),
+      max: Number(max),
+      greedy,
     })
   }
 
   const handleGreedyChange = (e: CheckboxEvent) => {
     const greedy = e.target.checked
-    dispatch({
-      type: MainActionTypes.UPDATE_QUANTIFIER,
-      payload: { ...(quantifierRef.current as AST.Quantifier), greedy },
+    dispatchUpdateQuantifier({
+      ...(quantifierRef.current as AST.Quantifier),
+      greedy,
     })
   }
   return (

@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Code } from "@geist-ui/react"
 import {
   WholeNumbersSvg,
   DecimalNumberSvg,
@@ -36,7 +36,7 @@ const samples = [
   {
     desc: "6. Date Format YYYY-MM-dd",
     Svg: DateSvg,
-    regex: "/([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))/",
+    regex: "/[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])/",
   },
 ]
 const Samples: React.FC<{}> = () => {
@@ -49,7 +49,9 @@ const Samples: React.FC<{}> = () => {
           {samples.map(({ desc, Svg, regex }) => (
             <Link to={`/?r=${encodeURIComponent(regex)}`} key={regex}>
               <div className="sample">
-                <p>{desc}</p>
+                <p>
+                  {desc}: <Code>{regex}</Code>
+                </p>
                 <div className="svg-wrapper">
                   <Svg />
                 </div>
@@ -60,7 +62,7 @@ const Samples: React.FC<{}> = () => {
       </div>
       <style jsx>{`
         .wrapper {
-          height: calc(100vh - 72px);
+          height: calc(100vh - 64px);
           overflow-y: auto;
           background-color: ${palette.accents_1};
         }

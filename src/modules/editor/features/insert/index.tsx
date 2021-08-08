@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { Button, ButtonGroup, Tooltip } from "@geist-ui/react"
 import Cell from "@/components/cell"
+import ShowMore from "@/components/show-more"
 import {
   InsertBefore,
   InsertAfter,
@@ -12,7 +13,7 @@ import {
   Lookbehind,
 } from "@/components/icons"
 import { AST } from "@/parser"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchInsert, dispatchGroupIt, dispatchLookAroundIt } from "@/atom"
 type Props = {
   ast: AST.Regex
   nodes: AST.Node[]
@@ -23,8 +24,6 @@ type InsertDirection = "prev" | "next" | "branch"
 type Option = { desc: string; value: string; Icon: () => JSX.Element }
 
 const Insert: React.FC<Props> = ({ ast, nodes }) => {
-  const [, dispatch] = useMainReducer()
-
   const insertOptions = useMemo(() => {
     const options: Option[] = []
     const { body } = ast
@@ -46,11 +45,17 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       })
     }
 
-    options.push({
-      value: "branch",
-      desc: "Insert as a branch",
-      Icon: InsertBranch,
-    })
+    if (
+      bodyHead.id !== head.id &&
+      bodyTail.id !== tail.id &&
+      tail.type !== "boundaryAssertion"
+    ) {
+      options.push({
+        value: "branch",
+        desc: "Insert as a branch",
+        Icon: InsertBranch,
+      })
+    }
 
     if (
       bodyTail.id !== tail.id &&
@@ -94,8 +99,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
     ]
   }, [nodes])
 
-  const handleInsert = (direction: InsertDirection) =>
-    dispatch({ type: MainActionTypes.INSERT, payload: { direction } })
+  const handleInsert = (direction: InsertDirection) => dispatchInsert(direction)
 
   const handleWrapGroup = (kind: string) => {
     let payload: AST.Group
@@ -112,18 +116,15 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       default:
         return
     }
-    dispatch({ type: MainActionTypes.WRAP_GROUP, payload })
+    dispatchGroupIt(payload)
   }
 
-  const handleWrapLookAroundAssertion = (kind: string) => {
-    dispatch({
-      type: MainActionTypes.WRAP_LOOKAROUND_ASSERTION,
-      payload: kind as "lookahead" | "lookbehind",
-    })
-  }
+  const handleWrapLookAroundAssertion = (kind: string) =>
+    dispatchLookAroundIt(kind as "lookahead" | "lookbehind")
+
   return (
     <div id="test">
-      {insertOptions.length > 1 && (
+      {insertOptions.length > 0 && (
         <Cell label="Insert around">
           <ButtonGroup>
             {insertOptions.map(({ value, desc, Icon }) => (
@@ -152,21 +153,24 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
           </ButtonGroup>
         </Cell>
       )}
+
       {lookAroundOptions.length > 0 && (
-        <Cell label="LookAround selection" question="lookAround">
-          <ButtonGroup>
-            {lookAroundOptions.map(({ value, desc, Icon }) => (
-              <Button
-                onClick={() => handleWrapLookAroundAssertion(value)}
-                key={value}
-              >
-                <Tooltip text={desc} placement="topEnd">
-                  <Icon />
-                </Tooltip>
-              </Button>
-            ))}
-          </ButtonGroup>
-        </Cell>
+        <ShowMore id="lookAround">
+          <Cell label="LookAround selection" question="lookAround">
+            <ButtonGroup>
+              {lookAroundOptions.map(({ value, desc, Icon }) => (
+                <Button
+                  onClick={() => handleWrapLookAroundAssertion(value)}
+                  key={value}
+                >
+                  <Tooltip text={desc} placement="topEnd">
+                    <Icon />
+                  </Tooltip>
+                </Button>
+              ))}
+            </ButtonGroup>
+          </Cell>
+        </ShowMore>
       )}
     </div>
   )

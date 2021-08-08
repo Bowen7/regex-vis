@@ -1,8 +1,6 @@
 module.exports = {
   verbose: true,
 
-  setupFilesAfterEnv: ["./tests/setup.js"],
-
   moduleFileExtensions: ["ts", "tsx", "js", "jsx"],
 
   transform: {

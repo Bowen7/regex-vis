@@ -1,30 +1,26 @@
-import React, { useState } from "react"
+import React from "react"
 import { BrowserRouter as Router, Switch } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
 import Header from "@/modules/common/header"
-import { font } from "@/constants/style"
+import { useStorageState } from "@/utils/hooks"
 import Routes from "./routes"
-import { MainProvider } from "@/redux"
-const defaultTheme = localStorage.getItem("theme") || "dark"
 export default function App() {
-  const [themeType, setThemeType] = useState(defaultTheme)
+  const [theme, setTheme] = useStorageState<string>("them", "dark")
   const handleThemeChange = (themeType: string) => {
-    setThemeType(themeType)
+    setTheme(themeType)
     localStorage.setItem("theme", themeType)
   }
   const { palette } = useTheme()
   return (
     <>
-      <GeistProvider themeType={themeType}>
+      <GeistProvider themeType={theme}>
         <CssBaseline />
-        <MainProvider>
-          <Router>
-            <Header theme={themeType} onThemeChange={handleThemeChange} />
-            <Switch>
-              <Routes />
-            </Switch>
-          </Router>
-        </MainProvider>
+        <Router>
+          <Header theme={theme} onThemeChange={handleThemeChange} />
+          <Switch>
+            <Routes />
+          </Switch>
+        </Router>
       </GeistProvider>
 
       <style jsx global>{`
@@ -34,19 +30,11 @@ export default function App() {
         }
         body {
           box-sizing: border-box;
-          font-family: ${font.family};
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica,
+            Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
         }
-
         svg {
           user-select: none;
-        }
-
-        .max-z-index {
-          z-index: 1200 !important;
-        }
-
-        button {
-          vertical-align: middle;
         }
       `}</style>
     </>

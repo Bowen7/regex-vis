@@ -3,7 +3,7 @@ import { Note, Spacer, useToasts } from "@geist-ui/react"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateContent } from "@/atom"
 
 type Props = {
   value: string
@@ -11,18 +11,14 @@ type Props = {
 }
 const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
   const [, setToast] = useToasts()
-  const [, dispatch] = useMainReducer()
 
   const handleChange = (value: string) => {
     if (value.length > 1 && quantifier) {
       setToast({ text: "Group selection automatically" })
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload: {
-        kind: "string",
-        value,
-      },
+    dispatchUpdateContent({
+      kind: "string",
+      value,
     })
   }
 

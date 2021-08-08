@@ -4,7 +4,7 @@ import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateContent } from "@/atom"
 
 type Prop = {
   ranges: AST.Range[]
@@ -19,7 +19,6 @@ const commonUsedRanges = [
 ]
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
-  const [, dispatch] = useMainReducer()
   const { palette } = useTheme()
 
   const handleAdd = (newRanges: AST.Range[]) => {
@@ -28,10 +27,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       ranges: ranges.concat(newRanges),
       negate,
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload,
-    })
+    dispatchUpdateContent(payload)
   }
 
   const handleRangeChange = (index: number, range: AST.Range) => {
@@ -45,10 +41,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       }),
       negate,
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload,
-    })
+    dispatchUpdateContent(payload)
   }
 
   const handleRemove = (index: number) => {
@@ -59,18 +52,12 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       }),
       negate,
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload,
-    })
+    dispatchUpdateContent(payload)
   }
 
   const handleGreedyChange = (e: CheckboxEvent) => {
     const negate = e.target.checked
-    dispatch({
-      type: MainActionTypes.UPDATE_CONTENT,
-      payload: { kind: "ranges", ranges, negate },
-    })
+    dispatchUpdateContent({ kind: "ranges", ranges, negate })
   }
 
   return (

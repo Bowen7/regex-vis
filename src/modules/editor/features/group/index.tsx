@@ -3,7 +3,7 @@ import { Select, Spacer } from "@geist-ui/react"
 import Input from "@/components/input"
 import { AST } from "@/parser"
 import Cell from "@/components/cell"
-import { useMainReducer, MainActionTypes } from "@/redux"
+import { dispatchUpdateGroup } from "@/atom"
 
 type GroupSelectProps = {
   group: AST.Group
@@ -25,7 +25,6 @@ export const groupOptions = [
 
 const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   const { kind } = group
-  const [, dispatch] = useMainReducer()
 
   const handleGroupChange = (kind: AST.GroupKind, name = "") => {
     let payload: AST.Group
@@ -43,10 +42,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
         payload = { kind: "nonCapturing" }
         break
     }
-    dispatch({
-      type: MainActionTypes.UPDATE_GROUP,
-      payload,
-    })
+    dispatchUpdateGroup(payload)
   }
 
   const handleGroupNameChange = (value: string) =>
@@ -55,11 +51,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   const onSelectChange = (value: string | string[]) =>
     handleGroupChange(value as AST.GroupKind)
 
-  const handleUnGroup = () =>
-    dispatch({
-      type: MainActionTypes.UPDATE_GROUP,
-      payload: null,
-    })
+  const handleUnGroup = () => dispatchUpdateGroup(null)
 
   return (
     <>

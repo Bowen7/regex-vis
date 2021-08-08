@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from "react"
 import { useClickAway, useTheme } from "@geist-ui/react"
 import { Trash2 } from "@geist-ui/react-icons"
-import SingleInput from "./single-input"
+import Input from "../input"
 type Prop = {
   start: string
   end: string
@@ -78,13 +78,13 @@ const RangeOption: React.FC<Prop> = ({
           onClick={handleWrapperClick}
           style={{ width }}
         >
-          <SingleInput
+          <Input
             value={controlled ? start : defaultStart}
             placeholder={startPlaceholder}
             onChange={(value: string) => handleInputChange("start", value)}
           />
           <span>{" - "}</span>
-          <SingleInput
+          <Input
             value={controlled ? end : defaultEnd}
             placeholder={endPlaceholder}
             onChange={(value: string) => handleInputChange("end", value)}

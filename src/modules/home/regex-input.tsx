@@ -42,10 +42,12 @@ const RegexInput: React.FC<Props> = ({
         .regex-input {
           display: flex;
           align-items: center;
+          justify-content: center;
           padding: 24px;
         }
         .input {
           flex: 1;
+          max-width: 900px;
         }
       `}</style>
     </>

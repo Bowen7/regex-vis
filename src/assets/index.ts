@@ -17,3 +17,4 @@ export { ReactComponent as WholeDecimalNumberSvg } from "./whole+decimal-numbers
 export { ReactComponent as NegativePositiveWholeDecimalNumbersSvg } from "./negative+positive-whole+decimal-numbers.svg"
 export { ReactComponent as UrlSvg } from "./url.svg"
 export { ReactComponent as DateSvg } from "./date.svg"
+export { ReactComponent as LogoSvg } from "./logo.svg"
