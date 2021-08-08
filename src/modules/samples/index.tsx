@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Code } from "@geist-ui/react"
 import {
   WholeNumbersSvg,
   DecimalNumberSvg,
@@ -49,7 +49,9 @@ const Samples: React.FC<{}> = () => {
           {samples.map(({ desc, Svg, regex }) => (
             <Link to={`/?r=${encodeURIComponent(regex)}`} key={regex}>
               <div className="sample">
-                <p>{desc}</p>
+                <p>
+                  {desc}: <Code>{regex}</Code>
+                </p>
                 <div className="svg-wrapper">
                   <Svg />
                 </div>
