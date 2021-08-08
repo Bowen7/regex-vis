@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme, Text } from "@geist-ui/react"
+import { useTheme } from "@geist-ui/react"
 import QuestionCircle from "@geist-ui/react-icons/questionCircle"
 import questions, { QuestionKey } from "@/utils/questions"
 
