@@ -14,7 +14,7 @@ export type Box = {
 }
 
 export type RenderConnect = {
-  type: "connect"
+  kind: "combine" | "split" | "straight"
   id: string
   start: {
     x: number
@@ -27,9 +27,7 @@ export type RenderConnect = {
 }
 
 export type RenderNode = {
-  type: "node"
   id: string
-  children: (RenderNode | RenderConnect | RenderVirtualNode)[]
   x: number
   y: number
   width: number
@@ -37,11 +35,11 @@ export type RenderNode = {
   target: AST.Node
 }
 
-export type RenderVirtualNode = {
-  type: "virtual"
-  children: (RenderNode | RenderConnect | RenderVirtualNode)[]
+export type LayoutNode = {
+  id: string
   x: number
   y: number
   width: number
   height: number
 }
+export type LayoutChildren = LayoutNode[]

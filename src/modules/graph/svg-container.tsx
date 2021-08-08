@@ -1,18 +1,22 @@
-import React, { useState, useRef, useCallback } from "react"
+import React, { useState, useRef, useCallback, useMemo } from "react"
 import { useEventListener } from "@/utils/hooks"
-import { RenderNode, RenderConnect, Box, RenderVirtualNode } from "./types"
+import { RenderNode, RenderConnect, Box } from "./types"
 import { AST } from "@/parser"
+import { dispatchSelectNodes } from "@/atom"
 import RailNode from "./node"
 import Connect from "./connect"
-import { dispatchSelectNodes } from "@/atom"
 type Props = {
-  rootRenderNode: RenderVirtualNode
+  width: number
+  height: number
+  connects: RenderConnect[]
+  nodes: RenderNode[]
   selectedIds: string[]
   minimum: boolean
+  onDragSelect?: (box: Box) => void
 }
 const SvgContainer: React.FC<Props> = (props) => {
-  const { rootRenderNode, selectedIds, minimum } = props
-  const { width, height } = rootRenderNode
+  const { width, height, connects, nodes, selectedIds, minimum, onDragSelect } =
+    props
   const dragging = useRef<boolean>(false)
   const moving = useRef<boolean>(false)
   const startX = useRef<number>(0)
@@ -20,41 +24,8 @@ const SvgContainer: React.FC<Props> = (props) => {
   const endX = useRef<number>(0)
   const endY = useRef<number>(0)
   const [rect, setRect] = useState<Box>({ x: 0, y: 0, width: 0, height: 0 })
-  const onDragSelect = (box: Box) => {
-    const { x: boxX, y: boxY, width: boxWidth, height: boxHeight } = box
-    const selectedIds: string[] = []
-    let selected = false
-    function dfs(renderNode: RenderVirtualNode | RenderNode) {
-      const { children } = renderNode
-      for (let i = 0; i < children.length; i++) {
-        const child = children[i]
-        switch (child.type) {
-          case "node":
-            const { target, x, y, width, height } = child
-            if (target.type !== "root") {
-              const overlapX = boxX < x && boxX + boxWidth > x + width
-              const overlapY = boxY < y && boxY + boxHeight > y + height
-              if (overlapX && overlapY) {
-                selected = true
-                selectedIds.push(target.id)
-                break
-              } else if (selected) {
-                return
-              }
-            }
-            dfs(child)
-            break
-          case "virtual":
-            dfs(child)
-            break
-          default:
-            break
-        }
-      }
-    }
-    dfs(rootRenderNode)
-    dispatchSelectNodes(selectedIds)
-  }
+
+  const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds])
 
   function onMouseDown(e: React.MouseEvent<SVGSVGElement>) {
     const { offsetX, offsetY } = e.nativeEvent
@@ -116,79 +87,6 @@ const SvgContainer: React.FC<Props> = (props) => {
     e.stopPropagation()
     window.removeEventListener("click", captureClick, true)
   }
-
-  function displayRenderNodes() {
-    const nodes: JSX.Element[] = []
-    const connects: JSX.Element[] = []
-    const selectedHeadId = selectedIds[0]
-    const selectedTailId = selectedIds[selectedIds.length - 1]
-    let selected = false
-    function dfs(
-      renderNode: RenderNode | RenderVirtualNode | RenderConnect,
-      connectType: "combine" | "split" | "straight"
-    ) {
-      const _selected = selected
-      selected = false
-      if (renderNode.type === "connect") {
-        const { start, end, id } = renderNode
-        connects.push(
-          <Connect type={connectType} start={start} end={end} key={id} />
-        )
-        return
-      }
-
-      const { x, y, width, height, children } = renderNode
-      if (renderNode.type === "node") {
-        const { target, id } = renderNode
-        nodes.push(
-          <RailNode
-            x={x}
-            y={y}
-            width={width}
-            height={height}
-            node={target}
-            selected={_selected}
-            onClick={minimum ? undefined : handleClick}
-            key={id}
-          />
-        )
-      }
-
-      if (renderNode.type === "node" && renderNode.target.type === "choice") {
-        const { target } = renderNode
-        children.forEach((item, index) => {
-          if (target.branches && item.type === "connect") {
-            if (index % 3 === 0) {
-              dfs(item, "split")
-            }
-            if (index % 3 === 2) {
-              dfs(item, "combine")
-            }
-            return
-          }
-          dfs(item, "straight")
-        })
-        return
-      }
-
-      children.forEach((item) => {
-        if (item.type === "node" && item.target.id === selectedHeadId) {
-          selected = true
-        }
-        if (selected) {
-          dfs(item, connectType)
-          selected = true
-        } else {
-          dfs(item, connectType)
-        }
-        if (item.type === "node" && item.target.id === selectedTailId) {
-          selected = false
-        }
-      })
-    }
-    dfs(rootRenderNode, "straight")
-    return [connects, nodes]
-  }
   useEventListener("mouseup", onMouseUp)
   return (
     <svg
@@ -199,7 +97,21 @@ const SvgContainer: React.FC<Props> = (props) => {
       onMouseDown={minimum ? undefined : onMouseDown}
       onMouseMove={minimum ? undefined : onMouseMove}
     >
-      {displayRenderNodes()}
+      {connects.map(({ kind, start, end, id }) => (
+        <Connect kind={kind} start={start} end={end} key={id} />
+      ))}
+      {nodes.map(({ x, y, width, height, target, id }) => (
+        <RailNode
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          node={target}
+          selected={selectedIdSet.has(id)}
+          onClick={minimum ? undefined : handleClick}
+          key={id}
+        />
+      ))}
       {!minimum && (
         <rect
           x={rect.x}

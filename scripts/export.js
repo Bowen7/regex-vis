@@ -10,9 +10,9 @@ if (!fs.existsSync(assetsDir)) {
   fs.mkdirSync(assetsDir)
 }
 
-svgs.forEach(({ name, regex, selected = false, withRoot = false }) => {
+svgs.forEach(({ name, regex, withRoot = false }) => {
   const string = ReactDOMServer.renderToString(
-    React.createElement(MinimumGraph, { regex, selected, withRoot })
+    React.createElement(MinimumGraph, { regex, withRoot })
   )
 
   fs.writeFileSync(path.resolve(assetsDir, name + ".svg"), string)

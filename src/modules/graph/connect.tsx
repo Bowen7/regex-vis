@@ -4,12 +4,12 @@ type Pos = {
   y: number
 }
 type Props = {
-  type: "combine" | "split" | "straight"
+  kind: "combine" | "split" | "straight"
   start: Pos
   end: Pos
 }
 const RailConnect: React.FC<Props> = React.memo((props) => {
-  const { type, start, end } = props
+  const { kind, start, end } = props
   let path = ""
   if (Math.abs(start.y - end.y) < 0.5) {
     path = `M${start.x},${start.y}L${end.x},${end.y}`
@@ -20,7 +20,7 @@ const RailConnect: React.FC<Props> = React.memo((props) => {
     let L2 = ""
     let A2 = ""
     let L3 = ""
-    if (type === "split") {
+    if (kind === "split") {
       M = `M${start.x},${start.y}`
       L1 = `L${start.x + 10},${start.y}`
       L3 = `L${end.x},${end.y}`
@@ -34,7 +34,7 @@ const RailConnect: React.FC<Props> = React.memo((props) => {
         A2 = `A5 5 0 0 1, ${start.x + 20},${end.y}`
       }
     }
-    if (type === "combine") {
+    if (kind === "combine") {
       M = `M${end.x},${end.y}`
       L1 = `L${end.x - 10},${end.y}`
       L3 = `L${start.x},${start.y}`

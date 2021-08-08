@@ -1,12 +1,18 @@
 import React, { useRef, useState, useEffect } from "react"
 import { useTheme, Code, Dot } from "@geist-ui/react"
 import { nanoid } from "nanoid"
-import { RenderVirtualNode } from "./types"
+import { RenderNode, RenderConnect, Box } from "./types"
 import { parse, gen, AST } from "@/parser"
 import { useUpdateEffect } from "@/utils/hooks"
 import renderEngine from "./rendering-engine"
 import SvgContainer from "./svg-container"
-import { astAtom, selectedIdsAtom, useAtomValue, dispatchSetAst } from "@/atom"
+import {
+  astAtom,
+  selectedIdsAtom,
+  useAtomValue,
+  dispatchSetAst,
+  dispatchSelectNodes,
+} from "@/atom"
 type Props = {
   regex: string
   minimum?: boolean
@@ -22,13 +28,16 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
 
   const regexRef = useRef<string>()
 
-  const [rootRenderNode, setRootRenderNode] = useState<RenderVirtualNode>({
-    type: "virtual",
-    x: 0,
-    y: 0,
+  const [renderInfo, setRenderInfo] = useState<{
+    width: number
+    height: number
+    nodes: RenderNode[]
+    connects: RenderConnect[]
+  }>({
     width: 0,
     height: 0,
-    children: [],
+    nodes: [],
+    connects: [],
   })
 
   useEffect(() => {
@@ -46,8 +55,8 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   }, [regex])
 
   useUpdateEffect(() => {
-    const rootRenderNode = renderEngine.render(ast)
-    setRootRenderNode(rootRenderNode)
+    const renderInfo = renderEngine.render(ast)
+    setRenderInfo(renderInfo)
     const nextRegex = gen(ast)
     if (nextRegex !== regexRef.current) {
       regexRef.current = nextRegex
@@ -55,6 +64,11 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ast])
+
+  const onDragSelect = (box: Box) => {
+    const selectedIds = renderEngine.selectByBound(box)
+    dispatchSelectNodes(selectedIds)
+  }
 
   return (
     <>
@@ -65,9 +79,10 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
           </p>
         ) : (
           <SvgContainer
-            rootRenderNode={rootRenderNode}
+            {...renderInfo}
             selectedIds={selectedIds}
             minimum={minimum}
+            onDragSelect={onDragSelect}
           />
         )}
       </div>
