@@ -2,7 +2,6 @@ import React, { useState } from "react"
 import { BrowserRouter as Router, Switch } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
 import Header from "@/modules/common/header"
-import { font } from "@/constants/style"
 import Routes from "./routes"
 const defaultTheme = localStorage.getItem("theme") || "dark"
 export default function App() {
@@ -31,7 +30,8 @@ export default function App() {
         }
         body {
           box-sizing: border-box;
-          font-family: ${font.family};
+          font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica,
+            Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
         }
         svg {
           user-select: none;

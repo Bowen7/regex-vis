@@ -20,11 +20,10 @@ import {
   QUANTIFIER_ICON_WIDTH,
   QUANTIFIER_ICON_MARGIN_RIGHT,
   NAME_TEXT_FONTSIZE,
-} from "@/constants/graph"
-import { font } from "@/constants/style"
+} from "./constants"
 import { getQuantifierText } from "@/parser"
 import { getTextsWithBacktick, getName } from "./utils"
-
+const fontFamily = `-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif,Apple Color Emoji,Segoe UI Emoji`
 type TextSize = { width: number; height: number }
 const textSizeMap = new Map<string, TextSize>()
 const sizeWeakMap = new WeakMap<AST.Node, Size>()
@@ -329,7 +328,7 @@ class RenderEngine {
     if (!context) {
       return { width: 0, height: 0 }
     }
-    const textFont = fontSize + "px " + font.family
+    const textFont = fontSize + "px " + fontFamily
     const key = textFont + "-" + text
     if (textSizeMap.has(key)) {
       return textSizeMap.get(key) as TextSize

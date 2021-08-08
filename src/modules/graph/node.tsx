@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { NODE_BORDER_RADIUS } from "@/constants/graph"
+import { NODE_BORDER_RADIUS } from "./constants"
 import { AST } from "@/parser"
 import NodeText from "./text"
 import NodeQuantifier from "./quantifier"
