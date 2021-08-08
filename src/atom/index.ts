@@ -1,4 +1,4 @@
-import produce from "immer"
+import produce, { original } from "immer"
 import {
   AST,
   removeIt,
@@ -109,10 +109,11 @@ export const dispatchSetAst = (ast: AST.Regex) => {
 }
 
 export const dispatchUndo = () => {
+  console.log(123)
   if (undoStackAtom.current.length > 0) {
     let nextAst: AST.Regex
     const nextUndoStack = produce(undoStackAtom.current, (draft) => {
-      nextAst = draft.pop()!
+      nextAst = original(draft.pop())!
     })
     const nextRedoStack = produce(redoStackAtom.current, (draft) => {
       draft.push(astAtom.current)
@@ -120,6 +121,7 @@ export const dispatchUndo = () => {
     setAst(nextAst!, true)
     setUndoStack(nextUndoStack)
     setRedoStack(nextRedoStack)
+    setSelectedIds([])
   }
 }
 
@@ -130,11 +132,12 @@ export const dispatchRedo = () => {
       draft.push(astAtom.current)
     })
     const nextRedoStack = produce(redoStackAtom.current, (draft) => {
-      nextAst = draft.pop()!
+      nextAst = original(draft.pop())!
     })
     setAst(nextAst!, true)
     setUndoStack(nextUndoStack)
     setRedoStack(nextRedoStack)
+    setSelectedIds([])
   }
 }
 
