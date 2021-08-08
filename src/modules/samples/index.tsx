@@ -36,7 +36,7 @@ const samples = [
   {
     desc: "6. Date Format YYYY-MM-dd",
     Svg: DateSvg,
-    regex: "/([12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01]))/",
+    regex: "/[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])/",
   },
 ]
 const Samples: React.FC<{}> = () => {
