@@ -170,7 +170,7 @@ export const dispatchCollapseEditor = (collapsed: boolean) =>
   setEditorCollapsed(collapsed)
 
 export const dispatchUpdateQuantifier = (quantifier: AST.Quantifier | null) => {
-  if (selectedIdsAtom.current.length !== 0) {
+  if (selectedIdsAtom.current.length !== 1) {
     return
   }
   const { nextAst, nextSelectedIds } = updateQuantifier(

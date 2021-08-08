@@ -1,5 +1,5 @@
 import React from "react"
-import Input from "@/components/input"
+import Input from "../input"
 import { checkInputValid, RangeError } from "./utils"
 type Props = {
   value: string
@@ -7,7 +7,7 @@ type Props = {
   onError: (err: RangeError) => void
 }
 const RangeInput: React.FC<Props> = ({ value, onChange, onError }) => {
-  const handleChange = () => {
+  const handleChange = (value: string) => {
     const error = checkInputValid(value)
     if (error !== null) {
       return onError(error)
