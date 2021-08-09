@@ -109,7 +109,6 @@ export const dispatchSetAst = (ast: AST.Regex) => {
 }
 
 export const dispatchUndo = () => {
-  console.log(123)
   if (undoStackAtom.current.length > 0) {
     let nextAst: AST.Regex
     const nextUndoStack = produce(undoStackAtom.current, (draft) => {

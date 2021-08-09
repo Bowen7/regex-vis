@@ -43,13 +43,16 @@ const Editor: React.FC<{}> = () => {
     const event = e as KeyboardEvent
     const { key } = event
     if (key === "Backspace") {
+      e.preventDefault()
       return remove()
     }
     const metaKey = event.ctrlKey || event.metaKey
     if (metaKey && event.shiftKey && key === "z") {
+      e.preventDefault()
       return redo()
     }
     if (metaKey && key === "z") {
+      e.preventDefault()
       return undo()
     }
   })
