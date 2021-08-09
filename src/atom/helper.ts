@@ -12,7 +12,7 @@ const store = new Map<string, any>()
 class Atom<T> {
   key = nanoid()
   subscribers = new Map<
-    MutableRefObject<undefined>,
+    MutableRefObject<boolean>,
     Dispatch<SetStateAction<T>>
   >()
   current: T
@@ -22,13 +22,13 @@ class Atom<T> {
   }
 
   subscribe(
-    ref: MutableRefObject<undefined>,
+    ref: MutableRefObject<boolean>,
     action: Dispatch<SetStateAction<T>>
   ) {
     this.subscribers.set(ref, action)
   }
 
-  unsubscribe(ref: MutableRefObject<undefined>) {
+  unsubscribe(ref: MutableRefObject<boolean>) {
     this.subscribers.delete(ref)
   }
 
@@ -42,14 +42,18 @@ class Atom<T> {
 export const atom = <T>(initialState: T) => new Atom(initialState)
 
 export const useAtomValue = <T>(atom: Atom<T>) => {
-  const ref = useRef()
+  const ref = useRef(false)
   const [state, setState] = useState(atom.current)
 
-  useEffect(() => {
+  if (ref.current === false) {
+    ref.current = true
     atom.subscribe(ref, setState)
-    return () => atom.unsubscribe(ref)
+  }
+  useEffect(
+    () => () => atom.unsubscribe(ref),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    []
+  )
   return state
 }
 
