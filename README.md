@@ -1,7 +1,5 @@
-<p align="center"><img width="100" src="https://regex-vis.com/logo.svg" alt="logo"></p>
-
 # [Regex-Vis](https://regex-vis.com)
-Regex visualizer & editor
+🎨 Regex visualizer & editor
 
 ## Preview
 ![image](https://user-images.githubusercontent.com/27432981/128633529-5fa95e2f-8a2a-4955-b1f6-e8b91f827d20.png)
