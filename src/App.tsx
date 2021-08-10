@@ -4,6 +4,7 @@ import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
 import Header from "@/modules/common/header"
 import { useStorageState } from "@/utils/hooks"
 import Routes from "./routes"
+let gtagLoaded = false
 export default function App() {
   const [theme, setTheme] = useStorageState<string>("them", "dark")
   const handleThemeChange = (themeType: string) => {
@@ -11,6 +12,13 @@ export default function App() {
     localStorage.setItem("theme", themeType)
   }
   const { palette } = useTheme()
+  if (process.env.NODE_ENV === "production") {
+    if (!gtagLoaded) {
+      gtagLoaded = true
+      gtag("js", new Date())
+      gtag("config", "G-17KCES62HF")
+    }
+  }
   return (
     <>
       <GeistProvider themeType={theme}>
