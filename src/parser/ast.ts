@@ -175,3 +175,9 @@ export type Node =
   | RootNode
   | AssertionNode
   | BackReferenceNode
+
+export type ParentNode =
+  | Regex
+  | GroupNode
+  | ChoiceNode
+  | LookAroundAssertionNode

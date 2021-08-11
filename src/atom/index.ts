@@ -1,4 +1,5 @@
 import produce, { original } from "immer"
+import { Toast } from "@geist-ui/react/dist/use-toasts/use-toast"
 import {
   AST,
   removeIt,
@@ -27,6 +28,7 @@ export const groupNamesAtom = atom<string[]>([])
 export const undoStackAtom = atom<AST.Regex[]>([])
 export const redoStackAtom = atom<AST.Regex[]>([])
 export const editorCollapsedAtom = atom<boolean>(false)
+export const setToastsAtom = atom<(t: Toast) => void>(() => {})
 
 const refreshGroupIndex = (ast: AST.Regex) => {
   let groupIndex = 0

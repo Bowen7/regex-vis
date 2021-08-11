@@ -1,6 +1,6 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, useToasts } from "@geist-ui/react"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import RegexInput from "./regex-input"
@@ -9,6 +9,7 @@ import {
   astAtom,
   useAtomValue,
   dispatchUpdateFlags,
+  setToastsAtom,
 } from "@/atom"
 
 const Home: React.FC<{}> = () => {
@@ -16,6 +17,9 @@ const Home: React.FC<{}> = () => {
   const location = useLocation()
   const params = new URLSearchParams(location.search)
   const regex = params.get("r")
+
+  const [, setToasts] = useToasts()
+  useEffect(() => setToastsAtom.setState(setToasts), [setToasts])
 
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
   const ast = useAtomValue(astAtom)

@@ -39,10 +39,10 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
     if (groupNames.length !== 0 || kind === "backReference") {
       options.push(backRefOption)
     }
-    if (ast.body[0].id === id || kind === "beginningAssertion") {
+    if (ast.body[1].id === id || kind === "beginningAssertion") {
       options.push(beginningAssertionOption)
     }
-    if (ast.body[ast.body.length - 1].id === id || kind === "endAssertion") {
+    if (ast.body[ast.body.length - 2].id === id || kind === "endAssertion") {
       options.push(endAssertionOption)
     }
     return options

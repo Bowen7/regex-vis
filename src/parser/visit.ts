@@ -37,19 +37,46 @@ export function visit(
   }
 }
 
-export function visitTree(ast: AST.Regex, callback: (node: AST.Node) => void) {
-  let stack = ast.body.slice()
+export function visitTree(
+  ast: AST.Regex,
+  callback: (
+    node: AST.Node,
+    nodeList: AST.Node[],
+    parent: AST.ParentNode
+  ) => void
+) {
+  let stack: {
+    node: AST.Node
+    nodeList: AST.Node[]
+    parent: AST.ParentNode
+  }[] = ast.body.map((node) => ({ node, nodeList: ast.body, parent: ast }))
   while (stack.length !== 0) {
-    const cur = stack.shift() as AST.Node
-    callback(cur)
-    if (cur.type === "group" || cur.type === "lookAroundAssertion") {
-      stack = cur.children.concat(stack)
+    const { node, nodeList, parent } = stack.shift() as {
+      node: AST.Node
+      nodeList: AST.Node[]
+      parent: AST.ParentNode
     }
-    if (cur.type === "choice") {
-      const branches = cur.branches
+    callback(node, nodeList, parent)
+    if (node.type === "group" || node.type === "lookAroundAssertion") {
+      stack = stack.concat(
+        node.children.map((child) => ({
+          node: child,
+          nodeList: node.children,
+          parent: node,
+        }))
+      )
+    }
+    if (node.type === "choice") {
+      const branches = node.branches
       for (let i = branches.length - 1; i >= 0; i--) {
         const branch = branches[i]
-        stack = branch.concat(stack)
+        stack = stack.concat(
+          branch.map((child) => ({
+            node: child,
+            nodeList: branch,
+            parent: node,
+          }))
+        )
       }
     }
   }

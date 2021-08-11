@@ -65,7 +65,9 @@ class Lexer {
 
       new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
     } catch (error) {
-      this.message = error.message
+      if (error instanceof Error) {
+        this.message = error.message
+      }
       return false
     }
     return true
