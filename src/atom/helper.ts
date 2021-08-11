@@ -15,10 +15,10 @@ class Atom<T> {
     MutableRefObject<boolean>,
     Dispatch<SetStateAction<T>>
   >()
-  current: T
+  private _current: T
   constructor(initialState: T) {
     store.set(this.key, initialState)
-    this.current = initialState
+    this._current = initialState
   }
 
   subscribe(
@@ -33,9 +33,13 @@ class Atom<T> {
   }
 
   setState(nextState: T) {
-    this.current = nextState
+    this._current = nextState
     store.set(this.key, nextState)
     this.subscribers.forEach((action) => action.call(null, nextState))
+  }
+
+  get current() {
+    return this._current
   }
 }
 
