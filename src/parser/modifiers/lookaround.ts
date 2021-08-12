@@ -2,7 +2,7 @@ import { nanoid } from "nanoid"
 import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById, getNodesByIds } from "../visit"
-import replaceIt from "./replace"
+import { replaceFromLists } from "./replace"
 
 export const updateLookAroundAssertion = (
   ast: AST.Regex,
@@ -37,7 +37,7 @@ export const lookAroundAssertionIt = (
   const id = nanoid()
   const nextSelectedIds: string[] = [id]
   const nextAst = produce(ast, (draft) => {
-    const nodes = getNodesByIds(draft, selectedIds)
+    const { nodes, nodeList } = getNodesByIds(draft, selectedIds)
     const lookAroundAssertionNode: AST.LookAroundAssertionNode = {
       id,
       type: "lookAroundAssertion",
@@ -45,7 +45,7 @@ export const lookAroundAssertionIt = (
       negate: false,
       children: nodes,
     }
-    replaceIt(draft, nodes, [lookAroundAssertionNode])
+    replaceFromLists(nodeList, nodes, [lookAroundAssertionNode])
   })
   return { nextAst, nextSelectedIds }
 }
@@ -56,10 +56,10 @@ export const unLookAroundAssertion = (
 ) => {
   let nextSelectedIds: string[] = selectedIds
   const nextAst = produce(ast, (draft) => {
-    const { node } = getNodeById(draft, selectedIds[0])
+    const { node, nodeList } = getNodeById(draft, selectedIds[0])
     if (node.type === "lookAroundAssertion") {
       const { children } = node
-      replaceIt(draft, [node], children)
+      replaceFromLists(nodeList, [node], children)
       nextSelectedIds = children.map(({ id }) => id)
     }
   })

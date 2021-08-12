@@ -1,5 +1,5 @@
 import * as AST from "../ast"
-import { visit } from "../visit"
+import { getNodeById } from "../visit"
 export function replaceFromLists(
   nodeList: AST.Node[],
   oldNodes: AST.Node[],
@@ -13,10 +13,11 @@ export function replaceFromLists(
   nodeList.splice(startIndex, oldNodes.length, ...newNodes)
 }
 
-function replaceIt(ast: AST.Regex, oldNodes: AST.Node[], newNodes: AST.Node[]) {
-  visit(ast, oldNodes[0]?.id, (_, nodeList) => {
-    replaceFromLists(nodeList, oldNodes, newNodes)
-  })
-}
+// function replaceIt(ast: AST.Regex, oldNodes: AST.Node[], newNodes: AST.Node[]) {
+//   const {} = getNodeById(ast, old)
+//   visit(ast, , (_, nodeList) => {
+//     replaceFromLists(nodeList, oldNodes, newNodes)
+//   })
+// }
 
-export default replaceIt
+// export default replaceIt

@@ -2,11 +2,11 @@ import { nanoid } from "nanoid"
 import produce from "immer"
 import * as AST from "../ast"
 import { getNodeById, getNodesByIds } from "../visit"
-import replaceIt from "./replace"
+import { replaceFromLists } from "./replace"
 
-function unGroup(ast: AST.Regex, selectNode: AST.GroupNode) {
+function unGroup(nodeList: AST.Node[], selectNode: AST.GroupNode) {
   const { children } = selectNode
-  replaceIt(ast, [selectNode], children!)
+  replaceFromLists(nodeList, [selectNode], children!)
   return children.map(({ id }) => id)
 }
 
@@ -20,7 +20,7 @@ export const updateGroup = (
     const { node, nodeList, index } = getNodeById(draft, selectedIds[0])
     if (node.type === "group") {
       if (group === null) {
-        nextSelectedIds = unGroup(draft, node)
+        nextSelectedIds = unGroup(nodeList, node)
       } else {
         const { id, type, children, quantifier } = node
         const groupNode: AST.GroupNode = {
@@ -47,7 +47,7 @@ export const groupIt = (
   const nextSelectedIds: string[] = [id]
   const nextAst = produce(ast, (draft) => {
     let groupNode: AST.GroupNode
-    const nodes = getNodesByIds(draft, selectedIds)
+    const { nodes, nodeList } = getNodesByIds(draft, selectedIds)
     switch (group.kind) {
       case "capturing":
         groupNode = {
@@ -82,7 +82,7 @@ export const groupIt = (
         break
     }
     groupNode.children = nodes
-    replaceIt(draft, nodes, [groupNode])
+    replaceFromLists(nodeList, nodes, [groupNode])
   })
   return { nextAst, nextSelectedIds }
 }

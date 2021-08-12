@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid"
 import produce from "immer"
 import * as AST from "../ast"
-import { getNodeById } from "../visit"
+import { getNodesByIds } from "../visit"
 import { replaceFromLists } from "./replace"
 type InsertDirection = "prev" | "next" | "branch"
 
@@ -13,40 +13,22 @@ function insert(
   if (selectedIds.length === 0) {
     return
   }
-  const node = genNode()
-  const startId = selectedIds[0]
-  const { nodeList, index, parent } = getNodeById(ast, startId)
+  const newNode = genNode()
+  const { nodes, nodeList, index, parent } = getNodesByIds(ast, selectedIds)
 
   if (direction === "prev") {
-    nodeList.splice(index, 0, node)
+    nodeList.splice(index, 0, newNode)
   } else if (direction === "next") {
-    nodeList.splice(index + selectedIds.length, 0, node)
+    nodeList.splice(index + selectedIds.length, 0, newNode)
   } else {
-    const selectedNodes = nodeList.slice(index, index + selectedIds.length)
-    if (selectedNodes.length === 0 && selectedNodes[0].type === "choice") {
-      selectedNodes[0].branches.push([node])
+    if (nodes.length === 1 && nodes[0].type === "choice") {
+      nodes[0].branches.push([newNode])
+    } else if (nodeList.length === nodes.length && parent.type === "choice") {
+      parent.branches.push([newNode])
     } else {
-      const nodeListWithoutRoot = nodeList.filter(
-        (node) => node.type !== "root"
-      )
-      if (
-        nodeListWithoutRoot.length === selectedNodes.length &&
-        startId === nodeListWithoutRoot[0].id
-      ) {
-        if (parent.type === "choice") {
-          parent.branches.push([node])
-        } else {
-          const choiceNode = genChoiceNode()
-          choiceNode.branches = [[node], selectedNodes]
-          replaceFromLists(nodeList, selectedNodes, [choiceNode])
-        }
-      } else {
-        const groupNode = genGroupNode()
-        const choiceNode = genChoiceNode()
-        choiceNode.branches = [[node], selectedNodes]
-        groupNode.children = [choiceNode]
-        replaceFromLists(nodeList, selectedNodes, [groupNode])
-      }
+      const choiceNode = genChoiceNode()
+      choiceNode.branches = [nodes, [newNode]]
+      replaceFromLists(nodeList, nodes, [choiceNode])
     }
   }
 }
@@ -66,16 +48,6 @@ function genChoiceNode(): AST.ChoiceNode {
     id: nanoid(),
     type: "choice",
     branches: [],
-  }
-}
-
-function genGroupNode(): AST.GroupNode {
-  return {
-    id: nanoid(),
-    type: "group",
-    kind: "nonCapturing",
-    children: [],
-    quantifier: null,
   }
 }
 

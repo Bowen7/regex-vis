@@ -9,3 +9,4 @@ export {
   unLookAroundAssertion,
 } from "./lookaround"
 export { default as updateFlags } from "./flags"
+export { default as makeChoiceValid } from "./choice"

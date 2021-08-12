@@ -12,7 +12,8 @@ import {
   unLookAroundAssertion,
   updateContent,
   updateFlags,
-  visitTree,
+  visit,
+  makeChoiceValid,
 } from "@/parser"
 import { atom, setAtomValue } from "./helper"
 export { useAtomValue, setAtomValue } from "./helper"
@@ -34,7 +35,7 @@ const refreshGroupIndex = (ast: AST.Regex) => {
   let groupIndex = 0
   const groupNames: string[] = []
   const nextAst = produce(ast, (draft) => {
-    visitTree(draft, (node: AST.Node) => {
+    visit(draft, (node: AST.Node) => {
       if (
         node.type === "group" &&
         (node.kind === "capturing" || node.kind === "namedCapturing")
@@ -55,6 +56,7 @@ const refreshGroupIndex = (ast: AST.Regex) => {
 
 export const setGroupNames = setAtomValue(groupNamesAtom)
 const _setAst = setAtomValue(astAtom)
+
 export const setAst = (ast: AST.Regex, shouldRefreshGroupIndex = false) => {
   if (shouldRefreshGroupIndex) {
     const { nextAst, groupNames } = refreshGroupIndex(ast)
@@ -74,6 +76,12 @@ const setAstWithUndo = (ast: AST.Regex, shouldRefreshGroupIndex = false) => {
     draft.push(astAtom.current)
   })
   setUndoStack(nextUndoStack)
+  const nextAst = makeChoiceValid(ast)
+  if (nextAst !== ast) {
+    ast = nextAst
+    const setToasts = setToastsAtom.current
+    setToasts({ text: "Group automatically" })
+  }
   setAst(ast, shouldRefreshGroupIndex)
 }
 

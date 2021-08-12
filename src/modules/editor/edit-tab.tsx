@@ -19,7 +19,12 @@ const InfoItem: React.FC<{}> = () => {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const ast = useAtomValue(astAtom)
 
-  useEffect(() => setNodes(getNodesByIds(ast, selectedIds)), [ast, selectedIds])
+  useEffect(() => {
+    if (selectedIds.length === 0) {
+      return setNodes([])
+    }
+    setNodes(getNodesByIds(ast, selectedIds).nodes)
+  }, [ast, selectedIds])
 
   const [nodesInfo, setNodesInfo] = useState<NodesInfo>(genInitialNodesInfo())
 
