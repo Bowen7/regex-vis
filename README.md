@@ -2,7 +2,7 @@
 🎨 Regex visualizer & editor
 
 ## Preview
-![image](https://user-images.githubusercontent.com/27432981/128633529-5fa95e2f-8a2a-4955-b1f6-e8b91f827d20.png)
+![我的影片 1](https://user-images.githubusercontent.com/27432981/129452745-4bbcfff5-de70-48d9-96df-542b917e2768.gif)
 
 ## Features
 - Regular expression visualizer
