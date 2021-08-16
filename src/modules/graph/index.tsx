@@ -48,6 +48,7 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
         const { type, body, flags, withSlash } = ast
         dispatchSetAst({ type, body: [head, ...body, tail], flags, withSlash })
       } else {
+        regexRef.current = regex
         setError(ast.message)
       }
     }
