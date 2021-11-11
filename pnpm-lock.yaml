@@ -23,7 +23,7 @@ specifiers:
   canvas: ^2.8.0
   customize-cra: ^1.0.0
   esbuild: ^0.12.17
-  immer: ^8.0.1
+  immer: ^9.0.6
   jest: ^26.6.0
   lodash: ^4.17.21
   nanoid: ^3.1.16
@@ -40,7 +40,7 @@ dependencies:
   '@geist-ui/react': registry.npmjs.org/@geist-ui/react/2.1.5_react@16.14.0
   '@geist-ui/react-icons': registry.npmjs.org/@geist-ui/react-icons/1.0.1_7b5a81bad6672c896ce7b975a7dcba4d
   canvas: registry.npmjs.org/canvas/2.8.0
-  immer: registry.npmjs.org/immer/8.0.4
+  immer: registry.npmjs.org/immer/9.0.6
   lodash: registry.npmjs.org/lodash/4.17.21
   nanoid: registry.npmjs.org/nanoid/3.1.23
   react: registry.npmjs.org/react/16.14.0
@@ -10850,10 +10850,10 @@ packages:
     version: 8.0.1
     dev: false
 
-  registry.npmjs.org/immer/8.0.4:
-    resolution: {integrity: sha512-jMfL18P+/6P6epANRvRk6q8t+3gGhqsJ9EuJ25AXE+9bNTYtssvzeYbEd0mXRYWCmmXSIbnlpz6vd6iJlmGGGQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/immer/-/immer-8.0.4.tgz}
+  registry.npmjs.org/immer/9.0.6:
+    resolution: {integrity: sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/immer/-/immer-9.0.6.tgz}
     name: immer
-    version: 8.0.4
+    version: 9.0.6
     dev: false
 
   registry.npmjs.org/import-cwd/2.1.0:

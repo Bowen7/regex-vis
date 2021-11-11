@@ -6,7 +6,7 @@
     "@geist-ui/react": "^2.1.5",
     "@geist-ui/react-icons": "^1.0.1",
     "canvas": "^2.8.0",
-    "immer": "^8.0.1",
+    "immer": "^9.0.6",
     "lodash": "^4.17.21",
     "nanoid": "^3.1.16",
     "react": "^16.13.1",
