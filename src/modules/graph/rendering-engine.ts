@@ -312,12 +312,25 @@ class RenderEngine {
           start: { x: x + width - padding, y: y + branchHeight / 2 },
           end: { x: x + width, y: initialY + height / 2 },
         })
-        this.renderChildren(branch, {
-          initialX: x + padding,
-          initialY: y,
-          parentWidth: width - 2 * padding,
-          parentHeight: branchHeight,
-        })
+        if (branch.length > 0) {
+          this.renderChildren(branch, {
+            initialX: x + padding,
+            initialY: y,
+            parentWidth: width - 2 * padding,
+            parentHeight: branchHeight,
+          })
+        } else {
+          // like: /a|/
+          this.renderConnects.push({
+            id: nanoid(),
+            kind: "straight",
+            start: {
+              x: x + padding,
+              y: y + branchHeight / 2,
+            },
+            end: { x: x + width - padding, y: y + branchHeight / 2 },
+          })
+        }
         y += branchHeight
       })
     }
