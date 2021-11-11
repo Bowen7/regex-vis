@@ -3756,6 +3756,46 @@ const tests: Tests = {
     flags: [],
     withSlash: true,
   },
+  "/a|b|c/": {
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "choice",
+        branches: [
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "a",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "b",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "c",
+              quantifier: null,
+            },
+          ],
+        ],
+      },
+    ],
+    flags: [],
+    withSlash: true,
+  },
 }
 
 export default tests

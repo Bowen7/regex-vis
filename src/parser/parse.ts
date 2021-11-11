@@ -14,7 +14,7 @@ const lookAroundDict: {
   "?<!": { kind: "lookbehind", negate: true },
 }
 
-class Lexer {
+class Parser {
   regex: string
   message: string = ""
   index = 0
@@ -264,6 +264,7 @@ class Lexer {
 
   private onChoice() {
     if (this.parent.type === "choice") {
+      this.prev = null
       this.parent.branches.push([])
       return
     }
@@ -655,7 +656,7 @@ const parse = (
   if (typeof regex !== "string") {
     regex = String(regex)
   }
-  const lexer = new Lexer(regex, idGenerator)
+  const lexer = new Parser(regex, idGenerator)
   return lexer.parse()
 }
 
