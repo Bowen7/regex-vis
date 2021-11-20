@@ -31,7 +31,7 @@ class Parser {
   flagSet: Set<AST.Flag> = new Set()
   idGenerator: (size?: number) => string
   constructor(regex: string, idGenerator = nanoid) {
-    this.regex = regex.trim()
+    this.regex = regex
     this.idGenerator = idGenerator
   }
 
@@ -44,9 +44,11 @@ class Parser {
   }
 
   public validate() {
-    if (this.regex[0] !== "/") {
+    if (this.regex.trim()[0] !== "/") {
       this.regex = `/${this.regex}/`
       this.ast.withSlash = false
+    } else {
+      this.regex = this.regex.trim()
     }
     try {
       let end = this.regex.lastIndexOf("/")
