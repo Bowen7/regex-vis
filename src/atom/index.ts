@@ -114,7 +114,7 @@ export const dispatchGroupIt = (group: AST.Group) => {
 }
 
 export const dispatchSetAst = (ast: AST.Regex) => {
-  setAstWithUndo(ast, true)
+  setAstWithUndo(ast, false)
   setSelectedIds([])
 }
 

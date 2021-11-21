@@ -9,7 +9,7 @@ export function visit(
     parent: AST.ParentNode
   ) => void
 ) {
-  let stack: {
+  let queue: {
     node: AST.Node
     nodeList: AST.Node[]
     index: number
@@ -20,11 +20,11 @@ export function visit(
     index,
     parent: ast,
   }))
-  while (stack.length !== 0) {
-    const { node, nodeList, index, parent } = stack.shift()!
+  while (queue.length !== 0) {
+    const { node, nodeList, index, parent } = queue.shift()!
     callback(node, nodeList, index, parent)
     if (node.type === "group" || node.type === "lookAroundAssertion") {
-      stack = stack.concat(
+      queue = queue.concat(
         node.children.map((child, index) => ({
           node: child,
           nodeList: node.children,
@@ -35,9 +35,9 @@ export function visit(
     }
     if (node.type === "choice") {
       const branches = node.branches
-      for (let i = branches.length - 1; i >= 0; i--) {
+      for (let i = 0; i < branches.length; i++) {
         const branch = branches[i]
-        stack = stack.concat(
+        queue = queue.concat(
           branch.map((child, index) => ({
             node: child,
             nodeList: branch,
@@ -60,7 +60,7 @@ export function getNodeById(
   index: number
 } {
   const { body } = ast
-  let stack: {
+  let queue: {
     node: AST.Node
     parent:
       | AST.GroupNode
@@ -75,15 +75,15 @@ export function getNodeById(
     nodeList: body,
     index,
   }))
-  while (stack.length !== 0) {
-    const item = stack.shift()!
+  while (queue.length !== 0) {
+    const item = queue.shift()!
     const { node } = item
     if (node.id === id) {
       return item
     }
     if (node.type === "group" || node.type === "lookAroundAssertion") {
       const { children } = node
-      stack = stack.concat(
+      queue = queue.concat(
         children.map((cur, index) => ({
           node: cur,
           parent: node,
@@ -94,9 +94,9 @@ export function getNodeById(
     }
     if (node.type === "choice") {
       const branches = node.branches
-      for (let i = branches.length - 1; i >= 0; i--) {
+      for (let i = 0; i < branches.length; i++) {
         const branch = branches[i]
-        stack = stack.concat(
+        queue = queue.concat(
           branch.map((cur, index) => ({
             node: cur,
             parent: node,
