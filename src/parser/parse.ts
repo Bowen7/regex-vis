@@ -1,6 +1,7 @@
 import { nanoid } from "nanoid"
 import * as AST from "./ast"
 import * as patterns from "./patterns"
+import _Parser from "./parser"
 
 const lookAroundDict: {
   "?=": AST.LookAround
