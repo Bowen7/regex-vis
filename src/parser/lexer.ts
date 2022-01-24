@@ -77,7 +77,19 @@ class Lexer {
   public readTargets(targets: string[]): string | null {
     const char = this.regex[this.index]
     const index = targets.indexOf(char)
-    return index === -1 ? null : targets[index]
+    if (index !== -1) {
+      this.advance(1)
+      return targets[index]
+    }
+    return null
+  }
+
+  public readByRegex(r: RegExp) {
+    const matches = this.regex.slice(this.index).match(r)
+    if (matches) {
+      this.advance(matches[0].length)
+    }
+    return matches
   }
 
   advance(size: number): number {

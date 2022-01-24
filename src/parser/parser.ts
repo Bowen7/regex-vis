@@ -73,7 +73,48 @@ class Parser {
   }
 
   parseQuantifier(): AST.Quantifier | null {
-    return null
+    let quantifier: AST.Quantifier | null = null
+    const target = this.lexer.readTargets(["?", "+", "*"])
+    if (target) {
+      switch (target) {
+        case "?": {
+          quantifier = { kind: "?", min: 0, max: 1, greedy: true }
+          break
+        }
+        case "+": {
+          quantifier = { kind: "+", min: 1, max: Infinity, greedy: true }
+          break
+        }
+        case "*": {
+          quantifier = { kind: "*", min: 0, max: Infinity, greedy: true }
+          break
+        }
+      }
+    } else {
+      const matches = this.lexer.readByRegex(patterns.quantifier)
+      if (matches) {
+        const min = parseInt(matches[1])
+        let max = min
+        if (matches[2]) {
+          max = Infinity
+          if (matches[3]) {
+            max = parseInt(matches[3])
+          }
+        }
+        quantifier = {
+          kind: "custom",
+          min,
+          max,
+          greedy: true,
+        }
+      }
+    }
+    if (quantifier) {
+      if (this.lexer.readTarget("?")) {
+        quantifier.greedy = false
+      }
+    }
+    return quantifier
   }
 
   validate() {

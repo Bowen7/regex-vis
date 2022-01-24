@@ -8,3 +8,4 @@ export const lookAround = /^(\?=|\?!|\?<=|\?<!)/
 export const nonCapturing = /^\?:/
 export const namedCapturing = /^\?<(\w+)>/
 export const namedBackRef = /^<(\w+)>/
+export const quantifier = /^\{(\d+)(,|,(\d+))?\}/
