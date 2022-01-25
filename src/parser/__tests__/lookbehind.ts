@@ -4,6 +4,7 @@ type Tests = {
 }
 const tests: Tests = {
   "/(?<=a)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -26,6 +27,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?<!a)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -48,6 +50,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/((?<=\\w{3}))f/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -87,6 +90,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?<a>(?<=\\w{3}))f/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -126,6 +130,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?<!(?<a>\\d){3})f/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -165,6 +170,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?<a>(?<!\\D{3}))f|f/": {
+    id: "",
     type: "regex",
     body: [
       {

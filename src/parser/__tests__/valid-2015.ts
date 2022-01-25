@@ -4,6 +4,7 @@ type Tests = {
 }
 const tests: Tests = {
   "/foo/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -18,6 +19,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/foo|bar/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -49,12 +51,14 @@ const tests: Tests = {
     withSlash: true,
   },
   "/||||/": {
+    id: "",
     type: "regex",
     body: [{ id: "", type: "choice", branches: [[], [], [], [], []] }],
     flags: [],
     withSlash: true,
   },
   "/^|$|\\b|\\B/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -72,6 +76,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?=)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -86,6 +91,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?=foo)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -108,6 +114,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?!)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -122,6 +129,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?!foo)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -144,6 +152,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a*/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -158,6 +167,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a+/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -172,6 +182,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -186,6 +197,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -200,6 +212,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -214,6 +227,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{a}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -228,6 +242,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -242,6 +257,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -256,6 +272,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -270,6 +287,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -284,6 +302,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,2}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -298,6 +317,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,2/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -312,6 +332,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{2,1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -326,6 +347,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a*?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -340,6 +362,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a+?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -354,6 +377,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a??/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -368,6 +392,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -389,6 +414,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{}?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -410,6 +436,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{a}?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -431,6 +458,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1}?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -445,6 +473,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -466,6 +495,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,}?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -480,6 +510,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -501,6 +532,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,2}?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -515,6 +547,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{1,2?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -536,6 +569,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a{2,1?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -557,6 +591,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/👍🚀❇️/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -571,18 +606,21 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^/": {
+    id: "",
     type: "regex",
     body: [{ id: "", type: "boundaryAssertion", kind: "beginning" }],
     flags: [],
     withSlash: true,
   },
   "/$/": {
+    id: "",
     type: "regex",
     body: [{ id: "", type: "boundaryAssertion", kind: "end" }],
     flags: [],
     withSlash: true,
   },
   "/./": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -597,6 +635,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -611,6 +650,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/{/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -625,6 +665,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -639,12 +680,14 @@ const tests: Tests = {
     withSlash: true,
   },
   "/|/": {
+    id: "",
     type: "regex",
     body: [{ id: "", type: "choice", branches: [[], []] }],
     flags: [],
     withSlash: true,
   },
   "/${1,2/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "end" },
@@ -660,6 +703,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -672,6 +716,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(a)\\1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -701,6 +746,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\1(a)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -730,6 +776,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?:a)\\1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -757,6 +804,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(?:a)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -779,6 +827,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\d/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -793,6 +842,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\D/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -807,6 +857,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\s/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -821,6 +872,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\S/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -835,6 +887,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\w/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -849,6 +902,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\W/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -863,6 +917,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\f/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -877,6 +932,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\n/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -891,6 +947,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\r/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -905,6 +962,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\t/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -919,6 +977,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\v/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -933,6 +992,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\cA/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -947,6 +1007,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\cz/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -961,6 +1022,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\c1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -975,6 +1037,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\c/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -989,6 +1052,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\0/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1003,6 +1067,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1017,6 +1082,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u1/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1031,6 +1097,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u12/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1045,6 +1112,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u123/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1059,6 +1127,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u1234/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1073,6 +1142,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u12345/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1094,6 +1164,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u{/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1108,6 +1179,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u{z/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1122,6 +1194,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u{a}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1136,6 +1209,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u{20/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1150,6 +1224,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\u{20}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1164,6 +1239,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\377/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1176,6 +1252,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\400/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1188,6 +1265,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\^/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1202,6 +1280,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\$/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1216,6 +1295,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\./": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1230,6 +1310,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\+/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1244,6 +1325,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\?/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1258,6 +1340,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\(/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1272,6 +1355,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1286,6 +1370,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\[/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1300,6 +1385,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1314,6 +1400,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\{/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1328,6 +1415,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\}/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1342,6 +1430,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\|/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1356,6 +1445,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\//": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1370,6 +1460,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\a/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1384,6 +1475,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1399,6 +1491,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[^-a-b-]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1418,6 +1511,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[-]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1433,6 +1527,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[a]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1448,6 +1543,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[--]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1466,6 +1562,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[-a]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1484,6 +1581,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[-a-]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1503,6 +1601,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[a-]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1521,6 +1620,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[a-b]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1536,6 +1636,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[-a-b-]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1555,6 +1656,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[---]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1570,6 +1672,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[a-b--/]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1588,6 +1691,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\b-\\n]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1603,6 +1707,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[b\\-a]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1622,6 +1727,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\d]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1637,6 +1743,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\D]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1652,6 +1759,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\s]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1667,6 +1775,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\S]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1682,6 +1791,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\w]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1697,6 +1807,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\W]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1712,6 +1823,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\f]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1727,6 +1839,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\n]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1742,6 +1855,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\r]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1757,6 +1871,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\t]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1772,6 +1887,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\v]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1787,6 +1903,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\cA]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1802,6 +1919,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\cz]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1817,6 +1935,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\c1]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1835,6 +1954,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\c]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1850,6 +1970,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\0]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1865,6 +1986,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\x]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1880,6 +2002,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\xz]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1898,6 +2021,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\x1]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1916,6 +2040,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\x12]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1931,6 +2056,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\x123]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1949,6 +2075,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1964,6 +2091,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u1]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -1982,6 +2110,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u12]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2001,6 +2130,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u123]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2021,6 +2151,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u1234]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2036,6 +2167,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u12345]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2054,6 +2186,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u{]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2072,6 +2205,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u{z]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2091,6 +2225,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u{a}]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2111,6 +2246,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u{20]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2131,6 +2267,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u{20}]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2152,6 +2289,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\77]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2170,6 +2308,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\377]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2189,6 +2328,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\400]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2208,6 +2348,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\^]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2223,6 +2364,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\$]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2238,6 +2380,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\.]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2253,6 +2396,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\+]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2268,6 +2412,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\?]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2283,6 +2428,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\(]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2298,6 +2444,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\)]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2313,6 +2460,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\[]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2328,6 +2476,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\]]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2343,6 +2492,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\{]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2358,6 +2508,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\}]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2373,6 +2524,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\|]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2388,6 +2540,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\/]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2403,6 +2556,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\a]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2418,6 +2572,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\d-\\uFFFF]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2433,6 +2588,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\D-\\uFFFF]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2448,6 +2604,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\s-\\uFFFF]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2463,6 +2620,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\S-\\uFFFF]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2478,6 +2636,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\w-\\uFFFF]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2493,6 +2652,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\W-\\uFFFF]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2508,6 +2668,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\d]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2523,6 +2684,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\D]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2538,6 +2700,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\s]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2553,6 +2716,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\S]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2568,6 +2732,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\w]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2583,6 +2748,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\W]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2598,6 +2764,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u0000-\\u0001]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2613,6 +2780,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\u{2-\\u{1}]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2635,6 +2803,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\a-\\z]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2650,6 +2819,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[0-9--/]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2668,6 +2838,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\c0-\\u001f]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2686,6 +2857,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/[\\c_]/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -2704,6 +2876,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[0-9]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2721,6 +2894,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[0-9]+$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2738,6 +2912,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[a-zA-Z]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2758,6 +2933,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[a-zA-Z]+$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2778,6 +2954,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[0-9a-zA-Z]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2799,6 +2976,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[a-zA-Z0-9!-/:-@\\[-`{-~]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2824,6 +3002,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^([a-zA-Z0-9]{8,})$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2855,6 +3034,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^([a-zA-Z0-9]{6,8})$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2886,6 +3066,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^([0-9]{0,8})$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2913,6 +3094,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[0-9]{8}$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2930,6 +3112,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^https?:\\/\\//": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2959,6 +3142,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^\\d{3}-\\d{4}$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -2989,6 +3173,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^\\d{1,3}(.\\d{1,3}){3}$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3029,6 +3214,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^([1-9][0-9]*|0)(\\.[0-9]+)?$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3111,6 +3297,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^-?([1-9][0-9]*|0)(\\.[0-9]+)?$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3200,6 +3387,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[ぁ-んー]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3220,6 +3408,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[ァ-ンヴー]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3241,6 +3430,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[ｧ-ﾝﾞﾟ\\-]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3263,6 +3453,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[^\\x20-\\x7e]*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3280,6 +3471,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$/": {
+    id: "",
     type: "regex",
     body: [
       { id: "", type: "boundaryAssertion", kind: "beginning" },
@@ -3370,6 +3562,7 @@ const tests: Tests = {
   },
   "/^((4\\d{3})|(5[1-5]\\d{2})|(6011))([- ])?\\d{4}([- ])?\\d{4}([- ])?\\d{4}|3[4,7]\\d{13}$/":
     {
+      id: "",
       type: "regex",
       body: [
         {
@@ -3604,6 +3797,7 @@ const tests: Tests = {
       withSlash: true,
     },
   "/^\\s*|\\s*$/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -3637,6 +3831,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/(a)(?<n>b)(c)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -3695,6 +3890,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/x(?=y)/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -3724,6 +3920,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/x?y/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -3745,6 +3942,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/\\k<Name>/": {
+    id: "",
     type: "regex",
     body: [
       {
@@ -3757,6 +3955,7 @@ const tests: Tests = {
     withSlash: true,
   },
   "/a|b|c/": {
+    id: "",
     type: "regex",
     body: [
       {

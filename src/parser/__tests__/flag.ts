@@ -10,6 +10,7 @@ export const invalidTests: Tests = {
 }
 export const validTests: Tests = {
   "/(?:)/g": {
+    id: "",
     type: "regex",
     body: [
       {

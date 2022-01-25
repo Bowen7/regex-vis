@@ -38,6 +38,7 @@ class Parser {
     this.lexer.read()
     const body = this.parseNodes()
     return {
+      id: this.id(),
       type: "regex",
       body,
       flags: this.flags,

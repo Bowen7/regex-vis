@@ -10,6 +10,5 @@ const parse = (
   const parser = new Parser(regex, idGenerator)
   return parser.parse()
 }
-console.log(parse("/\\./"))
 
 export default parse

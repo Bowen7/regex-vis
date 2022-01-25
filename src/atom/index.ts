@@ -19,6 +19,7 @@ import { atom, setAtomValue } from "./helper"
 export { useAtomValue, setAtomValue } from "./helper"
 
 export const astAtom = atom<AST.Regex>({
+  id: "",
   type: "regex",
   body: [],
   flags: [],

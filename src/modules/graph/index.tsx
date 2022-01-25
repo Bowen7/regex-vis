@@ -26,6 +26,7 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const [error, setError] = useState<null | string>(null)
 
+  const regexIdRef = useRef("")
   const regexRef = useRef<string>()
 
   const [renderInfo, setRenderInfo] = useState<{
@@ -45,8 +46,9 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
       const ast = parse(regex)
       if (ast.type === "regex") {
         setError(null)
-        const { type, body, flags, withSlash } = ast
-        dispatchSetAst({ type, body: [head, ...body, tail], flags, withSlash })
+        const { id, body } = ast
+        regexIdRef.current = id
+        dispatchSetAst({ ...ast, body: [head, ...body, tail] })
       } else {
         regexRef.current = regex
         setError(ast.message)
@@ -58,10 +60,12 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   useUpdateEffect(() => {
     const renderInfo = renderEngine.render(ast)
     setRenderInfo(renderInfo)
-    const nextRegex = gen(ast)
-    if (nextRegex !== regexRef.current) {
-      regexRef.current = nextRegex
-      onChange && onChange(nextRegex)
+    if (ast.id !== regexIdRef.current) {
+      const nextRegex = gen(ast)
+      if (nextRegex !== regexRef.current) {
+        regexRef.current = nextRegex
+        onChange && onChange(nextRegex)
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ast])

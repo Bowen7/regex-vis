@@ -1,4 +1,5 @@
 export type Regex = {
+  id: string
   type: "regex"
   body: Node[]
   flags: Flag[]
