@@ -23,7 +23,7 @@ $ pnpm start
 
 ## Feedback
 
-- [Report a issue](https://github.com/Bowen7/regex-vis/issues)
+- [Report a bug](https://github.com/Bowen7/regex-vis/issues)
 - You can also [open a new discussion](https://github.com/Bowen7/regex-vis/discussions) to ask questions about this repository or get help.
 
 ## License
