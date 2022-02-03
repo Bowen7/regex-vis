@@ -10,8 +10,8 @@
 - Testing regular expression
 
 ## Blog
-[English](https://www.bowencodes.com/post/regex-vis_en)
-[Chinese](https://www.bowencodes.com/post/regex-vis)
+- [English](https://www.bowencodes.com/post/regex-vis_en)
+- [Chinese](https://www.bowencodes.com/post/regex-vis)
 
 ## Deployment
 
