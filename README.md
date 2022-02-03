@@ -9,6 +9,10 @@
 - Visual editing regular expression
 - Testing regular expression
 
+## Blog
+[English](https://www.bowencodes.com/post/regex-vis_en)
+[Chinese](https://www.bowencodes.com/post/regex-vis)
+
 ## Deployment
 
 To deploy this project run
