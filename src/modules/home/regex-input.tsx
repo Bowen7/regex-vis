@@ -24,6 +24,7 @@ const RegexInput: React.FC<Props> = ({
             label="Regex"
             value={regex === null ? "" : regex}
             width="100%"
+            placeholder="Input a regular expression"
             onChange={onChange}
           />
         </div>
