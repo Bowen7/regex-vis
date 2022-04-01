@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { useTheme, useToasts } from "@geist-ui/react"
 import Graph from "@/modules/graph"
@@ -15,11 +15,15 @@ import {
 const Home: React.FC<{}> = () => {
   const history = useHistory()
   const location = useLocation()
-  const params = new URLSearchParams(location.search)
-  const regex = params.get("r")
+  const [regex, setRegex] = useState<string>(
+    () => new URLSearchParams(location.search).get("r") || ""
+  )
 
   const [, setToasts] = useToasts()
   useEffect(() => setToastsAtom.setState(setToasts), [setToasts])
+  useEffect(() => {
+    setRegex(new URLSearchParams(location.search).get("r") || "")
+  }, [location])
 
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
   const ast = useAtomValue(astAtom)
