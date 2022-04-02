@@ -12,6 +12,7 @@ import {
   useAtomValue,
   dispatchSetAst,
   dispatchSelectNodes,
+  dispatchClearSelected,
 } from "@/atom"
 type Props = {
   regex: string
@@ -26,8 +27,8 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const [error, setError] = useState<null | string>(null)
 
-  const shouldGen = useRef(true)
-  const regexRef = useRef<string>()
+  const regexRef = useRef("")
+  const astRef = useRef(ast)
 
   const [renderInfo, setRenderInfo] = useState<{
     width: number
@@ -46,30 +47,25 @@ const Graph: React.FC<Props> = ({ regex, minimum = false, onChange }) => {
       const ast = parse(regex)
       if (ast.type === "regex") {
         setError(null)
-        const { id, body } = ast
-        shouldGen.current = false
-        dispatchSetAst({ ...ast, body: [head, ...body, tail] })
+        const { body } = ast
+        const nextAst = { ...ast, body: [head, ...body, tail] }
+        astRef.current = nextAst
+        dispatchSetAst(nextAst)
       } else {
-        regexRef.current = regex
+        dispatchClearSelected()
         setError(ast.message)
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [regex])
 
   useUpdateEffect(() => {
     const renderInfo = renderEngine.render(ast)
     setRenderInfo(renderInfo)
-    if (shouldGen.current) {
+    if (ast !== astRef.current) {
       const nextRegex = gen(ast)
-      if (nextRegex !== regexRef.current) {
-        regexRef.current = nextRegex
-        onChange && onChange(nextRegex)
-      }
-    } else {
-      shouldGen.current = true
+      regexRef.current = nextRegex
+      onChange && onChange(nextRegex)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ast])
 
   const onDragSelect = (box: Box) => {

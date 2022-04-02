@@ -20,10 +20,20 @@ const Home: React.FC<{}> = () => {
   )
 
   const [, setToasts] = useToasts()
+  useEffect(() => {
+    if (new URLSearchParams(location.search).get("r") === null) {
+      setRegex("")
+    }
+  }, [location])
   useEffect(() => setToastsAtom.setState(setToasts), [setToasts])
   useEffect(() => {
-    setRegex(new URLSearchParams(location.search).get("r") || "")
-  }, [location])
+    // update url search
+    const nextParams = new URLSearchParams()
+    if (regex !== "") {
+      nextParams.append("r", regex)
+    }
+    history.push({ search: nextParams.toString() })
+  }, [regex, history])
 
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
   const ast = useAtomValue(astAtom)
@@ -31,31 +41,22 @@ const Home: React.FC<{}> = () => {
 
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
-  const handleChange = (nextRegex: string) => {
-    if (regex === nextRegex) {
-      return
-    }
-    const nextParams = new URLSearchParams()
-    nextParams.append("r", nextRegex)
-    history.push({ search: nextParams.toString() })
-  }
-
   const handleFlagsChange = (flags: string[]) => dispatchUpdateFlags(flags)
 
   return (
     <>
       <div className="wrapper" style={style}>
-        {regex !== null && (
+        {regex !== "" && (
           <div className="graph">
             <div className="content">
-              <Graph regex={regex} onChange={handleChange} />
+              <Graph regex={regex} onChange={setRegex} />
             </div>
           </div>
         )}
         <RegexInput
           regex={regex}
           flags={ast.flags}
-          onChange={handleChange}
+          onChange={setRegex}
           onFlagsChange={handleFlagsChange}
         />
       </div>

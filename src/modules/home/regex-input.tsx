@@ -28,7 +28,7 @@ const RegexInput: React.FC<Props> = ({
             onChange={onChange}
           />
         </div>
-        {regex !== null && (
+        {regex !== "" && (
           <>
             <Spacer inline />
             <Checkbox.Group value={flags} onChange={handleFlagsChange}>
