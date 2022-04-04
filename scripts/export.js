@@ -2,8 +2,8 @@ const React = require("react")
 const ReactDOMServer = require("react-dom/server")
 const fs = require("fs")
 const path = require("path")
-const MinimumGraph = require("../graph/index.js").default
-const { parse } = require("../parser/index.js")
+const MinimumGraph = require("../export/graph.js").default
+const { parse } = require("../export/parser.js")
 const svgs = require("./svgs")
 const assetsDir = path.resolve(__dirname, "../src/assets/")
 

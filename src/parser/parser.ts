@@ -337,7 +337,6 @@ class Parser {
         new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
       } else {
         this.regex = String(new RegExp(this.regex))
-        console.log(this.regex)
       }
     } catch (error) {
       if (error instanceof Error) {
