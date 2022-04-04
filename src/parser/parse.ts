@@ -1,13 +1,11 @@
 import Parser from "./parser"
 
 const parse = (
-  regex: string | RegExp,
+  regex: string,
+  isLiteral = false,
   idGenerator?: (size?: number) => string
 ) => {
-  if (typeof regex !== "string") {
-    regex = String(regex)
-  }
-  const parser = new Parser(regex, idGenerator)
+  const parser = new Parser(regex, isLiteral, idGenerator)
   return parser.parse()
 }
 

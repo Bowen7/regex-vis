@@ -13,6 +13,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.3",
+    "react-use": "^17.3.2",
     "styled-jsx": "3.3.0",
     "typescript": "~3.7.2"
   },

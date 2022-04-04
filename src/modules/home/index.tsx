@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState, useRef } from "react"
 import { useHistory, useLocation } from "react-router-dom"
 import { useTheme, useToasts } from "@geist-ui/react"
+import { nanoid } from "nanoid"
+import { parse, gen, AST } from "@/parser"
+import { useCustomCompareEffect, useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import RegexInput from "./regex-input"
@@ -10,13 +13,30 @@ import {
   useAtomValue,
   dispatchUpdateFlags,
   setToastsAtom,
+  dispatchSetAst,
+  dispatchClearSelected,
 } from "@/atom"
+const head: AST.RootNode = { id: nanoid(), type: "root" }
+const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
 const Home: React.FC<{}> = () => {
   const history = useHistory()
   const location = useLocation()
+  const editorCollapsed = useAtomValue(editorCollapsedAtom)
+  const ast = useAtomValue(astAtom)
+  const { palette } = useTheme()
+
+  const regexRef = useRef("")
+  const astRef = useRef(ast)
+
+  const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [regex, setRegex] = useState<string>(
     () => new URLSearchParams(location.search).get("r") || ""
+  )
+  const [isLiteral, setIsLiteral] = useState(
+    () =>
+      new URLSearchParams(location.search).get("l") === "1" ||
+      localStorage.getItem("isLiteral") === "1"
   )
 
   const [, setToasts] = useToasts()
@@ -25,19 +45,51 @@ const Home: React.FC<{}> = () => {
       setRegex("")
     }
   }, [location])
+
   useEffect(() => setToastsAtom.setState(setToasts), [setToasts])
+
+  useCustomCompareEffect(
+    () => {
+      const ast = parse(regex, isLiteral)
+      if (ast.type === "regex") {
+        setErrorMsg(null)
+        const { body } = ast
+        const nextAst = { ...ast, body: [head, ...body, tail] }
+        astRef.current = nextAst
+        dispatchSetAst(nextAst)
+      } else {
+        dispatchClearSelected()
+        setErrorMsg(ast.message)
+      }
+    },
+    [regex, isLiteral],
+    (nextDeps, prevDeps) => {
+      return !(regexRef.current !== nextDeps[0] || nextDeps[1] !== prevDeps[1])
+    }
+  )
+
   useEffect(() => {
     // update url search
     const nextParams = new URLSearchParams()
     if (regex !== "") {
       nextParams.append("r", regex)
     }
+    if (isLiteral) {
+      nextParams.append("l", "1")
+      localStorage.setItem("isLiteral", "1")
+    } else {
+      localStorage.removeItem("isLiteral")
+    }
     history.push({ search: nextParams.toString() })
-  }, [regex, history])
+  }, [regex, history, isLiteral])
 
-  const editorCollapsed = useAtomValue(editorCollapsedAtom)
-  const ast = useAtomValue(astAtom)
-  const { palette } = useTheme()
+  useUpdateEffect(() => {
+    if (ast !== astRef.current) {
+      const nextRegex = gen(ast)
+      regexRef.current = nextRegex
+      setRegex(nextRegex)
+    }
+  }, [ast])
 
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
@@ -49,18 +101,20 @@ const Home: React.FC<{}> = () => {
         {regex !== "" && (
           <div className="graph">
             <div className="content">
-              <Graph regex={regex} onChange={setRegex} />
+              <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
             </div>
           </div>
         )}
         <RegexInput
           regex={regex}
+          isLiteral={isLiteral}
           flags={ast.flags}
           onChange={setRegex}
+          onIsLiteralChange={setIsLiteral}
           onFlagsChange={handleFlagsChange}
         />
       </div>
-      {regex !== null && <Editor />}
+      {regex !== null && <Editor isLiteral={isLiteral} />}
       <style jsx>{`
         .wrapper {
           width: calc(100% - 275px);

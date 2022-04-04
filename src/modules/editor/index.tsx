@@ -17,7 +17,7 @@ import {
 } from "@/atom"
 
 type Tab = "legend" | "edit" | "test"
-const Editor: React.FC<{}> = () => {
+const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
 
@@ -76,7 +76,7 @@ const Editor: React.FC<{}> = () => {
               <LegendTab />
             </Tabs.Item>
             <Tabs.Item value="edit" label="Edit" disabled={editDisabled}>
-              <EditTab />
+              <EditTab isLiteral={isLiteral} />
             </Tabs.Item>
             <Tabs.Item value="test" label="Test">
               <TestTab />

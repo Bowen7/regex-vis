@@ -129,5 +129,6 @@ yarn-error.log*
 .vscode
 
 /graph
+/parser
 
 .swc

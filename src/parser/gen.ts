@@ -1,6 +1,9 @@
 import * as AST from "./ast"
 const digitRegex = /\d+/
-function gen(ast: AST.Regex | AST.Node[], withSlash?: boolean) {
+// TODO
+let isLiteral = false
+function gen(ast: AST.Regex | AST.Node[], withSlash = false) {
+  isLiteral = withSlash
   const nodes = Array.isArray(ast) ? ast : ast.body
 
   const r = nodes
@@ -69,7 +72,10 @@ function genGroup(node: AST.GroupNode) {
 }
 
 function prefix(value: string) {
-  return value.replace(/[|\\{}()[\]^$+*?./]/g, "\\$&")
+  return value.replace(
+    isLiteral ? /[|\\{}()[\]^$+*?./]/g : /[|\\{}()[\]^$+*?.]/g,
+    "\\$&"
+  )
 }
 
 function genCharacter(node: AST.CharacterNode) {

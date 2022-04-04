@@ -13,3 +13,14 @@ buildSync({
   format: "cjs",
   platform: "node",
 })
+
+buildSync({
+  entryPoints: [path.resolve(__dirname, "../src/parser/index.ts")],
+  outfile: path.resolve(__dirname, "../parser/index.js"),
+  bundle: true,
+  define: { "process.env.EXPORT": "true" },
+  external: ["react", "react-dom", "styled-jsx", "canvas"],
+  target: "es6",
+  format: "cjs",
+  platform: "node",
+})

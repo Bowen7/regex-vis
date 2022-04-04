@@ -90,8 +90,11 @@ const getId = (nodes: AST.Node[]): string => {
   return ""
 }
 
-export function getInfoFromNodes(nodes: AST.Node[]): NodesInfo {
-  const expression = gen(nodes)
+export function getInfoFromNodes(
+  nodes: AST.Node[],
+  isLiteral = false
+): NodesInfo {
+  const expression = gen(nodes, isLiteral)
   const group = getGroupInfo(nodes)
   const content = getContentInfo(nodes)
   const quantifierInfo = getQuantifierInfo(nodes)

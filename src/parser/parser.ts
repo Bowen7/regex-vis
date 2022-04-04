@@ -7,33 +7,30 @@ import { TokenType } from "./token"
 
 class Parser {
   regex: string
+  isLiteral = false
   flags: AST.Flag[] = []
   message: string = ""
   lexer!: Lexer
   groupIndex = 1
   idGenerator: (size?: number) => string
-  constructor(regex: string | RegExp, idGenerator = nanoid) {
+  constructor(regex: string | RegExp, isLiteral = false, idGenerator = nanoid) {
     if (typeof regex !== "string") {
       regex = String(regex)
     }
     this.regex = regex
+    this.isLiteral = isLiteral
     this.idGenerator = idGenerator
   }
 
   public parse(): AST.Regex | AST.RegexError {
-    let withSlash = true
-    if (this.regex.trim()[0] !== "/") {
-      this.regex = `/${this.regex}/`
-      withSlash = false
-    } else {
+    if (this.isLiteral) {
       this.regex = this.regex.trim()
     }
-
-    this.lexer = new Lexer(this.regex)
 
     if (!this.validate()) {
       return { type: "error", message: this.message }
     }
+    this.lexer = new Lexer(this.regex)
 
     this.lexer.read()
     const body = this.parseNodes()
@@ -42,7 +39,7 @@ class Parser {
       type: "regex",
       body,
       flags: this.flags,
-      withSlash,
+      withSlash: this.isLiteral,
     }
   }
 
@@ -321,21 +318,27 @@ class Parser {
 
   validate() {
     try {
-      let end = this.regex.lastIndexOf("/")
-      if (end <= 0) {
-        this.message = "Invalid regular expression"
-        return false
-      }
-
-      for (let i = end + 1; i < this.regex.length; i++) {
-        if (!patterns.flag.test(this.regex[i])) {
-          this.message = `Invalid regular expression flags '${this.regex[i]}'`
+      if (this.isLiteral) {
+        const start = this.regex.indexOf("/")
+        const end = this.regex.lastIndexOf("/")
+        if (start !== 0 || end <= 0) {
+          this.message = "Invalid regular expression"
           return false
         }
-        this.flags.push(this.regex[i] as AST.Flag)
-      }
 
-      new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
+        for (let i = end + 1; i < this.regex.length; i++) {
+          if (!patterns.flag.test(this.regex[i])) {
+            this.message = `Invalid regular expression flags '${this.regex[i]}'`
+            return false
+          }
+          this.flags.push(this.regex[i] as AST.Flag)
+        }
+
+        new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
+      } else {
+        this.regex = String(new RegExp(this.regex))
+        console.log(this.regex)
+      }
     } catch (error) {
       if (error instanceof Error) {
         this.message = error.message

@@ -2,33 +2,53 @@ import React from "react"
 import { Spacer, Checkbox, Select, Code, useTheme } from "@geist-ui/react"
 import Input from "@/components/input"
 type Props = {
-  regex: string | null
+  regex: string
   flags: string[]
+  isLiteral: boolean
   onChange: (regex: string) => void
+  onIsLiteralChange: (isLiteral: boolean) => void
   onFlagsChange: (flags: string[]) => void
 }
 const RegexInput: React.FC<Props> = ({
   regex,
   flags,
+  isLiteral,
   onChange,
+  onIsLiteralChange,
   onFlagsChange,
 }) => {
   const { palette } = useTheme()
   const handleFlagsChange = (flags: string[]) => {
     onFlagsChange(flags)
   }
+  const dropdownStyle =
+    regex === ""
+      ? {}
+      : {
+          transform: "translate(0, -125px)",
+          boxShadow: "0 -30px 60px rgb(0 0 0 / 12%)",
+        }
+  const handleSelectChange = (value: string | string[]) => {
+    onIsLiteralChange((value as string) === "literal")
+  }
   return (
     <>
       <div className="regex-input">
         <div className="input">
-          <Select value="RegExp" width="100px" disableMatchWidth={true}>
-            <Select.Option value="RegExp">
+          <Select
+            value={isLiteral ? "literal" : "regExp"}
+            width="100px"
+            disableMatchWidth={true}
+            dropdownStyle={dropdownStyle}
+            onChange={handleSelectChange}
+          >
+            <Select.Option value="regExp">
               RegExp
               <span className="hint">
                 , as follows: <Code>ab+c</Code>
               </span>
             </Select.Option>
-            <Select.Option value="Literal">
+            <Select.Option value="literal">
               Literal
               <span className="hint">
                 , as follows: <Code>/ab+c/</Code>
@@ -39,6 +59,7 @@ const RegexInput: React.FC<Props> = ({
             value={regex === null ? "" : regex}
             width="100%"
             placeholder="Input a regular expression"
+            labelRight={isLiteral ? "" : flags.join("")}
             onChange={onChange}
           />
         </div>
@@ -82,7 +103,7 @@ const RegexInput: React.FC<Props> = ({
           display: none;
         }
         .input :global(.input-wrapper) {
-          border-radius: 0 5px 5px 0;
+          border-radius: ${isLiteral ? "0 5px 5px 0" : "0"};
         }
       `}</style>
     </>

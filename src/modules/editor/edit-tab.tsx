@@ -12,7 +12,7 @@ import { NodesInfo } from "./utils"
 import { getNodesByIds } from "@/parser/visit"
 import { astAtom, selectedIdsAtom, useAtomValue } from "@/atom"
 
-const InfoItem: React.FC<{}> = () => {
+const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const { layout } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
@@ -39,7 +39,7 @@ const InfoItem: React.FC<{}> = () => {
   } = nodesInfo
 
   useEffect(() => {
-    const nodesInfo = getInfoFromNodes(nodes)
+    const nodesInfo = getInfoFromNodes(nodes, isLiteral)
     setNodesInfo(nodesInfo)
   }, [nodes])
 
