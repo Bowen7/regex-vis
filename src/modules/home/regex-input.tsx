@@ -31,6 +31,7 @@ const RegexInput: React.FC<Props> = ({
   const handleSelectChange = (value: string | string[]) => {
     onIsLiteralChange((value as string) === "literal")
   }
+  const flagStr = flags.join("")
   return (
     <>
       <div className="regex-input">
@@ -59,7 +60,7 @@ const RegexInput: React.FC<Props> = ({
             value={regex === null ? "" : regex}
             width="100%"
             placeholder="Input a regular expression"
-            labelRight={isLiteral ? "" : flags.join("")}
+            labelRight={isLiteral ? "" : flagStr}
             onChange={onChange}
           />
         </div>
@@ -103,7 +104,7 @@ const RegexInput: React.FC<Props> = ({
           display: none;
         }
         .input :global(.input-wrapper) {
-          border-radius: ${isLiteral ? "0 5px 5px 0" : "0"};
+          border-radius: ${!isLiteral && flagStr ? "0" : "0 5px 5px 0"};
         }
       `}</style>
     </>
