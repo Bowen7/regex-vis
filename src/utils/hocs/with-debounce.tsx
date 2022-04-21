@@ -2,17 +2,16 @@ import React, { useEffect, useState } from "react"
 import { useDebounce } from "react-use"
 
 const withDebounce = <
+  T,
   Props extends {
-    value: string
-    onChange: (
-      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
-    ) => void
+    value?: string
+    onChange?: (e: React.ChangeEvent<T>) => void
   }
 >(
-  Component: React.FC<Props>,
+  Component: React.ComponentType<Props>,
   ms = 300
 ): React.FC<
-  Props & {
+  Omit<React.ComponentProps<typeof Component>, "onChange" | "value"> & {
     value: string
     onChange: (value: string) => void
   }
@@ -28,6 +27,7 @@ const withDebounce = <
       ms,
       [innerValue]
     )
+
     useEffect(() => {
       setInnerValue(value)
     }, [value])
