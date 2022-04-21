@@ -1,11 +1,16 @@
 import React, { useEffect, useState } from "react"
-import { Button, Spacer } from "@geist-ui/react"
+import { Button, Spacer, Textarea } from "@geist-ui/react"
 import XCircle from "@geist-ui/react-icons/xCircle"
 import { useStorageState } from "@/utils/hooks"
 import produce from "immer"
-import Input from "@/components/input"
 import { gen } from "@/parser"
 import { astAtom, useAtomValue } from "@/atom"
+import { withDebounce } from "@/utils/hocs"
+const DebouncedTextarea = withDebounce<
+  HTMLTextAreaElement,
+  React.ComponentProps<typeof Textarea>
+>(Textarea)
+
 const TestTab: React.FC<{}> = () => {
   const [cases, setCases] = useStorageState<string[]>("test-case", [""])
   const ast = useAtomValue(astAtom)
@@ -48,17 +53,23 @@ const TestTab: React.FC<{}> = () => {
       })
     )
   }
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    e.stopPropagation()
+  }
+
   return (
     <>
       <div className="wrapper">
         {cases.map((value, index) => (
           <React.Fragment key={index}>
             <div className="case-input">
-              <Input
+              <DebouncedTextarea
                 value={value}
                 width="215px"
+                rows={Math.min(3, value.split("\n").length)}
                 status={regExp.test(value) ? "success" : "error"}
-                onChange={(value) => handleInputChange(value, index)}
+                onKeyDown={handleKeyDown}
+                onChange={(value: string) => handleInputChange(value, index)}
               />
               <XCircle cursor="pointer" onClick={() => handleRemove(index)} />
             </div>
@@ -77,6 +88,9 @@ const TestTab: React.FC<{}> = () => {
           display: flex;
           align-items: center;
           justify-content: space-between;
+        }
+        .case-input :global(textarea) {
+          min-height: auto;
         }
         .btn {
           display: flex;
