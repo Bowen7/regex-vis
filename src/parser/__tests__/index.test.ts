@@ -15,7 +15,7 @@ describe("Parse Regex String", function () {
     ...lookbehindTests,
   }).forEach(([regex, result]) => {
     it(regex, () => {
-      expect(parse(regex, () => "")).toEqual(result)
+      expect(parse(regex, true, () => "")).toEqual(result)
     })
   })
 })
@@ -28,7 +28,7 @@ describe("Gen Regex String", function () {
   }).forEach(([regex, result]) => {
     it(regex, () => {
       const ast = result as AST.Regex
-      expect(gen(ast)).toEqual(regex)
+      expect(gen(ast, true)).toEqual(regex)
     })
   })
 })
