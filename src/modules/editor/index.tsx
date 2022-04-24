@@ -5,7 +5,7 @@ import { Tabs, useTheme, Button } from "@geist-ui/react"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
-import { useEventListener } from "@/utils/hooks"
+import { useEvent } from "react-use"
 import {
   dispatchRemove,
   dispatchUndo,
@@ -39,7 +39,7 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const undo = () => dispatchUndo()
   const redo = () => dispatchRedo()
 
-  useEventListener("keydown", (e: Event) => {
+  useEvent("keydown", (e: Event) => {
     const event = e as KeyboardEvent
     const { key } = event
     if (key === "Backspace") {

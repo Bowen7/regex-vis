@@ -1,13 +1,13 @@
 import React from "react"
 import { useTheme } from "@geist-ui/react"
-import { useStorageState } from "@/utils/hooks"
+import { useLocalStorage } from "react-use"
 import ChevronDown from "@geist-ui/react-icons/chevronDown"
 type Props = {
   id: string
 }
 const ShowMore: React.FC<Props> = ({ id, children }) => {
   const { palette, expressiveness } = useTheme()
-  const [expanded, setExpanded] = useStorageState(id, false)
+  const [expanded, setExpanded] = useLocalStorage(id, false)
   const handleClick = () => setExpanded(!expanded)
   return (
     <>

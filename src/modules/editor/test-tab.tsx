@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { Button, Spacer, Textarea } from "@geist-ui/react"
 import XCircle from "@geist-ui/react-icons/xCircle"
-import { useStorageState } from "@/utils/hooks"
+import { useLocalStorage } from "react-use"
 import produce from "immer"
 import { gen } from "@/parser"
 import { astAtom, useAtomValue } from "@/atom"
@@ -12,7 +12,7 @@ const DebouncedTextarea = withDebounce<
 >(Textarea)
 
 const TestTab: React.FC<{}> = () => {
-  const [cases, setCases] = useStorageState<string[]>("test-case", [""])
+  const [cases, setCases] = useLocalStorage<string[]>("test-case", [""])
   const ast = useAtomValue(astAtom)
   const [regExp, setRegExp] = useState<RegExp>(() => {
     const regex = gen(ast, false)
@@ -20,7 +20,7 @@ const TestTab: React.FC<{}> = () => {
   })
 
   useEffect(() => {
-    if (cases.length === 0) {
+    if (cases!.length === 0) {
       setCases([""])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -34,21 +34,21 @@ const TestTab: React.FC<{}> = () => {
 
   const handleInputChange = (value: string, index: number) => {
     setCases(
-      produce(cases, (draft) => {
+      produce(cases!, (draft) => {
         draft[index] = value
       })
     )
   }
   const handleRemove = (index: number) => {
     setCases(
-      produce(cases, (draft) => {
+      produce(cases!, (draft) => {
         draft.splice(index, 1)
       })
     )
   }
   const handleAdd = () => {
     setCases(
-      produce(cases, (draft) => {
+      produce(cases!, (draft) => {
         draft.push("")
       })
     )
@@ -60,7 +60,7 @@ const TestTab: React.FC<{}> = () => {
   return (
     <>
       <div className="wrapper">
-        {cases.map((value, index) => (
+        {cases!.map((value, index) => (
           <React.Fragment key={index}>
             <div className="case-input">
               <DebouncedTextarea
