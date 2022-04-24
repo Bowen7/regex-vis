@@ -1,4 +1,4 @@
-const questions = {
+const mdnLinks = {
   group:
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Groups_and_Ranges",
   lookAround:
@@ -14,9 +14,9 @@ const questions = {
   quantifier:
     "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions/Quantifiers",
 }
-export type QuestionKey = keyof typeof questions
+export type MdnLinkKey = keyof typeof mdnLinks
 
-export const isQuestionKey = (key: string): key is QuestionKey => {
+export const isMdnLinkKey = (key: string): key is MdnLinkKey => {
   return [
     "group",
     "lookAround",
@@ -27,4 +27,4 @@ export const isQuestionKey = (key: string): key is QuestionKey => {
     "quantifier",
   ].includes(key)
 }
-export default questions
+export default mdnLinks
