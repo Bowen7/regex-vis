@@ -41,7 +41,7 @@ const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   useEffect(() => {
     const nodesInfo = getInfoFromNodes(nodes, isLiteral)
     setNodesInfo(nodesInfo)
-  }, [nodes])
+  }, [nodes, isLiteral])
 
   return (
     <>

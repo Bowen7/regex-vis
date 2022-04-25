@@ -28,7 +28,7 @@ describe("Gen Regex String", function () {
   }).forEach(([regex, result]) => {
     it(regex, () => {
       const ast = result as AST.Regex
-      expect(gen(ast, true)).toEqual(regex)
+      expect(gen(ast)).toEqual(regex)
     })
   })
 })
