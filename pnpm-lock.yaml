@@ -12,7 +12,6 @@ specifiers:
   '@svgr/webpack': ^5.5.0
   '@types/gtag.js': ^0.0.7
   '@types/jest': ^24.9.1
-  '@types/lodash': ^4.14.168
   '@types/node': ^12.0.0
   '@types/react': ^16.9.0
   '@types/react-dom': ^16.9.0
@@ -25,7 +24,6 @@ specifiers:
   esbuild: ^0.12.17
   immer: ^9.0.6
   jest: ^26.6.0
-  lodash: ^4.17.21
   nanoid: ^3.1.16
   react: ^16.13.1
   react-app-rewired: ^2.1.6
@@ -42,7 +40,6 @@ dependencies:
   '@geist-ui/react-icons': registry.npmjs.org/@geist-ui/react-icons/1.0.1_7b5a81bad6672c896ce7b975a7dcba4d
   canvas: registry.npmjs.org/canvas/2.8.0
   immer: registry.npmjs.org/immer/9.0.6
-  lodash: registry.npmjs.org/lodash/4.17.21
   nanoid: registry.npmjs.org/nanoid/3.1.23
   react: registry.npmjs.org/react/16.14.0
   react-dom: registry.npmjs.org/react-dom/16.14.0_react@16.14.0
@@ -59,7 +56,6 @@ devDependencies:
   '@svgr/webpack': registry.npmjs.org/@svgr/webpack/5.5.0
   '@types/gtag.js': registry.npmjs.org/@types/gtag.js/0.0.7
   '@types/jest': registry.npmjs.org/@types/jest/24.9.1
-  '@types/lodash': registry.npmjs.org/@types/lodash/4.14.169
   '@types/node': registry.npmjs.org/@types/node/12.20.13
   '@types/react': registry.npmjs.org/@types/react/16.14.6
   '@types/react-dom': registry.npmjs.org/@types/react-dom/16.9.13
@@ -5786,12 +5782,6 @@ packages:
     name: '@types/json5'
     version: 0.0.29
     dev: false
-
-  registry.npmjs.org/@types/lodash/4.14.169:
-    resolution: {integrity: sha512-DvmZHoHTFJ8zhVYwCLWbQ7uAbYQEk52Ev2/ZiQ7Y7gQGeV9pjBqjnQpECMHfKS1rCYAhMI7LHVxwyZLZinJgdw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@types/lodash/-/lodash-4.14.169.tgz}
-    name: '@types/lodash'
-    version: 4.14.169
-    dev: true
 
   registry.npmjs.org/@types/minimatch/3.0.4:
     resolution: {integrity: sha512-1z8k4wzFnNjVK/tlxvrWuK5WMt6mydWWP7+zvH5eFep4oj+UkrfiJTRtjCeBXNpwaA/FYqqtb4/QS4ianFpIRA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.npmjs.org/@types/minimatch/-/minimatch-3.0.4.tgz}
