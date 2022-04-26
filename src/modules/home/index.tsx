@@ -3,7 +3,7 @@ import { useHistory, useLocation } from "react-router-dom"
 import { useTheme, useToasts } from "@geist-ui/react"
 import { nanoid } from "nanoid"
 import { parse, gen, AST } from "@/parser"
-import { useCustomCompareEffect, useUpdateEffect } from "react-use"
+import { useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import RegexInput from "./regex-input"
@@ -38,6 +38,7 @@ const Home: React.FC<{}> = () => {
       new URLSearchParams(location.search).get("l") === "1" ||
       localStorage.getItem("isLiteral") === "1"
   )
+  const isLiteralRef = useRef(isLiteral)
 
   const [, setToasts] = useToasts()
   useEffect(() => {
@@ -48,25 +49,24 @@ const Home: React.FC<{}> = () => {
 
   useEffect(() => setToastsAtom.setState(setToasts), [setToasts])
 
-  useCustomCompareEffect(
-    () => {
-      const ast = parse(regex, isLiteral)
-      if (ast.type === "regex") {
-        setErrorMsg(null)
-        const { body } = ast
-        const nextAst = { ...ast, body: [head, ...body, tail] }
-        astRef.current = nextAst
-        dispatchSetAst(nextAst)
-      } else {
-        dispatchClearSelected()
-        setErrorMsg(ast.message)
-      }
-    },
-    [regex, isLiteral],
-    (nextDeps, prevDeps) => {
-      return !(regexRef.current !== nextDeps[0] || nextDeps[1] !== prevDeps[1])
+  useEffect(() => {
+    if (isLiteralRef.current === isLiteral && regex === regexRef.current) {
+      return
     }
-  )
+    isLiteralRef.current = isLiteral
+
+    const ast = parse(regex, isLiteral)
+    if (ast.type === "regex") {
+      setErrorMsg(null)
+      const { body } = ast
+      const nextAst = { ...ast, body: [head, ...body, tail] }
+      astRef.current = nextAst
+      dispatchSetAst(nextAst)
+    } else {
+      dispatchClearSelected()
+      setErrorMsg(ast.message)
+    }
+  }, [regex, isLiteral])
 
   useEffect(() => {
     // update url search
