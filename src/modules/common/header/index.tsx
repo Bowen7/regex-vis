@@ -1,6 +1,6 @@
 import React from "react"
 import { NavLink, Link } from "react-router-dom"
-import { useTheme } from "@geist-ui/react"
+import { useTheme, Select } from "@geist-ui/react"
 import Sun from "@geist-ui/react-icons/sun"
 import Moon from "@geist-ui/react-icons/moon"
 import { LogoSvg } from "@/assets"
@@ -27,9 +27,6 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           <NavLink to="/" exact activeStyle={activeStyle}>
             Home
           </NavLink>
-          {/* <NavLink to="/guide" activeStyle={activeStyle}>
-            Guide
-          </NavLink> */}
           <NavLink to="/samples" activeStyle={activeStyle}>
             Samples
           </NavLink>
@@ -43,6 +40,10 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           >
             Github
           </a>
+          <Select value="en">
+            <Select.Option value="en">English</Select.Option>
+            <Select.Option value="cn">简体中文</Select.Option>
+          </Select>
           {theme === "dark" ? (
             <Moon
               size={18}
@@ -88,7 +89,7 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           fill: ${palette.success};
         }
 
-        .nav :global(a:not(:last-child)) {
+        .nav :global(:not(:last-child)) {
           margin-right: 48px;
         }
         .nav :global(a) {
