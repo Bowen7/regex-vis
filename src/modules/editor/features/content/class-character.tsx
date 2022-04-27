@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { Spacer, Select, Code } from "@geist-ui/react"
+import { Spacer, Select, Code } from "@geist-ui/core"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { characterClassTextMap, CharacterClassKey } from "@/parser"
@@ -59,13 +59,13 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
           <Select.Option value={value} key={value}>
             <div>
               <Code>{value}</Code>
-              <Spacer x={0.5} inline />
+              <Spacer w={0.5} inline />
               {text}
             </div>
           </Select.Option>
         ))}
       </Select>
-      <Spacer y={1} />
+      <Spacer h={1} />
       {classKind === "\\xhh" && (
         <Input
           value={value}

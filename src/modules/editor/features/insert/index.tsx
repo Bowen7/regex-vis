@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { Button, ButtonGroup, Tooltip } from "@geist-ui/react"
+import { Button, ButtonGroup, Tooltip } from "@geist-ui/core"
 import Cell from "@/components/cell"
 import ShowMore from "@/components/show-more"
 import {
@@ -141,7 +141,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
         </Cell>
       )}
       {groupOptions.length > 0 && (
-        <Cell label="Group selection" question="group">
+        <Cell label="Group selection" mdnLinkKey="group">
           <ButtonGroup>
             {groupOptions.map(({ value, desc, Icon }) => (
               <Button onClick={() => handleWrapGroup(value)} key={value}>
@@ -156,7 +156,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
 
       {lookAroundOptions.length > 0 && (
         <ShowMore id="lookAround">
-          <Cell label="LookAround selection" question="lookAround">
+          <Cell label="LookAround selection" mdnLinkKey="lookAround">
             <ButtonGroup>
               {lookAroundOptions.map(({ value, desc, Icon }) => (
                 <Button

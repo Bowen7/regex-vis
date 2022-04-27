@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-import { useTheme, useToasts } from "@geist-ui/react"
+import { useTheme, useToasts } from "@geist-ui/core"
 import { nanoid } from "nanoid"
 import { parse, gen, AST } from "@/parser"
 import { useUpdateEffect } from "react-use"
@@ -40,14 +40,14 @@ const Home: React.FC<{}> = () => {
   )
   const isLiteralRef = useRef(isLiteral)
 
-  const [, setToasts] = useToasts()
+  const { setToast } = useToasts()
   useEffect(() => {
     if (new URLSearchParams(location.search).get("r") === null) {
       setRegex("")
     }
   }, [location])
 
-  useEffect(() => setToastsAtom.setState(setToasts), [setToasts])
+  useEffect(() => setToastsAtom.setState(setToast), [setToast])
 
   useEffect(() => {
     if (isLiteralRef.current === isLiteral && regex === regexRef.current) {

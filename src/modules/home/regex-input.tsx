@@ -1,5 +1,5 @@
 import React from "react"
-import { Spacer, Checkbox, Select, Code, useTheme } from "@geist-ui/react"
+import { Spacer, Checkbox, Select, Code, useTheme } from "@geist-ui/core"
 import Input from "@/components/input"
 type Props = {
   regex: string
@@ -67,7 +67,11 @@ const RegexInput: React.FC<Props> = ({
         {regex !== "" && (
           <>
             <Spacer inline />
-            <Checkbox.Group value={flags} onChange={handleFlagsChange}>
+            <Checkbox.Group
+              value={flags}
+              onChange={handleFlagsChange}
+              scale={0.75}
+            >
               <Checkbox value="g">Global search</Checkbox>
               <Checkbox value="i">Case-insensitive</Checkbox>
               <Checkbox value="m">Multi-line</Checkbox>

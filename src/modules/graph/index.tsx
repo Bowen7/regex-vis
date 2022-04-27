@@ -1,5 +1,5 @@
 import React, { useState } from "react"
-import { useTheme, Code, Dot } from "@geist-ui/react"
+import { useTheme, Code, Dot } from "@geist-ui/core"
 import { RenderNode, RenderConnect, Box } from "./types"
 import { useUpdateEffect } from "react-use"
 import { AST } from "@/parser"

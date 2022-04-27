@@ -1,6 +1,6 @@
 import React from "react"
 import { BrowserRouter as Router, Switch } from "react-router-dom"
-import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/react"
+import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
 import Header from "@/modules/common/header"
 import { useLocalStorage } from "react-use"
 import Routes from "./routes"

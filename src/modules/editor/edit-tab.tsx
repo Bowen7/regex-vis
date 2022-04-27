@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react"
-import { Divider, useTheme } from "@geist-ui/react"
+import { Divider, useTheme } from "@geist-ui/core"
 import ContentEditor from "./features/content"
 import Group from "./features/group"
 import Expression from "./features/expression"
@@ -47,7 +47,7 @@ const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
     <>
       <div className="container">
         <Insert ast={ast} nodes={nodes} />
-        <Divider />
+        <Divider mt="24px" />
         <Expression expression={expression} />
         {content && (
           <ContentEditor content={content} id={id} quantifier={quantifier} />

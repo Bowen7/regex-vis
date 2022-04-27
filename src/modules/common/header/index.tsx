@@ -1,8 +1,8 @@
 import React from "react"
 import { NavLink, Link } from "react-router-dom"
-import { useTheme, Select } from "@geist-ui/react"
-import Sun from "@geist-ui/react-icons/sun"
-import Moon from "@geist-ui/react-icons/moon"
+import { useTheme, Select } from "@geist-ui/core"
+import Sun from "@geist-ui/icons/sun"
+import Moon from "@geist-ui/icons/moon"
 import { LogoSvg } from "@/assets"
 
 type Props = {
@@ -40,7 +40,7 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           >
             Github
           </a>
-          <Select value="en">
+          <Select value="en" width="100px" disableMatchWidth scale={0.5}>
             <Select.Option value="en">English</Select.Option>
             <Select.Option value="cn">简体中文</Select.Option>
           </Select>
@@ -90,11 +90,14 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
         }
 
         .nav :global(:not(:last-child)) {
-          margin-right: 48px;
+          margin-right: 32px;
         }
         .nav :global(a) {
           color: ${palette.accents_4};
           font-size: 14px;
+        }
+        .nav :global(.select) {
+          min-width: auto;
         }
 
         header :global(svg) {

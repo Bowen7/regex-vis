@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react"
-import { Button, Spacer, Textarea } from "@geist-ui/react"
-import XCircle from "@geist-ui/react-icons/xCircle"
+import { Button, Spacer, Textarea } from "@geist-ui/core"
+import XCircle from "@geist-ui/icons/xCircle"
 import { useLocalStorage } from "react-use"
 import produce from "immer"
 import { gen } from "@/parser"
@@ -67,13 +67,13 @@ const TestTab: React.FC<{}> = () => {
                 value={value}
                 width="215px"
                 rows={Math.min(3, value.split("\n").length)}
-                status={regExp.test(value) ? "success" : "error"}
+                type={regExp.test(value) ? "success" : "error"}
                 onKeyDown={handleKeyDown}
                 onChange={(value: string) => handleInputChange(value, index)}
               />
               <XCircle cursor="pointer" onClick={() => handleRemove(index)} />
             </div>
-            <Spacer y={0.5} />
+            <Spacer h={0.5} />
           </React.Fragment>
         ))}
         <div className="btn">

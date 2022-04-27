@@ -1,5 +1,5 @@
 import React from "react"
-import { Select, Spacer } from "@geist-ui/react"
+import { Select, Spacer } from "@geist-ui/core"
 import Input from "@/components/input"
 import { AST } from "@/parser"
 import Cell from "@/components/cell"
@@ -74,7 +74,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
         </Select>
         {group.kind === "namedCapturing" && (
           <>
-            <Spacer y={0.5} />
+            <Spacer h={0.5} />
             <Input
               label="Group's name"
               value={group.name}

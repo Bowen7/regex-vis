@@ -1,12 +1,15 @@
 import React, { useState } from "react"
-import { Input as GeistInput, useTheme } from "@geist-ui/react"
+import { Input as GeistInput, useTheme } from "@geist-ui/core"
 import { withDebounce } from "@/utils/hocs"
 const DebouncedInput = withDebounce<
   HTMLInputElement,
   React.ComponentProps<typeof GeistInput>
 >(GeistInput, 500)
 
-type Props = React.ComponentProps<typeof DebouncedInput> & {
+type Props = Omit<
+  React.ComponentProps<typeof DebouncedInput>,
+  "enterKeyHint"
+> & {
   validation?: RegExp
   errMsg?: string
 }

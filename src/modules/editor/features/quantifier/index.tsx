@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Select, Spacer, Checkbox, useToasts } from "@geist-ui/react"
-import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
+import { Select, Spacer, Checkbox, useToasts } from "@geist-ui/core"
+import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
 import { AST } from "@/parser"
@@ -18,7 +18,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   const [max, setMax] = useState("")
   const [minPlaceholder, setMinPlaceholder] = useState("")
   const [maxPlaceholder, setMaxPlaceholder] = useState("")
-  const [, setToast] = useToasts()
+  const { setToast } = useToasts()
 
   useEffect(() => {
     quantifierRef.current = quantifier
@@ -130,7 +130,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
           </Select>
           {kind === "custom" && (
             <>
-              <Spacer y={0.5} />
+              <Spacer h={0.5} />
               <RangeInput
                 start={min}
                 end={max}

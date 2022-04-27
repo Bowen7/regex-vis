@@ -1,7 +1,7 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme } from "@geist-ui/core"
 import { useLocalStorage } from "react-use"
-import ChevronDown from "@geist-ui/react-icons/chevronDown"
+import ChevronDown from "@geist-ui/icons/chevronDown"
 type Props = {
   id: string
 }

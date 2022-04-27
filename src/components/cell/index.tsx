@@ -1,6 +1,6 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
-import QuestionCircle from "@geist-ui/react-icons/questionCircle"
+import { useTheme } from "@geist-ui/core"
+import QuestionCircle from "@geist-ui/icons/questionCircle"
 import mdnLinks, { MdnLinkKey } from "@/utils/links"
 
 type ItemProps = {
