@@ -62,7 +62,7 @@
   },
   "pnpm": {
     "overrides": {
-      "@svgr/hast-util-to-babel-ast": "https://github.com/Bowen7/hast-util-to-babel-ast.git"
+      "@svgr/hast-util-to-babel-ast": "https://registry.npmjs.org/@bowen7/hast-util-to-babel-ast/-/hast-util-to-babel-ast-5.5.1.tgz"
     }
   }
 }
