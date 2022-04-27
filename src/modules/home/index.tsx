@@ -98,7 +98,7 @@ const Home: React.FC<{}> = () => {
   return (
     <>
       <div className="wrapper" style={style}>
-        {regex !== "" && (
+        {(regex !== "" || ast.body.length > 2) && (
           <div className="graph">
             <div className="content">
               <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
