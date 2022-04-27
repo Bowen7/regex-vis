@@ -40,10 +40,10 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           >
             Github
           </a>
-          <Select value="en" width="100px" disableMatchWidth scale={0.5}>
+          {/* <Select value="en" width="100px" disableMatchWidth scale={0.5}>
             <Select.Option value="en">English</Select.Option>
             <Select.Option value="cn">简体中文</Select.Option>
-          </Select>
+          </Select> */}
           {theme === "dark" ? (
             <Moon
               size={18}

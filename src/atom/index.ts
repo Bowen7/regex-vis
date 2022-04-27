@@ -72,6 +72,8 @@ export const setUndoStack = setAtomValue(undoStackAtom)
 export const setRedoStack = setAtomValue(redoStackAtom)
 export const setEditorCollapsed = setAtomValue(editorCollapsedAtom)
 
+export const dispatchClearSelected = () => setSelectedIds([])
+
 const setAstWithUndo = (ast: AST.Regex, shouldRefreshGroupIndex = false) => {
   const nextUndoStack = produce(undoStackAtom.current, (draft) => {
     draft.push(astAtom.current)
@@ -91,8 +93,11 @@ export const dispatchInsert = (direction: "prev" | "next" | "branch") => {
   setAstWithUndo(nextAst)
 }
 
-export const dispatchRemove = () =>
-  setAstWithUndo(removeIt(astAtom.current, selectedIdsAtom.current), true)
+export const dispatchRemove = () => {
+  const selectedIds = selectedIdsAtom.current
+  dispatchClearSelected()
+  setAstWithUndo(removeIt(astAtom.current, selectedIds), true)
+}
 
 export const dispatchUpdateGroup = (group: AST.Group | null) => {
   const { nextAst, nextSelectedIds } = updateGroup(
@@ -113,8 +118,6 @@ export const dispatchGroupIt = (group: AST.Group) => {
   setAstWithUndo(nextAst, true)
   setSelectedIds(nextSelectedIds)
 }
-
-export const dispatchClearSelected = () => setSelectedIds([])
 
 export const dispatchSetAst = (ast: AST.Regex) => {
   setAstWithUndo(ast, false)

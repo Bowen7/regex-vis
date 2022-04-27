@@ -145,7 +145,7 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
         .container > :global(.tabs > header) {
           padding: 0 12px;
         }
-        .container > :global(.highlight) {
+        .container > :global(.tabs > header .highlight) {
           display: none;
         }
         .container :global(.tabs > header .tab) {
