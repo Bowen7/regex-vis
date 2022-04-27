@@ -1,6 +1,6 @@
 import React from "react"
-import { useTheme, ButtonDropdown, Spacer, Checkbox } from "@geist-ui/react"
-import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
+import { useTheme, ButtonDropdown, Spacer, Checkbox } from "@geist-ui/core"
+import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
@@ -72,8 +72,8 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
           />
         ))}
       </div>
-      <Spacer y={0.5} />
-      <ButtonDropdown size="small">
+      <Spacer h={0.5} />
+      <ButtonDropdown scale={0.75}>
         {commonUsedRanges.map(({ from, to, desc }, index) => (
           <ButtonDropdown.Item
             main={index === 0}

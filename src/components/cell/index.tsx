@@ -1,7 +1,7 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
-import QuestionCircle from "@geist-ui/react-icons/questionCircle"
-import questions, { QuestionKey } from "@/utils/questions"
+import { useTheme } from "@geist-ui/core"
+import QuestionCircle from "@geist-ui/icons/questionCircle"
+import mdnLinks, { MdnLinkKey } from "@/utils/links"
 
 type ItemProps = {
   label: string
@@ -23,13 +23,13 @@ const CellItem: React.FC<ItemProps> = ({ label, children }) => {
 
 type Props = {
   label: string
-  question?: QuestionKey
+  mdnLinkKey?: MdnLinkKey
   rightLabel?: string
   onRightLabelClick?: () => void
 }
 const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
   label,
-  question,
+  mdnLinkKey,
   children,
   rightLabel,
   onRightLabelClick,
@@ -41,8 +41,8 @@ const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
         <div className="title">
           <div className="left">
             <h5>{label}</h5>
-            {question && (
-              <a href={questions[question]} target="_blank" rel="noreferrer">
+            {mdnLinkKey && (
+              <a href={mdnLinks[mdnLinkKey]} target="_blank" rel="noreferrer">
                 <QuestionCircle size={16} />
               </a>
             )}

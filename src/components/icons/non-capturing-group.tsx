@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme } from "@geist-ui/core"
 
 const NonCapturingGroup = () => {
   const { palette } = useTheme()

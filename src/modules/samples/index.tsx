@@ -1,6 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
-import { useTheme, Code } from "@geist-ui/react"
+import { useTheme, Code } from "@geist-ui/core"
 import {
   WholeNumbersSvg,
   DecimalNumberSvg,

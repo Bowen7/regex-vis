@@ -1,5 +1,5 @@
 import React, { useMemo } from "react"
-import { Select } from "@geist-ui/react"
+import { Select } from "@geist-ui/core"
 import Cell from "@/components/cell"
 import { dispatchUpdateContent, groupNamesAtom, useAtomValue } from "@/atom"
 

@@ -1,5 +1,5 @@
 import React from "react"
-import { useTheme } from "@geist-ui/react"
+import { useTheme } from "@geist-ui/core"
 type Props = {
   name: string
   infos: {

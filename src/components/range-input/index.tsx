@@ -1,6 +1,6 @@
 import React, { useState, useRef, useMemo } from "react"
-import { useClickAway, useTheme } from "@geist-ui/react"
-import { Trash2 } from "@geist-ui/react-icons"
+import { useClickAway, useTheme } from "@geist-ui/core"
+import Trash2 from "@geist-ui/icons/trash2"
 import Input from "../input"
 type Prop = {
   start: string

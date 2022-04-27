@@ -371,7 +371,7 @@ class RenderEngine {
   public selectByBound(box: Box) {
     let selected = false
     const selectedIds = []
-    for (let i = 0; this.layoutChildrenList.length; i++) {
+    for (let i = 0; i < this.layoutChildrenList.length; i++) {
       const layoutChildren = this.layoutChildrenList[i]
       for (let j = 0; j < layoutChildren.length; j++) {
         const nodeLayout = layoutChildren[j]

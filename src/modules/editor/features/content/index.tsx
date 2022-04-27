@@ -1,9 +1,9 @@
 import React, { useMemo } from "react"
-import { Select, useTheme, Spacer } from "@geist-ui/react"
+import { Select, useTheme, Spacer } from "@geist-ui/core"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
-import QuestionCircle from "@geist-ui/react-icons/questionCircle"
-import questions, { isQuestionKey } from "@/utils/questions"
+import QuestionCircle from "@geist-ui/icons/questionCircle"
+import mdnLinks, { isMdnLinkKey } from "@/utils/links"
 import SimpleString from "./simple-string"
 import ClassCharacter from "./class-character"
 import BackRef from "./back-ref"
@@ -99,13 +99,9 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
                 </Select.Option>
               ))}
             </Select>
-            <Spacer inline x={0.5} />
-            {isQuestionKey(content.kind) && (
-              <a
-                href={questions[content.kind]}
-                target="_blank"
-                rel="noreferrer"
-              >
+            <Spacer inline h={0.5} />
+            {isMdnLinkKey(content.kind) && (
+              <a href={mdnLinks[content.kind]} target="_blank" rel="noreferrer">
                 <QuestionCircle size={16} />
               </a>
             )}

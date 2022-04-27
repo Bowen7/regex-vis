@@ -1,5 +1,5 @@
 import React, { useState, useRef, useCallback, useMemo } from "react"
-import { useEventListener } from "@/utils/hooks"
+import { useEvent } from "react-use"
 import { RenderNode, RenderConnect, Box } from "./types"
 import { AST } from "@/parser"
 import { dispatchSelectNodes } from "@/atom"
@@ -87,7 +87,7 @@ const SvgContainer: React.FC<Props> = (props) => {
     e.stopPropagation()
     window.removeEventListener("click", captureClick, true)
   }
-  useEventListener("mouseup", onMouseUp)
+  useEvent("mouseup", onMouseUp)
   return (
     <svg
       version="1.1"

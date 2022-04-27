@@ -1,6 +1,6 @@
 import React from "react"
-import { Checkbox } from "@geist-ui/react"
-import { CheckboxEvent } from "@geist-ui/react/dist/checkbox/checkbox"
+import { Checkbox } from "@geist-ui/core"
+import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
 import { dispatchUpdateContent } from "@/atom"
 

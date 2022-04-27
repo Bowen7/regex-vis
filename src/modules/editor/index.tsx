@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react"
-import ChevronsRight from "@geist-ui/react-icons/chevronsRight"
-import ChevronsLeft from "@geist-ui/react-icons/chevronsLeft"
-import { Tabs, useTheme, Button } from "@geist-ui/react"
+import ChevronsRight from "@geist-ui/icons/chevronsRight"
+import ChevronsLeft from "@geist-ui/icons/chevronsLeft"
+import { Tabs, useTheme, Button } from "@geist-ui/core"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
-import { useEventListener } from "@/utils/hooks"
+import { useEvent } from "react-use"
 import {
   dispatchRemove,
   dispatchUndo,
@@ -39,7 +39,7 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const undo = () => dispatchUndo()
   const redo = () => dispatchRedo()
 
-  useEventListener("keydown", (e: Event) => {
+  useEvent("keydown", (e: Event) => {
     const event = e as KeyboardEvent
     const { key } = event
     if (key === "Backspace") {
@@ -145,7 +145,10 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
         .container > :global(.tabs > header) {
           padding: 0 12px;
         }
-        .container :global(.tabs > header > .tab) {
+        .container > :global(.tabs > header .highlight) {
+          display: none;
+        }
+        .container :global(.tabs > header .tab) {
           width: 33.3%;
           margin: 0;
           justify-content: center;
