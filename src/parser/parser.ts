@@ -335,8 +335,10 @@ class Parser {
         }
 
         new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
-      } else {
+      } else if (this.regex) {
         this.regex = String(new RegExp(this.regex))
+      } else {
+        this.regex = "//"
       }
     } catch (error) {
       if (error instanceof Error) {
