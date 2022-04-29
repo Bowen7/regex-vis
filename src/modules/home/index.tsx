@@ -26,8 +26,7 @@ const Home: React.FC<{}> = () => {
   const ast = useAtomValue(astAtom)
   const { palette } = useTheme()
 
-  const regexRef = useRef("")
-  const astRef = useRef(ast)
+  const shouldGenAst = useRef(true)
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [regex, setRegex] = useState<string>(
@@ -38,7 +37,6 @@ const Home: React.FC<{}> = () => {
       new URLSearchParams(location.search).get("l") === "1" ||
       localStorage.getItem("isLiteral") === "1"
   )
-  const isLiteralRef = useRef(isLiteral)
 
   const { setToast } = useToasts()
   useEffect(() => {
@@ -50,18 +48,13 @@ const Home: React.FC<{}> = () => {
   useEffect(() => setToastsAtom.setState(setToast), [setToast])
 
   useEffect(() => {
-    if (isLiteralRef.current === isLiteral && regex === regexRef.current) {
-      return
-    }
-    isLiteralRef.current = isLiteral
-
     const ast = parse(regex, isLiteral)
     if (ast.type === "regex") {
       setErrorMsg(null)
       const { body } = ast
       const nextAst = { ...ast, body: [head, ...body, tail] }
-      astRef.current = nextAst
       dispatchSetAst(nextAst)
+      shouldGenAst.current = false
     } else {
       dispatchClearSelected()
       setErrorMsg(ast.message)
@@ -84,10 +77,11 @@ const Home: React.FC<{}> = () => {
   }, [regex, history, isLiteral])
 
   useUpdateEffect(() => {
-    if (ast !== astRef.current) {
+    if (shouldGenAst.current) {
       const nextRegex = gen(ast)
-      regexRef.current = nextRegex
       setRegex(nextRegex)
+    } else {
+      shouldGenAst.current = true
     }
   }, [ast])
 
