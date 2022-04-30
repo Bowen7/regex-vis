@@ -83,7 +83,6 @@ const Home: React.FC<{}> = () => {
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
-      console.log(123)
       const nextRegex = gen(ast)
       if (nextRegex !== regexRef.current) {
         setRegex(nextRegex)
