@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useHistory, useLocation } from "react-router-dom"
-import { useTheme, useToasts } from "@geist-ui/core"
+import { useTheme, useToasts, useCurrentState } from "@geist-ui/core"
 import { nanoid } from "nanoid"
 import { parse, gen, AST } from "@/parser"
 import { useUpdateEffect } from "react-use"
@@ -27,9 +27,10 @@ const Home: React.FC<{}> = () => {
   const { palette } = useTheme()
 
   const shouldGenAst = useRef(true)
+  const shouldParseRegex = useRef(true)
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
-  const [regex, setRegex] = useState<string>(
+  const [regex, setRegex, regexRef] = useCurrentState<string>(
     () => new URLSearchParams(location.search).get("r") || ""
   )
   const [isLiteral, setIsLiteral] = useState(
@@ -43,11 +44,15 @@ const Home: React.FC<{}> = () => {
     if (new URLSearchParams(location.search).get("r") === null) {
       setRegex("")
     }
-  }, [location])
+  }, [location, setRegex])
 
   useEffect(() => setToastsAtom.setState(setToast), [setToast])
 
   useEffect(() => {
+    if (!shouldParseRegex.current) {
+      shouldParseRegex.current = true
+      return
+    }
     const ast = parse(regex, isLiteral)
     if (ast.type === "regex") {
       setErrorMsg(null)
@@ -78,8 +83,12 @@ const Home: React.FC<{}> = () => {
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
+      console.log(123)
       const nextRegex = gen(ast)
-      setRegex(nextRegex)
+      if (nextRegex !== regexRef.current) {
+        setRegex(nextRegex)
+        shouldParseRegex.current = false
+      }
     } else {
       shouldGenAst.current = true
     }
