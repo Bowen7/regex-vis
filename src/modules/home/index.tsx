@@ -44,7 +44,8 @@ const Home: React.FC<{}> = () => {
     if (new URLSearchParams(location.search).get("r") === null) {
       setRegex("")
     }
-  }, [location, setRegex])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location])
 
   useEffect(() => setToastsAtom.setState(setToast), [setToast])
 
@@ -96,7 +97,6 @@ const Home: React.FC<{}> = () => {
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
   const handleFlagsChange = (flags: string[]) => dispatchUpdateFlags(flags)
-
   return (
     <>
       <div className="wrapper" style={style}>
