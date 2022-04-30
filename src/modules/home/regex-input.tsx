@@ -104,6 +104,9 @@ const RegexInput: React.FC<Props> = ({
         .input :global(.select:hover) {
           border-color: ${palette.border};
         }
+        .input :global(.select.active) {
+          border-color: ${palette.border};
+        }
         .input :global(.hint) {
           display: none;
         }

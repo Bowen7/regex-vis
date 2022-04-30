@@ -22,7 +22,7 @@ const withDebounce = <
 
     useDebounce(
       () => {
-        onChange(innerValue)
+        value !== innerValue && onChange(innerValue)
       },
       ms,
       [innerValue]
