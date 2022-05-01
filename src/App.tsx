@@ -1,4 +1,4 @@
-import React from "react"
+import React, { Suspense } from "react"
 import { BrowserRouter as Router, Switch } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
 import Header from "@/modules/common/header"
@@ -21,16 +21,17 @@ export default function App() {
   }
   return (
     <>
-      <GeistProvider themeType={theme}>
-        <CssBaseline />
-        <Router>
-          <Header theme={theme!} onThemeChange={handleThemeChange} />
-          <Switch>
-            <Routes />
-          </Switch>
-        </Router>
-      </GeistProvider>
-
+      <Suspense fallback={null}>
+        <GeistProvider themeType={theme}>
+          <CssBaseline />
+          <Router>
+            <Header theme={theme!} onThemeChange={handleThemeChange} />
+            <Switch>
+              <Routes />
+            </Switch>
+          </Router>
+        </GeistProvider>
+      </Suspense>
       <style jsx global>{`
         ::selection {
           background: ${palette.successLight} !important;

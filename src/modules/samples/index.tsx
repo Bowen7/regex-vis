@@ -1,42 +1,36 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { useTheme, Code } from "@geist-ui/core"
-import {
-  WholeNumbersSvg,
-  DecimalNumberSvg,
-  WholeDecimalNumberSvg,
-  NegativePositiveWholeDecimalNumbersSvg,
-  UrlSvg,
-  DateSvg,
-} from "@/assets"
+import MinimumGraph from "@/modules/graph/minimum-graph"
 
 const samples = [
-  { desc: "1. Whole Numbers", Svg: WholeNumbersSvg, regex: "/^\\d+$/" },
+  { desc: "1. Whole Numbers", label: "/^\\d+$/", regex: "^\\d+$" },
   {
     desc: "2. Decimal Numbers",
-    Svg: DecimalNumberSvg,
-    regex: "/^\\d*\\.\\d+$/",
+    label: "/^\\d*\\.\\d+$/",
+    regex: "^\\d*\\.\\d+$",
   },
   {
     desc: "3. Whole + Decimal Numbers",
-    Svg: WholeDecimalNumberSvg,
-    regex: "/^\\d*(\\.\\d+)?$/",
+    label: "/^\\d*(\\.\\d+)?$/",
+    regex: "^\\d*(\\.\\d+)?$",
   },
   {
     desc: "4. Negative, Positive Whole + Decimal Numbers",
-    Svg: NegativePositiveWholeDecimalNumbersSvg,
-    regex: "/^-?\\d*(\\.\\d+)?$/",
+    label: "/^-?\\d*(\\.\\d+)?$/",
+    regex: "^-?\\d*(\\.\\d+)?$",
   },
   {
     desc: "5. Url",
-    Svg: UrlSvg,
-    regex:
+    label:
       "/^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#()?&//=]*)$/",
+    regex:
+      "^https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#()?&//=]*)$",
   },
   {
     desc: "6. Date Format YYYY-MM-dd",
-    Svg: DateSvg,
-    regex: "/[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])/",
+    label: "/[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])/",
+    regex: "[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])",
   },
 ]
 const Samples: React.FC<{}> = () => {
@@ -46,7 +40,7 @@ const Samples: React.FC<{}> = () => {
     <>
       <div className="wrapper">
         <div className="content">
-          {samples.map(({ desc, Svg, regex }) => (
+          {samples.map(({ desc, label, regex }) => (
             <Link
               to={`/?r=${encodeURIComponent(
                 isLiteral ? regex : regex.slice(1, regex.length - 1)
@@ -55,10 +49,10 @@ const Samples: React.FC<{}> = () => {
             >
               <div className="sample">
                 <p>
-                  {desc}: <Code>{regex}</Code>
+                  {desc}: <Code>{label}</Code>
                 </p>
                 <div className="svg-wrapper">
-                  <Svg />
+                  <MinimumGraph regex={regex} />
                 </div>
               </div>
             </Link>

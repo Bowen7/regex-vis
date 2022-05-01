@@ -3,7 +3,7 @@ import { NavLink, Link } from "react-router-dom"
 import { useTheme, Select } from "@geist-ui/core"
 import Sun from "@geist-ui/icons/sun"
 import Moon from "@geist-ui/icons/moon"
-import { LogoSvg } from "@/assets"
+import { ReactComponent as LogoSvg } from "@/logo.svg"
 
 type Props = {
   theme: string

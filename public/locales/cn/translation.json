@@ -1,0 +1,18 @@
+{
+  "Home": "首页",
+  "Samples": "样例",
+  "Legends": "图例",
+  "Edit": "编辑",
+  "Test": "测试",
+  "You can select nodes by dragging or clicking": "可以通过点击或拖拽选中节点",
+  "String": "字符串",
+  "Literal": "字面量",
+  " pattern, as follows": "模式，比如",
+  ", as follows": "，比如",
+  "Characters": "字符",
+  "Direct match characters": "直接匹配字符串",
+  "Character classes:": "字符类",
+  "Distinguish different types of characters": "区分不同类型的字符",
+  "Ranges": "范围",
+  "": ""
+}

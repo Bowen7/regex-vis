@@ -1,26 +1,12 @@
 import React from "react"
-import {
-  CharactersSvg,
-  ClassSvg,
-  RangesSvg,
-  NegateRangesSvg,
-  ChoiceSvg,
-  QuantifierSvg,
-  CapturingGroupSvg,
-  NonCapturingGroupSvg,
-  NamedCapturingGroupSvg,
-  BackReferenceSvg,
-  NamedBackReferenceSvg,
-  BeginningAssertionSvg,
-  LookaheadAssertionSvg,
-} from "@/assets"
+import MinimumGraph from "@/modules/graph/minimum-graph"
 
 const legends = [
   {
     name: "Characters",
     infos: [
       {
-        Icon: <CharactersSvg />,
+        Icon: <MinimumGraph regex="abc" />,
         desc: "Direct match characters",
       },
     ],
@@ -29,7 +15,7 @@ const legends = [
     name: "Character classes",
     infos: [
       {
-        Icon: <ClassSvg />,
+        Icon: <MinimumGraph regex={"\\d"} />,
         desc: "Distinguish different types of characters",
       },
     ],
@@ -38,11 +24,11 @@ const legends = [
     name: "Ranges",
     infos: [
       {
-        Icon: <RangesSvg />,
+        Icon: <MinimumGraph regex="[a-z]" />,
         desc: "Matches any one of the enclosed characters",
       },
       {
-        Icon: <NegateRangesSvg />,
+        Icon: <MinimumGraph regex="[^a-z]" />,
         desc: "Matches anything that is not enclosed in the brackets",
       },
     ],
@@ -51,7 +37,7 @@ const legends = [
     name: "Choice",
     infos: [
       {
-        Icon: <ChoiceSvg />,
+        Icon: <MinimumGraph regex="a|b" />,
         desc: `Matches either "x" or "y"`,
       },
     ],
@@ -60,7 +46,7 @@ const legends = [
     name: "Quantifier",
     infos: [
       {
-        Icon: <QuantifierSvg />,
+        Icon: <MinimumGraph regex="a*" />,
         desc: "Indicate numbers of characters or expressions to match",
       },
     ],
@@ -69,15 +55,15 @@ const legends = [
     name: "Group",
     infos: [
       {
-        Icon: <CapturingGroupSvg />,
+        Icon: <MinimumGraph regex="(x)" />,
         desc: "Matches x and remembers the match",
       },
       {
-        Icon: <NonCapturingGroupSvg />,
+        Icon: <MinimumGraph regex="(?:x)" />,
         desc: `Matches "x" but does not remember the match`,
       },
       {
-        Icon: <NamedCapturingGroupSvg />,
+        Icon: <MinimumGraph regex="(?<Name>x)" />,
         desc: `Matches "x" and stores it on the groups property of the returned matches under the name specified by <Name>`,
       },
     ],
@@ -86,11 +72,11 @@ const legends = [
     name: "Back reference",
     infos: [
       {
-        Icon: <BackReferenceSvg />,
+        Icon: <MinimumGraph regex={"\\1"} />,
         desc: "A back reference to match group #1",
       },
       {
-        Icon: <NamedBackReferenceSvg />,
+        Icon: <MinimumGraph regex={"\\k<name>"} />,
         desc: `A back reference to match group #Name`,
       },
     ],
@@ -99,11 +85,11 @@ const legends = [
     name: "Assertion",
     infos: [
       {
-        Icon: <BeginningAssertionSvg />,
+        Icon: <MinimumGraph regex="^" />,
         desc: "Matches the beginning of input",
       },
       {
-        Icon: <LookaheadAssertionSvg />,
+        Icon: <MinimumGraph regex="x(?=y)" />,
         desc: `Matches "x" only if "x" is followed by "y"`,
       },
     ],
