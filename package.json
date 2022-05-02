@@ -47,6 +47,9 @@
     "@babel/preset-react": "^7.14.5",
     "@babel/preset-typescript": "^7.14.5",
     "@svgr/webpack": "^5.5.0",
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "@types/gtag.js": "^0.0.7",
     "@types/jest": "^24.9.1",
     "@types/node": "^12.0.0",
@@ -57,8 +60,9 @@
     "@types/styled-jsx": "^2.2.8",
     "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
-    "jest": "^26.6.0",
+    "jest": "^27.1.4",
     "react-app-rewired": "^2.1.6",
+    "ts-jest": "^27.1.4",
     "ts-node": "^10.0.0"
   }
 }
