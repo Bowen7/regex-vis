@@ -35,6 +35,7 @@ specifiers:
   react-router-dom: ^5.2.0
   react-scripts: 4.0.3
   react-use: ^17.3.2
+  regenerator-runtime: ^0.13.9
   styled-jsx: 3.3.0
   ts-jest: ^27.1.4
   ts-node: ^10.0.0
@@ -79,6 +80,7 @@ devDependencies:
   customize-cra: 1.0.0
   jest: 27.5.1_canvas@2.8.0+ts-node@10.0.0
   react-app-rewired: 2.1.8_react-scripts@4.0.3
+  regenerator-runtime: 0.13.9
   ts-jest: 27.1.4_fefd2122a26875ce2b95a91d17d280cd
   ts-node: 10.0.0_7b597f38d174310b0b47c41cb45af3cf
 
@@ -2586,7 +2588,7 @@ packages:
   /@babel/runtime/7.14.0:
     resolution: {integrity: sha512-JELkvo/DlpNdJ7dlyw/eY7E0suy5i5GQH+Vlxaq1nsNJ+H7f4Vtv3jMeCEgRhZZQFXTjldYfQgv2qmM6M1v5wA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.0.tgz}
     dependencies:
-      regenerator-runtime: 0.13.7
+      regenerator-runtime: 0.13.9
 
   /@babel/runtime/7.17.8:
     resolution: {integrity: sha512-dQpEpK0O9o6lj6oPu0gRDbbnk+4LeHlNcBpspf6Olzt3GIX4P1lWF1gS+pHLDFlaJvbR6q7jCfQ08zA4QJBnmA==}
@@ -12003,9 +12005,6 @@ packages:
   /regenerator-runtime/0.11.1:
     resolution: {integrity: sha512-MguG95oij0fC3QV3URf4V2SDYGJhJnJGqvIIgdECeODCT98wSWDAJ94SSuVpYQUoTcGUIL6L4yNB7j1DFFHSBg==}
     dev: false
-
-  /regenerator-runtime/0.13.7:
-    resolution: {integrity: sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz}
 
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}

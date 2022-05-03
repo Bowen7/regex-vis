@@ -15,7 +15,6 @@ type Props = {
 }
 
 const RailNode: React.FC<Props> = React.memo((props) => {
-  console.log("render")
   let { x, y, width, height, selected, node } = props
   const { type } = node
 

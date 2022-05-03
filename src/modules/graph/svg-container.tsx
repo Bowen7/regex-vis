@@ -96,6 +96,7 @@ const SvgContainer: React.FC<Props> = (props) => {
       height={height}
       onMouseDown={minimum ? undefined : onMouseDown}
       onMouseMove={minimum ? undefined : onMouseMove}
+      data-testid="graph"
     >
       {connects.map(({ kind, start, end, id }) => (
         <Connect kind={kind} start={start} end={end} key={id} />

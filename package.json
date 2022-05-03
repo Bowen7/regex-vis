@@ -62,6 +62,7 @@
     "customize-cra": "^1.0.0",
     "jest": "^27.1.4",
     "react-app-rewired": "^2.1.6",
+    "regenerator-runtime": "^0.13.9",
     "ts-jest": "^27.1.4",
     "ts-node": "^10.0.0"
   }

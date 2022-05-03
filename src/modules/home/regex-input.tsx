@@ -57,6 +57,7 @@ const RegexInput: React.FC<Props> = ({
             </Select.Option>
           </Select>
           <Input
+            data-testid="regex-input"
             value={regex === null ? "" : regex}
             width="100%"
             placeholder="Input a regular expression"
