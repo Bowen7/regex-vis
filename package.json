@@ -60,10 +60,10 @@
     "@types/styled-jsx": "^2.2.8",
     "babel-plugin-import": "^1.13.3",
     "customize-cra": "^1.0.0",
-    "jest": "^27.1.4",
     "react-app-rewired": "^2.1.6",
     "regenerator-runtime": "^0.13.9",
-    "ts-jest": "^27.1.4",
+    "jest": "^26.6.0",
+    "ts-jest": "^26.5.6",
     "ts-node": "^10.0.0"
   }
 }
