@@ -45,7 +45,7 @@ const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
 
   return (
     <>
-      <div className="container">
+      <div className="container" data-testid="edit-tab">
         <Insert ast={ast} nodes={nodes} />
         <Divider mt="24px" />
         <Expression expression={expression} />
