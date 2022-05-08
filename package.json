@@ -20,7 +20,8 @@
     "react-scripts": "4.0.3",
     "react-use": "^17.3.2",
     "styled-jsx": "3.3.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "use-immer": "^0.7.0"
   },
   "scripts": {
     "start": "react-app-rewired start",
