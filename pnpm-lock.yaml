@@ -10,7 +10,6 @@ specifiers:
   '@svgr/webpack': ^5.5.0
   '@testing-library/jest-dom': ^5.16.4
   '@testing-library/react': ^12.1.2
-  '@testing-library/user-event': ^13.5.0
   '@types/gtag.js': ^0.0.7
   '@types/jest': ^24.9.1
   '@types/node': ^12.0.0
@@ -27,6 +26,7 @@ specifiers:
   i18next-http-backend: ^1.4.0
   immer: ^9.0.6
   jest: ^26.6.0
+  jotai: ^1.6.5
   nanoid: ^3.1.16
   react: ^17.0.2
   react-app-rewired: ^2.1.6
@@ -50,6 +50,7 @@ dependencies:
   i18next-browser-languagedetector: 6.1.4
   i18next-http-backend: 1.4.0
   immer: 9.0.6
+  jotai: 1.6.5_00a7655011add8382130f08e77a44d67
   nanoid: 3.1.23
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
@@ -67,7 +68,6 @@ devDependencies:
   '@svgr/webpack': 5.5.0
   '@testing-library/jest-dom': 5.16.4
   '@testing-library/react': 12.1.5_react-dom@17.0.2+react@17.0.2
-  '@testing-library/user-event': 13.5.0
   '@types/gtag.js': 0.0.7
   '@types/jest': 24.9.1
   '@types/node': 12.20.13
@@ -3254,15 +3254,6 @@ packages:
       '@types/react-dom': 17.0.16
       react: 17.0.2
       react-dom: 17.0.2_react@17.0.2
-    dev: true
-
-  /@testing-library/user-event/13.5.0:
-    resolution: {integrity: sha512-5Kwtbo3Y/NowpkbRuSepbyMFkZmHgD+vPzYB/RJ4oxt5Gj/avFFBYjhw27cqSVPVw/3a67NK1PbiIr9k4Gwmdg==}
-    engines: {node: '>=10', npm: '>=6'}
-    peerDependencies:
-      '@testing-library/dom': '>=7.21.4'
-    dependencies:
-      '@babel/runtime': 7.17.8
     dev: true
 
   /@tootallnate/once/1.1.2:
@@ -8414,6 +8405,45 @@ packages:
       - supports-color
       - ts-node
       - utf-8-validate
+
+  /jotai/1.6.5_00a7655011add8382130f08e77a44d67:
+    resolution: {integrity: sha512-B+DGV5ALIkIeyA1Bi9yBpdGmcWkmDS/p8C1XFYx9jFBs+lkeOdu0WAozAPCG4Qq1EcQ68vF+07HmPYFN5kf9OQ==}
+    engines: {node: '>=12.7.0'}
+    peerDependencies:
+      '@babel/core': '*'
+      '@babel/template': '*'
+      '@urql/core': '*'
+      immer: '*'
+      optics-ts: '*'
+      react: '>=16.8'
+      react-query: '*'
+      valtio: '*'
+      wonka: '*'
+      xstate: '*'
+    peerDependenciesMeta:
+      '@babel/core':
+        optional: true
+      '@babel/template':
+        optional: true
+      '@urql/core':
+        optional: true
+      immer:
+        optional: true
+      optics-ts:
+        optional: true
+      react-query:
+        optional: true
+      valtio:
+        optional: true
+      wonka:
+        optional: true
+      xstate:
+        optional: true
+    dependencies:
+      '@babel/core': 7.14.6
+      immer: 9.0.6
+      react: 17.0.2
+    dev: false
 
   /js-cookie/2.2.1:
     resolution: {integrity: sha512-HvdH2LzI/EAZcUwA8+0nKNtWHqS+ZmijLA30RwZA0bo7ToCckjK5MkGhjED9KoRcXO6BaGI3I9UIzSA1FKFPOQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/js-cookie/-/js-cookie-2.2.1.tgz}
