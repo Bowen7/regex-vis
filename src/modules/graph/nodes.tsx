@@ -9,24 +9,25 @@ type Props = {
 }
 
 const Nodes: React.FC<Props> = ({ x, y, nodes }) => {
-  const [width, setWidth] = useState(0)
-  const [heightMap, setHeightMap] = useImmer(() => new Map<string, number>())
-  const height = useMemo(
-    () => Math.max(...Array.from(heightMap.values()), 0),
-    [heightMap]
+  const [layoutMap, setLayoutMap] = useImmer(
+    () => new Map<string, [number, number]>()
   )
+  const [width, height] = useMemo(() => {
+    const layouts = Array.from(layoutMap.values())
+    return layouts.reduce(
+      ([width, height], [nodeWidth, nodeHeight]) => [
+        width + nodeWidth,
+        Math.max(height, nodeHeight),
+      ],
+      [0, 0]
+    )
+  }, [layoutMap])
 
-  const handleNodeLayout = (
-    id: string,
-    widthDelta: number,
-    heightDelta: number
-  ) => {
-    setWidth(width + widthDelta)
-    const nextHeight = (heightMap.get(id) || 0) + heightDelta
-    if (nextHeight === 0) {
-      setHeightMap((draft) => draft.delete(id))
+  const handleNodeLayout = (id: string, width: number, height: number) => {
+    if (width === 0 && height === 0) {
+      setLayoutMap((draft) => draft.delete(id))
     } else {
-      setHeightMap((draft) => draft.set(id, nextHeight))
+      setLayoutMap((draft) => draft.set(id, [width, height]))
     }
   }
   return (
