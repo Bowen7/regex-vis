@@ -1,11 +1,12 @@
-import React, { useMemo, useState } from "react"
+import React, { useMemo, useState, useEffect } from "react"
 import { useImmer } from "use-immer"
 import * as AST from "@/parser/ast"
-import Node from "./node-new"
+import ChoiceNode from "./choice"
 type Props = {
   x: number
   y: number
   nodes: AST.Node[]
+  onLayout: (width: number, height: number) => void
 }
 
 const Nodes: React.FC<Props> = ({ x, y, nodes }) => {
@@ -32,9 +33,14 @@ const Nodes: React.FC<Props> = ({ x, y, nodes }) => {
   }
   return (
     <>
-      {nodes.map((node) => (
-        <Node x={x} y={y} node={node} key={node.id} />
-      ))}
+      {nodes.map((node) => {
+        switch (node.type) {
+          case "choice":
+            break
+          default:
+            break
+        }
+      })}
     </>
   )
 }
