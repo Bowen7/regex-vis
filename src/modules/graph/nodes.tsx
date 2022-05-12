@@ -1,15 +1,16 @@
-import React, { useMemo, useState, useEffect } from "react"
+import React, { useMemo, useState, useEffect, useCallback } from "react"
 import { useImmer } from "use-immer"
 import * as AST from "@/parser/ast"
 import ChoiceNode from "./choice"
 type Props = {
+  index: number
   x: number
   y: number
   nodes: AST.Node[]
-  onLayout: (width: number, height: number) => void
+  onLayout: (index: number, width: number, height: number) => void
 }
 
-const Nodes: React.FC<Props> = ({ x, y, nodes }) => {
+const Nodes: React.FC<Props> = ({ index, x, y, nodes, onLayout }) => {
   const [layoutMap, setLayoutMap] = useImmer(
     () => new Map<string, [number, number]>()
   )
@@ -24,19 +25,28 @@ const Nodes: React.FC<Props> = ({ x, y, nodes }) => {
     )
   }, [layoutMap])
 
-  const handleNodeLayout = (id: string, width: number, height: number) => {
-    if (width === 0 && height === 0) {
-      setLayoutMap((draft) => draft.delete(id))
-    } else {
-      setLayoutMap((draft) => draft.set(id, [width, height]))
-    }
-  }
+  useEffect(() => {
+    onLayout(index, width, height)
+  }, [index, width, height, onLayout])
+
+  const handleNodeLayout = useCallback(
+    (id: string, width: number, height: number) => {
+      if (width === 0 && height === 0) {
+        setLayoutMap((draft) => draft.delete(id))
+      } else {
+        setLayoutMap((draft) => draft.set(id, [width, height]))
+      }
+    },
+    [setLayoutMap]
+  )
   return (
     <>
       {nodes.map((node) => {
         switch (node.type) {
           case "choice":
-            break
+            return (
+              <ChoiceNode x={0} y={0} node={node} onLayout={handleNodeLayout} />
+            )
           default:
             break
         }
