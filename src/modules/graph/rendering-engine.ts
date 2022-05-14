@@ -35,13 +35,7 @@ class RenderEngine {
   private renderConnects: RenderConnect[] = []
   private layoutChildrenList: LayoutChildren[] = []
   constructor() {
-    // the `measureText` method use canvas.measureText
-    if (process.env.EXPORT) {
-      const { createCanvas } = require("canvas")
-      this.canvas = createCanvas()
-    } else {
-      this.canvas = document.createElement("canvas")
-    }
+    this.canvas = document.createElement("canvas")
     this.context = this.canvas.getContext("2d")
   }
 

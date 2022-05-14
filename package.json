@@ -6,7 +6,6 @@
     "@babel/core": "^7.0.0",
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/icons": "^1.0.1",
-    "canvas": "^2.8.0",
     "i18next": "^21.6.16",
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
