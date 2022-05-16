@@ -2,7 +2,7 @@ import React from "react"
 import { Route } from "react-router-dom"
 import Home from "./modules/home"
 import Samples from "./modules/samples"
-// import Playground from "@/modules/playground"
+import Playground from "@/modules/playground"
 export default function Routes() {
   return (
     <>
@@ -16,9 +16,9 @@ export default function Routes() {
       {/* <Route path="/about">
         <p>Todo</p>
       </Route> */}
-      {/* <Route path="/playground">
+      <Route path="/playground">
         <Playground />
-      </Route> */}
+      </Route>
     </>
   )
 }
