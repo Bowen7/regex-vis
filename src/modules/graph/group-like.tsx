@@ -13,7 +13,7 @@ const GroupLikeNode: React.FC<Props> = React.memo(
 
     useEffect(() => {
       onLayout(node.id, ...layout)
-      return () => onLayout(node.id, 0, 0)
+      return () => onLayout(node.id, -1, -1)
     }, [node.id, layout, onLayout])
 
     const { children } = node

@@ -10,83 +10,87 @@ type Props = {
   nodes: AST.Node[]
   onLayout: (index: number, width: number, height: number) => void
 }
-const EMPTY_MAP = new Map<string, [number, number]>()
 
-const Nodes: React.FC<Props> = ({ index, x, y, nodes, onLayout }) => {
-  console.log(nodes)
-  const [layoutMap, setLayoutMap] = useImmer(EMPTY_MAP)
-  const [width, height] = useMemo(() => {
-    const layouts = Array.from(layoutMap.values())
-    return layouts.reduce(
-      ([width, height], [nodeWidth, nodeHeight]) => [
-        width + nodeWidth,
-        Math.max(height, nodeHeight),
-      ],
-      [0, 0]
-    )
-  }, [layoutMap])
+const Nodes: React.FC<Props> = React.memo(
+  ({ index, x, y, nodes, onLayout }) => {
+    const [layouts, setLayouts] = useImmer<[number, number][]>([])
+    const [width, height] = useMemo(() => {
+      return layouts.reduce(
+        ([width, height], [nodeWidth, nodeHeight]) => [
+          width + nodeWidth,
+          Math.max(height, nodeHeight),
+        ],
+        [0, 0]
+      )
+    }, [layouts])
 
-  const nodeXs = useMemo(() => {
-    if (layoutMap.size !== nodes.length) {
-      return new Array(nodes.length).fill(x)
-    }
-    let curX = x - layoutMap.get(nodes[0].id)![0]
-    return nodes.map(({ id }) => (curX += layoutMap.get(id)![0]))
-  }, [x, layoutMap, nodes])
-
-  useEffect(() => {
-    onLayout(index, width, height)
-    return () => onLayout(index, 0, 0)
-  }, [index, width, height, onLayout])
-
-  const handleNodeLayout = useCallback(
-    (id: string, width: number, height: number) => {
-      if (width === 0 && height === 0) {
-        setLayoutMap((draft) => {
-          draft.delete(id)
-        })
-      } else {
-        setLayoutMap((draft) => {
-          draft.set(id, [width, height])
-        })
+    const nodeXs = useMemo(() => {
+      if (layouts.length === 0) {
+        return []
       }
-    },
-    [setLayoutMap]
-  )
+      let curX = x - layouts[0]![0]
+      return layouts.map(([width]) => (curX += width))
+    }, [x, layouts])
 
-  return (
-    <>
-      {nodes.map((node, index) => {
-        const { id } = node
-        switch (node.type) {
-          case "choice":
-            return (
-              <ChoiceNode
-                key={id}
-                x={nodeXs[index]}
-                y={0}
-                node={node}
-                onLayout={handleNodeLayout}
-              />
-            )
-          case "group":
-          case "lookAroundAssertion":
-            return null
-          case "root":
-            return null
-          default:
-            return (
-              <SimpleNode
-                key={id}
-                x={nodeXs[index]}
-                y={0}
-                node={node}
-                onLayout={handleNodeLayout}
-              />
-            )
+    useEffect(() => {
+      onLayout(index, width, height)
+      return () => onLayout(index, -1, -1)
+    }, [index, width, height, onLayout])
+
+    const handleNodeLayout = useCallback(
+      (index: number, width: number, height: number) => {
+        if (width === -1 && height === -1) {
+          setLayouts((draft) => {
+            draft.splice(index, 1)
+          })
+        } else {
+          setLayouts((draft) => {
+            draft[index] = [width, height]
+          })
         }
-      })}
-    </>
-  )
-}
+      },
+      [setLayouts]
+    )
+
+    return (
+      <>
+        {nodes.map((node, index) => {
+          const { id } = node
+          const nodeX = nodeXs.length > index ? nodeXs[index] : x
+          const nodeY =
+            y + (height - (layouts.length > index ? layouts[index][1] : 0)) / 2
+          switch (node.type) {
+            case "choice":
+              return (
+                <ChoiceNode
+                  key={id}
+                  index={index}
+                  x={nodeX}
+                  y={nodeY}
+                  node={node}
+                  onLayout={handleNodeLayout}
+                />
+              )
+            case "group":
+            case "lookAroundAssertion":
+              return null
+            case "root":
+              return null
+            default:
+              return (
+                <SimpleNode
+                  key={id}
+                  index={index}
+                  x={nodeX}
+                  y={nodeY}
+                  node={node}
+                  onLayout={handleNodeLayout}
+                />
+              )
+          }
+        })}
+      </>
+    )
+  }
+)
 export default Nodes
