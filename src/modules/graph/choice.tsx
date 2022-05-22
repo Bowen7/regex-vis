@@ -9,6 +9,7 @@ type Props = {
   node: AST.ChoiceNode
   onLayout: (index: number, width: number, height: number) => void
 }
+const MARGIN_VERTICAL = 15
 
 const ChoiceNode: React.FC<Props> = React.memo(
   ({ index, x, y, node, onLayout }) => {
@@ -21,7 +22,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
             Math.max(width, nodesWidth),
             height + nodesHeight,
           ],
-          [0, 0]
+          [0, (layouts.length - 1) * MARGIN_VERTICAL]
         ),
       [layouts]
     )
@@ -36,7 +37,10 @@ const ChoiceNode: React.FC<Props> = React.memo(
         return []
       }
       let curY = y - layouts[0][1]
-      return layouts.map(([, nodesHeight]) => (curY += nodesHeight))
+      return layouts.map(
+        ([, nodesHeight], index) =>
+          (curY += nodesHeight + index * MARGIN_VERTICAL)
+      )
     }, [y, layouts])
 
     const handleNodeLayout = useCallback(

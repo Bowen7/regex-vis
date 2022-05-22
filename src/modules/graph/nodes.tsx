@@ -10,6 +10,7 @@ type Props = {
   nodes: AST.Node[]
   onLayout: (index: number, width: number, height: number) => void
 }
+const MARGIN_HORIZONTAL = 25
 
 const Nodes: React.FC<Props> = React.memo(
   ({ index, x, y, nodes, onLayout }) => {
@@ -20,7 +21,7 @@ const Nodes: React.FC<Props> = React.memo(
           width + nodeWidth,
           Math.max(height, nodeHeight),
         ],
-        [0, 0]
+        [(layouts.length - 1) * MARGIN_HORIZONTAL, 0]
       )
     }, [layouts])
 
@@ -29,7 +30,9 @@ const Nodes: React.FC<Props> = React.memo(
         return []
       }
       let curX = x - layouts[0]![0]
-      return layouts.map(([width]) => (curX += width))
+      return layouts.map(
+        ([width], index) => (curX += width + index * MARGIN_HORIZONTAL)
+      )
     }, [x, layouts])
 
     useEffect(() => {

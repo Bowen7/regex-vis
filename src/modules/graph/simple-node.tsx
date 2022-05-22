@@ -42,8 +42,9 @@ const SimpleNode: React.FC<Props> = React.memo(
           rx={BORDER_RADIUS}
           ry={BORDER_RADIUS}
           stroke={palette.accents_6}
+          fill={"transparent"}
           strokeWidth={1.5}
-        ></rect>
+        />
         <text
           x={x}
           y={y}
