@@ -1,0 +1,2 @@
+export const GRAPH_TEXT_FONT_SIZE = 16
+export const GRAPH_TEXT_LIEN_HEIGHT = GRAPH_TEXT_FONT_SIZE * 1.5
