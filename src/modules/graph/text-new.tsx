@@ -3,22 +3,41 @@ import { useTheme } from "@geist-ui/core"
 import { GeistUIThemesPalette } from "@geist-ui/core/esm/themes"
 import { useTranslation, TFunction } from "react-i18next"
 import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
-import { GRAPH_TEXT_LIEN_HEIGHT } from "@/constants"
+import {
+  GRAPH_TEXT_FONT_SIZE,
+  GRAPH_TEXT_LIEN_HEIGHT,
+  GRAPH_NODE_PADDING_VERTICAL,
+} from "@/constants"
 type Props = {
+  x: number
+  y: number
   node:
     | AST.CharacterNode
     | AST.BackReferenceNode
     | AST.BeginningBoundaryAssertionNode
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode
-  onLayout: (width: number, height: number) => void
+  onLayout: (layout: [number, number]) => void
 }
 
-const renderString = (value: string, palette: GeistUIThemesPalette, y = 0) => (
-  <text x="50%" textAnchor="middle" y={0}>
-    <tspan fill={palette.accents_4}>"</tspan>
+const commonTextProps = {
+  textAnchor: "middle",
+  fontSize: GRAPH_TEXT_FONT_SIZE,
+}
+
+const assertionTextMap = {
+  beginning: "Begin with",
+  end: "End with",
+  lookahead: ["Followed by:", "Not followed by"],
+  lookbehind: ["Preceded by", "Not Preceded by"],
+  word: ["WordBoundary", "NonWordBoundary"],
+}
+
+const renderString = (value: string, palette: GeistUIThemesPalette, dy = 0) => (
+  <text fill={palette.foreground} dy={dy} {...commonTextProps}>
+    <tspan fill={palette.accents_4}>{'" '}</tspan>
     <tspan>{value}</tspan>
-    <tspan fill={palette.accents_4}>"</tspan>
+    <tspan fill={palette.accents_4}>{' "'}</tspan>
   </text>
 )
 
@@ -34,18 +53,15 @@ const renderClassCharacter = (
 ) => {
   if (node.value in characterClassTextMap) {
     return (
-      <text>{t(characterClassTextMap[node.value as CharacterClassKey])}</text>
+      <text fill={palette.foreground} {...commonTextProps}>
+        {t(characterClassTextMap[node.value as CharacterClassKey])}
+      </text>
     )
   } else {
     return renderString(node.value, palette)
   }
 }
 
-const commonTextProps = {
-  x: "50%",
-  textAnchor: "middle",
-  height: GRAPH_TEXT_LIEN_HEIGHT,
-}
 const getRangeText = (key: string) => {
   if (key in characterClassTextMap) {
     return characterClassTextMap[key as CharacterClassKey]
@@ -61,49 +77,88 @@ const renderRangesCharacter = (
   const singleRangeSet = new Set<string>()
   const ranges = node.ranges
   const texts: JSX.Element[] = []
-  let y = 0
+  let dy = 0
   ranges.forEach(({ from, to }) => {
     if (from.length === 1) {
       if (from === to) {
         singleRangeSet.add(from)
       } else {
         texts.push(
-          <text y={y} {...commonTextProps}>
-            <tspan fill={palette.accents_4}>"</tspan>
+          <text fill={palette.foreground} dy={dy} {...commonTextProps}>
+            <tspan fill={palette.accents_4}>{'" '}</tspan>
             <tspan>{from}</tspan>
+            <tspan fill={palette.accents_4}>{' "'}</tspan>
             <tspan fill={palette.accents_4}>{" - "}</tspan>
+            <tspan fill={palette.accents_4}>{'" '}</tspan>
             <tspan>{to}</tspan>
-            <tspan fill={palette.accents_4}>"</tspan>
+            <tspan fill={palette.accents_4}>{' "'}</tspan>
           </text>
         )
-        y += GRAPH_TEXT_LIEN_HEIGHT
+        dy += GRAPH_TEXT_LIEN_HEIGHT
       }
     } else if (from === to) {
       texts.push(
-        <text y={y} {...commonTextProps}>
+        <text fill={palette.foreground} dy={dy} {...commonTextProps}>
           {getRangeText(from)}
         </text>
       )
-      y += GRAPH_TEXT_LIEN_HEIGHT
+      dy += GRAPH_TEXT_LIEN_HEIGHT
     } else {
       texts.push(
-        <text y={y} {...commonTextProps}>
+        <text dy={dy} fill={palette.foreground} {...commonTextProps}>
           <tspan>{getRangeText(from)}</tspan>
           <tspan fill={palette.accents_4}>{" - "}</tspan>
           <tspan>{getRangeText(to)}</tspan>
         </text>
       )
-      y += GRAPH_TEXT_LIEN_HEIGHT
+      dy += GRAPH_TEXT_LIEN_HEIGHT
     }
   })
   if (singleRangeSet.size > 0) {
     const text = Array.from(singleRangeSet).join("")
-    texts.push(renderString(text, palette, y))
+    texts.push(renderString(text, palette, dy))
   }
   return <>{texts}</>
 }
 
-const Text: React.FC<Props> = React.memo(({ node, onLayout }) => {
+const renderBackReference = (
+  node: AST.BackReferenceNode,
+  palette: GeistUIThemesPalette,
+  t: TFunction
+) => {
+  const string = `${t("Back reference")} #${node.ref}`
+  return (
+    <text fill={palette.foreground} {...commonTextProps}>
+      {string}
+    </text>
+  )
+}
+
+const renderBoundaryAssertion = (
+  node:
+    | AST.BeginningBoundaryAssertionNode
+    | AST.EndBoundaryAssertionNode
+    | AST.WordBoundaryAssertionNode,
+  palette: GeistUIThemesPalette,
+  t: TFunction
+) => {
+  let string = ""
+  if (node.kind === "word") {
+    const negate = node.negate
+    string = assertionTextMap.word[negate ? 1 : 0]
+  } else {
+    const kind = node.kind
+    string = assertionTextMap[kind]
+  }
+  string = t(string)
+  return (
+    <text fill={palette.foreground} {...commonTextProps}>
+      {string}
+    </text>
+  )
+}
+
+const Text: React.FC<Props> = React.memo(({ x, y, node, onLayout }) => {
   const gRef = useRef<SVGGElement>(null)
 
   const { palette } = useTheme()
@@ -111,7 +166,7 @@ const Text: React.FC<Props> = React.memo(({ node, onLayout }) => {
 
   useEffect(() => {
     const { width, height } = gRef.current?.getBoundingClientRect()!
-    onLayout(width, height)
+    onLayout([width, height])
   }, [node, onLayout])
 
   const renderText = (): JSX.Element => {
@@ -127,12 +182,23 @@ const Text: React.FC<Props> = React.memo(({ node, onLayout }) => {
         }
         throw new Error("unreachable")
       case "backReference":
+        return renderBackReference(node, palette, t)
       case "boundaryAssertion":
-        return <></>
+        return renderBoundaryAssertion(node, palette, t)
     }
   }
 
-  return <g ref={gRef}>{renderText()}</g>
+  return (
+    <g
+      ref={gRef}
+      fontSize={GRAPH_TEXT_FONT_SIZE}
+      transform={`translate(${x},${
+        GRAPH_TEXT_FONT_SIZE + GRAPH_NODE_PADDING_VERTICAL
+      })`}
+    >
+      {renderText()}
+    </g>
+  )
 })
 
 export default Text

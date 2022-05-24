@@ -1,11 +1,13 @@
-import React, { useMemo, useEffect } from "react"
+import React, { useState, useEffect } from "react"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
-import { measureText } from "./utils-new"
-const FONT_SIZE = 16
-const PADDING_VERTICAL = 4
-const PADDING_HORIZONTAL = 10
-const BORDER_RADIUS = 5
+import {
+  GRAPH_NODE_PADDING_VERTICAL,
+  GRAPH_NODE_PADDING_HORIZONTAL,
+  GRAPH_NODE_BORDER_RADIUS,
+} from "@/constants"
+import Text from "./text-new"
+
 type Props = {
   index: number
   x: number
@@ -21,41 +23,28 @@ type Props = {
 const SimpleNode: React.FC<Props> = React.memo(
   ({ index, x, y, node, onLayout }) => {
     const { palette } = useTheme()
-    // TODO
-    const text = "single node"
-    const [textWidth, textHeight] = useMemo(() => measureText(text), [text])
+    const [layout, setLayout] = useState<[number, number]>([0, 0])
 
-    const width = textWidth + 2 * PADDING_HORIZONTAL
-    const height = textHeight + 2 * PADDING_VERTICAL
+    const width = layout[0] + 2 * GRAPH_NODE_PADDING_HORIZONTAL
+    const height = layout[1] + 2 * GRAPH_NODE_PADDING_VERTICAL
 
     useEffect(() => {
       onLayout(index, width, height)
       return () => onLayout(index, -1, -1)
     }, [index, width, height, onLayout])
+
     return (
-      <g>
+      <g transform={`translate(${x},${y})`}>
         <rect
-          x={x}
-          y={y}
           width={width}
           height={height}
-          rx={BORDER_RADIUS}
-          ry={BORDER_RADIUS}
+          rx={GRAPH_NODE_BORDER_RADIUS}
+          ry={GRAPH_NODE_BORDER_RADIUS}
           stroke={palette.accents_6}
           fill={"transparent"}
           strokeWidth={1.5}
         />
-        <text
-          x={x}
-          y={y}
-          fontSize={FONT_SIZE}
-          dx={PADDING_HORIZONTAL + textWidth / 2}
-          dy={PADDING_VERTICAL + FONT_SIZE}
-          fill={palette.foreground}
-          textAnchor="middle"
-        >
-          {text}
-        </text>
+        <Text x={width / 2} y={height / 2} node={node} onLayout={setLayout} />
       </g>
     )
   }

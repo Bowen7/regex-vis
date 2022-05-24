@@ -29,10 +29,12 @@ const Nodes: React.FC<Props> = React.memo(
       if (layouts.length === 0) {
         return []
       }
-      let curX = x - layouts[0]![0]
-      return layouts.map(
-        ([width], index) => (curX += width + index * MARGIN_HORIZONTAL)
-      )
+      let curX = x
+      return layouts.map(([width], index) => {
+        const nodeX = curX
+        curX += width + MARGIN_HORIZONTAL
+        return nodeX
+      })
     }, [x, layouts])
 
     useEffect(() => {
