@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react"
 import { useImmer } from "use-immer"
 import { AST } from "@/parser"
+import { GRAPH_NODE_MARGIN_VERTICAL } from "@/constants"
 import Nodes from "./nodes"
 type Props = {
   index: number
@@ -9,7 +10,6 @@ type Props = {
   node: AST.ChoiceNode
   onLayout: (index: number, width: number, height: number) => void
 }
-const MARGIN_VERTICAL = 15
 
 const ChoiceNode: React.FC<Props> = React.memo(
   ({ index, x, y, node, onLayout }) => {
@@ -22,7 +22,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
             Math.max(width, nodesWidth),
             height + nodesHeight,
           ],
-          [0, (layouts.length - 1) * MARGIN_VERTICAL]
+          [0, (layouts.length - 1) * GRAPH_NODE_MARGIN_VERTICAL]
         ),
       [layouts]
     )
@@ -36,11 +36,12 @@ const ChoiceNode: React.FC<Props> = React.memo(
       if (layouts.length === 0) {
         return []
       }
-      let curY = y - layouts[0][1]
-      return layouts.map(
-        ([, nodesHeight], index) =>
-          (curY += nodesHeight + index * MARGIN_VERTICAL)
-      )
+      let curY = y
+      return layouts.map(([, height], index) => {
+        const nodeY = curY
+        curY += height + GRAPH_NODE_MARGIN_VERTICAL
+        return nodeY
+      })
     }, [y, layouts])
 
     const handleNodeLayout = useCallback(

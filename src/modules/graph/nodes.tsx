@@ -3,6 +3,7 @@ import { useImmer } from "use-immer"
 import * as AST from "@/parser/ast"
 import ChoiceNode from "./choice"
 import SimpleNode from "./simple-node"
+import GroupLikeNode from "./group-like"
 type Props = {
   index: number
   x: number
@@ -78,7 +79,16 @@ const Nodes: React.FC<Props> = React.memo(
               )
             case "group":
             case "lookAroundAssertion":
-              return null
+              return (
+                <GroupLikeNode
+                  key={id}
+                  index={index}
+                  x={nodeX}
+                  y={nodeY}
+                  node={node}
+                  onLayout={handleNodeLayout}
+                />
+              )
             case "root":
               return null
             default:
