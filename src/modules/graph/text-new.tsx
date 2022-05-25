@@ -1,6 +1,4 @@
 import React, { useEffect, useRef } from "react"
-import { useTheme } from "@geist-ui/core"
-import { GeistUIThemesPalette } from "@geist-ui/core/esm/themes"
 import { useTranslation, TFunction } from "react-i18next"
 import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import {
@@ -33,32 +31,26 @@ const assertionTextMap = {
   word: ["WordBoundary", "NonWordBoundary"],
 }
 
-const renderString = (value: string, palette: GeistUIThemesPalette, dy = 0) => (
-  <text fill={palette.foreground} dy={dy} {...commonTextProps}>
-    <tspan fill={palette.accents_4}>{'" '}</tspan>
+const renderString = (value: string, dy = 0) => (
+  <text className="text" dy={dy} {...commonTextProps}>
+    <tspan className="quote">{'" '}</tspan>
     <tspan>{value}</tspan>
-    <tspan fill={palette.accents_4}>{' "'}</tspan>
+    <tspan className="quote">{' "'}</tspan>
   </text>
 )
 
-const renderStringCharacter = (
-  node: AST.StringCharacterNode,
-  palette: GeistUIThemesPalette
-) => renderString(node.value, palette)
+const renderStringCharacter = (node: AST.StringCharacterNode) =>
+  renderString(node.value)
 
-const renderClassCharacter = (
-  node: AST.ClassCharacterNode,
-  palette: GeistUIThemesPalette,
-  t: TFunction
-) => {
+const renderClassCharacter = (node: AST.ClassCharacterNode, t: TFunction) => {
   if (node.value in characterClassTextMap) {
     return (
-      <text fill={palette.foreground} {...commonTextProps}>
+      <text className="text" {...commonTextProps}>
         {t(characterClassTextMap[node.value as CharacterClassKey])}
       </text>
     )
   } else {
-    return renderString(node.value, palette)
+    return renderString(node.value)
   }
 }
 
@@ -69,11 +61,7 @@ const getRangeText = (key: string) => {
     return key
   }
 }
-const renderRangesCharacter = (
-  node: AST.RangesCharacterNode,
-  palette: GeistUIThemesPalette,
-  t: TFunction
-) => {
+const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
   const singleRangeSet = new Set<string>()
   const ranges = node.ranges
   const texts: JSX.Element[] = []
@@ -84,30 +72,30 @@ const renderRangesCharacter = (
         singleRangeSet.add(from)
       } else {
         texts.push(
-          <text fill={palette.foreground} dy={dy} {...commonTextProps}>
-            <tspan fill={palette.accents_4}>{'" '}</tspan>
+          <text className="text" dy={dy} {...commonTextProps}>
+            <tspan className="quote">{'" '}</tspan>
             <tspan>{from}</tspan>
-            <tspan fill={palette.accents_4}>{' "'}</tspan>
-            <tspan fill={palette.accents_4}>{" - "}</tspan>
-            <tspan fill={palette.accents_4}>{'" '}</tspan>
+            <tspan className="quote">{' "'}</tspan>
+            <tspan className="quote">{" - "}</tspan>
+            <tspan className="quote">{'" '}</tspan>
             <tspan>{to}</tspan>
-            <tspan fill={palette.accents_4}>{' "'}</tspan>
+            <tspan className="quote">{' "'}</tspan>
           </text>
         )
         dy += GRAPH_TEXT_LIEN_HEIGHT
       }
     } else if (from === to) {
       texts.push(
-        <text fill={palette.foreground} dy={dy} {...commonTextProps}>
+        <text className="text" dy={dy} {...commonTextProps}>
           {getRangeText(from)}
         </text>
       )
       dy += GRAPH_TEXT_LIEN_HEIGHT
     } else {
       texts.push(
-        <text dy={dy} fill={palette.foreground} {...commonTextProps}>
+        <text className="text" dy={dy} {...commonTextProps}>
           <tspan>{getRangeText(from)}</tspan>
-          <tspan fill={palette.accents_4}>{" - "}</tspan>
+          <tspan className="quote">{" - "}</tspan>
           <tspan>{getRangeText(to)}</tspan>
         </text>
       )
@@ -116,19 +104,15 @@ const renderRangesCharacter = (
   })
   if (singleRangeSet.size > 0) {
     const text = Array.from(singleRangeSet).join("")
-    texts.push(renderString(text, palette, dy))
+    texts.push(renderString(text, dy))
   }
   return <>{texts}</>
 }
 
-const renderBackReference = (
-  node: AST.BackReferenceNode,
-  palette: GeistUIThemesPalette,
-  t: TFunction
-) => {
+const renderBackReference = (node: AST.BackReferenceNode, t: TFunction) => {
   const string = `${t("Back reference")} #${node.ref}`
   return (
-    <text fill={palette.foreground} {...commonTextProps}>
+    <text className="text" {...commonTextProps}>
       {string}
     </text>
   )
@@ -139,7 +123,6 @@ const renderBoundaryAssertion = (
     | AST.BeginningBoundaryAssertionNode
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode,
-  palette: GeistUIThemesPalette,
   t: TFunction
 ) => {
   let string = ""
@@ -152,7 +135,7 @@ const renderBoundaryAssertion = (
   }
   string = t(string)
   return (
-    <text fill={palette.foreground} {...commonTextProps}>
+    <text className="text" {...commonTextProps}>
       {string}
     </text>
   )
@@ -161,7 +144,6 @@ const renderBoundaryAssertion = (
 const Text: React.FC<Props> = React.memo(({ x, y, node, onLayout }) => {
   const gRef = useRef<SVGGElement>(null)
 
-  const { palette } = useTheme()
   const { t } = useTranslation()
 
   useEffect(() => {
@@ -174,17 +156,17 @@ const Text: React.FC<Props> = React.memo(({ x, y, node, onLayout }) => {
       case "character":
         switch (node.kind) {
           case "string":
-            return renderStringCharacter(node, palette)
+            return renderStringCharacter(node)
           case "class":
-            return renderClassCharacter(node, palette, t)
+            return renderClassCharacter(node, t)
           case "ranges":
-            return renderRangesCharacter(node, palette, t)
+            return renderRangesCharacter(node, t)
         }
         throw new Error("unreachable")
       case "backReference":
-        return renderBackReference(node, palette, t)
+        return renderBackReference(node, t)
       case "boundaryAssertion":
-        return renderBoundaryAssertion(node, palette, t)
+        return renderBoundaryAssertion(node, t)
     }
   }
 

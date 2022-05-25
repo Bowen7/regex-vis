@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react"
-import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_PADDING_VERTICAL,
@@ -22,7 +21,6 @@ type Props = {
 }
 const SimpleNode: React.FC<Props> = React.memo(
   ({ index, x, y, node, onLayout }) => {
-    const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
 
     const width = layout[0] + 2 * GRAPH_NODE_PADDING_HORIZONTAL
@@ -40,9 +38,8 @@ const SimpleNode: React.FC<Props> = React.memo(
           height={height}
           rx={GRAPH_NODE_BORDER_RADIUS}
           ry={GRAPH_NODE_BORDER_RADIUS}
-          stroke={palette.accents_6}
-          fill={"transparent"}
-          strokeWidth={1.5}
+          fill="transparent"
+          className="stroke"
         />
         <Text x={width / 2} y={height / 2} node={node} onLayout={setLayout} />
       </g>
