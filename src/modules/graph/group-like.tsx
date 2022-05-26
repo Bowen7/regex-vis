@@ -7,6 +7,7 @@ import {
   GRAPH_GROUP_NODE_PADDING_VERTICAL,
 } from "@/constants"
 import Nodes from "./nodes"
+import MidConnect from "./mid-connect"
 type Props = {
   index: number
   x: number
@@ -36,8 +37,13 @@ const GroupLikeNode: React.FC<Props> = React.memo(
       },
       [setLayout]
     )
+    const connectY = y + layout[1] / 2
     return (
       <>
+        <MidConnect
+          start={[x, connectY]}
+          end={[x + GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+        />
         <rect
           x={x}
           y={y}
@@ -56,6 +62,10 @@ const GroupLikeNode: React.FC<Props> = React.memo(
           nodes={children}
           onLayout={handleNodesLayout}
         ></Nodes>
+        <MidConnect
+          start={[x + layout[0] - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+          end={[x + layout[0], connectY]}
+        />
       </>
     )
   }

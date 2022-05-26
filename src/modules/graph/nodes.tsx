@@ -1,9 +1,11 @@
 import React, { useMemo, useEffect, useCallback } from "react"
 import { useImmer } from "use-immer"
 import * as AST from "@/parser/ast"
+import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
 import ChoiceNode from "./choice"
 import SimpleNode from "./simple-node"
 import GroupLikeNode from "./group-like"
+import MidConnect from "./mid-connect"
 type Props = {
   index: number
   x: number
@@ -11,7 +13,6 @@ type Props = {
   nodes: AST.Node[]
   onLayout: (index: number, width: number, height: number) => void
 }
-const MARGIN_HORIZONTAL = 25
 
 const Nodes: React.FC<Props> = React.memo(
   ({ index, x, y, nodes, onLayout }) => {
@@ -22,7 +23,7 @@ const Nodes: React.FC<Props> = React.memo(
           width + nodeWidth,
           Math.max(height, nodeHeight),
         ],
-        [(layouts.length - 1) * MARGIN_HORIZONTAL, 0]
+        [(layouts.length - 1) * GRAPH_NODE_MARGIN_HORIZONTAL, 0]
       )
     }, [layouts])
 
@@ -33,7 +34,7 @@ const Nodes: React.FC<Props> = React.memo(
       let curX = x
       return layouts.map(([width], index) => {
         const nodeX = curX
-        curX += width + MARGIN_HORIZONTAL
+        curX += width + GRAPH_NODE_MARGIN_HORIZONTAL
         return nodeX
       })
     }, [x, layouts])
@@ -58,6 +59,8 @@ const Nodes: React.FC<Props> = React.memo(
       [setLayouts]
     )
 
+    const connectY = y + height / 2
+
     return (
       <>
         {nodes.map((node, index) => {
@@ -65,9 +68,10 @@ const Nodes: React.FC<Props> = React.memo(
           const nodeX = nodeXs.length > index ? nodeXs[index] : x
           const nodeY =
             y + (height - (layouts.length > index ? layouts[index][1] : 0)) / 2
+          let Node: JSX.Element = <></>
           switch (node.type) {
             case "choice":
-              return (
+              Node = (
                 <ChoiceNode
                   key={id}
                   index={index}
@@ -77,9 +81,10 @@ const Nodes: React.FC<Props> = React.memo(
                   onLayout={handleNodeLayout}
                 />
               )
+              break
             case "group":
             case "lookAroundAssertion":
-              return (
+              Node = (
                 <GroupLikeNode
                   key={id}
                   index={index}
@@ -89,10 +94,11 @@ const Nodes: React.FC<Props> = React.memo(
                   onLayout={handleNodeLayout}
                 />
               )
+              break
             case "root":
-              return null
+              break
             default:
-              return (
+              Node = (
                 <SimpleNode
                   key={id}
                   index={index}
@@ -103,6 +109,18 @@ const Nodes: React.FC<Props> = React.memo(
                 />
               )
           }
+          const Connect = index >= 1 && (
+            <MidConnect
+              start={[nodeX - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+              end={[nodeX, connectY]}
+            />
+          )
+          return (
+            <>
+              {Connect}
+              {Node}
+            </>
+          )
         })}
       </>
     )
