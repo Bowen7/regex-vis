@@ -1,8 +1,13 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react"
 import { useImmer } from "use-immer"
 import { AST } from "@/parser"
-import { GRAPH_NODE_MARGIN_VERTICAL } from "@/constants"
+import {
+  GRAPH_NODE_MARGIN_VERTICAL,
+  GRAPH_CHOICE_PADDING_HORIZONTAL,
+} from "@/constants"
 import Nodes from "./nodes"
+import StartConnect from "./start-connect"
+import EndConnect from "./end-connect"
 type Props = {
   index: number
   x: number
@@ -19,13 +24,14 @@ const ChoiceNode: React.FC<Props> = React.memo(
       () =>
         layouts.reduce(
           ([width, height], [nodesWidth, nodesHeight]) => [
-            Math.max(width, nodesWidth),
+            Math.max(width, nodesWidth + 2 * GRAPH_CHOICE_PADDING_HORIZONTAL),
             height + nodesHeight,
           ],
           [0, (layouts.length - 1) * GRAPH_NODE_MARGIN_VERTICAL]
         ),
       [layouts]
     )
+    console.log(width)
 
     useEffect(() => {
       onLayout(index, width, height)
@@ -61,17 +67,29 @@ const ChoiceNode: React.FC<Props> = React.memo(
     return (
       <>
         {branches.map((branch, index) => {
-          const nodeX =
-            x + (width - (layouts.length > index ? layouts[index][0] : 0)) / 2
+          const nodeWidth = layouts.length > index ? layouts[index][0] : 0
+          const nodeHeight = layouts.length > index ? layouts[index][1] : 0
+          const nodeX = x + (width - nodeWidth) / 2
+          const nodeY = branchYs.length > index ? branchYs[index] : y
           return (
-            <Nodes
-              key={index}
-              index={index}
-              x={nodeX}
-              y={branchYs.length > index ? branchYs[index] : y}
-              nodes={branch}
-              onLayout={handleNodeLayout}
-            />
+            <>
+              <StartConnect
+                start={[x, y + height / 2]}
+                end={[nodeX, nodeY + nodeHeight / 2]}
+              />
+              <Nodes
+                key={index}
+                index={index}
+                x={nodeX}
+                y={branchYs.length > index ? branchYs[index] : y}
+                nodes={branch}
+                onLayout={handleNodeLayout}
+              />
+              <EndConnect
+                start={[nodeX + nodeWidth, nodeY + nodeHeight / 2]}
+                end={[x + width, y + height / 2]}
+              />
+            </>
           )
         })}
       </>
