@@ -17,12 +17,12 @@ const EndConnect: React.FC<Props> = React.memo((props) => {
   let A2 = ""
   if (end[1] > start[1]) {
     A1 = `A5 5 0 0 1, ${end[0] - 15},${start[1] + 5}`
-    L2 = `L${end[0] - 15},${end[1] - 5}` // end[0] - 25
-    A2 = `A5 5 0 0 0, ${end[0] - 10},${end[1]}` // end[0] - 20
+    L2 = `L${end[0] - 15},${end[1] - 5}`
+    A2 = `A5 5 0 0 0, ${end[0] - 10},${end[1]}`
   } else {
-    A1 = `A5 5 0 0 0, ${end[0] - 15},${start[1] - 5}` // end[0] - 15
-    L2 = `L${end[0] - 15},${end[1] + 5}` // end[0] - 15
-    A2 = `A5 5 0 0 1, ${end[0] - 10},${end[1]}` // end[0] - 10
+    A1 = `A5 5 0 0 0, ${end[0] - 15},${start[1] - 5}`
+    L2 = `L${end[0] - 15},${end[1] + 5}`
+    A2 = `A5 5 0 0 1, ${end[0] - 10},${end[1]}`
   }
   const path = M + L1 + A1 + L2 + A2 + L3
   return <path d={path} className="stroke" fill="none"></path>
