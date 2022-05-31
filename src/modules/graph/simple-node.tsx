@@ -4,6 +4,7 @@ import {
   GRAPH_NODE_PADDING_VERTICAL,
   GRAPH_NODE_PADDING_HORIZONTAL,
   GRAPH_NODE_BORDER_RADIUS,
+  GRAPH_NODE_MIN_WIDTH,
 } from "@/constants"
 import Text from "./text-new"
 
@@ -23,7 +24,10 @@ const SimpleNode: React.FC<Props> = React.memo(
   ({ index, x, y, node, onLayout }) => {
     const [layout, setLayout] = useState<[number, number]>([0, 0])
 
-    const width = layout[0] + 2 * GRAPH_NODE_PADDING_HORIZONTAL
+    const width = Math.max(
+      layout[0] + 2 * GRAPH_NODE_PADDING_HORIZONTAL,
+      GRAPH_NODE_MIN_WIDTH
+    )
     const height = layout[1] + 2 * GRAPH_NODE_PADDING_VERTICAL
 
     useEffect(() => {

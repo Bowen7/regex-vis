@@ -1,7 +1,10 @@
 import React, { useState, useCallback } from "react"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
+import { GRAPH_NODE_MARGIN_HORIZONTAL, GRAPH_ROOT_RADIUS } from "@/constants"
 import Nodes from "./nodes"
+import RootNode from "./root"
+import MidConnect from "./mid-connect"
 
 const PADDING_VERTICAL = 50
 const PADDING_HORIZONTAL = 50
@@ -14,30 +17,68 @@ type Props = {
 }
 const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
   const { palette } = useTheme()
-  const [layout, setLayout] = useState<[number, number]>([0, 0])
+  const [nodesLayout, setNodesLayout] = useState<[number, number]>([0, 0])
   const paddingH = minimum ? MINIMUM_PADDING_HORIZONTAL : PADDING_HORIZONTAL
   const paddingV = minimum ? MINIMUM_PADDING_VERTICAL : PADDING_VERTICAL
   const handleLayout = useCallback(
-    (index: number, width: number, height: number) => {
-      setLayout([width + paddingH * 2, height + paddingV * 2])
-    },
-    [setLayout, paddingH, paddingV]
+    (index: number, width: number, height: number) =>
+      setNodesLayout([width, height]),
+    [setNodesLayout]
   )
+
+  const svgWidth =
+    nodesLayout[0] +
+    paddingH * 2 +
+    GRAPH_ROOT_RADIUS * 2 +
+    GRAPH_NODE_MARGIN_HORIZONTAL * 2
+  const svgHeight = nodesLayout[1] + paddingV * 2
+
+  const connectY = svgHeight / 2 - GRAPH_ROOT_RADIUS / 2
+  const centerY = svgHeight / 2
+  const nodesX = minimum
+    ? paddingH
+    : paddingH + GRAPH_ROOT_RADIUS + GRAPH_NODE_MARGIN_HORIZONTAL
+
   return (
     <>
       <svg
         version="1.1"
         xmlns="http://www.w3.org/2000/svg"
-        width={layout[0]}
-        height={layout[1]}
+        width={svgWidth}
+        height={svgHeight}
       >
+        {!minimum && (
+          <>
+            <RootNode x={paddingH} y={connectY} radius={GRAPH_ROOT_RADIUS} />
+            <MidConnect
+              start={[paddingH + GRAPH_ROOT_RADIUS, centerY]}
+              end={[nodesX, centerY]}
+            />
+          </>
+        )}
         <Nodes
           index={0}
-          x={paddingH}
+          x={nodesX}
           y={paddingV}
           nodes={ast.body}
           onLayout={handleLayout}
         ></Nodes>
+        {!minimum && (
+          <>
+            <MidConnect
+              start={[nodesX + nodesLayout[0], centerY]}
+              end={[
+                nodesX + nodesLayout[0] + GRAPH_NODE_MARGIN_HORIZONTAL,
+                centerY,
+              ]}
+            />
+            <RootNode
+              x={nodesX + nodesLayout[0] + GRAPH_NODE_MARGIN_HORIZONTAL}
+              y={connectY}
+              radius={GRAPH_ROOT_RADIUS}
+            />
+          </>
+        )}
       </svg>
       <style jsx>{`
         svg {

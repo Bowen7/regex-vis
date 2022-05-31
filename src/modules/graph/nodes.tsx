@@ -73,7 +73,6 @@ const Nodes: React.FC<Props> = React.memo(
             case "choice":
               Node = (
                 <ChoiceNode
-                  key={id}
                   index={index}
                   x={nodeX}
                   y={nodeY}
@@ -86,7 +85,6 @@ const Nodes: React.FC<Props> = React.memo(
             case "lookAroundAssertion":
               Node = (
                 <GroupLikeNode
-                  key={id}
                   index={index}
                   x={nodeX}
                   y={nodeY}
@@ -100,7 +98,6 @@ const Nodes: React.FC<Props> = React.memo(
             default:
               Node = (
                 <SimpleNode
-                  key={id}
                   index={index}
                   x={nodeX}
                   y={nodeY}
@@ -116,10 +113,10 @@ const Nodes: React.FC<Props> = React.memo(
             />
           )
           return (
-            <>
+            <React.Fragment key={id}>
               {Connect}
               {Node}
-            </>
+            </React.Fragment>
           )
         })}
       </>

@@ -72,7 +72,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
           const nodeX = x + (width - nodeWidth) / 2
           const nodeY = branchYs.length > index ? branchYs[index] : y
           return (
-            <>
+            <React.Fragment key={index}>
               <StartConnect
                 start={[x, y + height / 2]}
                 end={[nodeX, nodeY + nodeHeight / 2]}
@@ -89,7 +89,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
                 start={[nodeX + nodeWidth, nodeY + nodeHeight / 2]}
                 end={[x + width, y + height / 2]}
               />
-            </>
+            </React.Fragment>
           )
         })}
       </>
