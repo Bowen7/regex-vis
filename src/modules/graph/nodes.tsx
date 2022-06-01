@@ -5,13 +5,14 @@ import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
 import ChoiceNode from "./choice"
 import SimpleNode from "./simple-node"
 import GroupLikeNode from "./group-like"
+import RootNode from "./root"
 import MidConnect from "./mid-connect"
 type Props = {
   index: number
   x: number
   y: number
   nodes: AST.Node[]
-  onLayout: (index: number, width: number, height: number) => void
+  onLayout: (index: number, layout: [number, number]) => void
 }
 
 const Nodes: React.FC<Props> = React.memo(
@@ -40,12 +41,15 @@ const Nodes: React.FC<Props> = React.memo(
     }, [x, layouts])
 
     useEffect(() => {
-      onLayout(index, width, height)
-      return () => onLayout(index, -1, -1)
+      onLayout(index, [width, height])
+      return () => onLayout(index, [-1, -1])
     }, [index, width, height, onLayout])
 
     const handleNodeLayout = useCallback(
-      (index: number, width: number, height: number) => {
+      (index: number, [width, height]) => {
+        if (nodes[0].type === "root") {
+          console.log(nodes[index], width, height)
+        }
         if (width === -1 && height === -1) {
           setLayouts((draft) => {
             draft.splice(index, 1)
@@ -58,6 +62,7 @@ const Nodes: React.FC<Props> = React.memo(
       },
       [setLayouts]
     )
+    nodes[0].type === "root" && console.log(111, layouts)
 
     const connectY = y + height / 2
 
@@ -94,6 +99,14 @@ const Nodes: React.FC<Props> = React.memo(
               )
               break
             case "root":
+              Node = (
+                <RootNode
+                  index={index}
+                  x={nodeX}
+                  y={nodeY}
+                  onLayout={handleNodeLayout}
+                />
+              )
               break
             default:
               Node = (
@@ -123,4 +136,6 @@ const Nodes: React.FC<Props> = React.memo(
     )
   }
 )
+Nodes.displayName = "Nodes"
+
 export default Nodes

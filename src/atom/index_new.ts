@@ -30,6 +30,9 @@ export const selectedIdsAtom = atom<string[]>([])
 export const groupNamesAtom = atom<string[]>([])
 export const editorCollapsedAtom = atom<boolean>(false)
 export const toastsAtom = atomWithImmer<string[]>([])
+export const nodesLayoutMap = atomWithImmer<Map<string, [number, number][]>>(
+  new Map()
+)
 
 const refreshGroupAtom = atom(null, (get, set) => {
   let groupIndex = 0

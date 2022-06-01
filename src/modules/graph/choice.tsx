@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from "react"
+import React, { useEffect, useMemo, useCallback } from "react"
 import { useImmer } from "use-immer"
 import { AST } from "@/parser"
 import {
@@ -13,7 +13,7 @@ type Props = {
   x: number
   y: number
   node: AST.ChoiceNode
-  onLayout: (index: number, width: number, height: number) => void
+  onLayout: (index: number, layout: [number, number]) => void
 }
 
 const ChoiceNode: React.FC<Props> = React.memo(
@@ -31,11 +31,10 @@ const ChoiceNode: React.FC<Props> = React.memo(
         ),
       [layouts]
     )
-    console.log(width)
 
     useEffect(() => {
-      onLayout(index, width, height)
-      return () => onLayout(index, -1, -1)
+      onLayout(index, [width, height])
+      return () => onLayout(index, [-1, -1])
     }, [index, width, height, onLayout])
 
     const branchYs = useMemo(() => {
@@ -51,7 +50,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
     }, [y, layouts])
 
     const handleNodeLayout = useCallback(
-      (index: number, width: number, height: number) => {
+      (index: number, [width, height]) => {
         if (width === -1 && height === -1) {
           setLayouts((draft) => {
             draft.splice(index, 1)

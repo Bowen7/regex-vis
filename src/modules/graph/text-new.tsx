@@ -66,13 +66,13 @@ const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
   const ranges = node.ranges
   const texts: JSX.Element[] = []
   let dy = 0
-  ranges.forEach(({ from, to }) => {
+  ranges.forEach(({ from, to }, index) => {
     if (from.length === 1) {
       if (from === to) {
         singleRangeSet.add(from)
       } else {
         texts.push(
-          <text className="text" dy={dy} {...commonTextProps}>
+          <text className="text" dy={dy} {...commonTextProps} key={index}>
             <tspan className="quote">{'" '}</tspan>
             <tspan>{from}</tspan>
             <tspan className="quote">{' "'}</tspan>
@@ -86,14 +86,14 @@ const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
       }
     } else if (from === to) {
       texts.push(
-        <text className="text" dy={dy} {...commonTextProps}>
+        <text className="text" dy={dy} {...commonTextProps} key={index}>
           {getRangeText(from)}
         </text>
       )
       dy += GRAPH_TEXT_LIEN_HEIGHT
     } else {
       texts.push(
-        <text className="text" dy={dy} {...commonTextProps}>
+        <text className="text" dy={dy} {...commonTextProps} key={index}>
           <tspan>{getRangeText(from)}</tspan>
           <tspan className="quote">{" - "}</tspan>
           <tspan>{getRangeText(to)}</tspan>

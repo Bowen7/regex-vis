@@ -18,7 +18,7 @@ type Props = {
     | AST.BeginningBoundaryAssertionNode
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode
-  onLayout: (index: number, width: number, height: number) => void
+  onLayout: (index: number, layout: [number, number]) => void
 }
 const SimpleNode: React.FC<Props> = React.memo(
   ({ index, x, y, node, onLayout }) => {
@@ -31,8 +31,8 @@ const SimpleNode: React.FC<Props> = React.memo(
     const height = layout[1] + 2 * GRAPH_NODE_PADDING_VERTICAL
 
     useEffect(() => {
-      onLayout(index, width, height)
-      return () => onLayout(index, -1, -1)
+      onLayout(index, [width, height])
+      // return () => onLayout(index, [-1, -1])
     }, [index, width, height, onLayout])
 
     return (

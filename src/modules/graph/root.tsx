@@ -1,20 +1,26 @@
-import React from "react"
+import React, { useEffect } from "react"
+import { GRAPH_ROOT_RADIUS } from "@/constants"
 type Props = {
+  index: number
   x: number
   y: number
-  radius: number
+  onLayout: (index: number, layout: [number, number]) => void
 }
 
 const RootNode = (props: Props) => {
-  const { x, y, radius } = props
+  const { index, x, y, onLayout } = props
+  useEffect(() => {
+    onLayout(index, [GRAPH_ROOT_RADIUS, GRAPH_ROOT_RADIUS])
+    return () => onLayout(index, [-1, -1])
+  }, [index, onLayout])
   return (
     <rect
       x={x}
       y={y}
-      width={radius}
-      height={radius}
-      rx={radius}
-      ry={radius}
+      width={GRAPH_ROOT_RADIUS}
+      height={GRAPH_ROOT_RADIUS}
+      rx={GRAPH_ROOT_RADIUS}
+      ry={GRAPH_ROOT_RADIUS}
       className="stroke"
     />
   )

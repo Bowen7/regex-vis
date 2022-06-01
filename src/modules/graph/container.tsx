@@ -1,15 +1,17 @@
-import React, { useState, useCallback } from "react"
+import React, { useState, useCallback, useMemo } from "react"
 import { useTheme } from "@geist-ui/core"
+import { nanoid } from "nanoid"
 import { AST } from "@/parser"
-import { GRAPH_NODE_MARGIN_HORIZONTAL, GRAPH_ROOT_RADIUS } from "@/constants"
+import {
+  GRAPH_PADDING_VERTICAL,
+  GRAPH_PADDING_HORIZONTAL,
+  GRAPH_MINIMUM_PADDING_HORIZONTAL,
+  GRAPH_MINIMUM_PADDING_VERTICAL,
+} from "@/constants"
 import Nodes from "./nodes"
-import RootNode from "./root"
-import MidConnect from "./mid-connect"
 
-const PADDING_VERTICAL = 50
-const PADDING_HORIZONTAL = 50
-const MINIMUM_PADDING_VERTICAL = 5
-const MINIMUM_PADDING_HORIZONTAL = 5
+const head: AST.RootNode = { id: nanoid(), type: "root" }
+const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
 type Props = {
   ast: AST.Regex
@@ -18,26 +20,23 @@ type Props = {
 const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
   const { palette } = useTheme()
   const [nodesLayout, setNodesLayout] = useState<[number, number]>([0, 0])
-  const paddingH = minimum ? MINIMUM_PADDING_HORIZONTAL : PADDING_HORIZONTAL
-  const paddingV = minimum ? MINIMUM_PADDING_VERTICAL : PADDING_VERTICAL
+  const paddingH = minimum
+    ? GRAPH_MINIMUM_PADDING_HORIZONTAL
+    : GRAPH_PADDING_HORIZONTAL
+  const paddingV = minimum
+    ? GRAPH_MINIMUM_PADDING_VERTICAL
+    : GRAPH_PADDING_VERTICAL
   const handleLayout = useCallback(
-    (index: number, width: number, height: number) =>
-      setNodesLayout([width, height]),
+    (index, layout) => setNodesLayout(layout),
     [setNodesLayout]
   )
+  const nodes = useMemo(
+    () => (minimum ? ast.body : [head, ...ast.body, tail]),
+    [ast.body, minimum]
+  )
 
-  const svgWidth =
-    nodesLayout[0] +
-    paddingH * 2 +
-    GRAPH_ROOT_RADIUS * 2 +
-    GRAPH_NODE_MARGIN_HORIZONTAL * 2
+  const svgWidth = nodesLayout[0] + paddingH * 2
   const svgHeight = nodesLayout[1] + paddingV * 2
-
-  const connectY = svgHeight / 2 - GRAPH_ROOT_RADIUS / 2
-  const centerY = svgHeight / 2
-  const nodesX = minimum
-    ? paddingH
-    : paddingH + GRAPH_ROOT_RADIUS + GRAPH_NODE_MARGIN_HORIZONTAL
 
   return (
     <>
@@ -47,38 +46,13 @@ const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
         width={svgWidth}
         height={svgHeight}
       >
-        {!minimum && (
-          <>
-            <RootNode x={paddingH} y={connectY} radius={GRAPH_ROOT_RADIUS} />
-            <MidConnect
-              start={[paddingH + GRAPH_ROOT_RADIUS, centerY]}
-              end={[nodesX, centerY]}
-            />
-          </>
-        )}
         <Nodes
           index={0}
-          x={nodesX}
+          x={paddingH}
           y={paddingV}
-          nodes={ast.body}
+          nodes={nodes}
           onLayout={handleLayout}
         ></Nodes>
-        {!minimum && (
-          <>
-            <MidConnect
-              start={[nodesX + nodesLayout[0], centerY]}
-              end={[
-                nodesX + nodesLayout[0] + GRAPH_NODE_MARGIN_HORIZONTAL,
-                centerY,
-              ]}
-            />
-            <RootNode
-              x={nodesX + nodesLayout[0] + GRAPH_NODE_MARGIN_HORIZONTAL}
-              y={connectY}
-              radius={GRAPH_ROOT_RADIUS}
-            />
-          </>
-        )}
       </svg>
       <style jsx>{`
         svg {

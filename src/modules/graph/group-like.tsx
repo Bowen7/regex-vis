@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react"
+import React, { useState, useEffect, useCallback } from "react"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
 import {
@@ -13,7 +13,7 @@ type Props = {
   x: number
   y: number
   node: AST.GroupNode | AST.LookAroundAssertionNode
-  onLayout: (index: number, width: number, height: number) => void
+  onLayout: (index: number, layout: [number, number]) => void
 }
 
 const GroupLikeNode: React.FC<Props> = React.memo(
@@ -22,14 +22,14 @@ const GroupLikeNode: React.FC<Props> = React.memo(
     const [layout, setLayout] = useState<[number, number]>([0, 0])
 
     useEffect(() => {
-      onLayout(index, ...layout)
-      return () => onLayout(index, -1, -1)
+      onLayout(index, layout)
+      // return () => onLayout(index, [-1, -1])
     }, [index, layout, onLayout])
 
     const { children } = node
 
     const handleNodesLayout = useCallback(
-      (index: number, width: number, height: number) => {
+      (index: number, [width, height]) => {
         setLayout([
           width + 2 * GRAPH_NODE_MARGIN_HORIZONTAL,
           height + 2 * GRAPH_GROUP_NODE_PADDING_VERTICAL,
