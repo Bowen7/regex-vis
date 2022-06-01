@@ -1,5 +1,6 @@
 import React, { useMemo, useEffect, useCallback } from "react"
 import { useImmer } from "use-immer"
+import { useUnmount } from "react-use"
 import * as AST from "@/parser/ast"
 import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
 import ChoiceNode from "./choice"
@@ -40,16 +41,15 @@ const Nodes: React.FC<Props> = React.memo(
       })
     }, [x, layouts])
 
-    useEffect(() => {
-      onLayout(index, [width, height])
-      return () => onLayout(index, [-1, -1])
-    }, [index, width, height, onLayout])
+    useEffect(
+      () => onLayout(index, [width, height]),
+      [index, width, height, onLayout]
+    )
+
+    useUnmount(() => onLayout(index, [-1, -1]))
 
     const handleNodeLayout = useCallback(
       (index: number, [width, height]) => {
-        if (nodes[0].type === "root") {
-          console.log(nodes[index], width, height)
-        }
         if (width === -1 && height === -1) {
           setLayouts((draft) => {
             draft.splice(index, 1)

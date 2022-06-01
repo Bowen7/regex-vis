@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react"
+import { useUnmount } from "react-use"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
 import {
@@ -21,10 +22,9 @@ const GroupLikeNode: React.FC<Props> = React.memo(
     const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
 
-    useEffect(() => {
-      onLayout(index, layout)
-      // return () => onLayout(index, [-1, -1])
-    }, [index, layout, onLayout])
+    useEffect(() => onLayout(index, layout), [index, layout, onLayout])
+
+    useUnmount(() => onLayout(index, [-1, -1]))
 
     const { children } = node
 

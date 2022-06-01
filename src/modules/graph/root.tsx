@@ -1,4 +1,5 @@
 import React, { useEffect } from "react"
+import { useUnmount } from "react-use"
 import { GRAPH_ROOT_RADIUS } from "@/constants"
 type Props = {
   index: number
@@ -9,10 +10,13 @@ type Props = {
 
 const RootNode = (props: Props) => {
   const { index, x, y, onLayout } = props
-  useEffect(() => {
-    onLayout(index, [GRAPH_ROOT_RADIUS, GRAPH_ROOT_RADIUS])
-    return () => onLayout(index, [-1, -1])
-  }, [index, onLayout])
+  useEffect(
+    () => onLayout(index, [GRAPH_ROOT_RADIUS, GRAPH_ROOT_RADIUS]),
+    [index, onLayout]
+  )
+
+  useUnmount(() => onLayout(index, [-1, -1]))
+
   return (
     <rect
       x={x}

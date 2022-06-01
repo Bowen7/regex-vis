@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useCallback } from "react"
 import { useImmer } from "use-immer"
+import { useUnmount } from "react-use"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_MARGIN_VERTICAL,
@@ -32,10 +33,12 @@ const ChoiceNode: React.FC<Props> = React.memo(
       [layouts]
     )
 
-    useEffect(() => {
-      onLayout(index, [width, height])
-      return () => onLayout(index, [-1, -1])
-    }, [index, width, height, onLayout])
+    useEffect(
+      () => onLayout(index, [width, height]),
+      [index, width, height, onLayout]
+    )
+
+    useUnmount(() => onLayout(index, [-1, -1]))
 
     const branchYs = useMemo(() => {
       if (layouts.length === 0) {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react"
+import { useUnmount } from "react-use"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_PADDING_VERTICAL,
@@ -30,10 +31,12 @@ const SimpleNode: React.FC<Props> = React.memo(
     )
     const height = layout[1] + 2 * GRAPH_NODE_PADDING_VERTICAL
 
-    useEffect(() => {
-      onLayout(index, [width, height])
-      // return () => onLayout(index, [-1, -1])
-    }, [index, width, height, onLayout])
+    useEffect(
+      () => onLayout(index, [width, height]),
+      [index, width, height, onLayout]
+    )
+
+    useUnmount(() => onLayout(index, [-1, -1]))
 
     return (
       <g transform={`translate(${x},${y})`}>
