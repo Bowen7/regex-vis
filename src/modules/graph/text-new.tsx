@@ -7,8 +7,7 @@ import {
   GRAPH_NODE_PADDING_VERTICAL,
 } from "@/constants"
 type Props = {
-  x: number
-  y: number
+  centerX: number
   node:
     | AST.CharacterNode
     | AST.BackReferenceNode
@@ -141,7 +140,7 @@ const renderBoundaryAssertion = (
   )
 }
 
-const Text: React.FC<Props> = React.memo(({ x, y, node, onLayout }) => {
+const Text = React.memo(({ centerX, node, onLayout }: Props) => {
   const gRef = useRef<SVGGElement>(null)
 
   const { t } = useTranslation()
@@ -174,7 +173,7 @@ const Text: React.FC<Props> = React.memo(({ x, y, node, onLayout }) => {
     <g
       ref={gRef}
       fontSize={GRAPH_TEXT_FONT_SIZE}
-      transform={`translate(${x},${
+      transform={`translate(${centerX},${
         GRAPH_TEXT_FONT_SIZE + GRAPH_NODE_PADDING_VERTICAL
       })`}
     >

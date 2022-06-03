@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
+import React, { useState, useEffect, useMemo, useCallback } from "react"
 import { AST, getQuantifierText } from "@/parser"
 import {
   GRAPH_QUANTIFIER_ICON_WIDTH,
@@ -12,23 +12,12 @@ type Props = {
   onLayout: (layout: [number, number]) => void
 }
 
-const QuantifierNode = React.memo((props: Props) => {
+export const NameNode = React.memo((props: Props) => {
   const { x, y, quantifier, onLayout } = props
-
-  const textRef = useRef<SVGTextElement>(null!)
 
   const text = getQuantifierText(quantifier)
   const strokeDasharray = quantifier.greedy ? "" : "3,3"
   const transform = `translate(${x} ${y})`
-
-  useEffect(() => {
-    const { width } = textRef.current.getBoundingClientRect()
-    onLayout([
-      width + GRAPH_QUANTIFIER_ICON_WIDTH,
-      GRAPH_QUANTIFIER_ICON_HEIGHT,
-    ])
-  }, [text, onLayout])
-
   return (
     <g transform={transform}>
       <g fill="none" className="thin-stroke" transform={transform}>
@@ -44,16 +33,12 @@ const QuantifierNode = React.memo((props: Props) => {
         ></path>
       </g>
       <text
-        ref={textRef}
         className="text"
         fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
         pointerEvents="none"
-        x={GRAPH_QUANTIFIER_ICON_WIDTH}
       >
         {text}
       </text>
     </g>
   )
 })
-
-export default QuantifierNode

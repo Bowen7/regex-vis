@@ -62,7 +62,6 @@ const Nodes: React.FC<Props> = React.memo(
       },
       [setLayouts]
     )
-    nodes[0].type === "root" && console.log(111, layouts)
 
     const connectY = y + height / 2
 
