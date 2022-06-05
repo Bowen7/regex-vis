@@ -24,15 +24,18 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           </div>
         </Link>
         <div className="nav">
-          <NavLink to="/" exact activeStyle={activeStyle}>
+          <NavLink
+            to="/"
+            style={({ isActive }) => (isActive ? activeStyle : {})}
+          >
             Home
           </NavLink>
-          <NavLink to="/samples" activeStyle={activeStyle}>
+          <NavLink
+            to="/samples"
+            style={({ isActive }) => (isActive ? activeStyle : {})}
+          >
             Samples
           </NavLink>
-          {/* <NavLink to="/about" activeStyle={activeStyle}>
-            About
-          </NavLink> */}
           <a
             href="https://github.com/Bowen7/regex-vis"
             target="_blank"

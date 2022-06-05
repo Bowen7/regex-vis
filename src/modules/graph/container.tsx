@@ -27,7 +27,7 @@ const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
     ? GRAPH_MINIMUM_PADDING_VERTICAL
     : GRAPH_PADDING_VERTICAL
   const handleLayout = useCallback(
-    (index, layout) => setNodesLayout(layout),
+    (index: number, layout: [number, number]) => setNodesLayout(layout),
     [setNodesLayout]
   )
   const nodes = useMemo(

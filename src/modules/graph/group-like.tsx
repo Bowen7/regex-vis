@@ -28,7 +28,7 @@ const GroupLikeNode = React.memo(({ index, x, y, node, onLayout }: Props) => {
   const { children } = node
 
   const handleNodesLayout = useCallback(
-    (index: number, [width, height]) => {
+    (index: number, [width, height]: [number, number]) => {
       setLayout([
         width + 2 * GRAPH_NODE_MARGIN_HORIZONTAL,
         height + 2 * GRAPH_GROUP_NODE_PADDING_VERTICAL,

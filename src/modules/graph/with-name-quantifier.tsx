@@ -22,7 +22,7 @@ export const withNameQuantifier = <
     children: React.ReactNode
   }
 >(
-  Component: React.ComponentType<T>
+  Component: React.FC<T>
 ) => {
   const WithNameQuantifier = (props: Omit<T, "children">) => {
     const { index, x, y, node, onLayout, ...restProps } = props

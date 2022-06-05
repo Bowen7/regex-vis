@@ -5,11 +5,18 @@ import { useLocalStorage } from "react-use"
 import produce from "immer"
 import { gen } from "@/parser"
 import { astAtom, useAtomValue } from "@/atom"
-import { withDebounce } from "@/utils/hocs"
-const DebouncedTextarea = withDebounce<
-  HTMLTextAreaElement,
-  React.ComponentProps<typeof Textarea>
->(Textarea)
+import { useDebounceInput } from "@/utils/hooks"
+
+const DebouncedTextarea = ({
+  value,
+  onChange,
+  ...restProps
+}: Omit<React.ComponentProps<typeof Textarea>, "onChange"> & {
+  onChange: (value: string) => void
+}) => {
+  const debouncedBindings = useDebounceInput(value as string, onChange)
+  return <Textarea {...restProps} {...debouncedBindings} />
+}
 
 const TestTab: React.FC<{}> = () => {
   const [cases, setCases] = useLocalStorage<string[]>("test-case", [""])

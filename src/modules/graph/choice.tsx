@@ -53,7 +53,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
     }, [y, layouts])
 
     const handleNodeLayout = useCallback(
-      (index: number, [width, height]) => {
+      (index: number, [width, height]: [number, number]) => {
         if (width === -1 && height === -1) {
           setLayouts((draft) => {
             draft.splice(index, 1)

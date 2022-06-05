@@ -1,5 +1,5 @@
 import React, { Suspense } from "react"
-import { BrowserRouter as Router, Switch } from "react-router-dom"
+import { BrowserRouter as Router } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
 import Header from "@/modules/common/header"
 import { useLocalStorage } from "react-use"
@@ -26,9 +26,7 @@ export default function App() {
           <CssBaseline />
           <Router>
             <Header theme={theme!} onThemeChange={handleThemeChange} />
-            <Switch>
-              <Routes />
-            </Switch>
+            <Routes />
           </Router>
         </GeistProvider>
       </Suspense>

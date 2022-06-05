@@ -1,17 +1,11 @@
 import React, { useState } from "react"
 import { Input as GeistInput, useTheme } from "@geist-ui/core"
-import { withDebounce } from "@/utils/hocs"
-const DebouncedInput = withDebounce<
-  HTMLInputElement,
-  React.ComponentProps<typeof GeistInput>
->(GeistInput, 500)
+import { useDebounceInput } from "@/utils/hooks"
 
-type Props = Omit<
-  React.ComponentProps<typeof DebouncedInput>,
-  "enterKeyHint"
-> & {
+type Props = Omit<React.ComponentProps<typeof GeistInput>, "onChange"> & {
   validation?: RegExp
   errMsg?: string
+  onChange: (value: string) => void
 }
 
 const Input: React.FC<Props> = (props) => {
@@ -41,14 +35,15 @@ const Input: React.FC<Props> = (props) => {
     onChange(value)
   }
 
+  const debouncedBindings = useDebounceInput(value as string, handleChange)
+
   return (
     <>
       {invalid && <p className="error-msg">{errMsg}</p>}
-      <DebouncedInput
+      <GeistInput
         onKeyDown={handleKeyDown}
         {...restProps}
-        value={value}
-        onChange={handleChange}
+        {...debouncedBindings}
       />
       <style jsx>{`
         .error-msg {

@@ -51,7 +51,7 @@ const Nodes: React.FC<Props> = React.memo(
     useUnmount(() => onLayout(index, [-1, -1]))
 
     const handleNodeLayout = useCallback(
-      (index: number, [width, height]) => {
+      (index: number, [width, height]: [number, number]) => {
         if (width === -1 && height === -1) {
           setLayouts((draft) => {
             draft.splice(index, 1)

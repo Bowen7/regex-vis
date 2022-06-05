@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react"
-import { useHistory, useLocation } from "react-router-dom"
+import { useSearchParams } from "react-router-dom"
 import { useTheme, useToasts, useCurrentState } from "@geist-ui/core"
 import { nanoid } from "nanoid"
 import { parse, gen, AST } from "@/parser"
@@ -20,8 +20,7 @@ const head: AST.RootNode = { id: nanoid(), type: "root" }
 const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
 const Home: React.FC<{}> = () => {
-  const history = useHistory()
-  const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
   const ast = useAtomValue(astAtom)
   const { palette } = useTheme()
@@ -31,21 +30,20 @@ const Home: React.FC<{}> = () => {
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [regex, setRegex, regexRef] = useCurrentState<string>(
-    () => new URLSearchParams(location.search).get("r") || ""
+    () => searchParams.get("r") || ""
   )
   const [isLiteral, setIsLiteral] = useState(
     () =>
-      new URLSearchParams(location.search).get("l") === "1" ||
-      localStorage.getItem("isLiteral") === "1"
+      searchParams.get("l") === "1" || localStorage.getItem("isLiteral") === "1"
   )
 
   const { setToast } = useToasts()
   useEffect(() => {
-    if (new URLSearchParams(location.search).get("r") === null) {
+    if (searchParams.get("r") === null) {
       setRegex("")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
+  }, [searchParams])
 
   useEffect(() => setToastsAtom.setState(setToast), [setToast])
 
@@ -69,18 +67,18 @@ const Home: React.FC<{}> = () => {
 
   useEffect(() => {
     // update url search
-    const nextParams = new URLSearchParams()
+    const nextParams: { r?: string; l?: string } = {}
     if (regex !== "") {
-      nextParams.append("r", regex)
+      nextParams.r = regex
     }
     if (isLiteral) {
-      nextParams.append("l", "1")
+      nextParams.l = "1"
       localStorage.setItem("isLiteral", "1")
     } else {
       localStorage.removeItem("isLiteral")
     }
-    history.push({ search: nextParams.toString() })
-  }, [regex, history, isLiteral])
+    setSearchParams(nextParams)
+  }, [regex, setSearchParams, isLiteral])
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
