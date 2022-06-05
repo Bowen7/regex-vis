@@ -27,5 +27,6 @@ const EndConnect: React.FC<Props> = React.memo((props) => {
   const path = M + L1 + A1 + L2 + A2 + L3
   return <path d={path} className="stroke" fill="none"></path>
 })
+EndConnect.displayName = "EndConnect"
 
 export default EndConnect

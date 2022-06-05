@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo, useCallback, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import { AST, getQuantifierText } from "@/parser"
 import {
   GRAPH_QUANTIFIER_ICON_WIDTH,
   GRAPH_QUANTIFIER_ICON_HEIGHT,
   GRAPH_QUANTIFIER_TEXT_FONTSIZE,
+  GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL,
 } from "@/constants"
 type Props = {
   x: number
@@ -19,7 +20,9 @@ const QuantifierNode = React.memo((props: Props) => {
 
   const text = getQuantifierText(quantifier)
   const strokeDasharray = quantifier.greedy ? "" : "3,3"
-  const transform = `translate(${x} ${y})`
+  const transform = `translate(${x} ${
+    y + GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL
+  })`
 
   useEffect(() => {
     const { width } = textRef.current.getBoundingClientRect()
@@ -31,7 +34,7 @@ const QuantifierNode = React.memo((props: Props) => {
 
   return (
     <g transform={transform}>
-      <g fill="none" className="thin-stroke" transform={transform}>
+      <g fill="none" className="thin-stroke">
         <path d="M18 1l3 3-3 3"></path>
         <path d="M6 15l-3-3 3-3"></path>
         <path
@@ -49,11 +52,12 @@ const QuantifierNode = React.memo((props: Props) => {
         fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
         pointerEvents="none"
         x={GRAPH_QUANTIFIER_ICON_WIDTH}
+        y={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
       >
         {text}
       </text>
     </g>
   )
 })
-
+QuantifierNode.displayName = "QuantifierNode"
 export default QuantifierNode

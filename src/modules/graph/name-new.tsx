@@ -1,44 +1,42 @@
-import React, { useState, useEffect, useMemo, useCallback } from "react"
-import { AST, getQuantifierText } from "@/parser"
-import {
-  GRAPH_QUANTIFIER_ICON_WIDTH,
-  GRAPH_QUANTIFIER_ICON_HEIGHT,
-  GRAPH_QUANTIFIER_TEXT_FONTSIZE,
-} from "@/constants"
+import React, { useEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
+import { GRAPH_NAME_TEXT_FONTSIZE, GRAPH_NAME_HEIGHT } from "@/constants"
 type Props = {
-  x: number
+  centerX: number
   y: number
-  quantifier: AST.Quantifier
+  name: string
   onLayout: (layout: [number, number]) => void
 }
 
-export const NameNode = React.memo((props: Props) => {
-  const { x, y, quantifier, onLayout } = props
+const NameNode = React.memo((props: Props) => {
+  const { centerX, y, name, onLayout } = props
+  const { t } = useTranslation()
+  const textRef = useRef<SVGTextElement>(null!)
 
-  const text = getQuantifierText(quantifier)
-  const strokeDasharray = quantifier.greedy ? "" : "3,3"
-  const transform = `translate(${x} ${y})`
+  const text = t(name)
+
+  useEffect(() => {
+    const { width } = textRef.current.getBoundingClientRect()
+    const layout: [number, number] = [width, GRAPH_NAME_HEIGHT]
+    onLayout(layout)
+  }, [text, onLayout])
+
   return (
-    <g transform={transform}>
-      <g fill="none" className="thin-stroke" transform={transform}>
-        <path d="M18 1l3 3-3 3"></path>
-        <path d="M6 15l-3-3 3-3"></path>
-        <path
-          d="M3 9V7a3 3 0 0 13-3h14"
-          strokeDasharray={strokeDasharray}
-        ></path>
-        <path
-          d="M21 7v2a3 3 0 0 1-3 3H3"
-          strokeDasharray={strokeDasharray}
-        ></path>
-      </g>
-      <text
-        className="text"
-        fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
-        pointerEvents="none"
-      >
-        {text}
-      </text>
-    </g>
+    <text
+      ref={textRef}
+      className="text"
+      fontSize={GRAPH_NAME_TEXT_FONTSIZE}
+      pointerEvents="none"
+      x={centerX}
+      y={y}
+      dy={0.5 * GRAPH_NAME_TEXT_FONTSIZE}
+      textAnchor="middle"
+    >
+      {text}
+    </text>
   )
 })
+
+NameNode.displayName = "NameNode"
+
+export { NameNode }

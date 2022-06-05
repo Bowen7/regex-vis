@@ -8,5 +8,6 @@ const MidConnect: React.FC<Props> = React.memo((props) => {
   const path = `M${start[0]},${start[1]}L${end[0]},${end[1]}`
   return <path d={path} className="stroke" fill="none"></path>
 })
+MidConnect.displayName = "MidConnect"
 
 export default MidConnect

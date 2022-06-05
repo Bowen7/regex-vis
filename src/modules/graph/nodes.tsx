@@ -8,6 +8,7 @@ import SimpleNode from "./simple-node"
 import GroupLikeNode from "./group-like"
 import RootNode from "./root"
 import MidConnect from "./mid-connect"
+import { withNameQuantifier } from "./with-name-quantifier"
 type Props = {
   index: number
   x: number
@@ -15,6 +16,7 @@ type Props = {
   nodes: AST.Node[]
   onLayout: (index: number, layout: [number, number]) => void
 }
+const SimpleNodeWithNameQuantifier = withNameQuantifier(SimpleNode)
 
 const Nodes: React.FC<Props> = React.memo(
   ({ index, x, y, nodes, onLayout }) => {
@@ -109,7 +111,7 @@ const Nodes: React.FC<Props> = React.memo(
               break
             default:
               Node = (
-                <SimpleNode
+                <SimpleNodeWithNameQuantifier
                   index={index}
                   x={nodeX}
                   y={nodeY}

@@ -140,7 +140,7 @@ const renderBoundaryAssertion = (
   )
 }
 
-const Text = React.memo(({ centerX, node, onLayout }: Props) => {
+const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
   const gRef = useRef<SVGGElement>(null)
 
   const { t } = useTranslation()
@@ -181,5 +181,5 @@ const Text = React.memo(({ centerX, node, onLayout }: Props) => {
     </g>
   )
 })
-
-export default Text
+TextNode.displayName = "TextNode"
+export default TextNode

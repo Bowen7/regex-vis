@@ -97,5 +97,6 @@ const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
     </>
   )
 })
+Container.displayName = "SVGContainer"
 
 export default Container

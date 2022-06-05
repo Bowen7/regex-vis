@@ -98,4 +98,5 @@ const ChoiceNode: React.FC<Props> = React.memo(
     )
   }
 )
+ChoiceNode.displayName = "ChoiceName"
 export default ChoiceNode

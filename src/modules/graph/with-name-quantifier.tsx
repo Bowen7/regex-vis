@@ -1,7 +1,11 @@
-import React, { useState } from "react"
+import React, { useEffect, useState, useCallback } from "react"
+import { useUnmount } from "react-use"
 import { AST } from "@/parser"
 import QuantifierNode from "./quantifier-new"
+import { NameNode } from "./name-new"
 import MidConnect from "./mid-connect"
+import { getQuantifier, getName } from "./utils-new"
+import { GRAPH_NAME_HEIGHT } from "@/constants"
 
 //    name
 //  --------
@@ -10,6 +14,7 @@ import MidConnect from "./mid-connect"
 //  quantifier
 export const withNameQuantifier = <
   T extends {
+    index: number
     x: number
     y: number
     node: AST.Node
@@ -19,8 +24,8 @@ export const withNameQuantifier = <
 >(
   Component: React.ComponentType<T>
 ) => {
-  return (props: Omit<T, "children">) => {
-    const { x, y, node, onLayout, ...restProps } = props
+  const WithNameQuantifier = (props: Omit<T, "children">) => {
+    const { index, x, y, node, onLayout, ...restProps } = props
     const [contentLayout, setContentLayout] = useState<[number, number]>([0, 0])
     const [quantifierLayout, setQuantifierLayout] = useState<[number, number]>([
       0, 0,
@@ -31,30 +36,49 @@ export const withNameQuantifier = <
     const height =
       contentLayout[1] + 2 * Math.max(quantifierLayout[1], nameLayout[1])
 
-    const quantifier =
-      node.type === "character" || node.type === "group"
-        ? node.quantifier
-        : null
+    useEffect(() => {
+      onLayout(index, [width, height])
+    }, [width, height, index, onLayout])
+
+    useUnmount(() => onLayout(index, [-1, -1]))
+
+    const quantifier = getQuantifier(node)
+    const name = getName(node)
 
     const contentX = x + (width - contentLayout[0]) / 2
     const contentY = y + (height - contentLayout[1]) / 2
+    const centerX = x + width / 2
     const centerY = y + height / 2
+
+    const handleContentLayout = useCallback(
+      (index: number, layout: [number, number]) => setContentLayout(layout),
+      [setContentLayout]
+    )
 
     return (
       <Component
         {...(restProps as T)}
+        index={index}
         x={contentX}
         y={contentY}
         node={node}
-        onLayout={setContentLayout}
+        onLayout={handleContentLayout}
       >
         {contentX !== x && (
           <MidConnect start={[x, centerY]} end={[contentX, centerY]} />
         )}
+        {name && (
+          <NameNode
+            centerX={centerX}
+            y={contentY - GRAPH_NAME_HEIGHT}
+            name={name}
+            onLayout={setNameLayout}
+          />
+        )}
         {quantifier && (
           <QuantifierNode
-            x={x + (width - quantifierLayout[0]) / 2}
-            y={contentX + contentLayout[1]}
+            x={centerX - quantifierLayout[0] / 2}
+            y={contentY + contentLayout[1]}
             quantifier={quantifier}
             onLayout={setQuantifierLayout}
           />
@@ -68,4 +92,6 @@ export const withNameQuantifier = <
       </Component>
     )
   }
+  WithNameQuantifier.displayName = "WithNameQuantifier"
+  return WithNameQuantifier
 }
