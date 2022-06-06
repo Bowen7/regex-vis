@@ -29,7 +29,7 @@ const NameNode = React.memo((props: Props) => {
       pointerEvents="none"
       x={centerX}
       y={y}
-      dy={0.5 * GRAPH_NAME_TEXT_FONTSIZE}
+      dy={0.25 * GRAPH_NAME_TEXT_FONTSIZE}
       textAnchor="middle"
     >
       {text}

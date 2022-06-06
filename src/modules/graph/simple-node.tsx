@@ -35,10 +35,9 @@ const SimpleNode = ({ index, x, y, node, onLayout, children }: Props) => {
   const contentX = (width - width) / 2
   const contentY = (height - height) / 2
 
-  useEffect(
-    () => onLayout(index, [width, height]),
-    [index, width, height, onLayout]
-  )
+  useEffect(() => {
+    onLayout(index, [width, height])
+  }, [index, width, height, onLayout])
 
   return (
     <g>

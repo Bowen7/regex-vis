@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useCallback } from "react"
 import { useImmer } from "use-immer"
-import { useUnmount } from "react-use"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_MARGIN_VERTICAL,
@@ -13,12 +12,13 @@ type Props = {
   index: number
   x: number
   y: number
+  minimum: boolean
   node: AST.ChoiceNode
   onLayout: (index: number, layout: [number, number]) => void
 }
 
-const ChoiceNode: React.FC<Props> = React.memo(
-  ({ index, x, y, node, onLayout }) => {
+const ChoiceNode = React.memo(
+  ({ index, x, y, minimum, node, onLayout }: Props) => {
     const { branches } = node
     const [layouts, setLayouts] = useImmer<[number, number][]>([])
     const [width, height] = useMemo(
@@ -38,8 +38,6 @@ const ChoiceNode: React.FC<Props> = React.memo(
       [index, width, height, onLayout]
     )
 
-    useUnmount(() => onLayout(index, [-1, -1]))
-
     const branchYs = useMemo(() => {
       if (layouts.length === 0) {
         return []
@@ -54,15 +52,9 @@ const ChoiceNode: React.FC<Props> = React.memo(
 
     const handleNodeLayout = useCallback(
       (index: number, [width, height]: [number, number]) => {
-        if (width === -1 && height === -1) {
-          setLayouts((draft) => {
-            draft.splice(index, 1)
-          })
-        } else {
-          setLayouts((draft) => {
-            draft[index] = [width, height]
-          })
-        }
+        setLayouts((draft) => {
+          draft[index] = [width, height]
+        })
       },
       [setLayouts]
     )
@@ -84,6 +76,7 @@ const ChoiceNode: React.FC<Props> = React.memo(
                 index={index}
                 x={nodeX}
                 y={branchYs.length > index ? branchYs[index] : y}
+                minimum={minimum}
                 nodes={branch}
                 onLayout={handleNodeLayout}
               />

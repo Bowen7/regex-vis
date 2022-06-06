@@ -17,7 +17,8 @@ type Props = {
   ast: AST.Regex
   minimum?: boolean
 }
-const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
+
+const Container = React.memo(({ ast, minimum = false }: Props) => {
   const { palette } = useTheme()
   const [nodesLayout, setNodesLayout] = useState<[number, number]>([0, 0])
   const paddingH = minimum
@@ -50,6 +51,7 @@ const Container: React.FC<Props> = React.memo(({ ast, minimum = false }) => {
           index={0}
           x={paddingH}
           y={paddingV}
+          minimum={minimum}
           nodes={nodes}
           onLayout={handleLayout}
         ></Nodes>

@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useCallback } from "react"
-import { useUnmount } from "react-use"
 import { AST } from "@/parser"
 import QuantifierNode from "./quantifier-new"
 import { NameNode } from "./name-new"
@@ -13,7 +12,7 @@ import { GRAPH_NAME_HEIGHT } from "@/constants"
 //  --------
 //  quantifier
 export const withNameQuantifier = <
-  T extends {
+  Props extends {
     index: number
     x: number
     y: number
@@ -22,9 +21,9 @@ export const withNameQuantifier = <
     children: React.ReactNode
   }
 >(
-  Component: React.FC<T>
+  Component: React.FC<Props>
 ) => {
-  const WithNameQuantifier = (props: Omit<T, "children">) => {
+  const WithNameQuantifier = (props: Omit<Props, "children">) => {
     const { index, x, y, node, onLayout, ...restProps } = props
     const [contentLayout, setContentLayout] = useState<[number, number]>([0, 0])
     const [quantifierLayout, setQuantifierLayout] = useState<[number, number]>([
@@ -39,8 +38,6 @@ export const withNameQuantifier = <
     useEffect(() => {
       onLayout(index, [width, height])
     }, [width, height, index, onLayout])
-
-    useUnmount(() => onLayout(index, [-1, -1]))
 
     const quantifier = getQuantifier(node)
     const name = getName(node)
@@ -57,7 +54,7 @@ export const withNameQuantifier = <
 
     return (
       <Component
-        {...(restProps as T)}
+        {...(restProps as Props)}
         index={index}
         x={contentX}
         y={contentY}

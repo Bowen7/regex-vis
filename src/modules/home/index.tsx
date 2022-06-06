@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useTheme, useToasts, useCurrentState } from "@geist-ui/core"
-import { nanoid } from "nanoid"
 import { parse, gen, AST } from "@/parser"
 import { useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
@@ -16,8 +15,6 @@ import {
   dispatchSetAst,
   dispatchClearSelected,
 } from "@/atom"
-const head: AST.RootNode = { id: nanoid(), type: "root" }
-const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
 const Home: React.FC<{}> = () => {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -55,9 +52,7 @@ const Home: React.FC<{}> = () => {
     const ast = parse(regex, isLiteral)
     if (ast.type === "regex") {
       setErrorMsg(null)
-      const { body } = ast
-      const nextAst = { ...ast, body: [head, ...body, tail] }
-      dispatchSetAst(nextAst)
+      dispatchSetAst(ast)
       shouldGenAst.current = false
     } else {
       dispatchClearSelected()
