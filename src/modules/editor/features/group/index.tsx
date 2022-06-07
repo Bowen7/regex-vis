@@ -1,9 +1,10 @@
 import React from "react"
 import { Select, Spacer } from "@geist-ui/core"
+import { useSetAtom } from "jotai"
 import Input from "@/components/input"
 import { AST } from "@/parser"
 import Cell from "@/components/cell"
-import { dispatchUpdateGroup } from "@/atom"
+import { updateGroupAtom } from "@/atom"
 
 type GroupSelectProps = {
   group: AST.Group
@@ -24,6 +25,7 @@ export const groupOptions = [
 ]
 
 const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
+  const updateGroup = useSetAtom(updateGroupAtom)
   const { kind } = group
 
   const handleGroupChange = (kind: AST.GroupKind, name = "") => {
@@ -42,7 +44,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
         payload = { kind: "nonCapturing" }
         break
     }
-    dispatchUpdateGroup(payload)
+    updateGroup(payload)
   }
 
   const handleGroupNameChange = (value: string) =>
@@ -51,7 +53,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   const onSelectChange = (value: string | string[]) =>
     handleGroupChange(value as AST.GroupKind)
 
-  const handleUnGroup = () => dispatchUpdateGroup(null)
+  const handleUnGroup = () => updateGroup(null)
 
   return (
     <>

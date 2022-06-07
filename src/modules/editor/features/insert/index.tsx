@@ -1,5 +1,6 @@
 import React, { useMemo } from "react"
 import { Button, ButtonGroup, Tooltip } from "@geist-ui/core"
+import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import ShowMore from "@/components/show-more"
 import {
@@ -13,7 +14,7 @@ import {
   Lookbehind,
 } from "@/components/icons"
 import { AST } from "@/parser"
-import { dispatchInsert, dispatchGroupIt, dispatchLookAroundIt } from "@/atom"
+import { insertAtom, groupItAtom, lookAroundItAtom } from "@/atom"
 type Props = {
   ast: AST.Regex
   nodes: AST.Node[]
@@ -24,6 +25,10 @@ type InsertDirection = "prev" | "next" | "branch"
 type Option = { desc: string; value: string; Icon: () => JSX.Element }
 
 const Insert: React.FC<Props> = ({ ast, nodes }) => {
+  const insert = useSetAtom(insertAtom)
+  const groupIt = useSetAtom(groupItAtom)
+  const lookAroundIt = useSetAtom(lookAroundItAtom)
+
   const insertOptions = useMemo(() => {
     const options: Option[] = []
     const { body } = ast
@@ -99,7 +104,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
     ]
   }, [nodes])
 
-  const handleInsert = (direction: InsertDirection) => dispatchInsert(direction)
+  const handleInsert = (direction: InsertDirection) => insert(direction)
 
   const handleWrapGroup = (kind: string) => {
     let payload: AST.Group
@@ -116,11 +121,11 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       default:
         return
     }
-    dispatchGroupIt(payload)
+    groupIt(payload)
   }
 
   const handleWrapLookAroundAssertion = (kind: string) =>
-    dispatchLookAroundIt(kind as "lookahead" | "lookbehind")
+    lookAroundIt(kind as "lookahead" | "lookbehind")
 
   return (
     <div id="test">

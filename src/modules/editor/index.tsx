@@ -2,16 +2,15 @@ import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/core"
+import { useAtom, useSetAtom, useAtomValue } from "jotai"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
 import { useEvent } from "react-use"
 import {
-  dispatchRemove,
-  dispatchUndo,
-  dispatchRedo,
-  dispatchCollapseEditor,
-  useAtomValue,
+  undoAtom,
+  redoAtom,
+  removeAtom,
   selectedIdsAtom,
   editorCollapsedAtom,
 } from "@/atom"
@@ -19,7 +18,10 @@ import {
 type Tab = "legend" | "edit" | "test"
 const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const selectedIds = useAtomValue(selectedIdsAtom)
-  const editorCollapsed = useAtomValue(editorCollapsedAtom)
+  const [editorCollapsed, setEditorCollapsed] = useAtom(editorCollapsedAtom)
+  const remove = useSetAtom(removeAtom)
+  const undo = useSetAtom(undoAtom)
+  const redo = useSetAtom(redoAtom)
 
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
@@ -34,10 +36,6 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   }, [selectedIds])
 
   const editDisabled = selectedIds.length === 0
-
-  const remove = () => dispatchRemove()
-  const undo = () => dispatchUndo()
-  const redo = () => dispatchRedo()
 
   useEvent("keydown", (e: Event) => {
     const event = e as KeyboardEvent
@@ -57,9 +55,9 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
     }
   })
 
-  const collapseEditor = () => dispatchCollapseEditor(true)
+  const collapseEditor = () => setEditorCollapsed(true)
 
-  const unCollapseEditor = () => dispatchCollapseEditor(false)
+  const unCollapseEditor = () => setEditorCollapsed(false)
 
   const containerClassName =
     "container" + (editorCollapsed ? " collapsed-container" : "")

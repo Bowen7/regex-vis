@@ -1,25 +1,27 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useTheme, useToasts, useCurrentState } from "@geist-ui/core"
-import { parse, gen, AST } from "@/parser"
+import { useTheme, useCurrentState } from "@geist-ui/core"
+import { useAtomValue, useSetAtom } from "jotai"
+import { parse, gen } from "@/parser"
 import { useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
-import RegexInput from "./regex-input"
 import {
   editorCollapsedAtom,
   astAtom,
-  useAtomValue,
-  dispatchUpdateFlags,
-  setToastsAtom,
-  dispatchSetAst,
-  dispatchClearSelected,
+  clearSelectedAtom,
+  setAstAtom,
+  updateFlagsAtom,
 } from "@/atom"
+import RegexInput from "./regex-input"
 
 const Home: React.FC<{}> = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
   const ast = useAtomValue(astAtom)
+  const setAst = useSetAtom(setAstAtom)
+  const clearSelected = useSetAtom(clearSelectedAtom)
+  const updateFlags = useSetAtom(updateFlagsAtom)
   const { palette } = useTheme()
 
   const shouldGenAst = useRef(true)
@@ -34,15 +36,12 @@ const Home: React.FC<{}> = () => {
       searchParams.get("l") === "1" || localStorage.getItem("isLiteral") === "1"
   )
 
-  const { setToast } = useToasts()
   useEffect(() => {
     if (searchParams.get("r") === null) {
       setRegex("")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchParams])
-
-  useEffect(() => setToastsAtom.setState(setToast), [setToast])
 
   useEffect(() => {
     if (!shouldParseRegex.current) {
@@ -52,13 +51,13 @@ const Home: React.FC<{}> = () => {
     const ast = parse(regex, isLiteral)
     if (ast.type === "regex") {
       setErrorMsg(null)
-      dispatchSetAst(ast)
+      setAst({ ast })
       shouldGenAst.current = false
     } else {
-      dispatchClearSelected()
+      clearSelected()
       setErrorMsg(ast.message)
     }
-  }, [regex, isLiteral])
+  }, [regex, isLiteral, setAst, clearSelected])
 
   useEffect(() => {
     // update url search
@@ -89,7 +88,7 @@ const Home: React.FC<{}> = () => {
 
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
-  const handleFlagsChange = (flags: string[]) => dispatchUpdateFlags(flags)
+  const handleFlagsChange = (flags: string[]) => updateFlags(flags)
   return (
     <>
       <div className="wrapper" style={style}>

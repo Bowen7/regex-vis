@@ -1,9 +1,10 @@
 import React, { useMemo } from "react"
 import { Spacer, Select, Code } from "@geist-ui/core"
+import { useSetAtom } from "jotai"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { characterClassTextMap, CharacterClassKey } from "@/parser"
-import { dispatchUpdateContent } from "@/atom"
+import { updateContentAtom } from "@/atom"
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
 for (let key in characterClassTextMap) {
@@ -20,6 +21,8 @@ type Props = {
   value: string
 }
 const ClassCharacter: React.FC<Props> = ({ value }) => {
+  const updateContent = useSetAtom(updateContentAtom)
+
   const classKind = useMemo(() => {
     if (xhhRegex.test(value)) {
       return "\\xhh"
@@ -36,14 +39,14 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
     } else if (value === "\\uhhhh") {
       value = "\\u0000"
     }
-    dispatchUpdateContent({
+    updateContent({
       kind: "class",
       value,
     })
   }
 
   const handleInputChange = (value: string) =>
-    dispatchUpdateContent({
+    updateContent({
       kind: "class",
       value: value,
     })

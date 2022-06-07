@@ -1,11 +1,11 @@
-import React, { useState } from "react"
+import React, { useState, useMemo } from "react"
 import { useTheme, Code, Dot } from "@geist-ui/core"
-import { RenderNode, RenderConnect, Box } from "./types"
+import hexRgb from "hex-rgb"
 import { useUpdateEffect } from "react-use"
 import { AST } from "@/parser"
-import renderEngine from "./rendering-engine"
-import SvgContainer from "./svg-container"
-import { selectedIdsAtom, useAtomValue, dispatchSelectNodes } from "@/atom"
+import SvgContainer from "./container"
+import { selectedIdsAtom } from "@/atom"
+import { useDragSelect } from "@/utils/hooks"
 type Props = {
   regex: string
   ast: AST.Regex
@@ -20,49 +20,37 @@ const Graph: React.FC<Props> = ({
   minimum = false,
 }) => {
   const { palette } = useTheme()
-  const selectedIds = useAtomValue(selectedIdsAtom)
-
-  const [renderInfo, setRenderInfo] = useState<{
-    width: number
-    height: number
-    nodes: RenderNode[]
-    connects: RenderConnect[]
-  }>({
-    width: 0,
-    height: 0,
-    nodes: [],
-    connects: [],
+  const opacitySuccessColor = useMemo(
+    () => hexRgb(palette.success, { format: "css", alpha: 0.5 }),
+    [palette.success]
+  )
+  const [bindings, Selection] = useDragSelect({
+    disabled: !!errorMsg,
+    style: {
+      backgroundColor: opacitySuccessColor,
+      border: `1.5px solid ${palette.success}`,
+      borderRadius: "4px",
+    },
   })
-
-  useUpdateEffect(() => {
-    const renderInfo = renderEngine.render(ast)
-    setRenderInfo(renderInfo)
-  }, [ast])
-
-  const onDragSelect = (box: Box) => {
-    const selectedIds = renderEngine.selectByBound(box)
-    dispatchSelectNodes(selectedIds)
-  }
-
   return (
     <>
-      <div className="graph">
+      <div className="graph" {...bindings}>
         {errorMsg ? (
           <p>
-            <Dot type="error">Error</Dot>(<Code>{regex}</Code>): {errorMsg}
+            <Dot type="error">Error</Dot>(<Code>{regex}</Code>) {errorMsg}
           </p>
         ) : (
-          <SvgContainer
-            {...renderInfo}
-            selectedIds={selectedIds}
-            minimum={minimum}
-            onDragSelect={onDragSelect}
-          />
+          <>
+            <SvgContainer ast={ast} minimum={minimum} />
+            {Selection}
+          </>
         )}
       </div>
       <style jsx>{`
         .graph {
           display: inline-block;
+          position: relative;
+          font-size: ${errorMsg ? "1em" : "0"};
         }
         .graph :global(svg) {
           border: 1px solid ${palette.accents_2};

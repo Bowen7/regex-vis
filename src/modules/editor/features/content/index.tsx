@@ -1,5 +1,6 @@
 import React, { useMemo } from "react"
 import { Select, useTheme, Spacer } from "@geist-ui/core"
+import { useAtomValue, useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
 import QuestionCircle from "@geist-ui/icons/questionCircle"
@@ -15,12 +16,7 @@ import {
   endAssertionOption,
   wordBoundaryAssertionOption,
 } from "./helper"
-import {
-  astAtom,
-  groupNamesAtom,
-  useAtomValue,
-  dispatchUpdateContent,
-} from "@/atom"
+import { astAtom, groupNamesAtom, updateContentAtom } from "@/atom"
 import Ranges from "./ranges"
 
 type Prop = {
@@ -31,6 +27,7 @@ type Prop = {
 const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
   const groupNames = useAtomValue(groupNamesAtom)
   const ast = useAtomValue(astAtom)
+  const updateContent = useSetAtom(updateContentAtom)
   const { palette } = useTheme()
   const { kind } = content
 
@@ -77,7 +74,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
       default:
         return
     }
-    dispatchUpdateContent(payload)
+    updateContent(payload)
   }
 
   return (

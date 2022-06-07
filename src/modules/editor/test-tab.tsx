@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react"
 import { Button, Spacer, Textarea } from "@geist-ui/core"
 import XCircle from "@geist-ui/icons/xCircle"
+import { useAtomValue } from "jotai"
 import { useLocalStorage } from "react-use"
 import produce from "immer"
 import { gen } from "@/parser"
-import { astAtom, useAtomValue } from "@/atom"
+import { astAtom } from "@/atom"
 import { useDebounceInput } from "@/utils/hooks"
 
 const DebouncedTextarea = ({

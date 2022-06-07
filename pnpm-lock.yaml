@@ -18,12 +18,13 @@ specifiers:
   '@types/styled-jsx': ^2.2.8
   babel-plugin-import: ^1.13.3
   customize-cra: ^1.0.0
+  hex-rgb: ^5.0.0
   i18next: ^21.6.16
   i18next-browser-languagedetector: ^6.1.4
   i18next-http-backend: ^1.4.0
   immer: ^9.0.6
   jest: ^26.6.0
-  jotai: ^1.6.5
+  jotai: ^1.7.1
   lru-cache: ^7.10.1
   nanoid: ^3.1.16
   react: ^18.1.0
@@ -44,11 +45,12 @@ dependencies:
   '@babel/core': 7.14.6
   '@geist-ui/core': 2.3.8_ef5jwxihqo6n7gxfmzogljlgcm
   '@geist-ui/icons': 1.0.2_4bwnuquxihmm3xbb5eqkhi5pui
+  hex-rgb: 5.0.0
   i18next: 21.6.16
   i18next-browser-languagedetector: 6.1.4
   i18next-http-backend: 1.4.0
   immer: 9.0.6
-  jotai: 1.6.5_f2doctsj6mecwv6cns5elz5mme
+  jotai: 1.7.1_f2doctsj6mecwv6cns5elz5mme
   lru-cache: 7.10.1
   nanoid: 3.1.23
   react: 18.1.0
@@ -7241,6 +7243,11 @@ packages:
     resolution: {integrity: sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz}
     dev: false
 
+  /hex-rgb/5.0.0:
+    resolution: {integrity: sha512-NQO+lgVUCtHxZ792FodgW0zflK+ozS9X9dwGp9XvvmPlH7pyxd588cn24TD3rmPm/N0AIRXF10Otah8yKqGw4w==}
+    engines: {node: '>=12'}
+    dev: false
+
   /history/5.3.0:
     resolution: {integrity: sha512-ZqaKwjjrAYUYfLG+htGaIIZ4nioX2L70ZUMIFysS3xvBsSG4x/n1V6TXV3N8ZYNuFGlDirFg32T7B6WOUPDYcQ==}
     dependencies:
@@ -8479,8 +8486,8 @@ packages:
       - ts-node
       - utf-8-validate
 
-  /jotai/1.6.5_f2doctsj6mecwv6cns5elz5mme:
-    resolution: {integrity: sha512-B+DGV5ALIkIeyA1Bi9yBpdGmcWkmDS/p8C1XFYx9jFBs+lkeOdu0WAozAPCG4Qq1EcQ68vF+07HmPYFN5kf9OQ==}
+  /jotai/1.7.1_f2doctsj6mecwv6cns5elz5mme:
+    resolution: {integrity: sha512-Ucighxm0GwjvMpnLn7//CrHFSgLoL7LxHhXm7ofUNIktsRE4TAAhzrwsBb0LjJ0DuBJqQEJq9/jbHFfjO0ylYQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
       '@babel/core': '*'

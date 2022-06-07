@@ -15,24 +15,14 @@ import {
   visit,
   makeChoiceValid,
 } from "@/parser"
-
-const undoStack: AST.Regex[] = []
-const redoStack: AST.Regex[] = []
-
-export const astAtom = atomWithImmer<AST.Regex>({
-  id: "",
-  type: "regex",
-  body: [],
-  flags: [],
-  withSlash: true,
-})
-export const selectedIdsAtom = atom<string[]>([])
-export const groupNamesAtom = atom<string[]>([])
-export const editorCollapsedAtom = atom<boolean>(false)
-export const toastsAtom = atomWithImmer<string[]>([])
-export const nodesLayoutMap = atomWithImmer<Map<string, [number, number][]>>(
-  new Map()
-)
+import {
+  undoStack,
+  redoStack,
+  astAtom,
+  selectedIdsAtom,
+  groupNamesAtom,
+  editorCollapsedAtom,
+} from "./atoms"
 
 const refreshGroupAtom = atom(null, (get, set) => {
   let groupIndex = 0
@@ -124,7 +114,8 @@ const setAstWithUndoAtom = atom(
     const nextAst = makeChoiceValid(ast)
     if (nextAst !== ast) {
       ast = nextAst
-      set(toastsAtom, (draft) => draft.push("Group automatically"))
+      // TODO:
+      // set(toastsAtom, (draft) => draft.push("Group automatically"))
     }
     set(setAstAtom, { ast, shouldRefreshGroupIndex })
   }
@@ -221,7 +212,7 @@ export const insertAtom = atom(
   }
 )
 
-export const dispatchRemove = atom(null, (get, set) => {
+export const removeAtom = atom(null, (get, set) => {
   const selectedIds = get(selectedIdsAtom)
   set(clearSelectedAtom)
   set(setAstWithUndoAtom, {
@@ -230,7 +221,7 @@ export const dispatchRemove = atom(null, (get, set) => {
   })
 })
 
-export const dispatchUpdateGroup = atom(
+export const updateGroupAtom = atom(
   null,
   (get, set, group: AST.Group | null) => {
     const { nextAst, nextSelectedIds } = updateGroup(
@@ -246,7 +237,7 @@ export const dispatchUpdateGroup = atom(
   }
 )
 
-export const dispatchGroupIt = atom(null, (get, set, group: AST.Group) => {
+export const groupItAtom = atom(null, (get, set, group: AST.Group) => {
   const { nextAst, nextSelectedIds } = groupIt(
     get(astAtom),
     get(selectedIdsAtom),

@@ -2,7 +2,7 @@ import React, { useState, useRef, useCallback, useMemo } from "react"
 import { useEvent } from "react-use"
 import { RenderNode, RenderConnect, Box } from "./types"
 import { AST } from "@/parser"
-import { dispatchSelectNodes } from "@/atom"
+import { selectNodesAtom } from "@/atom"
 import RailNode from "./node"
 import Connect from "./connect"
 type Props = {
@@ -79,7 +79,7 @@ const SvgContainer: React.FC<Props> = (props) => {
 
   const handleClick = useCallback((node: AST.Node) => {
     if (!moving.current) {
-      dispatchSelectNodes(node.id)
+      // dispatchSelectNodes(node.id)
     }
   }, [])
 
