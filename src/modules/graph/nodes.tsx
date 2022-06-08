@@ -2,6 +2,7 @@ import React, { useMemo, useEffect, useCallback } from "react"
 import { useImmer } from "use-immer"
 import * as AST from "@/parser/ast"
 import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
+import {} from "@/atom"
 import ChoiceNode from "./choice"
 import SimpleNode from "./simple-node"
 import GroupLikeNode from "./group-like"
@@ -9,6 +10,7 @@ import RootNode from "./root"
 import MidConnect from "./mid-connect"
 import { withNameQuantifier } from "./with-name-quantifier"
 type Props = {
+  id: string
   index: number
   x: number
   y: number
@@ -31,17 +33,24 @@ const Nodes = React.memo(({ index, x, y, minimum, nodes, onLayout }: Props) => {
     )
   }, [layouts])
 
-  const nodeXs = useMemo(() => {
-    if (layouts.length === 0) {
-      return []
-    }
+  const boxes = useMemo(() => {
     let curX = x
-    return layouts.map(([width], index) => {
+    return new Array(nodes.length).fill(0).map((_, index) => {
+      if (index >= layouts.length) {
+        return { x1: 0, y1: 0, x2: 0, y2: 0 }
+      }
+      const [nodeWidth, nodeHeight] = layouts[index]
       const nodeX = curX
-      curX += width + GRAPH_NODE_MARGIN_HORIZONTAL
-      return nodeX
+      const nodeY = y + (height - nodeHeight) / 2
+      curX += nodeWidth + GRAPH_NODE_MARGIN_HORIZONTAL
+      return {
+        x1: nodeX,
+        y1: nodeY,
+        x2: nodeX + nodeWidth,
+        y2: nodeY + nodeHeight,
+      }
     })
-  }, [x, layouts])
+  }, [layouts, height, x, y, nodes.length])
 
   useEffect(
     () => onLayout(index, [width, height]),
@@ -63,17 +72,15 @@ const Nodes = React.memo(({ index, x, y, minimum, nodes, onLayout }: Props) => {
     <>
       {nodes.map((node, index) => {
         const { id } = node
-        const nodeX = nodeXs.length > index ? nodeXs[index] : x
-        const nodeY =
-          y + (height - (layouts.length > index ? layouts[index][1] : 0)) / 2
+        const box = boxes[index]
         let Node: JSX.Element = <></>
         switch (node.type) {
           case "choice":
             Node = (
               <ChoiceNode
                 index={index}
-                x={nodeX}
-                y={nodeY}
+                x={box.x1}
+                y={box.y1}
                 minimum={minimum}
                 node={node}
                 onLayout={handleNodeLayout}
@@ -85,8 +92,8 @@ const Nodes = React.memo(({ index, x, y, minimum, nodes, onLayout }: Props) => {
             Node = (
               <GroupLikeNodeWithNameQuantifier
                 index={index}
-                x={nodeX}
-                y={nodeY}
+                x={box.x1}
+                y={box.y1}
                 minimum={minimum}
                 node={node}
                 onLayout={handleNodeLayout}
@@ -97,8 +104,8 @@ const Nodes = React.memo(({ index, x, y, minimum, nodes, onLayout }: Props) => {
             Node = (
               <RootNode
                 index={index}
-                x={nodeX}
-                y={nodeY}
+                x={box.x1}
+                y={box.y1}
                 onLayout={handleNodeLayout}
               />
             )
@@ -107,8 +114,8 @@ const Nodes = React.memo(({ index, x, y, minimum, nodes, onLayout }: Props) => {
             Node = (
               <SimpleNodeWithNameQuantifier
                 index={index}
-                x={nodeX}
-                y={nodeY}
+                x={box.x1}
+                y={box.y1}
                 node={node}
                 onLayout={handleNodeLayout}
               />
@@ -116,8 +123,8 @@ const Nodes = React.memo(({ index, x, y, minimum, nodes, onLayout }: Props) => {
         }
         const Connect = index >= 1 && (
           <MidConnect
-            start={[nodeX - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
-            end={[nodeX, connectY]}
+            start={[box.x1 - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+            end={[box.x1, connectY]}
           />
         )
         return (

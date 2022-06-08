@@ -1,1 +1,1 @@
-import { selectedIdsAtom, nodeBoxMap } from "./atoms"
+import { selectedIdsAtom, nodesBoxMap } from "./atoms"

@@ -3,9 +3,9 @@ import { atomWithImmer } from "jotai/immer"
 import { AST } from "@/parser"
 export const undoStack: AST.Regex[] = []
 export const redoStack: AST.Regex[] = []
-export const nodeBoxMap: Map<
+export const nodesBoxMap: Map<
   string,
-  { x1: number; y1: number; x2: number; y2: number }
+  { x1: number; y1: number; x2: number; y2: number }[]
 > = new Map()
 
 export const astAtom = atomWithImmer<AST.Regex>({

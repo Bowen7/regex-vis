@@ -19,7 +19,7 @@ type Props = {
 
 const ChoiceNode = React.memo(
   ({ index, x, y, minimum, node, onLayout }: Props) => {
-    const { branches } = node
+    const { id, branches } = node
     const [layouts, setLayouts] = useImmer<[number, number][]>([])
     const [width, height] = useMemo(
       () =>
@@ -72,6 +72,7 @@ const ChoiceNode = React.memo(
                 end={[nodeX, nodeY + nodeHeight / 2]}
               />
               <Nodes
+                id={id}
                 key={index}
                 index={index}
                 x={nodeX}

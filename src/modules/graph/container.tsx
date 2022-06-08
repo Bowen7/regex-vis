@@ -48,6 +48,7 @@ const Container = React.memo(({ ast, minimum = false }: Props) => {
         height={svgHeight}
       >
         <Nodes
+          id={ast.id}
           index={0}
           x={paddingH}
           y={paddingV}

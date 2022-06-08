@@ -37,7 +37,7 @@ const GroupLikeNode = React.memo(
     if (node.type !== "group" && node.type !== "lookAroundAssertion") {
       return null
     }
-    const { children: nodeChildren } = node
+    const { id, children: nodeChildren } = node
     const connectY = y + layout[1] / 2
     return (
       <>
@@ -58,6 +58,7 @@ const GroupLikeNode = React.memo(
           strokeWidth={1.5}
         ></rect>
         <Nodes
+          id={id}
           index={0}
           x={x + GRAPH_NODE_MARGIN_HORIZONTAL}
           y={y + GRAPH_GROUP_NODE_PADDING_VERTICAL}
