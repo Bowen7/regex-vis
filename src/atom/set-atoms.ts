@@ -69,19 +69,6 @@ export const redoAtom = atom(null, (get, set) => {
   }
 })
 
-export const selectNodesAtom = atom(null, (get, set, ids: string[]) => {
-  const selectedIds = get(selectedIdsAtom)
-  if (
-    ids.length === 1 &&
-    selectedIds.length === 1 &&
-    selectedIds[0] === ids[0]
-  ) {
-    set(selectedIdsAtom, [])
-    return
-  }
-  set(selectedIdsAtom, ids)
-})
-
 export const setAstAtom = atom(
   null,
   (

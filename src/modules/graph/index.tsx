@@ -31,6 +31,7 @@ const Graph: React.FC<Props> = ({
       border: `1.5px solid ${palette.success}`,
       borderRadius: "4px",
     },
+    onSelect() {},
   })
   return (
     <>

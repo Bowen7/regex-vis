@@ -50,6 +50,13 @@ export function visit(
   }
 }
 
+export const visitNodes = (
+  ast: AST.Regex,
+  callback: (id: string, index: string, nodes: AST.Node[]) => void
+) => {
+  // TODO
+}
+
 export function getNodeById(
   ast: AST.Regex,
   id: string

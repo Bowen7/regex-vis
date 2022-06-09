@@ -9,17 +9,19 @@ function captureClick(e: MouseEvent) {
 type Options = {
   disabled?: boolean
   style?: React.CSSProperties
+  onSelect: (box: { x1: number; y1: number; x2: number; y2: number }) => void
 }
 export const useDragSelect = ({
   disabled = false,
   style = {},
-}: Options = {}) => {
+  onSelect,
+}: Options) => {
   const dragging = useRef(false)
   const moving = useRef(false)
   const start = useRef<[number, number]>([0, 0])
   const [rect, setRect] = useState({ x: 0, y: 0, width: 0, height: 0 })
 
-  const handleMouseUp = (e: React.MouseEvent) => {
+  const handleMouseUp = () => {
     if (!dragging.current) {
       return
     }
@@ -28,11 +30,11 @@ export const useDragSelect = ({
       dragging.current = false
       return
     }
-    const { width, height } = rect
+    const { x, y, width, height } = rect
     if (width > 5 && height > 5) {
       // prevent click event on node
       window.addEventListener("click", captureClick, true)
-      // TODO
+      onSelect({ x1: x, y1: y, x2: x + width, y2: y + height })
     }
     dragging.current = false
     moving.current = false
@@ -64,7 +66,6 @@ export const useDragSelect = ({
     },
   }
   const { x, y, width, height } = rect
-  // console.log(x, y, width, height)
   const Selection = width > 0 && height > 0 && (
     <div
       style={{
