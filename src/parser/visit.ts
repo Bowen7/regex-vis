@@ -52,9 +52,25 @@ export function visit(
 
 export const visitNodes = (
   ast: AST.Regex,
-  callback: (id: string, index: string, nodes: AST.Node[]) => void
+  callback: (id: string, index: number, nodes: AST.Node[]) => boolean
 ) => {
-  // TODO
+  const queue = [{ id: ast.id, index: 0, nodes: ast.body }]
+  while (queue.length > 0) {
+    const { id, index, nodes } = queue.shift()!
+    if (callback(id, index, nodes)) {
+      return
+    }
+    nodes.forEach((node) => {
+      if (node.type === "group" || node.type === "lookAroundAssertion") {
+        queue.push({ id: node.id, index: 0, nodes: node.children })
+      } else if (node.type === "choice") {
+        const { id, branches } = node
+        branches.forEach((branch, index) =>
+          queue.push({ id, index: index, nodes: branch })
+        )
+      }
+    })
+  }
 }
 
 export function getNodeById(

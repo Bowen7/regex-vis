@@ -1,7 +1,7 @@
 import * as AST from "./ast"
 export { default as parse } from "./parse"
 export { default as gen } from "./gen"
-export { visit, getNodeById, getNodesByIds } from "./visit"
+export * from "./visit"
 export {
   updateContent,
   removeIt,
