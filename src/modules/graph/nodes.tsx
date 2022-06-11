@@ -16,13 +16,14 @@ type Props = {
   y: number
   minimum: boolean
   nodes: AST.Node[]
+  selectedIds: string[]
   onLayout: (index: number, layout: [number, number]) => void
 }
 const SimpleNodeWithNameQuantifier = withNameQuantifier(SimpleNode)
 const GroupLikeNodeWithNameQuantifier = withNameQuantifier(GroupLikeNode)
 
 const Nodes = React.memo(
-  ({ id, index, x, y, minimum, nodes, onLayout }: Props) => {
+  ({ id, index, x, y, minimum, nodes, selectedIds, onLayout }: Props) => {
     const [layouts, setLayouts] = useImmer<[number, number][]>([])
     const [width, height] = useMemo(() => {
       return layouts.reduce(
@@ -62,6 +63,11 @@ const Nodes = React.memo(
       [index, width, height, onLayout]
     )
 
+    const startSelectedIndex = useMemo(
+      () => nodes.findIndex((node) => node.id === selectedIds[0]),
+      [selectedIds, nodes]
+    )
+
     const handleNodeLayout = useCallback(
       (index: number, [width, height]: [number, number]) => {
         setLayouts((draft) => {
@@ -78,6 +84,10 @@ const Nodes = React.memo(
         {nodes.map((node, index) => {
           const { id } = node
           const box = boxes[index]
+          const nodeSelected =
+            startSelectedIndex >= 0 &&
+            index >= startSelectedIndex &&
+            index < startSelectedIndex + selectedIds.length
           let Node: JSX.Element = <></>
           switch (node.type) {
             case "choice":
@@ -88,6 +98,8 @@ const Nodes = React.memo(
                   y={box.y1}
                   minimum={minimum}
                   node={node}
+                  selected={nodeSelected}
+                  selectedIds={selectedIds}
                   onLayout={handleNodeLayout}
                 />
               )
@@ -101,6 +113,8 @@ const Nodes = React.memo(
                   y={box.y1}
                   minimum={minimum}
                   node={node}
+                  selected={nodeSelected}
+                  selectedIds={selectedIds}
                   onLayout={handleNodeLayout}
                 />
               )
@@ -111,6 +125,7 @@ const Nodes = React.memo(
                   index={index}
                   x={box.x1}
                   y={box.y1}
+                  selected={nodeSelected}
                   onLayout={handleNodeLayout}
                 />
               )
@@ -122,6 +137,7 @@ const Nodes = React.memo(
                   x={box.x1}
                   y={box.y1}
                   node={node}
+                  selected={nodeSelected}
                   onLayout={handleNodeLayout}
                 />
               )

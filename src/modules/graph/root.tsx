@@ -4,6 +4,7 @@ type Props = {
   index: number
   x: number
   y: number
+  selected: boolean
   onLayout: (index: number, layout: [number, number]) => void
 }
 

@@ -15,11 +15,13 @@ type Props = {
   minimum: boolean
   node: AST.Node
   children: React.ReactNode
+  selected: boolean
+  selectedIds: string[]
   onLayout: (index: number, layout: [number, number]) => void
 }
 
 const GroupLikeNode = React.memo(
-  ({ index, x, y, minimum, node, children, onLayout }: Props) => {
+  ({ index, x, y, minimum, node, selectedIds, children, onLayout }: Props) => {
     const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
 
@@ -64,6 +66,7 @@ const GroupLikeNode = React.memo(
           y={y + GRAPH_GROUP_NODE_PADDING_VERTICAL}
           minimum={minimum}
           nodes={nodeChildren}
+          selectedIds={selectedIds}
           onLayout={handleNodesLayout}
         ></Nodes>
         <MidConnect

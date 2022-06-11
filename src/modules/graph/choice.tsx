@@ -14,11 +14,13 @@ type Props = {
   y: number
   minimum: boolean
   node: AST.ChoiceNode
+  selected: boolean
+  selectedIds: string[]
   onLayout: (index: number, layout: [number, number]) => void
 }
 
 const ChoiceNode = React.memo(
-  ({ index, x, y, minimum, node, onLayout }: Props) => {
+  ({ index, x, y, minimum, node, selectedIds, onLayout }: Props) => {
     const { id, branches } = node
     const [layouts, setLayouts] = useImmer<[number, number][]>([])
     const [width, height] = useMemo(
@@ -79,6 +81,7 @@ const ChoiceNode = React.memo(
                 y={branchYs.length > index ? branchYs[index] : y}
                 minimum={minimum}
                 nodes={branch}
+                selectedIds={selectedIds}
                 onLayout={handleNodeLayout}
               />
               <EndConnect

@@ -18,6 +18,7 @@ type Props = {
     | AST.BeginningBoundaryAssertionNode
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode
+  selected: boolean
   onLayout: (index: number, layout: [number, number]) => void
   children: React.ReactNode
 }
