@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import React, { useLayoutEffect } from "react"
 import { GRAPH_ROOT_RADIUS } from "@/constants"
 type Props = {
   index: number
@@ -8,13 +8,12 @@ type Props = {
   onLayout: (index: number, layout: [number, number]) => void
 }
 
-const RootNode = (props: Props) => {
+const RootNode = React.memo((props: Props) => {
   const { index, x, y, onLayout } = props
-  useEffect(
+  useLayoutEffect(
     () => onLayout(index, [GRAPH_ROOT_RADIUS, GRAPH_ROOT_RADIUS]),
     [index, onLayout]
   )
-
   return (
     <rect
       x={x}
@@ -26,6 +25,8 @@ const RootNode = (props: Props) => {
       className="stroke"
     />
   )
-}
+})
+
+RootNode.displayName = "RootNode"
 
 export default RootNode

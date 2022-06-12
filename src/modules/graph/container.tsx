@@ -17,12 +17,13 @@ type Props = {
   ast: AST.Regex
   minimum?: boolean
   selectedIds?: string[]
+  onLayout?: () => void
 }
 
 const Container = React.memo(
-  ({ ast, minimum = false, selectedIds = [] }: Props) => {
+  ({ ast, minimum = false, selectedIds = [], onLayout = () => {} }: Props) => {
     const { palette } = useTheme()
-    const [nodesLayout, setNodesLayout] = useState<[number, number]>([0, 0])
+    const [layout, setLayout] = useState<[number, number]>([0, 0])
     const paddingH = minimum
       ? GRAPH_MINIMUM_PADDING_HORIZONTAL
       : GRAPH_PADDING_HORIZONTAL
@@ -30,24 +31,26 @@ const Container = React.memo(
       ? GRAPH_MINIMUM_PADDING_VERTICAL
       : GRAPH_PADDING_VERTICAL
     const handleLayout = useCallback(
-      (index: number, layout: [number, number]) => setNodesLayout(layout),
-      [setNodesLayout]
+      (index: number, [width, height]: [number, number]) => {
+        const svgWidth = width + paddingH * 2
+        const svgHeight = height + paddingV * 2
+        setLayout([svgWidth, svgHeight])
+        onLayout()
+      },
+      [paddingH, paddingV, onLayout]
     )
     const nodes = useMemo(
       () => (minimum ? ast.body : [head, ...ast.body, tail]),
       [ast.body, minimum]
     )
 
-    const svgWidth = nodesLayout[0] + paddingH * 2
-    const svgHeight = nodesLayout[1] + paddingV * 2
-
     return (
       <>
         <svg
           version="1.1"
           xmlns="http://www.w3.org/2000/svg"
-          width={svgWidth}
-          height={svgHeight}
+          width={layout[0]}
+          height={layout[1]}
         >
           <Nodes
             id={ast.id}

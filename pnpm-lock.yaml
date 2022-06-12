@@ -36,6 +36,7 @@ specifiers:
   react-use: ^17.4.0
   regenerator-runtime: ^0.13.9
   styled-jsx: ^5.0.2
+  tilg: ^0.1.1
   ts-jest: ^26.5.6
   ts-node: ^10.0.0
   typescript: ^4.5.4
@@ -60,6 +61,7 @@ dependencies:
   react-scripts: 4.0.3_mih24jlyjazy2hqp3w537qgrna
   react-use: 17.4.0_ef5jwxihqo6n7gxfmzogljlgcm
   styled-jsx: 5.0.2_2oxg4xypyijcywir6rgm4m42qy
+  tilg: 0.1.1_react@18.1.0
   typescript: 4.6.3
   use-immer: 0.7.0_immer@9.0.6+react@18.1.0
 
@@ -12391,6 +12393,14 @@ packages:
 
   /thunky/1.1.0:
     resolution: {integrity: sha512-eHY7nBftgThBqOyHGVN+l8gF0BucP09fMo0oO/Lb0w1OF80dJv+lDVpXG60WMQvkcxAkNybKsrEIE3ZtKGmPrA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/thunky/-/thunky-1.1.0.tgz}
+    dev: false
+
+  /tilg/0.1.1_react@18.1.0:
+    resolution: {integrity: sha512-0uHyTAUM0tJL792LeviRPFkJtCbF6Za3/hbbnRmWGUaicOhbJ0IpvBViXiXTF7nk6R0L6vve2XLesQzn5jEVng==}
+    peerDependencies:
+      react: ^18.0.0 || ^17.0.0
+    dependencies:
+      react: 18.1.0
     dev: false
 
   /timers-browserify/2.0.12:

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useLayoutEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { GRAPH_NAME_TEXT_FONTSIZE, GRAPH_NAME_HEIGHT } from "@/constants"
 type Props = {
@@ -15,7 +15,7 @@ const NameNode = React.memo((props: Props) => {
 
   const text = t(name)
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { width } = textRef.current.getBoundingClientRect()
     const layout: [number, number] = [width, GRAPH_NAME_HEIGHT]
     onLayout(layout)

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useLayoutEffect, useRef } from "react"
 import { useTranslation, TFunction } from "react-i18next"
 import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import {
@@ -145,7 +145,7 @@ const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
 
   const { t } = useTranslation()
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { width, height } = gRef.current?.getBoundingClientRect()!
     onLayout([width, height])
   }, [node, onLayout])

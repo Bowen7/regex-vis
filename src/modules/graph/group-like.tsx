@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useRef, useEffect, useCallback, useLayoutEffect } from "react"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MARGIN_HORIZONTAL,
   GRAPH_GROUP_NODE_PADDING_VERTICAL,
+  GRAPH_NODE_MIN_HEIGHT,
+  GRAPH_NODE_MIN_WIDTH,
 } from "@/constants"
 import Nodes from "./nodes"
 import MidConnect from "./mid-connect"
@@ -23,42 +25,60 @@ type Props = {
 const GroupLikeNode = React.memo(
   ({ index, x, y, minimum, node, selectedIds, children, onLayout }: Props) => {
     const { palette } = useTheme()
-    const [layout, setLayout] = useState<[number, number]>([0, 0])
+    const layout = useRef<[number, number]>([0, 0])
 
-    useEffect(() => onLayout(index, layout), [index, layout, onLayout])
+    useLayoutEffect(() => {
+      if (node.type === "group" || node.type === "lookAroundAssertion") {
+        layout.current = [GRAPH_NODE_MIN_WIDTH, GRAPH_NODE_MIN_HEIGHT]
+        onLayout(index, layout.current)
+      }
+    }, [index, node, onLayout])
 
     const handleNodesLayout = useCallback(
-      (index: number, [width, height]: [number, number]) => {
-        setLayout([
+      (_: number, [width, height]: [number, number]) => {
+        layout.current = [
           width + 2 * GRAPH_NODE_MARGIN_HORIZONTAL,
           height + 2 * GRAPH_GROUP_NODE_PADDING_VERTICAL,
-        ])
+        ]
+        onLayout(index, layout.current)
       },
-      [setLayout]
+      [index, onLayout]
     )
     if (node.type !== "group" && node.type !== "lookAroundAssertion") {
       return null
     }
+
     const { id, children: nodeChildren } = node
-    const connectY = y + layout[1] / 2
+    const connectY = y + layout.current[1] / 2
     return (
       <>
-        <MidConnect
-          start={[x, connectY]}
-          end={[x + GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
-        />
+        {nodeChildren.length > 0 && (
+          <>
+            <MidConnect
+              start={[x, connectY]}
+              end={[x + GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+            />
+            <MidConnect
+              start={[
+                x + layout.current[0] - GRAPH_NODE_MARGIN_HORIZONTAL,
+                connectY,
+              ]}
+              end={[x + layout.current[0], connectY]}
+            />
+          </>
+        )}
         {children}
         <rect
           x={x}
           y={y}
-          width={layout[0]}
-          height={layout[1]}
+          width={layout.current[0]}
+          height={layout.current[1]}
           rx={GRAPH_NODE_BORDER_RADIUS}
           ry={GRAPH_NODE_BORDER_RADIUS}
           stroke={palette.accents_3}
-          fill={"transparent"}
+          fill="transparent"
           strokeWidth={1.5}
-        ></rect>
+        />
         <Nodes
           id={id}
           index={0}
@@ -68,10 +88,17 @@ const GroupLikeNode = React.memo(
           nodes={nodeChildren}
           selectedIds={selectedIds}
           onLayout={handleNodesLayout}
-        ></Nodes>
-        <MidConnect
-          start={[x + layout[0] - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
-          end={[x + layout[0], connectY]}
+        />
+        <rect
+          x={x}
+          y={y}
+          width={layout.current[0]}
+          height={layout.current[1]}
+          rx={GRAPH_NODE_BORDER_RADIUS}
+          ry={GRAPH_NODE_BORDER_RADIUS}
+          stroke={palette.accents_3}
+          fill="transparent"
+          strokeWidth={1.5}
         />
       </>
     )

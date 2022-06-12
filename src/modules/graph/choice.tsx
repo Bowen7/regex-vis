@@ -1,5 +1,4 @@
-import React, { useEffect, useMemo, useCallback } from "react"
-import { useImmer } from "use-immer"
+import React, { useEffect, useMemo, useCallback, useRef } from "react"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_MARGIN_VERTICAL,
@@ -22,55 +21,55 @@ type Props = {
 const ChoiceNode = React.memo(
   ({ index, x, y, minimum, node, selectedIds, onLayout }: Props) => {
     const { id, branches } = node
-    const [layouts, setLayouts] = useImmer<[number, number][]>([])
-    const [width, height] = useMemo(
-      () =>
-        layouts.reduce(
-          ([width, height], [nodesWidth, nodesHeight]) => [
-            Math.max(width, nodesWidth + 2 * GRAPH_CHOICE_PADDING_HORIZONTAL),
-            height + nodesHeight,
-          ],
-          [0, (layouts.length - 1) * GRAPH_NODE_MARGIN_VERTICAL]
-        ),
-      [layouts]
-    )
+    const unLayoutedCount = useRef(branches.length)
+    const layout = useRef<[number, number]>([0, 0])
+    const layouts = useRef<[number, number][]>([])
 
-    useEffect(
-      () => onLayout(index, [width, height]),
-      [index, width, height, onLayout]
-    )
-
-    const branchYs = useMemo(() => {
-      if (layouts.length === 0) {
-        return []
-      }
+    const rects = useMemo(() => {
       let curY = y
-      return layouts.map(([, height], index) => {
+      return new Array(branches.length).fill(0).map((_, index) => {
+        if (!layouts.current[index]) {
+          return { x: 0, y: 0, width: 0, height: 0 }
+        }
+        const [width, height] = layouts.current[index]
+        const nodeX = x + (layout.current[0] - width) / 2
         const nodeY = curY
         curY += height + GRAPH_NODE_MARGIN_VERTICAL
-        return nodeY
+        return { width, height, x: nodeX, y: nodeY }
       })
-    }, [y, layouts])
+    }, [branches, x, y])
 
     const handleNodeLayout = useCallback(
-      (index: number, [width, height]: [number, number]) => {
-        setLayouts((draft) => {
-          draft[index] = [width, height]
-        })
+      (branchIndex: number, branchLayout: [number, number]) => {
+        layouts.current[branchIndex] = branchLayout
+        unLayoutedCount.current--
+        if (unLayoutedCount.current === 0) {
+          const [width, height] = layouts.current.reduce(
+            ([width, height], [nodesWidth, nodesHeight]) => [
+              Math.max(width, nodesWidth + 2 * GRAPH_CHOICE_PADDING_HORIZONTAL),
+              height + nodesHeight,
+            ],
+            [0, (layouts.current.length - 1) * GRAPH_NODE_MARGIN_VERTICAL]
+          )
+          onLayout(index, [width, height])
+          layout.current = [width, height]
+        }
       },
-      [setLayouts]
+      [index, onLayout]
     )
     return (
       <>
         {branches.map((branch, index) => {
-          const nodeWidth = layouts.length > index ? layouts[index][0] : 0
-          const nodeHeight = layouts.length > index ? layouts[index][1] : 0
-          const nodeX = x + (width - nodeWidth) / 2
-          const nodeY = branchYs.length > index ? branchYs[index] : y
+          const {
+            x: nodeX,
+            y: nodeY,
+            width: nodeWidth,
+            height: nodeHeight,
+          } = rects[index]
           return (
             <React.Fragment key={index}>
               <StartConnect
-                start={[x, y + height / 2]}
+                start={[x, y + layout.current[1] / 2]}
                 end={[nodeX, nodeY + nodeHeight / 2]}
               />
               <Nodes
@@ -78,7 +77,7 @@ const ChoiceNode = React.memo(
                 key={index}
                 index={index}
                 x={nodeX}
-                y={branchYs.length > index ? branchYs[index] : y}
+                y={nodeY}
                 minimum={minimum}
                 nodes={branch}
                 selectedIds={selectedIds}
@@ -86,7 +85,7 @@ const ChoiceNode = React.memo(
               />
               <EndConnect
                 start={[nodeX + nodeWidth, nodeY + nodeHeight / 2]}
-                end={[x + width, y + height / 2]}
+                end={[x + layout.current[0], y + layout.current[1] / 2]}
               />
             </React.Fragment>
           )

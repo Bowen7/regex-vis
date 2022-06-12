@@ -2,10 +2,9 @@ import React, { useState, useMemo } from "react"
 import { useTheme, Code, Dot } from "@geist-ui/core"
 import hexRgb from "hex-rgb"
 import { useSetAtom, useAtomValue } from "jotai"
-import { useUpdateEffect } from "react-use"
 import { AST } from "@/parser"
 import SvgContainer from "./container"
-import { selectedIdsAtom, selectNodesByBoxAtom } from "@/atom"
+import { selectedIdsAtom, selectNodesByBoxAtom, astAtom } from "@/atom"
 import { useDragSelect } from "@/utils/hooks"
 type Props = {
   regex: string
@@ -23,7 +22,7 @@ const Graph: React.FC<Props> = ({
   const selectedIds = useAtomValue(selectedIdsAtom)
   const selectNodesByBox = useSetAtom(selectNodesByBoxAtom)
   const { palette } = useTheme()
-  const opacitySuccessColor = useMemo(
+  const selectionColor = useMemo(
     () => hexRgb(palette.success, { format: "css", alpha: 0.5 }),
     [palette.success]
   )
@@ -31,7 +30,7 @@ const Graph: React.FC<Props> = ({
   const [bindings, Selection] = useDragSelect({
     disabled: !!errorMsg,
     style: {
-      backgroundColor: opacitySuccessColor,
+      backgroundColor: selectionColor,
       border: `1.5px solid ${palette.success}`,
       borderRadius: "4px",
     },
@@ -46,11 +45,13 @@ const Graph: React.FC<Props> = ({
           </p>
         ) : (
           <>
-            <SvgContainer
-              ast={ast}
-              minimum={minimum}
-              selectedIds={selectedIds}
-            />
+            {ast.body.length > 0 && (
+              <SvgContainer
+                ast={ast}
+                minimum={minimum}
+                selectedIds={selectedIds}
+              />
+            )}
             {Selection}
           </>
         )}

@@ -25,7 +25,7 @@ export const selectNodesByBoxAtom = atom(
           box.y1 <= nodeBox.y1 &&
           box.y2 >= nodeBox.y2
         ) {
-          ids.push(id)
+          ids.push(nodes[i].id)
         } else if (ids.length > 0) {
           break
         }
@@ -35,6 +35,7 @@ export const selectNodesByBoxAtom = atom(
       }
       return false
     })
+    console.log(ast, ids)
     set(selectNodesAtom, ids)
   }
 )

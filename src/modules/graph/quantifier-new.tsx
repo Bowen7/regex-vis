@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react"
+import React, { useEffect, useLayoutEffect, useRef } from "react"
 import { AST, getQuantifierText } from "@/parser"
 import {
   GRAPH_QUANTIFIER_ICON_WIDTH,
@@ -24,7 +24,7 @@ const QuantifierNode = React.memo((props: Props) => {
     y + GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL
   })`
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const { width } = textRef.current.getBoundingClientRect()
     onLayout([
       width + GRAPH_QUANTIFIER_ICON_WIDTH,

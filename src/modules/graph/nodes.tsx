@@ -1,5 +1,4 @@
-import React, { useMemo, useEffect, useCallback } from "react"
-import { useImmer } from "use-immer"
+import React, { useMemo, useEffect, useRef, useCallback, useState } from "react"
 import * as AST from "@/parser/ast"
 import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
 import { nodesBoxMap } from "@/atom"
@@ -24,24 +23,19 @@ const GroupLikeNodeWithNameQuantifier = withNameQuantifier(GroupLikeNode)
 
 const Nodes = React.memo(
   ({ id, index, x, y, minimum, nodes, selectedIds, onLayout }: Props) => {
-    const [layouts, setLayouts] = useImmer<[number, number][]>([])
-    const [width, height] = useMemo(() => {
-      return layouts.reduce(
-        ([width, height], [nodeWidth, nodeHeight]) => [
-          width + nodeWidth,
-          Math.max(height, nodeHeight),
-        ],
-        [(layouts.length - 1) * GRAPH_NODE_MARGIN_HORIZONTAL, 0]
-      )
-    }, [layouts])
+    const unLayoutedCount = useRef(nodes.length)
+    const layouts = useRef<[number, number][]>([])
+    const [height, setHeight] = useState(0)
+
+    const hasRoot = nodes[0]?.type === "root"
 
     const boxes = useMemo(() => {
       let curX = x
       return new Array(nodes.length).fill(0).map((_, index) => {
-        if (index >= layouts.length) {
+        if (!layouts.current[index]) {
           return { x1: 0, y1: 0, x2: 0, y2: 0 }
         }
-        const [nodeWidth, nodeHeight] = layouts[index]
+        const [nodeWidth, nodeHeight] = layouts.current[index]
         const nodeX = curX
         const nodeY = y + (height - nodeHeight) / 2
         curX += nodeWidth + GRAPH_NODE_MARGIN_HORIZONTAL
@@ -52,16 +46,11 @@ const Nodes = React.memo(
           y2: nodeY + nodeHeight,
         }
       })
-    }, [layouts, height, x, y, nodes.length])
+    }, [height, x, y, nodes])
 
     useEffect(() => {
-      nodesBoxMap.set(`${id}-${index}`, boxes)
-    }, [index, id, boxes])
-
-    useEffect(
-      () => onLayout(index, [width, height]),
-      [index, width, height, onLayout]
-    )
+      nodesBoxMap.set(`${id}-${index}`, hasRoot ? boxes.slice(1, -1) : boxes)
+    }, [index, id, hasRoot, boxes])
 
     const startSelectedIndex = useMemo(
       () => nodes.findIndex((node) => node.id === selectedIds[0]),
@@ -69,12 +58,22 @@ const Nodes = React.memo(
     )
 
     const handleNodeLayout = useCallback(
-      (index: number, [width, height]: [number, number]) => {
-        setLayouts((draft) => {
-          draft[index] = [width, height]
-        })
+      (nodeIndex: number, layout: [number, number]) => {
+        layouts.current[nodeIndex] = layout
+        unLayoutedCount.current--
+        if (unLayoutedCount.current === 0) {
+          const [width, height] = layouts.current.reduce(
+            ([width, height], [nodeWidth, nodeHeight]) => [
+              width + nodeWidth,
+              Math.max(height, nodeHeight),
+            ],
+            [(layouts.current.length - 1) * GRAPH_NODE_MARGIN_HORIZONTAL, 0]
+          )
+          setHeight(height)
+          onLayout(index, [width, height])
+        }
       },
-      [setLayouts]
+      [onLayout, index]
     )
 
     const connectY = y + height / 2
@@ -84,7 +83,7 @@ const Nodes = React.memo(
         {nodes.map((node, index) => {
           const { id } = node
           const box = boxes[index]
-          const nodeSelected =
+          const selected =
             startSelectedIndex >= 0 &&
             index >= startSelectedIndex &&
             index < startSelectedIndex + selectedIds.length
@@ -98,7 +97,7 @@ const Nodes = React.memo(
                   y={box.y1}
                   minimum={minimum}
                   node={node}
-                  selected={nodeSelected}
+                  selected={selected}
                   selectedIds={selectedIds}
                   onLayout={handleNodeLayout}
                 />
@@ -113,7 +112,7 @@ const Nodes = React.memo(
                   y={box.y1}
                   minimum={minimum}
                   node={node}
-                  selected={nodeSelected}
+                  selected={selected}
                   selectedIds={selectedIds}
                   onLayout={handleNodeLayout}
                 />
@@ -125,7 +124,7 @@ const Nodes = React.memo(
                   index={index}
                   x={box.x1}
                   y={box.y1}
-                  selected={nodeSelected}
+                  selected={selected}
                   onLayout={handleNodeLayout}
                 />
               )
@@ -137,7 +136,7 @@ const Nodes = React.memo(
                   x={box.x1}
                   y={box.y1}
                   node={node}
-                  selected={nodeSelected}
+                  selected={selected}
                   onLayout={handleNodeLayout}
                 />
               )
