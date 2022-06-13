@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useCallback, useRef } from "react"
+import React, { useMemo, useCallback, useRef, useState } from "react"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_MARGIN_VERTICAL,
@@ -11,7 +11,6 @@ type Props = {
   index: number
   x: number
   y: number
-  minimum: boolean
   node: AST.ChoiceNode
   selected: boolean
   selectedIds: string[]
@@ -19,10 +18,10 @@ type Props = {
 }
 
 const ChoiceNode = React.memo(
-  ({ index, x, y, minimum, node, selectedIds, onLayout }: Props) => {
+  ({ index, x, y, node, selectedIds, onLayout }: Props) => {
     const { id, branches } = node
     const unLayoutedCount = useRef(branches.length)
-    const layout = useRef<[number, number]>([0, 0])
+    const [layout, setLayout] = useState<[number, number]>([0, 0])
     const layouts = useRef<[number, number][]>([])
 
     const rects = useMemo(() => {
@@ -32,12 +31,12 @@ const ChoiceNode = React.memo(
           return { x: 0, y: 0, width: 0, height: 0 }
         }
         const [width, height] = layouts.current[index]
-        const nodeX = x + (layout.current[0] - width) / 2
+        const nodeX = x + (layout[0] - width) / 2
         const nodeY = curY
         curY += height + GRAPH_NODE_MARGIN_VERTICAL
         return { width, height, x: nodeX, y: nodeY }
       })
-    }, [branches, x, y])
+    }, [branches, x, y, layout])
 
     const handleNodeLayout = useCallback(
       (branchIndex: number, branchLayout: [number, number]) => {
@@ -52,7 +51,7 @@ const ChoiceNode = React.memo(
             [0, (layouts.current.length - 1) * GRAPH_NODE_MARGIN_VERTICAL]
           )
           onLayout(index, [width, height])
-          layout.current = [width, height]
+          setLayout([width, height])
         }
       },
       [index, onLayout]
@@ -69,7 +68,7 @@ const ChoiceNode = React.memo(
           return (
             <React.Fragment key={index}>
               <StartConnect
-                start={[x, y + layout.current[1] / 2]}
+                start={[x, y + layout[1] / 2]}
                 end={[nodeX, nodeY + nodeHeight / 2]}
               />
               <Nodes
@@ -78,14 +77,13 @@ const ChoiceNode = React.memo(
                 index={index}
                 x={nodeX}
                 y={nodeY}
-                minimum={minimum}
                 nodes={branch}
                 selectedIds={selectedIds}
                 onLayout={handleNodeLayout}
               />
               <EndConnect
                 start={[nodeX + nodeWidth, nodeY + nodeHeight / 2]}
-                end={[x + layout.current[0], y + layout.current[1] / 2]}
+                end={[x + layout[0], y + layout[1] / 2]}
               />
             </React.Fragment>
           )

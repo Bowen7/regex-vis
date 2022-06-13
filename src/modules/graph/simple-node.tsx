@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react"
+import React, { useState, useCallback } from "react"
 import { AST } from "@/parser"
 import {
   GRAPH_NODE_PADDING_VERTICAL,
@@ -6,7 +6,7 @@ import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MIN_WIDTH,
 } from "@/constants"
-import TextNode from "./text-new"
+import TextNode from "./text"
 
 type Props = {
   index: number

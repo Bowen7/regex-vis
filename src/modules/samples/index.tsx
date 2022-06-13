@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 import { useTheme, Code } from "@geist-ui/core"
-import MinimumGraph from "@/modules/graph/minimum-graph"
+import SimpleGraph from "@/modules/graph/simple-graph"
 
 const samples = [
   { desc: "1. Whole Numbers", label: "/^\\d+$/", regex: "^\\d+$" },
@@ -52,7 +52,7 @@ const Samples: React.FC<{}> = () => {
                   {desc}: <Code>{label}</Code>
                 </p>
                 <div className="svg-wrapper">
-                  <MinimumGraph regex={regex} />
+                  <SimpleGraph regex={regex} />
                 </div>
               </div>
             </Link>

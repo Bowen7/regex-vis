@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useCallback, useRef } from "react"
 import { AST } from "@/parser"
-import QuantifierNode from "./quantifier-new"
-import { NameNode } from "./name-new"
+import QuantifierNode from "./quantifier"
+import { NameNode } from "./name"
 import MidConnect from "./mid-connect"
-import { getQuantifier, getName } from "./utils-new"
+import { getQuantifier, getName } from "./utils"
 import { GRAPH_NAME_HEIGHT } from "@/constants"
 
 //    name
@@ -28,16 +28,16 @@ export const withNameQuantifier = <
     const quantifier = getQuantifier(node)
     const name = getName(node)
 
-    const layout = useRef<[number, number]>([0, 0])
+    const [layout, setLayout] = useState<[number, number]>([0, 0])
     const layoutedCount = useRef(0)
     const contentLayout = useRef<[number, number]>([0, 0])
     const quantifierLayout = useRef<[number, number]>([0, 0])
     const nameLayout = useRef<[number, number]>([0, 0])
 
-    const contentX = x + (layout.current[0] - contentLayout.current[0]) / 2
-    const contentY = y + (layout.current[1] - contentLayout.current[1]) / 2
-    const centerX = x + layout.current[0] / 2
-    const centerY = y + layout.current[1] / 2
+    const contentX = x + (layout[0] - contentLayout.current[0]) / 2
+    const contentY = y + (layout[1] - contentLayout.current[1]) / 2
+    const centerX = x + layout[0] / 2
+    const centerY = y + layout[1] / 2
 
     const handleLayout = useCallback(() => {
       const shouldLayoutCount = 1 + (name ? 1 : 0) + (quantifier ? 1 : 0)
@@ -50,8 +50,9 @@ export const withNameQuantifier = <
         const height =
           contentLayout.current[1] +
           2 * Math.max(quantifierLayout.current[1], nameLayout.current[1])
-        onLayout(index, [width, height])
-        layout.current = [width, height]
+        const layout: [number, number] = [width, height]
+        onLayout(index, layout)
+        setLayout(layout)
       }
     }, [index, name, quantifier, onLayout])
 
@@ -113,7 +114,7 @@ export const withNameQuantifier = <
         {contentX !== x && (
           <MidConnect
             start={[contentX + contentLayout.current[0], centerY]}
-            end={[x + layout.current[0], centerY]}
+            end={[x + layout[0], centerY]}
           />
         )}
       </Component>

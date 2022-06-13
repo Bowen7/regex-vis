@@ -1,12 +1,11 @@
-import React from "react"
-import MinimumGraph from "@/modules/graph/minimum-graph"
+import SimpleGraph from "@/modules/graph/simple-graph"
 
 const legends = [
   {
     name: "Characters",
     infos: [
       {
-        Icon: <MinimumGraph regex="abc" />,
+        Icon: <SimpleGraph regex="abc" />,
         desc: "Direct match characters",
       },
     ],
@@ -15,7 +14,7 @@ const legends = [
     name: "Character classes",
     infos: [
       {
-        Icon: <MinimumGraph regex={"\\d"} />,
+        Icon: <SimpleGraph regex={"\\d"} />,
         desc: "Distinguish different types of characters",
       },
     ],
@@ -24,11 +23,11 @@ const legends = [
     name: "Ranges",
     infos: [
       {
-        Icon: <MinimumGraph regex="[a-z]" />,
+        Icon: <SimpleGraph regex="[a-z]" />,
         desc: "Matches any one of the enclosed characters",
       },
       {
-        Icon: <MinimumGraph regex="[^a-z]" />,
+        Icon: <SimpleGraph regex="[^a-z]" />,
         desc: "Matches anything that is not enclosed in the brackets",
       },
     ],
@@ -37,7 +36,7 @@ const legends = [
     name: "Choice",
     infos: [
       {
-        Icon: <MinimumGraph regex="a|b" />,
+        Icon: <SimpleGraph regex="a|b" />,
         desc: `Matches either "x" or "y"`,
       },
     ],
@@ -46,7 +45,7 @@ const legends = [
     name: "Quantifier",
     infos: [
       {
-        Icon: <MinimumGraph regex="a*" />,
+        Icon: <SimpleGraph regex="a*" />,
         desc: "Indicate numbers of characters or expressions to match",
       },
     ],
@@ -55,15 +54,15 @@ const legends = [
     name: "Group",
     infos: [
       {
-        Icon: <MinimumGraph regex="(x)" />,
+        Icon: <SimpleGraph regex="(x)" />,
         desc: "Matches x and remembers the match",
       },
       {
-        Icon: <MinimumGraph regex="(?:x)" />,
+        Icon: <SimpleGraph regex="(?:x)" />,
         desc: `Matches "x" but does not remember the match`,
       },
       {
-        Icon: <MinimumGraph regex="(?<Name>x)" />,
+        Icon: <SimpleGraph regex="(?<Name>x)" />,
         desc: `Matches "x" and stores it on the groups property of the returned matches under the name specified by <Name>`,
       },
     ],
@@ -72,11 +71,11 @@ const legends = [
     name: "Back reference",
     infos: [
       {
-        Icon: <MinimumGraph regex={"\\1"} />,
+        Icon: <SimpleGraph regex={"\\1"} />,
         desc: "A back reference to match group #1",
       },
       {
-        Icon: <MinimumGraph regex={"\\k<name>"} />,
+        Icon: <SimpleGraph regex={"\\k<name>"} />,
         desc: `A back reference to match group #Name`,
       },
     ],
@@ -85,11 +84,11 @@ const legends = [
     name: "Assertion",
     infos: [
       {
-        Icon: <MinimumGraph regex="^" />,
+        Icon: <SimpleGraph regex="^" />,
         desc: "Matches the beginning of input",
       },
       {
-        Icon: <MinimumGraph regex="x(?=y)" />,
+        Icon: <SimpleGraph regex="x(?=y)" />,
         desc: `Matches "x" only if "x" is followed by "y"`,
       },
     ],

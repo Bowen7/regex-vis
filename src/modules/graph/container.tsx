@@ -5,8 +5,8 @@ import { AST } from "@/parser"
 import {
   GRAPH_PADDING_VERTICAL,
   GRAPH_PADDING_HORIZONTAL,
-  GRAPH_MINIMUM_PADDING_HORIZONTAL,
-  GRAPH_MINIMUM_PADDING_VERTICAL,
+  GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL,
+  GRAPH_WITHOUT_ROOT_PADDING_VERTICAL,
 } from "@/constants"
 import Nodes from "./nodes"
 
@@ -15,21 +15,21 @@ const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
 type Props = {
   ast: AST.Regex
-  minimum?: boolean
+  withRoot?: boolean
   selectedIds?: string[]
   onLayout?: () => void
 }
 
 const Container = React.memo(
-  ({ ast, minimum = false, selectedIds = [], onLayout = () => {} }: Props) => {
+  ({ ast, withRoot = true, selectedIds = [], onLayout = () => {} }: Props) => {
     const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
-    const paddingH = minimum
-      ? GRAPH_MINIMUM_PADDING_HORIZONTAL
-      : GRAPH_PADDING_HORIZONTAL
-    const paddingV = minimum
-      ? GRAPH_MINIMUM_PADDING_VERTICAL
-      : GRAPH_PADDING_VERTICAL
+    const paddingH = withRoot
+      ? GRAPH_PADDING_HORIZONTAL
+      : GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL
+    const paddingV = withRoot
+      ? GRAPH_PADDING_VERTICAL
+      : GRAPH_WITHOUT_ROOT_PADDING_VERTICAL
     const handleLayout = useCallback(
       (index: number, [width, height]: [number, number]) => {
         const svgWidth = width + paddingH * 2
@@ -40,8 +40,8 @@ const Container = React.memo(
       [paddingH, paddingV, onLayout]
     )
     const nodes = useMemo(
-      () => (minimum ? ast.body : [head, ...ast.body, tail]),
-      [ast.body, minimum]
+      () => (withRoot ? [head, ...ast.body, tail] : ast.body),
+      [ast.body, withRoot]
     )
 
     return (
@@ -57,7 +57,6 @@ const Container = React.memo(
             index={0}
             x={paddingH}
             y={paddingV}
-            minimum={minimum}
             nodes={nodes}
             selectedIds={selectedIds}
             onLayout={handleLayout}
@@ -65,7 +64,7 @@ const Container = React.memo(
         </svg>
         <style jsx>{`
           svg {
-            border: ${minimum ? "none" : `1px solid ${palette.accents_2}`};
+            border: ${withRoot ? `1px solid ${palette.accents_2}` : "none"};
             border-radius: 5px;
           }
           svg :global(.box-fill) {

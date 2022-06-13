@@ -1,34 +1,42 @@
-import React from "react"
-import { AST } from "@/parser"
-import { getName } from "./utils"
-type Center = {
-  x: number
+import React, { useEffect, useLayoutEffect, useRef } from "react"
+import { useTranslation } from "react-i18next"
+import { GRAPH_NAME_TEXT_FONTSIZE, GRAPH_NAME_HEIGHT } from "@/constants"
+type Props = {
+  centerX: number
   y: number
-}
-type NameProps = {
-  center: Center
-  node: AST.Node
-  y: number
+  name: string
+  onLayout: (layout: [number, number]) => void
 }
 
-const NodeName: React.FC<NameProps> = React.memo(({ center, node, y }) => {
-  const name = getName(node)
-  if (name) {
-    return (
-      <text
-        x={center.x}
-        y={y}
-        fontSize={12}
-        textAnchor="middle"
-        dy={-0.5 * 12}
-        className="text"
-      >
-        {name}
-      </text>
-    )
-  } else {
-    return null
-  }
+const NameNode = React.memo((props: Props) => {
+  const { centerX, y, name, onLayout } = props
+  const { t } = useTranslation()
+  const textRef = useRef<SVGTextElement>(null!)
+
+  const text = t(name)
+
+  useLayoutEffect(() => {
+    const { width } = textRef.current.getBoundingClientRect()
+    const layout: [number, number] = [width, GRAPH_NAME_HEIGHT]
+    onLayout(layout)
+  }, [text, onLayout])
+
+  return (
+    <text
+      ref={textRef}
+      className="text"
+      fontSize={GRAPH_NAME_TEXT_FONTSIZE}
+      pointerEvents="none"
+      x={centerX}
+      y={y}
+      dy={0.25 * GRAPH_NAME_TEXT_FONTSIZE}
+      textAnchor="middle"
+    >
+      {text}
+    </text>
+  )
 })
 
-export default NodeName
+NameNode.displayName = "NameNode"
+
+export { NameNode }

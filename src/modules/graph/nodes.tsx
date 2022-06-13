@@ -13,7 +13,6 @@ type Props = {
   index: number
   x: number
   y: number
-  minimum: boolean
   nodes: AST.Node[]
   selectedIds: string[]
   onLayout: (index: number, layout: [number, number]) => void
@@ -22,7 +21,7 @@ const SimpleNodeWithNameQuantifier = withNameQuantifier(SimpleNode)
 const GroupLikeNodeWithNameQuantifier = withNameQuantifier(GroupLikeNode)
 
 const Nodes = React.memo(
-  ({ id, index, x, y, minimum, nodes, selectedIds, onLayout }: Props) => {
+  ({ id, index, x, y, nodes, selectedIds, onLayout }: Props) => {
     const unLayoutedCount = useRef(nodes.length)
     const layouts = useRef<[number, number][]>([])
     const [height, setHeight] = useState(0)
@@ -95,7 +94,6 @@ const Nodes = React.memo(
                   index={index}
                   x={box.x1}
                   y={box.y1}
-                  minimum={minimum}
                   node={node}
                   selected={selected}
                   selectedIds={selectedIds}
@@ -110,7 +108,6 @@ const Nodes = React.memo(
                   index={index}
                   x={box.x1}
                   y={box.y1}
-                  minimum={minimum}
                   node={node}
                   selected={selected}
                   selectedIds={selectedIds}

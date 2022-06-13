@@ -9,16 +9,10 @@ import { useDragSelect } from "@/utils/hooks"
 type Props = {
   regex: string
   ast: AST.Regex
-  minimum?: boolean
   errorMsg?: string | null
 }
 
-const Graph: React.FC<Props> = ({
-  regex,
-  ast,
-  errorMsg = null,
-  minimum = false,
-}) => {
+const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const selectNodesByBox = useSetAtom(selectNodesByBoxAtom)
   const { palette } = useTheme()
@@ -46,11 +40,7 @@ const Graph: React.FC<Props> = ({
         ) : (
           <>
             {ast.body.length > 0 && (
-              <SvgContainer
-                ast={ast}
-                minimum={minimum}
-                selectedIds={selectedIds}
-              />
+              <SvgContainer ast={ast} selectedIds={selectedIds} />
             )}
             {Selection}
           </>
