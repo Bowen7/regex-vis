@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useCallback, useLayoutEffect } from "react"
+import React, { useRef, forwardRef, useCallback, useLayoutEffect } from "react"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
 import {
@@ -28,7 +28,10 @@ const GroupLikeNode = React.memo(
     const layout = useRef<[number, number]>([0, 0])
 
     useLayoutEffect(() => {
-      if (node.type === "group" || node.type === "lookAroundAssertion") {
+      if (
+        (node.type === "group" || node.type === "lookAroundAssertion") &&
+        node.children.length === 0
+      ) {
         layout.current = [GRAPH_NODE_MIN_WIDTH, GRAPH_NODE_MIN_HEIGHT]
         onLayout(index, layout.current)
       }
