@@ -14,14 +14,23 @@ const head: AST.RootNode = { id: nanoid(), type: "root" }
 const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
 type Props = {
+  id?: string
   ast: AST.Regex
   withRoot?: boolean
   selectedIds?: string[]
-  onLayout?: () => void
+  style?: React.CSSProperties
+  onLayout?: (id: string) => void
 }
 
 const Container = React.memo(
-  ({ ast, withRoot = true, selectedIds = [], onLayout = () => {} }: Props) => {
+  ({
+    id = "",
+    ast,
+    withRoot = true,
+    selectedIds = [],
+    style = {},
+    onLayout = () => {},
+  }: Props) => {
     const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
     const paddingH = withRoot
@@ -35,9 +44,9 @@ const Container = React.memo(
         const svgWidth = width + paddingH * 2
         const svgHeight = height + paddingV * 2
         setLayout([svgWidth, svgHeight])
-        onLayout()
+        onLayout(id)
       },
-      [paddingH, paddingV, onLayout]
+      [id, paddingH, paddingV, onLayout]
     )
     const nodes = useMemo(
       () => (withRoot ? [head, ...ast.body, tail] : ast.body),
@@ -51,6 +60,7 @@ const Container = React.memo(
           xmlns="http://www.w3.org/2000/svg"
           width={layout[0]}
           height={layout[1]}
+          style={style}
         >
           <Nodes
             id={ast.id}
