@@ -3,7 +3,8 @@ import { useTheme, Code, Dot } from "@geist-ui/core"
 import hexRgb from "hex-rgb"
 import { useSetAtom, useAtomValue } from "jotai"
 import { AST } from "@/parser"
-import SvgContainer from "./container"
+import { GraphContext } from "@/contexts"
+import DoubleBufferingGraph from "./double-buffering-graph"
 import { selectedIdsAtom, selectNodesByBoxAtom, astAtom } from "@/atom"
 import { useDragSelect } from "@/utils/hooks"
 type Props = {
@@ -30,6 +31,11 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
     },
     onSelect: (box) => selectNodesByBox(box),
   })
+
+  const providerValue = useMemo(
+    () => ({ selectedIds, recordLayoutEnable: true }),
+    [selectedIds]
+  )
   return (
     <>
       <div className="graph" {...bindings}>
@@ -39,9 +45,9 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
           </p>
         ) : (
           <>
-            {ast.body.length > 0 && (
-              <SvgContainer ast={ast} selectedIds={selectedIds} />
-            )}
+            <GraphContext.Provider value={providerValue}>
+              {ast.body.length > 0 && <DoubleBufferingGraph ast={ast} />}
+            </GraphContext.Provider>
             {Selection}
           </>
         )}

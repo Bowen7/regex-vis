@@ -35,7 +35,6 @@ export const selectNodesByBoxAtom = atom(
       }
       return false
     })
-    console.log(ast, ids)
     set(selectNodesAtom, ids)
   }
 )

@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react"
+import React, { Fragment, useLayoutEffect, useRef } from "react"
 import { useTranslation, TFunction } from "react-i18next"
 import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import {
@@ -103,7 +103,7 @@ const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
   })
   if (singleRangeSet.size > 0) {
     const text = Array.from(singleRangeSet).join("")
-    texts.push(renderString(text, dy))
+    texts.push(<Fragment key="single-range">{renderString(text, dy)}</Fragment>)
   }
   return <>{texts}</>
 }

@@ -6,7 +6,6 @@ import { AST } from "@/parser"
 import SVGContainer from "./container"
 type Props = {
   ast: AST.Regex
-  selectedIds?: string[]
 }
 type AstBuffer = {
   id: string
@@ -18,10 +17,10 @@ const wipStyle: React.CSSProperties = {
   pointerEvents: "none",
 }
 
-const DoubleBufferingGraph = memo(({ ast, selectedIds = [] }: Props) => {
-  const [buffers, setBuffers, buffersRef] = useCurrentState<AstBuffer[]>(() => [
-    { id: nanoid(), ast },
-  ])
+const DoubleBufferingGraph = memo(({ ast }: Props) => {
+  const [initialBuffer] = useState<AstBuffer[]>(() => [{ id: nanoid(), ast }])
+  const [buffers, setBuffers, buffersRef] =
+    useCurrentState<AstBuffer[]>(initialBuffer)
   const [currentId, setCurrentId] = useState("")
 
   useUpdateEffect(() => {
@@ -42,8 +41,8 @@ const DoubleBufferingGraph = memo(({ ast, selectedIds = [] }: Props) => {
       {buffers.map(({ id, ast }) => (
         <SVGContainer
           key={id}
+          id={id}
           ast={ast}
-          selectedIds={selectedIds}
           style={id === currentId ? currentStyle : wipStyle}
           onLayout={handleLayout}
         />

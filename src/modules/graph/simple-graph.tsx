@@ -10,7 +10,7 @@ const SimpleGraph = React.memo(({ regex }: Props) => {
   if (ast.type === "error") {
     return null
   }
-  return <SvgContainer ast={ast} selectedIds={[]} withRoot={false} />
+  return <SvgContainer ast={ast} withRoot={false} />
 })
 
 export default SimpleGraph

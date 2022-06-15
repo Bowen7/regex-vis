@@ -17,7 +17,6 @@ type Props = {
   id?: string
   ast: AST.Regex
   withRoot?: boolean
-  selectedIds?: string[]
   style?: React.CSSProperties
   onLayout?: (id: string) => void
 }
@@ -27,7 +26,6 @@ const Container = React.memo(
     id = "",
     ast,
     withRoot = true,
-    selectedIds = [],
     style = {},
     onLayout = () => {},
   }: Props) => {
@@ -68,7 +66,6 @@ const Container = React.memo(
             x={paddingH}
             y={paddingV}
             nodes={nodes}
-            selectedIds={selectedIds}
             onLayout={handleLayout}
           ></Nodes>
         </svg>

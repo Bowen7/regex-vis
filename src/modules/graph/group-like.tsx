@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  forwardRef,
-  useCallback,
-  useLayoutEffect,
-} from "react"
+import React, { useState, useCallback, useLayoutEffect } from "react"
 import { useTheme } from "@geist-ui/core"
 import { AST } from "@/parser"
 import {
@@ -22,12 +17,11 @@ type Props = {
   node: AST.Node
   children: React.ReactNode
   selected: boolean
-  selectedIds: string[]
   onLayout: (index: number, layout: [number, number]) => void
 }
 
 const GroupLikeNode = React.memo(
-  ({ index, x, y, node, selectedIds, children, onLayout }: Props) => {
+  ({ index, x, y, node, children, onLayout }: Props) => {
     const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
 
@@ -94,7 +88,6 @@ const GroupLikeNode = React.memo(
           x={x + GRAPH_NODE_MARGIN_HORIZONTAL}
           y={y + GRAPH_GROUP_NODE_PADDING_VERTICAL}
           nodes={nodeChildren}
-          selectedIds={selectedIds}
           onLayout={handleNodesLayout}
         />
         <rect
