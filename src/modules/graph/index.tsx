@@ -1,11 +1,14 @@
 import React, { useState, useMemo } from "react"
 import { useTheme, Code, Dot } from "@geist-ui/core"
 import hexRgb from "hex-rgb"
-import { useSetAtom, useAtomValue } from "jotai"
+import { useSetAtom, Provider, Atom } from "jotai"
 import { AST } from "@/parser"
-import { GraphContext } from "@/contexts"
 import DoubleBufferingGraph from "./double-buffering-graph"
-import { selectedIdsAtom, selectNodesByBoxAtom, astAtom } from "@/atom"
+import {
+  selectNodesByBoxAtom,
+  recordLayoutEnableAtom,
+  selectEnableAtom,
+} from "@/atom"
 import { useDragSelect } from "@/utils/hooks"
 type Props = {
   regex: string
@@ -13,8 +16,12 @@ type Props = {
   errorMsg?: string | null
 }
 
+const initialValues: (readonly [Atom<unknown>, unknown])[] = [
+  [recordLayoutEnableAtom, true],
+  [selectEnableAtom, true],
+]
+
 const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
-  const selectedIds = useAtomValue(selectedIdsAtom)
   const selectNodesByBox = useSetAtom(selectNodesByBoxAtom)
   const { palette } = useTheme()
   const selectionColor = useMemo(
@@ -32,12 +39,9 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
     onSelect: (box) => selectNodesByBox(box),
   })
 
-  const providerValue = useMemo(
-    () => ({ selectedIds, recordLayoutEnable: true }),
-    [selectedIds]
-  )
   return (
     <>
+      {/* <Provider initialValues={initialValues}> */}
       <div className="graph" {...bindings}>
         {errorMsg ? (
           <p>
@@ -45,13 +49,12 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
           </p>
         ) : (
           <>
-            <GraphContext.Provider value={providerValue}>
-              {ast.body.length > 0 && <DoubleBufferingGraph ast={ast} />}
-            </GraphContext.Provider>
+            {ast.body.length > 0 && <DoubleBufferingGraph ast={ast} />}
             {Selection}
           </>
         )}
       </div>
+      {/* </Provider> */}
       <style jsx>{`
         .graph {
           display: inline-block;
@@ -61,40 +64,6 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
         .graph :global(svg) {
           border: 1px solid ${palette.accents_2};
           border-radius: 5px;
-        }
-        .graph :global(.box-fill) {
-          fill: ${palette.success};
-        }
-        .graph :global(.selected-fill) {
-          fill: ${palette.success};
-          fill-opacity: 0.3;
-        }
-        .graph :global(.none-stroke) {
-          stroke: none;
-        }
-        .graph :global(.stroke) {
-          stroke: ${palette.accents_6};
-          stroke-width: 2px;
-        }
-        .graph :global(.thin-stroke) {
-          stroke: ${palette.accents_6};
-          stroke-width: 1.5px;
-        }
-        .graph :global(.second-stroke) {
-          stroke: ${palette.accents_3};
-          stroke-width: 1.5px;
-        }
-        .graph :global(.text) {
-          fill: ${palette.foreground};
-        }
-        .graph :global(.fill) {
-          fill: ${palette.background};
-        }
-        .graph :global(.transparent-fill) {
-          fill: transparent;
-        }
-        .graph :global(.quote) {
-          fill: ${palette.accents_4};
         }
       `}</style>
     </>

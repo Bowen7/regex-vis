@@ -8,6 +8,7 @@ import {
   GRAPH_NODE_MIN_HEIGHT,
   GRAPH_NODE_MIN_WIDTH,
 } from "@/constants"
+import { withNameQuantifier } from "./with-name-quantifier"
 import Nodes from "./nodes"
 import MidConnect from "./mid-connect"
 type Props = {
@@ -20,90 +21,89 @@ type Props = {
   onLayout: (index: number, layout: [number, number]) => void
 }
 
-const GroupLikeNode = React.memo(
-  ({ index, x, y, node, children, onLayout }: Props) => {
-    const { palette } = useTheme()
-    const [layout, setLayout] = useState<[number, number]>([0, 0])
+const _GroupLikeNode = ({ index, x, y, node, children, onLayout }: Props) => {
+  const { palette } = useTheme()
+  const [layout, setLayout] = useState<[number, number]>([0, 0])
 
-    useLayoutEffect(() => {
-      if (
-        (node.type === "group" || node.type === "lookAroundAssertion") &&
-        node.children.length === 0
-      ) {
-        const layout: [number, number] = [
-          GRAPH_NODE_MIN_WIDTH,
-          GRAPH_NODE_MIN_HEIGHT,
-        ]
-        onLayout(index, layout)
-        setLayout(layout)
-      }
-    }, [index, node, onLayout])
-
-    const handleNodesLayout = useCallback(
-      (_: number, [width, height]: [number, number]) => {
-        const layout: [number, number] = [
-          width + 2 * GRAPH_NODE_MARGIN_HORIZONTAL,
-          height + 2 * GRAPH_GROUP_NODE_PADDING_VERTICAL,
-        ]
-        onLayout(index, layout)
-        setLayout(layout)
-      },
-      [index, onLayout]
-    )
-    if (node.type !== "group" && node.type !== "lookAroundAssertion") {
-      return null
+  useLayoutEffect(() => {
+    if (
+      (node.type === "group" || node.type === "lookAroundAssertion") &&
+      node.children.length === 0
+    ) {
+      const layout: [number, number] = [
+        GRAPH_NODE_MIN_WIDTH,
+        GRAPH_NODE_MIN_HEIGHT,
+      ]
+      onLayout(index, layout)
+      setLayout(layout)
     }
+  }, [index, node, onLayout])
 
-    const { id, children: nodeChildren } = node
-    const connectY = y + layout[1] / 2
-    return (
-      <>
-        {nodeChildren.length > 0 && (
-          <>
-            <MidConnect
-              start={[x, connectY]}
-              end={[x + GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
-            />
-            <MidConnect
-              start={[x + layout[0] - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
-              end={[x + layout[0], connectY]}
-            />
-          </>
-        )}
-        {children}
-        <rect
-          x={x}
-          y={y}
-          width={layout[0]}
-          height={layout[1]}
-          rx={GRAPH_NODE_BORDER_RADIUS}
-          ry={GRAPH_NODE_BORDER_RADIUS}
-          stroke={palette.accents_3}
-          fill="transparent"
-          strokeWidth={1.5}
-        />
-        <Nodes
-          id={id}
-          index={0}
-          x={x + GRAPH_NODE_MARGIN_HORIZONTAL}
-          y={y + GRAPH_GROUP_NODE_PADDING_VERTICAL}
-          nodes={nodeChildren}
-          onLayout={handleNodesLayout}
-        />
-        <rect
-          x={x}
-          y={y}
-          width={layout[0]}
-          height={layout[1]}
-          rx={GRAPH_NODE_BORDER_RADIUS}
-          ry={GRAPH_NODE_BORDER_RADIUS}
-          stroke={palette.accents_3}
-          fill="transparent"
-          strokeWidth={1.5}
-        />
-      </>
-    )
+  const handleNodesLayout = useCallback(
+    (_: number, [width, height]: [number, number]) => {
+      const layout: [number, number] = [
+        width + 2 * GRAPH_NODE_MARGIN_HORIZONTAL,
+        height + 2 * GRAPH_GROUP_NODE_PADDING_VERTICAL,
+      ]
+      onLayout(index, layout)
+      setLayout(layout)
+    },
+    [index, onLayout]
+  )
+  if (node.type !== "group" && node.type !== "lookAroundAssertion") {
+    return null
   }
-)
+
+  const { id, children: nodeChildren } = node
+  const connectY = y + layout[1] / 2
+  return (
+    <>
+      {nodeChildren.length > 0 && (
+        <>
+          <MidConnect
+            start={[x, connectY]}
+            end={[x + GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+          />
+          <MidConnect
+            start={[x + layout[0] - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+            end={[x + layout[0], connectY]}
+          />
+        </>
+      )}
+      {children}
+      <rect
+        x={x}
+        y={y}
+        width={layout[0]}
+        height={layout[1]}
+        rx={GRAPH_NODE_BORDER_RADIUS}
+        ry={GRAPH_NODE_BORDER_RADIUS}
+        stroke={palette.accents_3}
+        fill="transparent"
+        strokeWidth={1.5}
+      />
+      <Nodes
+        id={id}
+        index={0}
+        x={x + GRAPH_NODE_MARGIN_HORIZONTAL}
+        y={y + GRAPH_GROUP_NODE_PADDING_VERTICAL}
+        nodes={nodeChildren}
+        onLayout={handleNodesLayout}
+      />
+      <rect
+        x={x}
+        y={y}
+        width={layout[0]}
+        height={layout[1]}
+        rx={GRAPH_NODE_BORDER_RADIUS}
+        ry={GRAPH_NODE_BORDER_RADIUS}
+        stroke={palette.accents_3}
+        fill="transparent"
+        strokeWidth={1.5}
+      />
+    </>
+  )
+}
+const GroupLikeNode = withNameQuantifier(_GroupLikeNode)
 GroupLikeNode.displayName = "GroupLikeGroup"
 export default GroupLikeNode

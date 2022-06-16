@@ -19,3 +19,6 @@ export const astAtom = atomWithImmer<AST.Regex>({
 export const selectedIdsAtom = atom<string[]>([])
 export const groupNamesAtom = atom<string[]>([])
 export const editorCollapsedAtom = atom<boolean>(false)
+
+export const recordLayoutEnableAtom = atom<boolean>(true)
+export const selectEnableAtom = atom<boolean>(true)

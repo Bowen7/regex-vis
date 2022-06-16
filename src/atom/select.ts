@@ -3,7 +3,12 @@ import { visitNodes, AST } from "@/parser"
 import { selectedIdsAtom, nodesBoxMap, astAtom } from "./atoms"
 
 export const selectNodeAtom = atom(null, (get, set, id: string) => {
-  set(selectedIdsAtom, [id])
+  const selectedIds = get(selectedIdsAtom)
+  if (selectedIds.length === 1 && selectedIds[0] === id) {
+    set(selectedIdsAtom, [])
+  } else {
+    set(selectedIdsAtom, [id])
+  }
 })
 
 export const selectNodesAtom = atom(null, (get, set, ids: string[]) => {

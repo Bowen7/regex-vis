@@ -6,6 +6,8 @@ import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MIN_WIDTH,
 } from "@/constants"
+import { withNameQuantifier } from "./with-name-quantifier"
+import Content from "./content"
 import TextNode from "./text"
 
 type Props = {
@@ -23,7 +25,15 @@ type Props = {
   children: React.ReactNode
 }
 
-const SimpleNode = ({ index, x, y, node, onLayout, children }: Props) => {
+const _SimpleNode = ({
+  index,
+  x,
+  y,
+  node,
+  selected,
+  onLayout,
+  children,
+}: Props) => {
   const [layout, setLayout] = useState<[number, number]>([0, 0])
 
   const handleTextLayout = useCallback(
@@ -43,21 +53,27 @@ const SimpleNode = ({ index, x, y, node, onLayout, children }: Props) => {
     <g>
       {children}
       <g transform={`translate(${x},${y})`}>
-        <rect
+        <Content
+          id={node.id}
+          selected={selected}
           width={layout[0]}
           height={layout[1]}
           rx={GRAPH_NODE_BORDER_RADIUS}
           ry={GRAPH_NODE_BORDER_RADIUS}
           fill="transparent"
           className="stroke"
-        />
-        <TextNode
-          centerX={layout[0] / 2}
-          node={node}
-          onLayout={handleTextLayout}
-        />
+        >
+          <TextNode
+            centerX={layout[0] / 2}
+            node={node}
+            onLayout={handleTextLayout}
+          />
+        </Content>
       </g>
     </g>
   )
 }
+
+const SimpleNode = withNameQuantifier(_SimpleNode)
+SimpleNode.displayName = "SimpleNode"
 export default SimpleNode

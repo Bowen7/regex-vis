@@ -1,21 +1,13 @@
-import React, {
-  useMemo,
-  useEffect,
-  useRef,
-  useCallback,
-  useState,
-  useContext,
-} from "react"
+import React, { useMemo, useEffect, useRef, useCallback, useState } from "react"
+import { useAtomValue } from "jotai"
 import * as AST from "@/parser/ast"
 import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
-import { nodesBoxMap } from "@/atom"
-import { GraphContext } from "@/contexts"
+import { nodesBoxMap, selectedIdsAtom, recordLayoutEnableAtom } from "@/atom"
 import ChoiceNode from "./choice"
 import SimpleNode from "./simple-node"
 import GroupLikeNode from "./group-like"
 import RootNode from "./root"
 import MidConnect from "./mid-connect"
-import { withNameQuantifier } from "./with-name-quantifier"
 type Props = {
   id: string
   index: number
@@ -24,14 +16,13 @@ type Props = {
   nodes: AST.Node[]
   onLayout: (index: number, layout: [number, number]) => void
 }
-const SimpleNodeWithNameQuantifier = withNameQuantifier(SimpleNode)
-const GroupLikeNodeWithNameQuantifier = withNameQuantifier(GroupLikeNode)
 
 const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
   const unLayoutedCount = useRef(nodes.length)
   const layouts = useRef<[number, number][]>([])
   const [height, setHeight] = useState(0)
-  const { selectedIds, recordLayoutEnable } = useContext(GraphContext)
+  const selectedIds = useAtomValue(selectedIdsAtom)
+  const recordLayoutEnable = useAtomValue(recordLayoutEnableAtom)
 
   const hasRoot = nodes[0]?.type === "root"
 
@@ -112,7 +103,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
           case "group":
           case "lookAroundAssertion":
             Node = (
-              <GroupLikeNodeWithNameQuantifier
+              <GroupLikeNode
                 index={index}
                 x={box.x1}
                 y={box.y1}
@@ -135,7 +126,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
             break
           default:
             Node = (
-              <SimpleNodeWithNameQuantifier
+              <SimpleNode
                 index={index}
                 x={box.x1}
                 y={box.y1}
