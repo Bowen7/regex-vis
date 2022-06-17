@@ -16,6 +16,7 @@ specifiers:
   '@types/react': ^18.0.11
   '@types/react-dom': ^18.0.5
   '@types/styled-jsx': ^2.2.8
+  '@types/testing-library__jest-dom': ^5.14.4
   babel-plugin-import: ^1.13.3
   customize-cra: ^1.0.0
   hex-rgb: ^5.0.0
@@ -78,6 +79,7 @@ devDependencies:
   '@types/react': 18.0.11
   '@types/react-dom': 18.0.5
   '@types/styled-jsx': 2.2.8
+  '@types/testing-library__jest-dom': 5.14.4
   babel-plugin-import: 1.13.3
   customize-cra: 1.0.0
   jest: 26.6.0_ts-node@10.0.0
@@ -3233,7 +3235,7 @@ packages:
     engines: {node: '>=8', npm: '>=6', yarn: '>=1'}
     dependencies:
       '@babel/runtime': 7.17.8
-      '@types/testing-library__jest-dom': 5.14.3
+      '@types/testing-library__jest-dom': 5.14.4
       aria-query: 5.0.0
       chalk: 3.0.0
       css: 3.0.0
@@ -3446,8 +3448,8 @@ packages:
     resolution: {integrity: sha512-0VBprVqfgFD7Ehb2vd8Lh9TG3jP98gvr8rgehQqzztZNI7o8zS8Ad4jyZneKELphpuE212D8J70LnSNQSyO6bQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@types/tapable/-/tapable-1.0.7.tgz}
     dev: false
 
-  /@types/testing-library__jest-dom/5.14.3:
-    resolution: {integrity: sha512-oKZe+Mf4ioWlMuzVBaXQ9WDnEm1+umLx0InILg+yvZVBBDmzV5KfZyLrCvadtWcx8+916jLmHafcmqqffl+iIw==}
+  /@types/testing-library__jest-dom/5.14.4:
+    resolution: {integrity: sha512-EUCs9PTBOEyfRtLKkKd31YrRCx/9Wxjy2Uqb6IH/KAOr7/vP0i8iClOyxQqjm/UxMGU5r5s2vOBM7vSPQVmabg==}
     dependencies:
       '@types/jest': 26.0.24
     dev: true
