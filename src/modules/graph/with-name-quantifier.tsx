@@ -50,6 +50,12 @@ export const withNameQuantifier = <
         const height =
           contentLayout.current[1] +
           2 * Math.max(quantifierLayout.current[1], nameLayout.current[1])
+        console.log(
+          height,
+          contentLayout.current[1],
+          quantifierLayout.current[1],
+          nameLayout.current[1]
+        )
         const layout: [number, number] = [width, height]
         onLayout(index, layout)
         setLayout(layout)

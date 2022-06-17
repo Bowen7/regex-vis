@@ -1,25 +1,16 @@
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo, useEffect } from "react"
 import { useTheme, Code, Dot } from "@geist-ui/core"
 import hexRgb from "hex-rgb"
 import { useSetAtom, Provider, Atom } from "jotai"
 import { AST } from "@/parser"
 import DoubleBufferingGraph from "./double-buffering-graph"
-import {
-  selectNodesByBoxAtom,
-  recordLayoutEnableAtom,
-  selectEnableAtom,
-} from "@/atom"
+import { selectNodesByBoxAtom } from "@/atom"
 import { useDragSelect } from "@/utils/hooks"
 type Props = {
   regex: string
   ast: AST.Regex
   errorMsg?: string | null
 }
-
-const initialValues: (readonly [Atom<unknown>, unknown])[] = [
-  [recordLayoutEnableAtom, true],
-  [selectEnableAtom, true],
-]
 
 const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
   const selectNodesByBox = useSetAtom(selectNodesByBoxAtom)
@@ -41,7 +32,6 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
 
   return (
     <>
-      {/* <Provider initialValues={initialValues}> */}
       <div className="graph" {...bindings}>
         {errorMsg ? (
           <p>
@@ -54,7 +44,6 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
           </>
         )}
       </div>
-      {/* </Provider> */}
       <style jsx>{`
         .graph {
           display: inline-block;

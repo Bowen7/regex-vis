@@ -42,9 +42,7 @@ const Samples: React.FC<{}> = () => {
         <div className="content">
           {samples.map(({ desc, label, regex }) => (
             <Link
-              to={`/?r=${encodeURIComponent(
-                isLiteral ? regex : regex.slice(1, regex.length - 1)
-              )}`}
+              to={`/?r=${encodeURIComponent(isLiteral ? `/${regex}/` : regex)}`}
               key={regex}
             >
               <div className="sample">

@@ -1,5 +1,4 @@
 import { atom } from "jotai"
-import { atomWithImmer } from "jotai/immer"
 import {
   AST,
   removeIt,
@@ -21,7 +20,6 @@ import {
   astAtom,
   selectedIdsAtom,
   groupNamesAtom,
-  editorCollapsedAtom,
 } from "./atoms"
 
 const refreshGroupAtom = atom(null, (get, set) => {
@@ -79,11 +77,10 @@ export const setAstAtom = atom(
       shouldRefreshGroupIndex = false,
     }: { ast: AST.Regex; shouldRefreshGroupIndex?: boolean }
   ) => {
+    set(astAtom, ast)
     if (shouldRefreshGroupIndex) {
       set(refreshGroupAtom)
-      return
     }
-    set(astAtom, ast)
   }
 )
 
@@ -104,6 +101,7 @@ const setAstWithUndoAtom = atom(
       // TODO:
       // set(toastsAtom, (draft) => draft.push("Group automatically"))
     }
+
     set(setAstAtom, { ast, shouldRefreshGroupIndex })
   }
 )

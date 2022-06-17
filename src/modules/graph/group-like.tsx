@@ -11,6 +11,7 @@ import {
 import { withNameQuantifier } from "./with-name-quantifier"
 import Nodes from "./nodes"
 import MidConnect from "./mid-connect"
+import Content from "./content"
 type Props = {
   index: number
   x: number
@@ -21,7 +22,15 @@ type Props = {
   onLayout: (index: number, layout: [number, number]) => void
 }
 
-const _GroupLikeNode = ({ index, x, y, node, children, onLayout }: Props) => {
+const _GroupLikeNode = ({
+  index,
+  x,
+  y,
+  node,
+  selected,
+  children,
+  onLayout,
+}: Props) => {
   const { palette } = useTheme()
   const [layout, setLayout] = useState<[number, number]>([0, 0])
 
@@ -57,7 +66,18 @@ const _GroupLikeNode = ({ index, x, y, node, children, onLayout }: Props) => {
   const { id, children: nodeChildren } = node
   const connectY = y + layout[1] / 2
   return (
-    <>
+    <Content
+      id={node.id}
+      selected={selected}
+      x={x}
+      y={y}
+      width={layout[0]}
+      height={layout[1]}
+      rx={GRAPH_NODE_BORDER_RADIUS}
+      ry={GRAPH_NODE_BORDER_RADIUS}
+      stroke={palette.accents_3}
+      className="transparent-fill second-stroke"
+    >
       {nodeChildren.length > 0 && (
         <>
           <MidConnect
@@ -71,17 +91,6 @@ const _GroupLikeNode = ({ index, x, y, node, children, onLayout }: Props) => {
         </>
       )}
       {children}
-      <rect
-        x={x}
-        y={y}
-        width={layout[0]}
-        height={layout[1]}
-        rx={GRAPH_NODE_BORDER_RADIUS}
-        ry={GRAPH_NODE_BORDER_RADIUS}
-        stroke={palette.accents_3}
-        fill="transparent"
-        strokeWidth={1.5}
-      />
       <Nodes
         id={id}
         index={0}
@@ -90,18 +99,7 @@ const _GroupLikeNode = ({ index, x, y, node, children, onLayout }: Props) => {
         nodes={nodeChildren}
         onLayout={handleNodesLayout}
       />
-      <rect
-        x={x}
-        y={y}
-        width={layout[0]}
-        height={layout[1]}
-        rx={GRAPH_NODE_BORDER_RADIUS}
-        ry={GRAPH_NODE_BORDER_RADIUS}
-        stroke={palette.accents_3}
-        fill="transparent"
-        strokeWidth={1.5}
-      />
-    </>
+    </Content>
   )
 }
 const GroupLikeNode = withNameQuantifier(_GroupLikeNode)
