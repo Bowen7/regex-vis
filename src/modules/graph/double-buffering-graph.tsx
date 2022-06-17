@@ -24,7 +24,6 @@ const DoubleBufferingGraph = memo(({ ast }: Props) => {
   const [currentId, setCurrentId] = useState("")
 
   useUpdateEffect(() => {
-    console.log(123)
     const nextBuffers = [buffersRef.current[0], { id: nanoid(), ast }]
     setBuffers(nextBuffers)
   }, [ast])

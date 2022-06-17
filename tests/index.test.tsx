@@ -1,4 +1,3 @@
-import React from "react"
 import { render, screen, fireEvent, getByText } from "@testing-library/react"
 import { act } from "react-dom/test-utils"
 import App from "../src/App"
@@ -20,6 +19,9 @@ test("renders graph after inputting", async () => {
 test("updates graph after editing", async () => {
   await act(async () => {
     render(<App />)
+  })
+
+  await act(async () => {
     const input = screen.getByTestId("regex-input")
     fireEvent.change(input, { target: { value: "abc" } })
     jest.advanceTimersByTime(500)

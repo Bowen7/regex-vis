@@ -59,6 +59,7 @@ const Container = React.memo(
           width={layout[0]}
           height={layout[1]}
           style={style}
+          data-testid="graph"
         >
           <Nodes
             id={ast.id}
