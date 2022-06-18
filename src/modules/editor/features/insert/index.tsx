@@ -14,7 +14,7 @@ import {
   Lookbehind,
 } from "@/components/icons"
 import { AST } from "@/parser"
-import { insertAtom, groupItAtom, lookAroundItAtom } from "@/atom"
+import { insertAtom, groupSelectedAtom, lookAroundSelectedAtom } from "@/atom"
 type Props = {
   ast: AST.Regex
   nodes: AST.Node[]
@@ -26,8 +26,8 @@ type Option = { desc: string; value: string; Icon: () => JSX.Element }
 
 const Insert: React.FC<Props> = ({ ast, nodes }) => {
   const insert = useSetAtom(insertAtom)
-  const groupIt = useSetAtom(groupItAtom)
-  const lookAroundIt = useSetAtom(lookAroundItAtom)
+  const groupSelected = useSetAtom(groupSelectedAtom)
+  const lookAroundSelected = useSetAtom(lookAroundSelectedAtom)
 
   const insertOptions = useMemo(() => {
     const options: Option[] = []
@@ -121,11 +121,11 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       default:
         return
     }
-    groupIt(payload)
+    groupSelected(payload)
   }
 
   const handleWrapLookAroundAssertion = (kind: string) =>
-    lookAroundIt(kind as "lookahead" | "lookbehind")
+    lookAroundSelected(kind as "lookahead" | "lookbehind")
 
   return (
     <div id="test">

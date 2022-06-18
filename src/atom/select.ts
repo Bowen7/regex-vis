@@ -2,6 +2,10 @@ import { atom } from "jotai"
 import { visitNodes, AST } from "@/parser"
 import { selectedIdsAtom, nodesBoxMap, astAtom } from "./atoms"
 
+export const clearSelectedAtom = atom(null, (get, set) => {
+  set(selectedIdsAtom, [])
+})
+
 export const selectNodeAtom = atom(null, (get, set, id: string) => {
   const selectedIds = get(selectedIdsAtom)
   if (selectedIds.length === 1 && selectedIds[0] === id) {

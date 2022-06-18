@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useTheme, useCurrentState } from "@geist-ui/core"
-import { useAtomValue, useSetAtom } from "jotai"
+import { useAtomValue, useSetAtom, useAtom } from "jotai"
 import { parse, gen } from "@/parser"
 import { useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
@@ -10,7 +10,6 @@ import {
   editorCollapsedAtom,
   astAtom,
   clearSelectedAtom,
-  setAstAtom,
   updateFlagsAtom,
 } from "@/atom"
 import RegexInput from "./regex-input"
@@ -18,8 +17,7 @@ import RegexInput from "./regex-input"
 const Home: React.FC<{}> = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
-  const ast = useAtomValue(astAtom)
-  const setAst = useSetAtom(setAstAtom)
+  const [ast, setAst] = useAtom(astAtom)
   const clearSelected = useSetAtom(clearSelectedAtom)
   const updateFlags = useSetAtom(updateFlagsAtom)
   const { palette } = useTheme()
@@ -49,12 +47,12 @@ const Home: React.FC<{}> = () => {
       return
     }
     const ast = parse(regex, isLiteral)
+    clearSelected()
     if (ast.type === "regex") {
       setErrorMsg(null)
-      setAst({ ast })
+      setAst(ast)
       shouldGenAst.current = false
     } else {
-      clearSelected()
       setErrorMsg(ast.message)
     }
   }, [regex, isLiteral, setAst, clearSelected])
