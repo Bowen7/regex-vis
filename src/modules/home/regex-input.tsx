@@ -38,21 +38,22 @@ const RegexInput: React.FC<Props> = ({
         <div className="input">
           <Select
             value={isLiteral ? "literal" : "regExp"}
-            width="100px"
+            width="80px"
             disableMatchWidth={true}
             dropdownStyle={dropdownStyle}
+            dropdownClassName="regex-input-dropdown"
             onChange={handleSelectChange}
           >
             <Select.Option value="regExp">
-              RegExp
-              <span className="hint">
-                , as follows: <Code>ab+c</Code>
+              <span className="option-label">String</span>
+              <span className="option-hint">
+                RegExp string, as follows: <Code>ab+c</Code>
               </span>
             </Select.Option>
             <Select.Option value="literal">
-              Literal
-              <span className="hint">
-                , as follows: <Code>/ab+c/</Code>
+              <span className="option-label">Literal</span>
+              <span className="option-hint">
+                Literal, as follows: <Code>/ab+c/</Code>
               </span>
             </Select.Option>
           </Select>
@@ -108,7 +109,10 @@ const RegexInput: React.FC<Props> = ({
         .input :global(.select.active) {
           border-color: ${palette.border};
         }
-        .input :global(.hint) {
+        .input :global(.option-hint) {
+          display: none;
+        }
+        :global(.regex-input-dropdown .option-label) {
           display: none;
         }
         .input :global(.input-wrapper) {
