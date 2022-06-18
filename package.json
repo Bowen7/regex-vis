@@ -29,6 +29,8 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "jest --config .jest.config.js --no-cache",
+    "test:watch": "jest --config .jest.config.js --no-cache --watch --",
+    "test:single": "jest --config .jest.config.js --no-cache --",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

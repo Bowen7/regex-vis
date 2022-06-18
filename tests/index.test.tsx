@@ -4,22 +4,20 @@ import App from "../src/App"
 
 jest.useFakeTimers()
 test("renders graph after inputting", async () => {
-  await act(async () => {
-    render(<App />)
-  })
-  const graphCount = screen.getAllByTestId("graph").length
+  render(<App />)
+  expect(screen.getAllByTestId("graph").length).toBe(13)
+
   await act(async () => {
     const input = screen.getAllByTestId("regex-input")[0]
     fireEvent.change(input, { target: { value: "abc" } })
     jest.advanceTimersByTime(500)
   })
-  expect(screen.getAllByTestId("graph").length).toBe(graphCount + 1)
+
+  expect(screen.getAllByTestId("graph").length).toBe(14)
 })
 
 test("updates graph after editing", async () => {
-  await act(async () => {
-    render(<App />)
-  })
+  render(<App />)
 
   await act(async () => {
     const input = screen.getByTestId("regex-input")
