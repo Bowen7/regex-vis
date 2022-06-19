@@ -1,11 +1,13 @@
 import React, { useMemo } from "react"
 import { Select } from "@geist-ui/core"
 import { useAtomValue, useSetAtom } from "jotai"
+import { useTranslation } from "react-i18next"
 import Cell from "@/components/cell"
 import { updateContentAtom, groupNamesAtom } from "@/atom"
 
 type Props = { reference: string }
 const BackRef: React.FC<Props> = ({ reference }) => {
+  const { t } = useTranslation()
   const groupNames = useAtomValue(groupNamesAtom)
   const updateContent = useSetAtom(updateContentAtom)
 
@@ -29,7 +31,7 @@ const BackRef: React.FC<Props> = ({ reference }) => {
       >
         {options.map((option) => (
           <Select.Option value={option} key={option}>
-            Group #{option}
+            {t("Group")} #{option}
           </Select.Option>
         ))}
       </Select>

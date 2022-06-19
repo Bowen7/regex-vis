@@ -94,10 +94,12 @@ const Home: React.FC<{}> = () => {
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
   const handleFlagsChange = (flags: string[]) => updateFlags(flags)
+
+  const graphShow = regex !== "" || ast.body.length > 0
   return (
     <>
       <div className="wrapper" style={style}>
-        {(regex !== "" || ast.body.length > 2) && (
+        {graphShow && (
           <div className="graph">
             <div className="content">
               <Graph regex={regex} ast={ast} errorMsg={errorMsg} />

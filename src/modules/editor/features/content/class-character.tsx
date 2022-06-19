@@ -1,6 +1,7 @@
 import React, { useMemo } from "react"
 import { Spacer, Select, Code } from "@geist-ui/core"
 import { useSetAtom } from "jotai"
+import { useTranslation } from "react-i18next"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { characterClassTextMap, CharacterClassKey } from "@/parser"
@@ -21,6 +22,7 @@ type Props = {
   value: string
 }
 const ClassCharacter: React.FC<Props> = ({ value }) => {
+  const { t } = useTranslation()
   const updateContent = useSetAtom(updateContentAtom)
 
   const classKind = useMemo(() => {
@@ -63,7 +65,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
             <div>
               <Code>{value}</Code>
               <Spacer w={0.5} inline />
-              {text}
+              {t(text)}
             </div>
           </Select.Option>
         ))}

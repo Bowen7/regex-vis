@@ -1,5 +1,6 @@
 import React from "react"
 import { Spacer, Checkbox, Select, Code, useTheme } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import Input from "@/components/input"
 type Props = {
   regex: string
@@ -17,6 +18,7 @@ const RegexInput: React.FC<Props> = ({
   onIsLiteralChange,
   onFlagsChange,
 }) => {
+  const { t } = useTranslation()
   const { palette } = useTheme()
   const handleFlagsChange = (flags: string[]) => {
     onFlagsChange(flags)
@@ -45,15 +47,17 @@ const RegexInput: React.FC<Props> = ({
             onChange={handleSelectChange}
           >
             <Select.Option value="regExp">
-              <span className="option-label">String</span>
+              <span className="option-label">{t("String")}</span>
               <span className="option-hint">
-                RegExp string, as follows: <Code>ab+c</Code>
+                {t("RegExp string, as follows: ")}
+                <Code>ab+c</Code>
               </span>
             </Select.Option>
             <Select.Option value="literal">
-              <span className="option-label">Literal</span>
+              <span className="option-label">{t("Literal")}</span>
               <span className="option-hint">
-                Literal, as follows: <Code>/ab+c/</Code>
+                {t("RegExp literal, as follows: ")}
+                <Code>/ab+c/</Code>
               </span>
             </Select.Option>
           </Select>
@@ -61,7 +65,7 @@ const RegexInput: React.FC<Props> = ({
             data-testid="regex-input"
             value={regex === null ? "" : regex}
             width="100%"
-            placeholder="Input a regular expression"
+            placeholder={t("Input a regular expression")}
             labelRight={isLiteral ? "" : flagStr}
             onChange={onChange}
           />
@@ -74,9 +78,9 @@ const RegexInput: React.FC<Props> = ({
               onChange={handleFlagsChange}
               scale={0.75}
             >
-              <Checkbox value="g">Global search</Checkbox>
-              <Checkbox value="i">Case-insensitive</Checkbox>
-              <Checkbox value="m">Multi-line</Checkbox>
+              <Checkbox value="g">{t("Global search")}</Checkbox>
+              <Checkbox value="i">{t("Case-insensitive")}</Checkbox>
+              <Checkbox value="m">{t("Multi-line")}</Checkbox>
             </Checkbox.Group>
           </>
         )}

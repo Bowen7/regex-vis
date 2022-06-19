@@ -29,7 +29,11 @@ export const withNameQuantifier = <
     const name = getName(node)
 
     const [layout, setLayout] = useState<[number, number]>([0, 0])
-    const layoutedCount = useRef(0)
+    const layouted = useRef({
+      content: false,
+      name: !name,
+      quantifier: !quantifier,
+    })
     const contentLayout = useRef<[number, number]>([0, 0])
     const quantifierLayout = useRef<[number, number]>([0, 0])
     const nameLayout = useRef<[number, number]>([0, 0])
@@ -40,8 +44,11 @@ export const withNameQuantifier = <
     const centerY = y + layout[1] / 2
 
     const handleLayout = useCallback(() => {
-      const shouldLayoutCount = 1 + (name ? 1 : 0) + (quantifier ? 1 : 0)
-      if (layoutedCount.current === shouldLayoutCount) {
+      if (
+        layouted.current.content &&
+        layouted.current.name &&
+        layouted.current.quantifier
+      ) {
         const width = Math.max(
           contentLayout.current[0],
           quantifierLayout.current[0],
@@ -53,13 +60,18 @@ export const withNameQuantifier = <
         const layout: [number, number] = [width, height]
         onLayout(index, layout)
         setLayout(layout)
+
+        if (name) {
+          layouted.current.name = false
+        }
+        layouted.current.content = false
       }
-    }, [index, name, quantifier, onLayout])
+    }, [index, name, onLayout])
 
     const handleContentLayout = useCallback(
       (index: number, layout: [number, number]) => {
         contentLayout.current = layout
-        layoutedCount.current++
+        layouted.current.content = true
         handleLayout()
       },
       [handleLayout]
@@ -68,7 +80,7 @@ export const withNameQuantifier = <
     const handleNameLayout = useCallback(
       (layout: [number, number]) => {
         nameLayout.current = layout
-        layoutedCount.current++
+        layouted.current.name = true
         handleLayout()
       },
       [handleLayout]
@@ -77,7 +89,7 @@ export const withNameQuantifier = <
     const handleQuantifierLayout = useCallback(
       (layout: [number, number]) => {
         quantifierLayout.current = layout
-        layoutedCount.current++
+        layouted.current.quantifier = true
         handleLayout()
       },
       [handleLayout]

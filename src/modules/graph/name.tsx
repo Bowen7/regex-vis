@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react"
+import React, { useLayoutEffect, useRef } from "react"
 import { useTranslation } from "react-i18next"
 import { GRAPH_NAME_TEXT_FONTSIZE, GRAPH_NAME_HEIGHT } from "@/constants"
 type Props = {
@@ -10,7 +10,7 @@ type Props = {
 
 const NameNode = React.memo((props: Props) => {
   const { centerX, y, name, onLayout } = props
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const textRef = useRef<SVGTextElement>(null!)
 
   const text = t(name)
@@ -19,7 +19,7 @@ const NameNode = React.memo((props: Props) => {
     const { width } = textRef.current.getBoundingClientRect()
     const layout: [number, number] = [width, GRAPH_NAME_HEIGHT]
     onLayout(layout)
-  }, [text, onLayout])
+  }, [name, i18n.language, onLayout])
 
   return (
     <text

@@ -143,12 +143,13 @@ const renderBoundaryAssertion = (
 const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
   const gRef = useRef<SVGGElement>(null)
 
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+  const language = i18n.language
 
   useLayoutEffect(() => {
     const { width, height } = gRef.current?.getBoundingClientRect()!
     onLayout([width, height])
-  }, [node, onLayout])
+  }, [node, language, onLayout])
 
   const renderText = (): JSX.Element => {
     switch (node.type) {

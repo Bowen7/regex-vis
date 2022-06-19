@@ -1,6 +1,7 @@
-import React from "react"
+import { memo } from "react"
 import { NavLink, Link } from "react-router-dom"
 import { useTheme, Select } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import Sun from "@geist-ui/icons/sun"
 import Moon from "@geist-ui/icons/moon"
 import { ReactComponent as LogoSvg } from "@/logo.svg"
@@ -9,10 +10,17 @@ type Props = {
   theme: string
   onThemeChange: (theme: string) => void
 }
-const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
+const Header = memo(({ onThemeChange, theme }: Props) => {
   const { palette } = useTheme()
   const activeStyle = {
     color: palette.success,
+  }
+
+  const { t, i18n } = useTranslation()
+  const language = i18n.language
+
+  const handleLanguageChange = (value: string | string[]) => {
+    i18n.changeLanguage(value as string)
   }
   return (
     <>
@@ -28,13 +36,13 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
             to="/"
             style={({ isActive }) => (isActive ? activeStyle : {})}
           >
-            Home
+            {t("Home")}
           </NavLink>
           <NavLink
             to="/samples"
             style={({ isActive }) => (isActive ? activeStyle : {})}
           >
-            Samples
+            {t("Samples")}
           </NavLink>
           <a
             href="https://github.com/Bowen7/regex-vis"
@@ -43,10 +51,16 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
           >
             Github
           </a>
-          {/* <Select value="en" width="100px" disableMatchWidth scale={0.5}>
+          <Select
+            value={language}
+            width="100px"
+            disableMatchWidth
+            scale={0.5}
+            onChange={handleLanguageChange}
+          >
             <Select.Option value="en">English</Select.Option>
             <Select.Option value="cn">简体中文</Select.Option>
-          </Select> */}
+          </Select>
           {theme === "dark" ? (
             <Moon
               size={18}
@@ -110,6 +124,6 @@ const Header: React.FC<Props> = ({ onThemeChange, theme }) => {
       `}</style>
     </>
   )
-}
+})
 
 export default Header

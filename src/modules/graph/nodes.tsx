@@ -18,7 +18,7 @@ type Props = {
 }
 
 const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
-  const unLayoutedCount = useRef(nodes.length)
+  const layoutedCount = useRef(0)
   const layouts = useRef<[number, number][]>([])
   const [height, setHeight] = useState(0)
   const selectedIds = useAtomValue(selectedIdsAtom)
@@ -59,8 +59,8 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
   const handleNodeLayout = useCallback(
     (nodeIndex: number, layout: [number, number]) => {
       layouts.current[nodeIndex] = layout
-      unLayoutedCount.current--
-      if (unLayoutedCount.current === 0) {
+      layoutedCount.current++
+      if (layoutedCount.current % nodes.length === 0) {
         const [width, height] = layouts.current.reduce(
           ([width, height], [nodeWidth, nodeHeight]) => [
             width + nodeWidth,
@@ -72,7 +72,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
         onLayout(index, [width, height])
       }
     },
-    [onLayout, index]
+    [onLayout, nodes.length, index]
   )
 
   const connectY = y + height / 2

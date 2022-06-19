@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react"
 import ChevronsRight from "@geist-ui/icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import { useAtom, useSetAtom, useAtomValue } from "jotai"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
@@ -26,6 +27,8 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const [tabValue, setTabValue] = useState<Tab>("legend")
 
   const { palette } = useTheme()
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     if (selectedIds.length === 0) {
@@ -70,13 +73,13 @@ const Editor: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
           hideDivider
         >
           <div className="content" id="editor-content">
-            <Tabs.Item value="legend" label="Legends">
+            <Tabs.Item value="legend" label={t("Legends")}>
               <LegendTab />
             </Tabs.Item>
-            <Tabs.Item value="edit" label="Edit" disabled={editDisabled}>
+            <Tabs.Item value="edit" label={t("Edit")} disabled={editDisabled}>
               <EditTab isLiteral={isLiteral} />
             </Tabs.Item>
-            <Tabs.Item value="test" label="Test">
+            <Tabs.Item value="test" label={t("Test")}>
               <TestTab />
             </Tabs.Item>
           </div>

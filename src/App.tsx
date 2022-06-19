@@ -1,7 +1,7 @@
 import React, { Suspense } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
-import Header from "@/modules/common/header"
+import Header from "@/components/header"
 import { useLocalStorage } from "react-use"
 import Routes from "./routes"
 let gtagLoaded = false

@@ -22,7 +22,7 @@ const RootNode = React.memo((props: Props) => {
       height={GRAPH_ROOT_RADIUS}
       rx={GRAPH_ROOT_RADIUS}
       ry={GRAPH_ROOT_RADIUS}
-      className="stroke"
+      className="stroke transparent-fill"
     />
   )
 })

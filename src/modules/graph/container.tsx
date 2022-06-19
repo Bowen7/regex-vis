@@ -13,6 +13,7 @@ import Nodes from "./nodes"
 const head: AST.RootNode = { id: nanoid(), type: "root" }
 const tail: AST.RootNode = { id: nanoid(), type: "root" }
 
+const noop = () => {}
 type Props = {
   id?: string
   ast: AST.Regex
@@ -22,13 +23,7 @@ type Props = {
 }
 
 const Container = React.memo(
-  ({
-    id = "",
-    ast,
-    withRoot = true,
-    style = {},
-    onLayout = () => {},
-  }: Props) => {
+  ({ id = "", ast, withRoot = true, style = {}, onLayout = noop }: Props) => {
     const { palette } = useTheme()
     const [layout, setLayout] = useState<[number, number]>([0, 0])
     const paddingH = withRoot
@@ -46,6 +41,7 @@ const Container = React.memo(
       },
       [id, paddingH, paddingV, onLayout]
     )
+
     const nodes = useMemo(
       () => (withRoot ? [head, ...ast.body, tail] : ast.body),
       [ast.body, withRoot]
