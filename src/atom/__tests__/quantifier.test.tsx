@@ -67,7 +67,7 @@ test("update quantifier", async () => {
   expect(astAtomRef.current[0]).toEqual(expected)
 })
 
-test("add quantifier when string.length > 1", async () => {
+test("add quantifier when string node value.length > 1", async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: selectedIdsAtomRef } = renderHook(() =>
     useAtom(selectedIdsAtom)
