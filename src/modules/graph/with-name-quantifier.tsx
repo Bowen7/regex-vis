@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback, useRef } from "react"
+import React, { useState, useCallback, useRef } from "react"
 import { AST } from "@/parser"
 import QuantifierNode from "./quantifier"
 import { NameNode } from "./name"

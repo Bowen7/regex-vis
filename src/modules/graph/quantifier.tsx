@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useRef } from "react"
+import React, { useLayoutEffect, useRef } from "react"
 import { AST, getQuantifierText } from "@/parser"
 import {
   GRAPH_QUANTIFIER_ICON_WIDTH,

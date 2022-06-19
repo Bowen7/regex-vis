@@ -79,38 +79,6 @@ const Samples: React.FC<{}> = () => {
         .svg-wrapper {
           overflow-x: auto;
         }
-
-        .content :global(.selected-fill) {
-          fill: ${palette.success};
-          fill-opacity: 0.3;
-        }
-        .content :global(.none-stroke) {
-          stroke: none;
-        }
-        .content :global(.stroke) {
-          stroke: ${palette.accents_6};
-          stroke-width: 1.5px;
-        }
-        .content :global(.thin-stroke) {
-          stroke: ${palette.accents_6};
-          stroke-width: 1.5px;
-        }
-        .content :global(.second-stroke) {
-          stroke: ${palette.accents_3};
-          stroke-width: 1.5px;
-        }
-        .content :global(.text) {
-          fill: ${palette.foreground};
-        }
-        .content :global(.fill) {
-          fill: ${palette.background};
-        }
-        .content :global(.transparent-fill) {
-          fill: transparent;
-        }
-        .content :global(.quote) {
-          fill: ${palette.accents_4};
-        }
       `}</style>
     </>
   )
