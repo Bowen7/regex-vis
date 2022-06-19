@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Select, Spacer, Checkbox, useToasts } from "@geist-ui/core"
+import { Select, Spacer, Checkbox } from "@geist-ui/core"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
@@ -20,7 +20,6 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   const [max, setMax] = useState("")
   const [minPlaceholder, setMinPlaceholder] = useState("")
   const [maxPlaceholder, setMaxPlaceholder] = useState("")
-  const { setToast } = useToasts()
 
   useEffect(() => {
     quantifierRef.current = quantifier
@@ -37,14 +36,6 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   }, [quantifier])
 
   const handleChange = (value: string | string[]) => {
-    if (
-      node.type === "character" &&
-      node.kind === "string" &&
-      node.value.length > 1 &&
-      value !== "non"
-    ) {
-      setToast({ text: "Group selection automatically" })
-    }
     const greedy = quantifier?.greedy || true
     let nextQuantifier: AST.Quantifier | null = null
     switch (value) {

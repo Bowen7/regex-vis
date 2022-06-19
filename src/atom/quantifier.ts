@@ -17,7 +17,7 @@ export const updateQuantifierAtom = atom(
         if (nextSelectedId !== selectedIds[0]) {
           set(selectedIdsAtom, [nextSelectedId])
           const toasts = get(toastsAtom)
-          toasts && toasts.setToast({ text: "Group automatically" })
+          toasts && toasts.setToast({ text: "Group selection automatically" })
         }
       }
       set(refreshValidUndoAtom, draft)

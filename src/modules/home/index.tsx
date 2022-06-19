@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useTheme, useCurrentState } from "@geist-ui/core"
+import { useTheme, useCurrentState, useToasts } from "@geist-ui/core"
 import { useAtomValue, useSetAtom, useAtom } from "jotai"
 import { parse, gen } from "@/parser"
 import { useUpdateEffect } from "react-use"
@@ -11,6 +11,7 @@ import {
   astAtom,
   clearSelectedAtom,
   updateFlagsAtom,
+  toastsAtom,
 } from "@/atom"
 import RegexInput from "./regex-input"
 
@@ -20,7 +21,9 @@ const Home: React.FC<{}> = () => {
   const [ast, setAst] = useAtom(astAtom)
   const clearSelected = useSetAtom(clearSelectedAtom)
   const updateFlags = useSetAtom(updateFlagsAtom)
+  const setToasts = useSetAtom(toastsAtom)
   const { palette } = useTheme()
+  const toasts = useToasts()
 
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
@@ -33,6 +36,10 @@ const Home: React.FC<{}> = () => {
     () =>
       searchParams.get("l") === "1" || localStorage.getItem("isLiteral") === "1"
   )
+
+  useEffect(() => {
+    setToasts(toasts)
+  }, [toasts, setToasts])
 
   useEffect(() => {
     if (searchParams.get("r") === null) {
