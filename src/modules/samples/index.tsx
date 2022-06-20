@@ -1,5 +1,6 @@
 import React from "react"
 import { Link } from "react-router-dom"
+import { useTranslation } from "react-i18next"
 import { useTheme, Code } from "@geist-ui/core"
 import SimpleGraph from "@/modules/graph/simple-graph"
 
@@ -29,11 +30,12 @@ const samples = [
   },
   {
     desc: "6. Date Format YYYY-MM-dd",
-    label: "/[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])/",
-    regex: "[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])",
+    label: "/^[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$/",
+    regex: "^[12]\\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$",
   },
 ]
 const Samples: React.FC<{}> = () => {
+  const { t } = useTranslation()
   const { palette } = useTheme()
   const isLiteral = localStorage.getItem("isLiteral") === "1"
   return (
@@ -47,7 +49,7 @@ const Samples: React.FC<{}> = () => {
             >
               <div className="sample">
                 <p>
-                  {desc}: <Code>{label}</Code>
+                  {t(desc)}: <Code>{label}</Code>
                 </p>
                 <div className="svg-wrapper">
                   <SimpleGraph regex={regex} />

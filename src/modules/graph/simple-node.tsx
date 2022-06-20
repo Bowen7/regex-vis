@@ -5,6 +5,7 @@ import {
   GRAPH_NODE_PADDING_HORIZONTAL,
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MIN_WIDTH,
+  GRAPH_NODE_MIN_HEIGHT,
 } from "@/constants"
 import { withNameQuantifier } from "./with-name-quantifier"
 import Content from "./content"
@@ -42,7 +43,10 @@ const _SimpleNode = ({
         textWidth + 2 * GRAPH_NODE_PADDING_HORIZONTAL,
         GRAPH_NODE_MIN_WIDTH
       )
-      const height = textHeight + 2 * GRAPH_NODE_PADDING_VERTICAL
+      const height = Math.max(
+        textHeight + 2 * GRAPH_NODE_PADDING_VERTICAL,
+        GRAPH_NODE_MIN_HEIGHT
+      )
       setLayout([width, height])
       onLayout(index, [width, height])
     },

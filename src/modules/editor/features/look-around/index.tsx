@@ -1,5 +1,6 @@
 import React from "react"
 import { Select, Spacer, Checkbox } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
@@ -10,6 +11,7 @@ type Props = {
   negate: boolean
 }
 const LookAround: React.FC<Props> = ({ kind, negate }) => {
+  const { t } = useTranslation()
   const updateLookAround = useSetAtom(updateLookAroundAtom)
   const onSelectChange = (value: string | string[]) =>
     updateLookAround({
@@ -27,8 +29,8 @@ const LookAround: React.FC<Props> = ({ kind, negate }) => {
 
   return (
     <Cell
-      label="LookAround"
-      rightLabel="UnLookAround"
+      label={t("Lookahead/LookBehind assertion")}
+      rightLabel={t("UnLookahead/UnLookBehind assertion")}
       onRightLabelClick={handleUnLookAround}
     >
       <Select
@@ -37,12 +39,16 @@ const LookAround: React.FC<Props> = ({ kind, negate }) => {
         getPopupContainer={() => document.getElementById("editor-content")}
         disableMatchWidth
       >
-        <Select.Option value="lookahead">Lookahead assertion</Select.Option>
-        <Select.Option value="lookbehind">Lookbehind assertion</Select.Option>
+        <Select.Option value="lookahead">
+          {t("Lookahead assertion")}
+        </Select.Option>
+        <Select.Option value="lookbehind">
+          {t("Lookbehind assertion")}
+        </Select.Option>
       </Select>
       <Spacer h={0.5} />
       <Checkbox checked={negate} onChange={handleNegateChange}>
-        negate
+        {t("negate")}
       </Checkbox>
     </Cell>
   )

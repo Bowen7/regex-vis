@@ -21,9 +21,9 @@ const BackRef: React.FC<Props> = ({ reference }) => {
   const handleChange = (value: string | string[]) =>
     updateContent({ kind: "backReference", ref: value as string })
   return (
-    <Cell.Item label="Back Reference">
+    <Cell.Item label={t("Back Reference")}>
       <Select
-        placeholder="Choose one"
+        placeholder={t("Choose one")}
         value={reference}
         onChange={handleChange}
         getPopupContainer={() => document.getElementById("editor-content")}

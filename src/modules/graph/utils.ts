@@ -1,3 +1,4 @@
+import { TFunction } from "react-i18next"
 import { AST } from "@/parser"
 
 export const getQuantifier = (node: AST.Node) =>
@@ -11,24 +12,27 @@ const assertionNameMap = {
   word: ["WordBoundary", "NonWordBoundary"],
 }
 
-export const getName = (node: AST.Node): string | null => {
+export const getName = (
+  node: AST.Node,
+  t: TFunction
+): [string | null, boolean] => {
   switch (node.type) {
     case "character":
       if (node.kind === "ranges") {
-        return node.negate ? "None of" : "One of"
+        return t(node.negate ? "None of" : "One of")
       }
-      return null
+      return [null, false]
     case "group":
       if (node.kind === "capturing" || node.kind === "namedCapturing") {
-        return "Group #" + node.name
+        return [t("Group") + " #" + node.name, true]
       }
-      return null
+      return [null, false]
     case "lookAroundAssertion": {
       const { kind, negate } = node
-      return assertionNameMap[kind][negate ? 1 : 0]
+      return [t(assertionNameMap[kind][negate ? 1 : 0]), false]
     }
 
     default:
-      return null
+      return [null, false]
   }
 }

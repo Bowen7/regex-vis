@@ -25,8 +25,8 @@ const commonTextProps = {
 const assertionTextMap = {
   beginning: "Begin with",
   end: "End with",
-  lookahead: ["Followed by:", "Not followed by"],
-  lookbehind: ["Preceded by", "Not Preceded by"],
+  lookahead: ["Followed by:", "Not followed by:"],
+  lookbehind: ["Preceded by:", "Not Preceded by:"],
   word: ["WordBoundary", "NonWordBoundary"],
 }
 

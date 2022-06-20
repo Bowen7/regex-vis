@@ -1,12 +1,14 @@
 import React from "react"
 import { useTheme } from "@geist-ui/core"
 import { useLocalStorage } from "react-use"
+import { useTranslation } from "react-i18next"
 import ChevronDown from "@geist-ui/icons/chevronDown"
 type Props = {
   id: string
   children: React.ReactNode
 }
 const ShowMore = ({ id, children }: Props) => {
+  const { t } = useTranslation()
   const { palette, expressiveness } = useTheme()
   const [expanded, setExpanded] = useLocalStorage(id, false)
   const handleClick = () => setExpanded(!expanded)
@@ -15,7 +17,7 @@ const ShowMore = ({ id, children }: Props) => {
       {expanded && children}
       <div className="wrapper">
         <span className="btn" onClick={handleClick}>
-          {expanded ? "show less" : "show more"}
+          {expanded ? t("show less") : t("show more")}
           <ChevronDown size={12} className={expanded ? "expand" : ""} />
         </span>
       </div>

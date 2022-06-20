@@ -1,4 +1,5 @@
 import React, { useMemo } from "react"
+import { useTranslation } from "react-i18next"
 import { Select, useTheme, Spacer } from "@geist-ui/core"
 import { useAtomValue, useSetAtom } from "jotai"
 import Cell from "@/components/cell"
@@ -25,6 +26,7 @@ type Prop = {
   quantifier: AST.Quantifier | null
 }
 const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
+  const { t } = useTranslation()
   const groupNames = useAtomValue(groupNamesAtom)
   const ast = useAtomValue(astAtom)
   const updateContent = useSetAtom(updateContentAtom)
@@ -85,8 +87,8 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
 
   return (
     <>
-      <Cell label="Content">
-        <Cell.Item label="Type">
+      <Cell label={t("Content")}>
+        <Cell.Item label={t("Type")}>
           <div className="type">
             <Select
               value={content.kind}
@@ -98,7 +100,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
             >
               {options.map(({ value, label }) => (
                 <Select.Option value={value} key={value}>
-                  <div>{label}</div>
+                  <div>{t(label)}</div>
                 </Select.Option>
               ))}
             </Select>
