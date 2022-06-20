@@ -5,6 +5,6 @@ export const quantifierOptions = [
   { value: "+", label: "1 or more" },
   {
     value: "custom",
-    label: "Custom",
+    label: "custom",
   },
 ]

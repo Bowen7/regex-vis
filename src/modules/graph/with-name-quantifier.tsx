@@ -1,4 +1,5 @@
-import React, { useEffect, useState, useCallback, useRef } from "react"
+import React, { useState, useCallback, useRef } from "react"
+import { useTranslation } from "react-i18next"
 import { AST } from "@/parser"
 import QuantifierNode from "./quantifier"
 import { NameNode } from "./name"
@@ -24,9 +25,10 @@ export const withNameQuantifier = <
   Component: React.FC<Props>
 ) => {
   const WithNameQuantifier = (props: Omit<Props, "children">) => {
+    const { t } = useTranslation()
     const { index, x, y, node, onLayout, ...restProps } = props
     const quantifier = getQuantifier(node)
-    const name = getName(node)
+    const [name, caseLanguage] = getName(node, t)
 
     const [layout, setLayout] = useState<[number, number]>([0, 0])
     const layouted = useRef({
@@ -61,12 +63,12 @@ export const withNameQuantifier = <
         onLayout(index, layout)
         setLayout(layout)
 
-        if (name) {
+        if (name && caseLanguage) {
           layouted.current.name = false
         }
         layouted.current.content = false
       }
-    }, [index, name, onLayout])
+    }, [index, caseLanguage, name, onLayout])
 
     const handleContentLayout = useCallback(
       (index: number, layout: [number, number]) => {

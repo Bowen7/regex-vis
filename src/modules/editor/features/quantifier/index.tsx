@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react"
 import { Select, Spacer, Checkbox } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
@@ -13,6 +14,7 @@ type Props = {
 }
 
 const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
+  const { t } = useTranslation()
   const updateQuantifier = useSetAtom(updateQuantifierAtom)
   const quantifierRef = useRef<AST.Quantifier | null>(quantifier)
   const [kind, setKind] = useState("non")
@@ -107,8 +109,8 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   }
   return (
     <>
-      <Cell label="Quantifier">
-        <Cell.Item label="times">
+      <Cell label={t("Quantifier")}>
+        <Cell.Item label={t("times")}>
           <Select
             value={kind}
             onChange={handleChange}
@@ -117,7 +119,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
           >
             {quantifierOptions.map(({ value, label }) => (
               <Select.Option value={value} key={value}>
-                <span>{label}</span>
+                <span>{t(label)}</span>
               </Select.Option>
             ))}
           </Select>
@@ -142,7 +144,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
               checked={quantifier?.greedy}
               onChange={handleGreedyChange}
             >
-              greedy
+              {t("greedy")}
             </Checkbox>
           </Cell.Item>
         )}

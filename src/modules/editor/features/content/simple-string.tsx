@@ -1,4 +1,5 @@
 import React from "react"
+import { useTranslation } from "react-i18next"
 import { Note, Spacer, useToasts } from "@geist-ui/core"
 import { useSetAtom } from "jotai"
 import Input from "@/components/input"
@@ -11,6 +12,7 @@ type Props = {
   quantifier: AST.Quantifier | null
 }
 const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
+  const { t } = useTranslation()
   const updateContent = useSetAtom(updateContentAtom)
   const { setToast } = useToasts()
 
@@ -25,9 +27,9 @@ const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
   }
 
   return (
-    <Cell.Item label="Value">
+    <Cell.Item label={t("Value")}>
       <Note type="secondary" style={{ lineHeight: 1.5 }} scale={0.5}>
-        The input will be escaped automatically.
+        {t("The input will be escaped automatically.")}
       </Note>
       <Spacer h={0.5} />
       <Input value={value} onChange={handleChange} />

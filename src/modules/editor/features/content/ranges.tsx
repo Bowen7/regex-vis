@@ -1,5 +1,6 @@
 import React from "react"
 import { useTheme, ButtonDropdown, Spacer, Checkbox } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import RangeOption from "@/components/range-option"
@@ -20,6 +21,7 @@ const commonUsedRanges = [
 ]
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
+  const { t } = useTranslation()
   const updateContent = useSetAtom(updateContentAtom)
   const { palette } = useTheme()
 
@@ -63,7 +65,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
   }
 
   return (
-    <Cell.Item label="Ranges">
+    <Cell.Item label={t("Ranges")}>
       <div className="range-options">
         {ranges.map((range, index) => (
           <RangeOption
@@ -88,7 +90,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       </ButtonDropdown>
       <Cell.Item label="Negate">
         <Checkbox checked={negate} onChange={handleGreedyChange}>
-          negate
+          {t("negate")}
         </Checkbox>
       </Cell.Item>
       <style jsx>{`

@@ -1,5 +1,6 @@
 import React from "react"
 import { Select, Spacer } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import Input from "@/components/input"
 import { AST } from "@/parser"
@@ -12,7 +13,7 @@ type GroupSelectProps = {
 export const groupOptions = [
   {
     value: "capturing",
-    label: "Capturing Group",
+    label: "Capturing group",
   },
   {
     value: "nonCapturing",
@@ -25,6 +26,7 @@ export const groupOptions = [
 ]
 
 const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
+  const { t } = useTranslation()
   const updateGroup = useSetAtom(updateGroupAtom)
   const { kind } = group
 
@@ -58,8 +60,8 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   return (
     <>
       <Cell
-        label="Group"
-        rightLabel="UnGroup"
+        label={t("Group")}
+        rightLabel={t("UnGroup")}
         onRightLabelClick={handleUnGroup}
       >
         <Select
@@ -70,7 +72,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
         >
           {groupOptions.map(({ value, label }) => (
             <Select.Option value={value} key={value}>
-              <span>{label}</span>
+              <span>{t(label)}</span>
             </Select.Option>
           ))}
         </Select>

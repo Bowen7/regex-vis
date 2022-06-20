@@ -1,5 +1,6 @@
 import React, { useMemo } from "react"
 import { Button, ButtonGroup, Tooltip } from "@geist-ui/core"
+import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import ShowMore from "@/components/show-more"
@@ -25,24 +26,19 @@ type InsertDirection = "prev" | "next" | "branch"
 type Option = { desc: string; value: string; Icon: () => JSX.Element }
 
 const Insert: React.FC<Props> = ({ ast, nodes }) => {
+  const { t } = useTranslation()
   const insert = useSetAtom(insertAtom)
   const groupSelected = useSetAtom(groupSelectedAtom)
   const lookAroundSelected = useSetAtom(lookAroundSelectedAtom)
 
   const insertOptions = useMemo(() => {
     const options: Option[] = []
-    const { body } = ast
     if (nodes.length === 0) {
       return []
     }
-    const bodyHead = body[0]
     const head = nodes[0]
-    const bodyTail = body[body.length - 1]
     const tail = nodes[nodes.length - 1]
-    if (
-      bodyHead.id !== head.id &&
-      !(head.type === "boundaryAssertion" && head.kind === "beginning")
-    ) {
+    if (!(head.type === "boundaryAssertion" && head.kind === "beginning")) {
       options.push({
         value: "prev",
         desc: "Insert before",
@@ -50,22 +46,13 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       })
     }
 
-    if (
-      bodyHead.id !== head.id &&
-      bodyTail.id !== tail.id &&
-      tail.type !== "boundaryAssertion"
-    ) {
-      options.push({
-        value: "branch",
-        desc: "Insert as a branch",
-        Icon: InsertBranch,
-      })
-    }
+    options.push({
+      value: "branch",
+      desc: "Insert as a branch",
+      Icon: InsertBranch,
+    })
 
-    if (
-      bodyTail.id !== tail.id &&
-      !(tail.type === "boundaryAssertion" && tail.kind === "end")
-    ) {
+    if (!(tail.type === "boundaryAssertion" && tail.kind === "end")) {
       options.push({
         value: "next",
         desc: "Insert after",
@@ -73,7 +60,7 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       })
     }
     return options
-  }, [ast, nodes])
+  }, [nodes])
 
   const groupOptions: Option[] = useMemo(() => {
     if (nodes.length === 1 && nodes[0].type === "group") {
@@ -130,14 +117,14 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
   return (
     <div id="test">
       {insertOptions.length > 0 && (
-        <Cell label="Insert around">
+        <Cell label={t("Insert around")}>
           <ButtonGroup>
             {insertOptions.map(({ value, desc, Icon }) => (
               <Button
                 onClick={() => handleInsert(value as InsertDirection)}
                 key={value}
               >
-                <Tooltip text={desc} placement="topEnd">
+                <Tooltip text={t(desc)} placement="topEnd">
                   <Icon />
                 </Tooltip>
               </Button>
@@ -146,11 +133,11 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
         </Cell>
       )}
       {groupOptions.length > 0 && (
-        <Cell label="Group selection" mdnLinkKey="group">
+        <Cell label={t("Group selection")} mdnLinkKey="group">
           <ButtonGroup>
             {groupOptions.map(({ value, desc, Icon }) => (
               <Button onClick={() => handleWrapGroup(value)} key={value}>
-                <Tooltip text={desc} placement="topEnd">
+                <Tooltip text={t(desc)} placement="topEnd">
                   <Icon />
                 </Tooltip>
               </Button>
@@ -161,14 +148,17 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
 
       {lookAroundOptions.length > 0 && (
         <ShowMore id="lookAround">
-          <Cell label="LookAround selection" mdnLinkKey="lookAround">
+          <Cell
+            label={t("Lookahead/LookBehind assertion selection")}
+            mdnLinkKey="lookAround"
+          >
             <ButtonGroup>
               {lookAroundOptions.map(({ value, desc, Icon }) => (
                 <Button
                   onClick={() => handleWrapLookAroundAssertion(value)}
                   key={value}
                 >
-                  <Tooltip text={desc} placement="topEnd">
+                  <Tooltip text={t(desc)} placement="topEnd">
                     <Icon />
                   </Tooltip>
                 </Button>

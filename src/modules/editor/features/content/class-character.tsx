@@ -53,7 +53,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
       value: value,
     })
   return (
-    <Cell.Item label="Class">
+    <Cell.Item label={t("Class")}>
       <Select
         value={classKind}
         onChange={handleSelectChange}
