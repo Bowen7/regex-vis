@@ -1,4 +1,3 @@
-import produce from "immer"
 import { nanoid } from "nanoid"
 import * as AST from "../ast"
 import { visit } from "../visit"
@@ -13,41 +12,32 @@ const nonCapturingGroupIt = (nodeList: AST.Node[], node: AST.ChoiceNode) => {
   }
   replaceFromLists(nodeList, [node], [groupNode])
 }
-const makeChoiceValid = (ast: AST.Regex) => {
-  return produce(ast, (draft) => {
-    visit(
-      draft,
-      (
-        node: AST.Node,
-        nodeList: AST.Node[],
-        index: number,
-        parent: AST.ParentNode
-      ) => {
-        if (node.type === "choice") {
-          switch (parent.type) {
-            case "regex": {
-              if (nodeList.length > 3) {
-                nonCapturingGroupIt(nodeList, node)
-              }
-              break
+
+export const makeChoiceValid = (ast: AST.Regex) => {
+  let valid = true
+  visit(
+    ast,
+    (
+      node: AST.Node,
+      nodeList: AST.Node[],
+      index: number,
+      parent: AST.ParentNode
+    ) => {
+      if (node.type === "choice") {
+        switch (parent.type) {
+          case "regex":
+          case "choice":
+          case "group":
+          case "lookAroundAssertion": {
+            if (nodeList.length > 1) {
+              nonCapturingGroupIt(nodeList, node)
+              valid = false
             }
-            case "choice": {
-              if (nodeList.length > 1) {
-                nonCapturingGroupIt(nodeList, node)
-              }
-              break
-            }
-            case "group":
-            case "lookAroundAssertion": {
-              if (nodeList.length > 1) {
-                nonCapturingGroupIt(nodeList, node)
-              }
-              break
-            }
+            break
           }
         }
       }
-    )
-  })
+    }
+  )
+  return valid
 }
-export default makeChoiceValid

@@ -1,81 +1,63 @@
-import React from "react"
-import { AST } from "@/parser"
-import { getQuantifierText } from "@/parser"
-import renderEngine from "@/modules/graph/rendering-engine"
+import React, { useEffect, useLayoutEffect, useRef } from "react"
+import { AST, getQuantifierText } from "@/parser"
 import {
-  QUANTIFIER_ICON_HEIGHT,
-  QUANTIFIER_ICON_MARGIN_RIGHT,
-  QUANTIFIER_ICON_WIDTH,
-  QUANTIFIER_TEXT_FONTSIZE,
-  QUANTIFIER_ICON_MARGIN_VERTICAL,
-} from "./constants"
-type QuantifierProps = {
-  node: AST.Node
+  GRAPH_QUANTIFIER_ICON_WIDTH,
+  GRAPH_QUANTIFIER_ICON_HEIGHT,
+  GRAPH_QUANTIFIER_TEXT_FONTSIZE,
+  GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL,
+} from "@/constants"
+type Props = {
   x: number
   y: number
-  width: number
-  height: number
+  quantifier: AST.Quantifier
+  onLayout: (layout: [number, number]) => void
 }
-const dx = QUANTIFIER_ICON_WIDTH + QUANTIFIER_ICON_MARGIN_RIGHT
-const dy =
-  QUANTIFIER_TEXT_FONTSIZE +
-  (QUANTIFIER_ICON_HEIGHT +
-    QUANTIFIER_ICON_MARGIN_VERTICAL -
-    QUANTIFIER_TEXT_FONTSIZE) /
-    2
-const NodeQuantifier: React.FC<QuantifierProps> = React.memo(
-  ({ node, x, y, width, height }) => {
-    if (
-      !((node.type === "group" || node.type === "character") && node.quantifier)
-    ) {
-      return null
-    }
-    const text = getQuantifierText(node.quantifier)
-    const { width: textWidth } = renderEngine.measureText(
-      text,
-      QUANTIFIER_TEXT_FONTSIZE
-    )
 
-    const deltaX =
-      (width -
-        textWidth -
-        QUANTIFIER_ICON_WIDTH -
-        QUANTIFIER_ICON_MARGIN_VERTICAL) /
-      2
-    const translateX = deltaX + x
+const QuantifierNode = React.memo((props: Props) => {
+  const { x, y, quantifier, onLayout } = props
 
-    const strokeDasharray = node.quantifier.greedy ? "" : "3,3"
-    const transform = `translate(${translateX} ${
-      y + height + QUANTIFIER_ICON_MARGIN_VERTICAL
-    })`
-    return (
-      <>
-        <g fill="none" className="thin-stroke" transform={transform}>
-          <path d="M18 1l3 3-3 3"></path>
-          <path d="M6 15l-3-3 3-3"></path>
-          <path
-            d="M3 9V7a3 3 0 0 13-3h14"
-            strokeDasharray={strokeDasharray}
-          ></path>
-          <path
-            d="M21 7v2a3 3 0 0 1-3 3H3"
-            strokeDasharray={strokeDasharray}
-          ></path>
-        </g>
-        <text
-          x={x}
-          y={y + height}
-          className="text"
-          fontSize={QUANTIFIER_TEXT_FONTSIZE}
-          dx={dx + deltaX}
-          dy={dy}
-          pointerEvents="none"
-        >
-          {text}
-        </text>
-      </>
-    )
-  }
-)
+  const textRef = useRef<SVGTextElement>(null!)
 
-export default NodeQuantifier
+  const text = getQuantifierText(quantifier)
+  const strokeDasharray = quantifier.greedy ? "" : "3,3"
+  const transform = `translate(${x} ${
+    y + GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL
+  })`
+
+  useLayoutEffect(() => {
+    const { width } = textRef.current.getBoundingClientRect()
+    onLayout([
+      width + GRAPH_QUANTIFIER_ICON_WIDTH,
+      GRAPH_QUANTIFIER_ICON_HEIGHT,
+    ])
+  }, [text, onLayout])
+
+  return (
+    <g transform={transform}>
+      <g fill="none" className="thin-stroke">
+        <path d="M18 1l3 3-3 3"></path>
+        <path d="M6 15l-3-3 3-3"></path>
+        <path
+          d="M3 9V7a3 3 0 0 13-3h14"
+          strokeDasharray={strokeDasharray}
+        ></path>
+        <path
+          d="M21 7v2a3 3 0 0 1-3 3H3"
+          strokeDasharray={strokeDasharray}
+        ></path>
+      </g>
+      <text
+        ref={textRef}
+        className="text"
+        fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
+        pointerEvents="none"
+        x={GRAPH_QUANTIFIER_ICON_WIDTH}
+        y={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
+      >
+        {text}
+      </text>
+    </g>
+  )
+})
+QuantifierNode.displayName = "QuantifierNode"
+export default QuantifierNode

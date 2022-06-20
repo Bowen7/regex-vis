@@ -1,11 +1,15 @@
 import React, { useMemo } from "react"
 import { Select } from "@geist-ui/core"
+import { useAtomValue, useSetAtom } from "jotai"
+import { useTranslation } from "react-i18next"
 import Cell from "@/components/cell"
-import { dispatchUpdateContent, groupNamesAtom, useAtomValue } from "@/atom"
+import { updateContentAtom, groupNamesAtom } from "@/atom"
 
 type Props = { reference: string }
 const BackRef: React.FC<Props> = ({ reference }) => {
+  const { t } = useTranslation()
   const groupNames = useAtomValue(groupNamesAtom)
+  const updateContent = useSetAtom(updateContentAtom)
 
   const options = useMemo(() => {
     if (groupNames.includes(reference)) {
@@ -15,7 +19,7 @@ const BackRef: React.FC<Props> = ({ reference }) => {
   }, [groupNames, reference])
 
   const handleChange = (value: string | string[]) =>
-    dispatchUpdateContent({ kind: "backReference", ref: value as string })
+    updateContent({ kind: "backReference", ref: value as string })
   return (
     <Cell.Item label="Back Reference">
       <Select
@@ -27,7 +31,7 @@ const BackRef: React.FC<Props> = ({ reference }) => {
       >
         {options.map((option) => (
           <Select.Option value={option} key={option}>
-            Group #{option}
+            {t("Group")} #{option}
           </Select.Option>
         ))}
       </Select>

@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from "react"
-import { Select, Spacer, Checkbox, useToasts } from "@geist-ui/core"
+import { Select, Spacer, Checkbox } from "@geist-ui/core"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
+import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
 import { AST } from "@/parser"
-import { dispatchUpdateQuantifier } from "@/atom"
+import { updateQuantifierAtom } from "@/atom"
 import { quantifierOptions } from "./helper"
 type Props = {
   quantifier: AST.Quantifier | null
@@ -12,13 +13,13 @@ type Props = {
 }
 
 const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
+  const updateQuantifier = useSetAtom(updateQuantifierAtom)
   const quantifierRef = useRef<AST.Quantifier | null>(quantifier)
   const [kind, setKind] = useState("non")
   const [min, setMin] = useState("")
   const [max, setMax] = useState("")
   const [minPlaceholder, setMinPlaceholder] = useState("")
   const [maxPlaceholder, setMaxPlaceholder] = useState("")
-  const { setToast } = useToasts()
 
   useEffect(() => {
     quantifierRef.current = quantifier
@@ -35,14 +36,6 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
   }, [quantifier])
 
   const handleChange = (value: string | string[]) => {
-    if (
-      node.type === "character" &&
-      node.kind === "string" &&
-      node.value.length > 1 &&
-      value !== "non"
-    ) {
-      setToast({ text: "Group selection automatically" })
-    }
     const greedy = quantifier?.greedy || true
     let nextQuantifier: AST.Quantifier | null = null
     switch (value) {
@@ -59,7 +52,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
         break
     }
     if (["non", "*", "?", "+"].includes(value as string)) {
-      dispatchUpdateQuantifier(nextQuantifier)
+      updateQuantifier(nextQuantifier)
     } else {
       setKind(value as string)
     }
@@ -97,7 +90,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
       max = "Infinity"
     }
     const greedy = quantifier?.greedy || false
-    dispatchUpdateQuantifier({
+    updateQuantifier({
       kind: "custom",
       min: Number(min),
       max: Number(max),
@@ -107,7 +100,7 @@ const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
 
   const handleGreedyChange = (e: CheckboxEvent) => {
     const greedy = e.target.checked
-    dispatchUpdateQuantifier({
+    updateQuantifier({
       ...(quantifierRef.current as AST.Quantifier),
       greedy,
     })

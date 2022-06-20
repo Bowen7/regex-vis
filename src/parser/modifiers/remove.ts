@@ -1,14 +1,13 @@
-import produce from "immer"
 import * as AST from "../ast"
 import { replaceFromLists } from "./replace"
 
 type Path = { node: AST.Node; nodeList: AST.Node[] }
-function visit(
+const visit = (
   ast: AST.Regex | AST.Node[],
   id: string,
   paths: Path[] = [],
   callback: () => void
-): true | void {
+): true | void => {
   const nodes = Array.isArray(ast) ? ast : ast.body
   for (let i = 0; i < nodes.length; i++) {
     const node = nodes[i]
@@ -41,7 +40,15 @@ function visit(
   }
 }
 
-function remove(ast: AST.Regex, selectedIds: string[]) {
+const removeFromList = (nodeList: AST.Node[], ids: string[]) => {
+  const index = nodeList.findIndex(({ id }) => id === ids[0])
+  if (index === -1) {
+    return
+  }
+  nodeList.splice(index, ids.length)
+}
+
+export const removeSelected = (ast: AST.Regex, selectedIds: string[]) => {
   if (selectedIds.length === 0) {
     return
   }
@@ -68,16 +75,3 @@ function remove(ast: AST.Regex, selectedIds: string[]) {
     }
   })
 }
-
-function removeFromList(nodeList: AST.Node[], ids: string[]) {
-  const index = nodeList.findIndex(({ id }) => id === ids[0])
-  if (index === -1) {
-    return
-  }
-  nodeList.splice(index, ids.length)
-}
-
-const removeIt = (ast: AST.Regex, selectedIds: string[]) =>
-  produce(ast, (draft) => remove(draft, selectedIds))
-
-export default removeIt

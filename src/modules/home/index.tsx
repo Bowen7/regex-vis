@@ -1,53 +1,52 @@
 import React, { useEffect, useState, useRef } from "react"
-import { useHistory, useLocation } from "react-router-dom"
-import { useTheme, useToasts, useCurrentState } from "@geist-ui/core"
-import { nanoid } from "nanoid"
-import { parse, gen, AST } from "@/parser"
+import { useSearchParams } from "react-router-dom"
+import { useTheme, useCurrentState, useToasts } from "@geist-ui/core"
+import { useAtomValue, useSetAtom, useAtom } from "jotai"
+import { parse, gen } from "@/parser"
 import { useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
-import RegexInput from "./regex-input"
 import {
   editorCollapsedAtom,
   astAtom,
-  useAtomValue,
-  dispatchUpdateFlags,
-  setToastsAtom,
-  dispatchSetAst,
-  dispatchClearSelected,
+  clearSelectedAtom,
+  updateFlagsAtom,
+  toastsAtom,
 } from "@/atom"
-const head: AST.RootNode = { id: nanoid(), type: "root" }
-const tail: AST.RootNode = { id: nanoid(), type: "root" }
+import RegexInput from "./regex-input"
 
 const Home: React.FC<{}> = () => {
-  const history = useHistory()
-  const location = useLocation()
+  const [searchParams, setSearchParams] = useSearchParams()
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
-  const ast = useAtomValue(astAtom)
+  const [ast, setAst] = useAtom(astAtom)
+  const clearSelected = useSetAtom(clearSelectedAtom)
+  const updateFlags = useSetAtom(updateFlagsAtom)
+  const setToasts = useSetAtom(toastsAtom)
   const { palette } = useTheme()
+  const toasts = useToasts()
 
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [regex, setRegex, regexRef] = useCurrentState<string>(
-    () => new URLSearchParams(location.search).get("r") || ""
+    () => searchParams.get("r") || ""
   )
   const [isLiteral, setIsLiteral] = useState(
     () =>
-      new URLSearchParams(location.search).get("l") === "1" ||
-      localStorage.getItem("isLiteral") === "1"
+      searchParams.get("l") === "1" || localStorage.getItem("isLiteral") === "1"
   )
 
-  const { setToast } = useToasts()
   useEffect(() => {
-    if (new URLSearchParams(location.search).get("r") === null) {
+    setToasts(toasts)
+  }, [toasts, setToasts])
+
+  useEffect(() => {
+    if (searchParams.get("r") === null) {
       setRegex("")
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location])
-
-  useEffect(() => setToastsAtom.setState(setToast), [setToast])
+  }, [searchParams])
 
   useEffect(() => {
     if (!shouldParseRegex.current) {
@@ -55,32 +54,30 @@ const Home: React.FC<{}> = () => {
       return
     }
     const ast = parse(regex, isLiteral)
+    clearSelected()
     if (ast.type === "regex") {
       setErrorMsg(null)
-      const { body } = ast
-      const nextAst = { ...ast, body: [head, ...body, tail] }
-      dispatchSetAst(nextAst)
+      setAst(ast)
       shouldGenAst.current = false
     } else {
-      dispatchClearSelected()
       setErrorMsg(ast.message)
     }
-  }, [regex, isLiteral])
+  }, [regex, isLiteral, setAst, clearSelected])
 
   useEffect(() => {
     // update url search
-    const nextParams = new URLSearchParams()
+    const nextParams: { r?: string; l?: string } = {}
     if (regex !== "") {
-      nextParams.append("r", regex)
+      nextParams.r = regex
     }
     if (isLiteral) {
-      nextParams.append("l", "1")
+      nextParams.l = "1"
       localStorage.setItem("isLiteral", "1")
     } else {
       localStorage.removeItem("isLiteral")
     }
-    history.push({ search: nextParams.toString() })
-  }, [regex, history, isLiteral])
+    setSearchParams(nextParams)
+  }, [regex, setSearchParams, isLiteral])
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
@@ -96,11 +93,13 @@ const Home: React.FC<{}> = () => {
 
   const style = editorCollapsed || regex === null ? { width: "100%" } : {}
 
-  const handleFlagsChange = (flags: string[]) => dispatchUpdateFlags(flags)
+  const handleFlagsChange = (flags: string[]) => updateFlags(flags)
+
+  const graphShow = regex !== "" || ast.body.length > 0
   return (
     <>
       <div className="wrapper" style={style}>
-        {(regex !== "" || ast.body.length > 2) && (
+        {graphShow && (
           <div className="graph">
             <div className="content">
               <Graph regex={regex} ast={ast} errorMsg={errorMsg} />

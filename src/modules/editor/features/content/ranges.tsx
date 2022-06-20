@@ -1,10 +1,11 @@
 import React from "react"
 import { useTheme, ButtonDropdown, Spacer, Checkbox } from "@geist-ui/core"
+import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import RangeOption from "@/components/range-option"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
-import { dispatchUpdateContent } from "@/atom"
+import { updateContentAtom } from "@/atom"
 
 type Prop = {
   ranges: AST.Range[]
@@ -19,6 +20,7 @@ const commonUsedRanges = [
 ]
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
+  const updateContent = useSetAtom(updateContentAtom)
   const { palette } = useTheme()
 
   const handleAdd = (newRanges: AST.Range[]) => {
@@ -27,7 +29,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       ranges: ranges.concat(newRanges),
       negate,
     }
-    dispatchUpdateContent(payload)
+    updateContent(payload)
   }
 
   const handleRangeChange = (index: number, range: AST.Range) => {
@@ -41,7 +43,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       }),
       negate,
     }
-    dispatchUpdateContent(payload)
+    updateContent(payload)
   }
 
   const handleRemove = (index: number) => {
@@ -52,12 +54,12 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       }),
       negate,
     }
-    dispatchUpdateContent(payload)
+    updateContent(payload)
   }
 
   const handleGreedyChange = (e: CheckboxEvent) => {
     const negate = e.target.checked
-    dispatchUpdateContent({ kind: "ranges", ranges, negate })
+    updateContent({ kind: "ranges", ranges, negate })
   }
 
   return (

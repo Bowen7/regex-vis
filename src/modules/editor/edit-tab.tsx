@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import { Divider, useTheme } from "@geist-ui/core"
+import { useAtomValue } from "jotai"
 import ContentEditor from "./features/content"
 import Group from "./features/group"
 import Expression from "./features/expression"
@@ -10,7 +11,7 @@ import { getInfoFromNodes, genInitialNodesInfo } from "./utils"
 import { AST } from "@/parser"
 import { NodesInfo } from "./utils"
 import { getNodesByIds } from "@/parser/visit"
-import { astAtom, selectedIdsAtom, useAtomValue } from "@/atom"
+import { astAtom, selectedIdsAtom } from "@/atom"
 
 const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   const { layout } = useTheme()
@@ -45,7 +46,7 @@ const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
 
   return (
     <>
-      <div className="container">
+      <div className="container" data-testid="edit-tab">
         <Insert ast={ast} nodes={nodes} />
         <Divider mt="24px" />
         <Expression expression={expression} />

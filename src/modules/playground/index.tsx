@@ -1,12 +1,13 @@
-import React from "react"
-import { parse } from "@/parser"
-import MinimumGraph from "../graph/minimum-graph"
-// const r = "/[\\z-\\a]/u"
-const r = "/abc/"
+import React, { useCallback } from "react"
+import { parse, AST } from "@/parser"
+import Container from "@/modules/graph/container"
+const r = "[a-z]"
+const ast = parse(r) as AST.Regex
+
 const Playground: React.FC<{}> = () => {
   return (
     <>
-      <MinimumGraph regex={r} />
+      <Container ast={ast} />
     </>
   )
 }

@@ -5,8 +5,9 @@ import mdnLinks, { MdnLinkKey } from "@/utils/links"
 
 type ItemProps = {
   label: string
+  children: React.ReactNode
 }
-const CellItem: React.FC<ItemProps> = ({ label, children }) => {
+const CellItem = ({ label, children }: ItemProps) => {
   const { palette } = useTheme()
   return (
     <>
@@ -25,15 +26,16 @@ type Props = {
   label: string
   mdnLinkKey?: MdnLinkKey
   rightLabel?: string
+  children: React.ReactNode
   onRightLabelClick?: () => void
 }
-const Cell: React.FC<Props> & { Item: typeof CellItem } = ({
+const Cell = ({
   label,
   mdnLinkKey,
   children,
   rightLabel,
   onRightLabelClick,
-}) => {
+}: Props) => {
   const { palette } = useTheme()
   return (
     <>

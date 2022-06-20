@@ -1,27 +1,29 @@
 import React from "react"
 import { Select, Spacer, Checkbox } from "@geist-ui/core"
+import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import Cell from "@/components/cell"
-import { dispatchUpdateLookAround } from "@/atom"
+import { updateLookAroundAtom } from "@/atom"
 
 type Props = {
   kind: "lookahead" | "lookbehind"
   negate: boolean
 }
 const LookAround: React.FC<Props> = ({ kind, negate }) => {
+  const updateLookAround = useSetAtom(updateLookAroundAtom)
   const onSelectChange = (value: string | string[]) =>
-    dispatchUpdateLookAround({
+    updateLookAround({
       kind: value as "lookahead" | "lookbehind",
       negate,
     })
   const handleNegateChange = (e: CheckboxEvent) => {
     const negate = e.target.checked
-    dispatchUpdateLookAround({
+    updateLookAround({
       kind: kind,
       negate,
     })
   }
-  const handleUnLookAround = () => dispatchUpdateLookAround(null)
+  const handleUnLookAround = () => updateLookAround(null)
 
   return (
     <Cell

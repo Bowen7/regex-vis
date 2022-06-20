@@ -1,22 +1,24 @@
 import React from "react"
 import { Note, Spacer, useToasts } from "@geist-ui/core"
+import { useSetAtom } from "jotai"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
 import { AST } from "@/parser"
-import { dispatchUpdateContent } from "@/atom"
+import { updateContentAtom } from "@/atom"
 
 type Props = {
   value: string
   quantifier: AST.Quantifier | null
 }
 const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
+  const updateContent = useSetAtom(updateContentAtom)
   const { setToast } = useToasts()
 
   const handleChange = (value: string) => {
     if (value.length > 1 && quantifier) {
       setToast({ text: "Group selection automatically" })
     }
-    dispatchUpdateContent({
+    updateContent({
       kind: "string",
       value,
     })

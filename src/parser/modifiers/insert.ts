@@ -1,15 +1,32 @@
 import { nanoid } from "nanoid"
-import produce from "immer"
 import * as AST from "../ast"
 import { getNodesByIds } from "../visit"
 import { replaceFromLists } from "./replace"
 type InsertDirection = "prev" | "next" | "branch"
 
-function insert(
+const genNode = (): AST.CharacterNode => {
+  return {
+    id: nanoid(),
+    type: "character",
+    kind: "string",
+    value: "",
+    quantifier: null,
+  }
+}
+
+const genChoiceNode = (): AST.ChoiceNode => {
+  return {
+    id: nanoid(),
+    type: "choice",
+    branches: [],
+  }
+}
+
+export const insertAroundSelected = (
   ast: AST.Regex,
   selectedIds: string[],
   direction: InsertDirection
-) {
+) => {
   if (selectedIds.length === 0) {
     return
   }
@@ -32,29 +49,3 @@ function insert(
     }
   }
 }
-
-function genNode(): AST.CharacterNode {
-  return {
-    id: nanoid(),
-    type: "character",
-    kind: "string",
-    value: "",
-    quantifier: null,
-  }
-}
-
-function genChoiceNode(): AST.ChoiceNode {
-  return {
-    id: nanoid(),
-    type: "choice",
-    branches: [],
-  }
-}
-
-const insertIt = (
-  ast: AST.Regex,
-  selectedIds: string[],
-  direction: InsertDirection
-) => produce(ast, (draft) => insert(draft, selectedIds, direction))
-
-export default insertIt

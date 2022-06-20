@@ -4,8 +4,9 @@ import { useLocalStorage } from "react-use"
 import ChevronDown from "@geist-ui/icons/chevronDown"
 type Props = {
   id: string
+  children: React.ReactNode
 }
-const ShowMore: React.FC<Props> = ({ id, children }) => {
+const ShowMore = ({ id, children }: Props) => {
   const { palette, expressiveness } = useTheme()
   const [expanded, setExpanded] = useLocalStorage(id, false)
   const handleClick = () => setExpanded(!expanded)
