@@ -10,6 +10,7 @@ class CodeGen {
   ast: AST.Regex | AST.Node[]
   astLiteral = false
   isLiteral = false
+  regex = ""
   constructor(ast: AST.Regex | AST.Node[], isLiteral = false) {
     this.ast = ast
     this.isLiteral = isLiteral
@@ -20,71 +21,82 @@ class CodeGen {
 
   gen() {
     const nodes = Array.isArray(this.ast) ? this.ast : this.ast.body
-    const regexBody = this.genNodes(nodes)
     if (this.astLiteral) {
-      const f = (this.ast as AST.Regex).flags.map((flag) => flag).join("")
-      return `/${regexBody}/${f}`
+      this.regex += "/"
     }
-    return regexBody
+    this.genNodes(nodes)
+    if (this.astLiteral) {
+      this.regex += "/"
+      this.genFlags()
+    }
+    return this.regex
+  }
+
+  genFlags() {
+    this.regex += (this.ast as AST.Regex).flags.map((flag) => flag).join("")
   }
 
   genNodes(nodes: AST.Node[]) {
-    return nodes
-      .map((node) => {
-        let regex = ""
-        switch (node.type) {
-          case "choice":
-            regex = this.genChoice(node)
-            break
-          case "group":
-            regex += this.genGroup(node)
-            break
-          case "character":
-            regex += this.genCharacter(node)
-            break
-          case "boundaryAssertion":
-            regex += this.genBoundaryAssertionNode(node)
-            break
-          case "lookAroundAssertion":
-            regex += this.genLookaroundAssertionNode(node)
-            break
-          case "backReference":
-            regex += this.genBackReference(node)
-            break
-          default:
-            break
-        }
-        if (node.type === "character" || node.type === "group") {
-          regex += this.genQuantifier(node)
-        }
-        return regex
-      })
-      .join("")
+    nodes.forEach((node) => this.genNode(node))
+  }
+
+  genNode(node: AST.Node) {
+    switch (node.type) {
+      case "choice":
+        this.genChoice(node)
+        break
+      case "group":
+        this.genGroup(node)
+        break
+      case "character":
+        this.genCharacter(node)
+        break
+      case "boundaryAssertion":
+        this.genBoundaryAssertionNode(node)
+        break
+      case "lookAroundAssertion":
+        this.genLookAroundAssertionNode(node)
+        break
+      case "backReference":
+        this.genBackReference(node)
+        break
+      default:
+        break
+    }
+    if (node.type === "character" || node.type === "group") {
+      this.genQuantifier(node)
+    }
   }
 
   genChoice(node: AST.ChoiceNode) {
     const { branches } = node
-    return branches
-      .map((branch) => {
-        return this.genNodes(branch)
-      })
-      .join("|")
+    branches.forEach((branch, index) => {
+      if (index > 0) {
+        this.regex += "|"
+      }
+      this.genNodes(branch)
+    })
   }
 
   genGroup(node: AST.GroupNode) {
-    const { children } = node
-    const content = this.genNodes(children)
     switch (node.kind) {
       case "capturing":
-        return "(" + content + ")"
+        this.regex += "("
+        break
       case "namedCapturing":
-        return "(?<" + node.name + ">" + content + ")"
+        this.regex += "(?<" + node.name + ">"
+        break
       case "nonCapturing":
-        return "(?:" + content + ")"
-
+        this.regex += "(?:"
+        break
       default:
         break
     }
+
+    const { children } = node
+    this.genNodes(children)
+
+    this.regex += ")"
   }
 
   prefix(value: string) {
@@ -122,20 +134,23 @@ class CodeGen {
             str += from
           }
         })
-        return (negate ? "[^" : "[") + str + "]"
+        this.regex += (negate ? "[^" : "[") + str + "]"
+        break
       case "string":
-        return this.prefix(node.value)
+        this.regex += this.prefix(node.value)
+        break
       case "class":
-        return node.value
+        this.regex += node.value
+        break
       default:
-        return ""
+        break
     }
   }
 
   genQuantifier(node: AST.CharacterNode | AST.GroupNode) {
     const { quantifier } = node
     if (!quantifier) {
-      return ""
+      return
     }
     const { kind, min, max, greedy } = quantifier
     let result = ""
@@ -162,7 +177,7 @@ class CodeGen {
       default:
         break
     }
-    return result + (greedy ? "" : "?")
+    this.regex += result + (greedy ? "" : "?")
   }
 
   genBoundaryAssertionNode(
@@ -173,27 +188,33 @@ class CodeGen {
   ) {
     switch (node.kind) {
       case "beginning":
-        return "^"
+        this.regex += "^"
+        break
       case "end":
-        return "$"
+        this.regex += "$"
+        break
       case "word":
-        return node.negate ? "\\B" : "\\b"
+        this.regex += node.negate ? "\\B" : "\\b"
+        break
       default:
-        return ""
+        break
     }
   }
 
-  genLookaroundAssertionNode(node: AST.LookAroundAssertionNode) {
+  genLookAroundAssertionNode(node: AST.LookAroundAssertionNode) {
     const { children, kind, negate } = node
-    return lookAroundMap[kind][negate ? 1 : 0] + this.genNodes(children) + ")"
+    this.regex += lookAroundMap[kind][negate ? 1 : 0]
+    this.genNodes(children)
+    this.regex += ")"
   }
 
   genBackReference(node: AST.BackReferenceNode) {
     const { ref } = node
     if (digitRegex.test(ref)) {
-      return `\\${ref}`
+      this.regex += `\\${ref}`
+    } else {
+      this.regex += `\\k<${ref}>`
     }
-    return `\\k<${ref}>`
   }
 }
 
