@@ -6,11 +6,11 @@ const lookAroundMap = {
   lookbehind: ["(?<=", "(?<!"],
 }
 
-class CodeGen {
-  ast: AST.Regex | AST.Node[]
-  astLiteral = false
-  isLiteral = false
-  regex = ""
+export class CodeGen {
+  protected ast: AST.Regex | AST.Node[]
+  protected astLiteral = false
+  protected isLiteral = false
+  protected regex = ""
   constructor(ast: AST.Regex | AST.Node[], isLiteral = false) {
     this.ast = ast
     this.isLiteral = isLiteral

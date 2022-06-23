@@ -1,19 +1,28 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
+import { useTheme } from "@geist-ui/core"
 import Cell from "@/components/cell"
 type Prop = {
-  expression: String
+  regex: string
+  startIndex: number
+  endIndex: number
 }
-const Expression: React.FC<Prop> = ({ expression }) => {
+const Expression: React.FC<Prop> = ({ regex, startIndex, endIndex }) => {
   const { t } = useTranslation()
+  const { palette } = useTheme()
   return (
     <>
       <Cell label={t("Expression")}>
-        <span className="expression">{expression}</span>
+        <span>{regex.slice(0, startIndex)}</span>
+        <span className="highlight">{regex.slice(startIndex, endIndex)}</span>
+        <span>{regex.slice(endIndex)}</span>
       </Cell>
       <style jsx>{`
-        .expression {
-          color: #3291ff;
+        .highlight {
+          color: ${palette.background};
+          background-color: #3291ff;
+          padding: 0 2px;
+          margin: 0 2px;
         }
       `}</style>
     </>

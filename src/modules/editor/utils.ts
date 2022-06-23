@@ -1,8 +1,10 @@
-import { AST, gen } from "@/parser"
+import { AST, genWithSelected } from "@/parser"
 
 export type NodesInfo = {
   id: string
-  expression: string
+  regex: string
+  startIndex: number
+  endIndex: number
   group: AST.Group | null
   lookAround: { kind: "lookahead" | "lookbehind"; negate: boolean } | null
   content: AST.Content | null
@@ -11,7 +13,9 @@ export type NodesInfo = {
 }
 
 export const genInitialNodesInfo = (): NodesInfo => ({
-  expression: "",
+  regex: "",
+  startIndex: 0,
+  endIndex: 0,
   group: null,
   lookAround: null,
   content: null,
@@ -91,14 +95,31 @@ const getId = (nodes: AST.Node[]): string => {
 }
 
 export function getInfoFromNodes(
+  ast: AST.Regex,
   nodes: AST.Node[],
   isLiteral = false
 ): NodesInfo {
-  const expression = gen(nodes, isLiteral)
+  if (nodes.length === 0) {
+    return genInitialNodesInfo()
+  }
+  const { regex, startIndex, endIndex } = genWithSelected(
+    ast,
+    [nodes[0].id, nodes[nodes.length - 1].id],
+    isLiteral
+  )
   const group = getGroupInfo(nodes)
   const content = getContentInfo(nodes)
   const quantifierInfo = getQuantifierInfo(nodes)
   const lookAround = getLookAroundInfo(nodes)
   const id = getId(nodes)
-  return { id, expression, group, content, lookAround, ...quantifierInfo }
+  return {
+    id,
+    regex,
+    startIndex,
+    endIndex,
+    group,
+    content,
+    lookAround,
+    ...quantifierInfo,
+  }
 }
