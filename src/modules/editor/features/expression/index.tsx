@@ -19,8 +19,8 @@ const Expression: React.FC<Prop> = ({ regex, startIndex, endIndex }) => {
       </Cell>
       <style jsx>{`
         .highlight {
-          color: ${palette.background};
-          background-color: #3291ff;
+          color: #fff;
+          background-color: ${palette.success};
           padding: 0 2px;
           margin: 0 2px;
         }
