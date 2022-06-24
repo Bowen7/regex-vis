@@ -71,6 +71,9 @@ const Container = React.memo(
             border: ${withRoot ? `1px solid ${palette.accents_2}` : "none"};
             border-radius: 5px;
           }
+          svg :global(text) {
+            pointer-events: none;
+          }
           svg :global(.box-fill) {
             fill: ${palette.success};
           }
