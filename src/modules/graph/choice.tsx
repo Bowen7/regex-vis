@@ -23,40 +23,42 @@ const ChoiceNode = React.memo(
     const { id, branches } = node
     const unLayoutedCount = useRef(0)
     const [layout, setLayout] = useState<[number, number]>([0, 0])
-    const layouts = useRef<[number, number][]>([])
+    const layoutsRef = useRef<[number, number][]>([])
+    const [layouts, setLayouts] = useState<[number, number][]>([])
 
     const rects = useMemo(() => {
       let curY = y + GRAPH_CHOICE_PADDING_VERTICAL
       return new Array(branches.length).fill(0).map((_, index) => {
-        if (!layouts.current[index]) {
+        if (!layouts[index]) {
           return { x: 0, y: 0, width: 0, height: 0 }
         }
-        const [width, height] = layouts.current[index]
+        const [width, height] = layouts[index]
         const nodeX = x + (layout[0] - width) / 2
         const nodeY = curY
         curY += height + GRAPH_NODE_MARGIN_VERTICAL
         return { width, height, x: nodeX, y: nodeY }
       })
-    }, [branches, x, y, layout])
+    }, [branches, x, y, layout, layouts])
 
     const handleNodeLayout = useCallback(
       (branchIndex: number, branchLayout: [number, number]) => {
-        layouts.current[branchIndex] = branchLayout
+        layoutsRef.current[branchIndex] = branchLayout
         unLayoutedCount.current++
         if (unLayoutedCount.current % branches.length === 0) {
-          const [width, height] = layouts.current.reduce(
+          const [width, height] = layoutsRef.current.reduce(
             ([width, height], [nodesWidth, nodesHeight]) => [
               Math.max(width, nodesWidth + 2 * GRAPH_CHOICE_PADDING_HORIZONTAL),
               height + nodesHeight,
             ],
             [
               0,
-              (layouts.current.length - 1) * GRAPH_NODE_MARGIN_VERTICAL +
+              (layoutsRef.current.length - 1) * GRAPH_NODE_MARGIN_VERTICAL +
                 GRAPH_CHOICE_PADDING_VERTICAL * 2,
             ]
           )
           onLayout(index, [width, height])
           setLayout([width, height])
+          setLayouts(layoutsRef.current)
           unLayoutedCount.current = branches.length
         }
       },
