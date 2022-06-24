@@ -10,10 +10,9 @@ import { updateQuantifierAtom } from "@/atom"
 import { quantifierOptions } from "./helper"
 type Props = {
   quantifier: AST.Quantifier | null
-  node: AST.Node
 }
 
-const QuantifierItem: React.FC<Props> = ({ quantifier, node }) => {
+const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   const { t } = useTranslation()
   const updateQuantifier = useSetAtom(updateQuantifierAtom)
   const quantifierRef = useRef<AST.Quantifier | null>(quantifier)

@@ -31,7 +31,9 @@ const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
 
   const {
     id,
-    expression,
+    regex,
+    startIndex,
+    endIndex,
     group,
     content,
     hasQuantifier,
@@ -40,23 +42,21 @@ const InfoItem: React.FC<{ isLiteral: boolean }> = ({ isLiteral }) => {
   } = nodesInfo
 
   useEffect(() => {
-    const nodesInfo = getInfoFromNodes(nodes, isLiteral)
+    const nodesInfo = getInfoFromNodes(ast, nodes, isLiteral)
     setNodesInfo(nodesInfo)
-  }, [nodes, isLiteral])
+  }, [ast, nodes, isLiteral])
 
   return (
     <>
       <div className="container" data-testid="edit-tab">
         <Insert ast={ast} nodes={nodes} />
         <Divider mt="24px" />
-        <Expression expression={expression} />
+        <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
         {content && (
           <ContentEditor content={content} id={id} quantifier={quantifier} />
         )}
         {group && <Group group={group} />}
-        {hasQuantifier && (
-          <Quantifier node={nodes[0]} quantifier={quantifier} />
-        )}
+        {hasQuantifier && <Quantifier quantifier={quantifier} />}
         {lookAround && (
           <LookAround kind={lookAround.kind} negate={lookAround.negate} />
         )}
