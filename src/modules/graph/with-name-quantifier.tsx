@@ -28,7 +28,7 @@ export const withNameQuantifier = <
     const { t } = useTranslation()
     const { index, x, y, node, onLayout, ...restProps } = props
     const quantifier = getQuantifier(node)
-    const [name, caseLanguage] = getName(node, t)
+    const name = getName(node, t)
 
     const [layout, setLayout] = useState<[number, number]>([0, 0])
     const layouted = useRef({
@@ -63,12 +63,12 @@ export const withNameQuantifier = <
         onLayout(index, layout)
         setLayout(layout)
 
-        if (name && caseLanguage) {
+        if (name) {
           layouted.current.name = false
         }
         layouted.current.content = false
       }
-    }, [index, caseLanguage, name, onLayout])
+    }, [index, name, onLayout])
 
     const handleContentLayout = useCallback(
       (index: number, layout: [number, number]) => {
