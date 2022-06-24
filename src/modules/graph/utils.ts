@@ -12,27 +12,24 @@ const assertionNameMap = {
   word: ["WordBoundary", "NonWordBoundary"],
 }
 
-export const getName = (
-  node: AST.Node,
-  t: TFunction
-): [string | null, boolean] => {
+export const getName = (node: AST.Node, t: TFunction): string | null => {
   switch (node.type) {
     case "character":
       if (node.kind === "ranges") {
         return t(node.negate ? "None of" : "One of")
       }
-      return [null, false]
+      break
     case "group":
       if (node.kind === "capturing" || node.kind === "namedCapturing") {
-        return [t("Group") + " #" + node.name, true]
+        return t("Group") + " #" + node.name
       }
-      return [null, false]
+      break
     case "lookAroundAssertion": {
       const { kind, negate } = node
-      return [t(assertionNameMap[kind][negate ? 1 : 0]), false]
+      return t(assertionNameMap[kind][negate ? 1 : 0])
     }
-
     default:
-      return [null, false]
+      break
   }
+  return null
 }
