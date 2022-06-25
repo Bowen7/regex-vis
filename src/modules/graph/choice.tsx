@@ -58,7 +58,7 @@ const ChoiceNode = React.memo(
           )
           onLayout(index, [width, height])
           setLayout([width, height])
-          setLayouts(layoutsRef.current)
+          setLayouts(layoutsRef.current.slice())
         }
       },
       [index, branches.length, onLayout]
