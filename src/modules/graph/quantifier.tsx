@@ -50,7 +50,6 @@ const QuantifierNode = React.memo((props: Props) => {
         ref={textRef}
         className="text"
         fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
-        pointerEvents="none"
         x={GRAPH_QUANTIFIER_ICON_WIDTH}
         y={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
       >

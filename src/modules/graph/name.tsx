@@ -22,7 +22,6 @@ const NameNode = React.memo((props: Props) => {
       ref={textRef}
       className="text"
       fontSize={GRAPH_NAME_TEXT_FONTSIZE}
-      pointerEvents="none"
       x={centerX}
       y={y}
       dy={0.75 * GRAPH_NAME_TEXT_FONTSIZE}
