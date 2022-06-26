@@ -18,7 +18,7 @@ type Props = {
 }
 
 const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
-  const layoutedCount = useRef(0)
+  const layoutCount = useRef(0)
   const layoutsRef = useRef<[number, number][]>([])
   const [layouts, setLayouts] = useState<[number, number][]>([])
   const [height, setHeight] = useState(0)
@@ -50,6 +50,9 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
     if (recordLayoutEnable) {
       nodesBoxMap.set(`${id}-${index}`, hasRoot ? boxes.slice(1, -1) : boxes)
     }
+    return () => {
+      nodesBoxMap.delete(`${id}-${index}`)
+    }
   }, [index, id, hasRoot, boxes, recordLayoutEnable])
 
   const startSelectedIndex = useMemo(
@@ -60,8 +63,8 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
   const handleNodeLayout = useCallback(
     (nodeIndex: number, layout: [number, number]) => {
       layoutsRef.current[nodeIndex] = layout
-      layoutedCount.current++
-      if (layoutedCount.current % nodes.length === 0) {
+      layoutCount.current++
+      if (layoutCount.current % nodes.length === 0) {
         const [width, height] = layoutsRef.current.reduce(
           ([width, height], [nodeWidth, nodeHeight]) => [
             width + nodeWidth,

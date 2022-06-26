@@ -21,7 +21,7 @@ const Expression: React.FC<Prop> = ({ regex, startIndex, endIndex }) => {
         .highlight {
           color: #fff;
           background-color: ${palette.success};
-          padding: 0 2px;
+          padding: 2px;
           margin: 0 2px;
         }
       `}</style>

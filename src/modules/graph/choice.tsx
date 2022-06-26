@@ -21,7 +21,7 @@ type Props = {
 const ChoiceNode = React.memo(
   ({ index, x, y, selected, node, onLayout }: Props) => {
     const { id, branches } = node
-    const layoutedCount = useRef(0)
+    const layoutCount = useRef(0)
     const [layout, setLayout] = useState<[number, number]>([0, 0])
     const layoutsRef = useRef<[number, number][]>([])
     const [layouts, setLayouts] = useState<[number, number][]>([])
@@ -43,8 +43,8 @@ const ChoiceNode = React.memo(
     const handleNodeLayout = useCallback(
       (branchIndex: number, branchLayout: [number, number]) => {
         layoutsRef.current[branchIndex] = branchLayout
-        layoutedCount.current++
-        if (layoutedCount.current % branches.length === 0) {
+        layoutCount.current++
+        if (layoutCount.current % branches.length === 0) {
           const [width, height] = layoutsRef.current.reduce(
             ([width, height], [nodesWidth, nodesHeight]) => [
               Math.max(width, nodesWidth + 2 * GRAPH_CHOICE_PADDING_HORIZONTAL),
