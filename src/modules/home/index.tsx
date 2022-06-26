@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useTheme, useCurrentState, useToasts } from "@geist-ui/core"
+import { useTheme, useToasts } from "@geist-ui/core"
 import { useAtomValue, useSetAtom, useAtom } from "jotai"
 import { parse, gen } from "@/parser"
 import { useUpdateEffect } from "react-use"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
+import { useCurrentState } from "@/utils/hooks"
 import {
   editorCollapsedAtom,
   astAtom,
@@ -45,8 +46,7 @@ const Home: React.FC<{}> = () => {
     if (searchParams.get("r") === null) {
       setRegex("")
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchParams])
+  }, [searchParams, setRegex])
 
   useEffect(() => {
     if (!shouldParseRegex.current) {

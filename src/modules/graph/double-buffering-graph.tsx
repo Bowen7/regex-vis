@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from "react"
 import { useUpdateEffect } from "react-use"
-import { useCurrentState } from "@geist-ui/core"
+import { useCurrentState } from "@/utils/hooks"
 import { nanoid } from "nanoid"
 import { AST } from "@/parser"
 import SVGContainer from "./container"
@@ -28,14 +28,17 @@ const DoubleBufferingGraph = memo(({ ast }: Props) => {
     setBuffers(nextBuffers)
   }, [ast])
 
-  const handleLayout = useCallback((id: string) => {
-    const lastBuffer = buffersRef.current[buffersRef.current.length - 1]
-    if (id === lastBuffer.id) {
-      setCurrentId(id)
-      setBuffers([lastBuffer])
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  const handleLayout = useCallback(
+    (id: string) => {
+      const lastBuffer = buffersRef.current[buffersRef.current.length - 1]
+      if (id === lastBuffer.id) {
+        setCurrentId(id)
+        setBuffers([lastBuffer])
+      }
+    },
+    [buffersRef, setBuffers]
+  )
+
   return (
     <>
       {buffers.map(({ id, ast }) => (

@@ -18,8 +18,9 @@ type Props = {
 }
 
 const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
-  const layoutedCount = useRef(0)
-  const layouts = useRef<[number, number][]>([])
+  const layoutCount = useRef(0)
+  const layoutsRef = useRef<[number, number][]>([])
+  const [layouts, setLayouts] = useState<[number, number][]>([])
   const [height, setHeight] = useState(0)
   const selectedIds = useAtomValue(selectedIdsAtom)
   const recordLayoutEnable = useAtomValue(recordLayoutEnableAtom)
@@ -29,10 +30,10 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
   const boxes = useMemo(() => {
     let curX = x
     return new Array(nodes.length).fill(0).map((_, index) => {
-      if (!layouts.current[index]) {
+      if (!layouts[index]) {
         return { x1: 0, y1: 0, x2: 0, y2: 0 }
       }
-      const [nodeWidth, nodeHeight] = layouts.current[index]
+      const [nodeWidth, nodeHeight] = layouts[index]
       const nodeX = curX
       const nodeY = y + (height - nodeHeight) / 2
       curX += nodeWidth + GRAPH_NODE_MARGIN_HORIZONTAL
@@ -43,11 +44,14 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
         y2: nodeY + nodeHeight,
       }
     })
-  }, [height, x, y, nodes])
+  }, [height, x, y, nodes, layouts])
 
   useEffect(() => {
     if (recordLayoutEnable) {
       nodesBoxMap.set(`${id}-${index}`, hasRoot ? boxes.slice(1, -1) : boxes)
+    }
+    return () => {
+      nodesBoxMap.delete(`${id}-${index}`)
     }
   }, [index, id, hasRoot, boxes, recordLayoutEnable])
 
@@ -58,18 +62,19 @@ const Nodes = React.memo(({ id, index, x, y, nodes, onLayout }: Props) => {
 
   const handleNodeLayout = useCallback(
     (nodeIndex: number, layout: [number, number]) => {
-      layouts.current[nodeIndex] = layout
-      layoutedCount.current++
-      if (layoutedCount.current % nodes.length === 0) {
-        const [width, height] = layouts.current.reduce(
+      layoutsRef.current[nodeIndex] = layout
+      layoutCount.current++
+      if (layoutCount.current % nodes.length === 0) {
+        const [width, height] = layoutsRef.current.reduce(
           ([width, height], [nodeWidth, nodeHeight]) => [
             width + nodeWidth,
             Math.max(height, nodeHeight),
           ],
-          [(layouts.current.length - 1) * GRAPH_NODE_MARGIN_HORIZONTAL, 0]
+          [(layoutsRef.current.length - 1) * GRAPH_NODE_MARGIN_HORIZONTAL, 0]
         )
         setHeight(height)
         onLayout(index, [width, height])
+        setLayouts(layoutsRef.current.slice())
       }
     },
     [onLayout, nodes.length, index]
