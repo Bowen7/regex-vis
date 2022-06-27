@@ -8,24 +8,25 @@ const lookAroundMap = {
 
 export class CodeGen {
   protected ast: AST.Regex | AST.Node[]
-  protected astLiteral = false
   protected isLiteral = false
+  protected escapeSlash = false
   protected regex = ""
-  constructor(ast: AST.Regex | AST.Node[], isLiteral = false) {
+  constructor(
+    ast: AST.Regex | AST.Node[],
+    { escapeSlash = false, isLiteral = false } = {}
+  ) {
     this.ast = ast
     this.isLiteral = isLiteral
-    if (!Array.isArray(ast)) {
-      this.astLiteral = ast.withSlash
-    }
+    this.escapeSlash = escapeSlash
   }
 
   gen() {
     const nodes = Array.isArray(this.ast) ? this.ast : this.ast.body
-    if (this.astLiteral) {
+    if (this.isLiteral) {
       this.regex += "/"
     }
     this.genNodes(nodes)
-    if (this.astLiteral) {
+    if (this.isLiteral) {
       this.regex += "/"
       this.genFlags()
     }
@@ -33,7 +34,9 @@ export class CodeGen {
   }
 
   genFlags() {
-    this.regex += (this.ast as AST.Regex).flags.map((flag) => flag).join("")
+    if (!Array.isArray(this.ast)) {
+      this.regex += (this.ast as AST.Regex).flags.map((flag) => flag).join("")
+    }
   }
 
   genNodes(nodes: AST.Node[]) {
@@ -101,7 +104,7 @@ export class CodeGen {
 
   prefix(value: string) {
     return value.replace(
-      this.isLiteral || this.astLiteral
+      this.isLiteral || this.escapeSlash
         ? /[|\\{}()[\]^$+*?./]/g
         : /[|\\{}()[\]^$+*?.]/g,
       "\\$&"
@@ -218,8 +221,11 @@ export class CodeGen {
   }
 }
 
-const gen = (ast: AST.Regex | AST.Node[], isLiteral = false) => {
-  const codeGen = new CodeGen(ast, isLiteral)
+const gen = (
+  ast: AST.Regex | AST.Node[],
+  { escapeSlash = false, isLiteral = false } = {}
+) => {
+  const codeGen = new CodeGen(ast, { escapeSlash, isLiteral })
   return codeGen.gen()
 }
 

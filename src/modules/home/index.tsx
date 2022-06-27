@@ -81,7 +81,10 @@ const Home: React.FC<{}> = () => {
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
-      const nextRegex = gen(ast)
+      const nextRegex = gen(ast, {
+        escapeSlash: ast.withSlash,
+        isLiteral: ast.withSlash,
+      })
       if (nextRegex !== regexRef.current) {
         setRegex(nextRegex)
         shouldParseRegex.current = false
@@ -95,7 +98,7 @@ const Home: React.FC<{}> = () => {
 
   const handleFlagsChange = (flags: string[]) => updateFlags(flags)
 
-  const graphShow = regex !== "" || ast.body.length > 0
+  const graphShow = regex !== "" || (ast.body.length > 0 && !errorMsg)
   return (
     <>
       <div className="wrapper" style={style}>
