@@ -1,5 +1,8 @@
 import React, { useMemo } from "react"
 import { Button, Spacer } from "@geist-ui/core"
+import Plus from "@geist-ui/icons/plus"
+// import Copy from "@geist-ui/icons/copy"
+// import { useTranslation } from "react-i18next"
 import { useAtomValue } from "jotai"
 import { useLocalStorage } from "react-use"
 import produce from "immer"
@@ -8,12 +11,20 @@ import { gen } from "@/parser"
 import { astAtom } from "@/atom"
 
 const TestTab = () => {
+  // const { t } = useTranslation()
   const [cases, setCases] = useLocalStorage<string[]>("test-case", [""])
   const ast = useAtomValue(astAtom)
   const regExp = useMemo(() => {
     const regex = gen(ast, { isLiteral: false, escapeSlash: ast.withSlash })
     return new RegExp(regex, ast.flags.join(""))
   }, [ast])
+
+  // const { setToast } = useToasts()
+  // const { copy } = useClipboard()
+  // const handleCopyPermalink = () => {
+  //   copy("hello, geist-ui")
+  //   setToast({ text: t("Permalink copied.") })
+  // }
 
   const handleChange = (value: string, index: number) => {
     setCases(
@@ -54,7 +65,21 @@ const TestTab = () => {
           </React.Fragment>
         ))}
         <div className="btn">
-          <Button onClick={handleAdd}>Add A Case</Button>
+          <Button
+            iconRight={<Plus />}
+            auto
+            scale={2 / 3}
+            px={0.6}
+            onClick={handleAdd}
+          />
+          {/* <Spacer w={1} />
+          <Button
+            iconRight={<Copy />}
+            auto
+            scale={2 / 3}
+            px={0.6}
+            onClick={handleCopyPermalink}
+          /> */}
         </div>
       </div>
       <style jsx>{`
@@ -64,6 +89,7 @@ const TestTab = () => {
         .btn {
           display: flex;
           justify-content: center;
+          margin-top: 12px;
         }
       `}</style>
     </>
