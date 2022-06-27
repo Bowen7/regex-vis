@@ -39,7 +39,7 @@ describe("Gen Regex String", function () {
   }).forEach(([regex, result]) => {
     it(regex, () => {
       const ast = result as AST.Regex
-      expect(gen(ast)).toEqual(regex)
+      expect(gen(ast, { escapeSlash: true, isLiteral: true })).toEqual(regex)
     })
   })
 })
