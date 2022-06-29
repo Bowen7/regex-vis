@@ -5,28 +5,30 @@ import * as dict from "./dict"
 import Lexer from "./lexer"
 import { TokenType } from "./token"
 
-class Parser {
+export type Options = {
+  escapeBackslash?: boolean
+  idGenerator?: (size?: number) => string
+}
+
+export class Parser {
   regex: string
-  isLiteral = false
+  escapeBackslash = false
+  literal = false
   flags: AST.Flag[] = []
   message: string = ""
   lexer!: Lexer
   groupIndex = 1
   idGenerator: (size?: number) => string
-  constructor(regex: string | RegExp, isLiteral = false, idGenerator = nanoid) {
-    if (typeof regex !== "string") {
-      regex = String(regex)
-    }
+  constructor(
+    regex: string,
+    { idGenerator = nanoid, escapeBackslash = false }: Options = {}
+  ) {
     this.regex = regex
-    this.isLiteral = isLiteral
+    this.escapeBackslash = escapeBackslash
     this.idGenerator = idGenerator
   }
 
   public parse(): AST.Regex | AST.RegexError {
-    if (this.isLiteral) {
-      this.regex = this.regex.trim()
-    }
-
     if (!this.validate()) {
       return { type: "error", message: this.message }
     }
@@ -39,7 +41,7 @@ class Parser {
       type: "regex",
       body,
       flags: this.flags,
-      withSlash: this.isLiteral,
+      literal: this.literal,
     }
   }
 
@@ -348,5 +350,16 @@ class Parser {
     }
     return true
   }
+
+  validateAsLiteral() {
+    const start = this.regex.indexOf("/")
+    const end = this.regex.lastIndexOf("/")
+    if (start !== 0 || end === 0) {
+      return false
+    }
+    try {
+      const flags = this.regex.slice(end + 1)
+      new RegExp("", flags)
+    } catch (error) {}
+  }
 }
-export default Parser

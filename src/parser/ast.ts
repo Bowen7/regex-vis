@@ -3,7 +3,7 @@ export type Regex = {
   type: "regex"
   body: Node[]
   flags: Flag[]
-  withSlash: boolean
+  literal: boolean
 }
 
 export type RegexError = {

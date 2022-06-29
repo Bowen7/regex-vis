@@ -1,11 +1,7 @@
-import Parser from "./parser"
+import { Parser, Options } from "./parser"
 
-const parse = (
-  regex: string,
-  isLiteral = false,
-  idGenerator?: (size?: number) => string
-) => {
-  const parser = new Parser(regex, isLiteral, idGenerator)
+const parse = (regex: string, options: Options = {}) => {
+  const parser = new Parser(regex, options)
   return parser.parse()
 }
 
