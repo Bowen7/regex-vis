@@ -5,18 +5,38 @@ import { Token, TokenType } from "./token"
 class Lexer {
   regex: string
   index = 0
+  literal = false
+  escapeBackslash = false
   constructor(regex: string) {
     this.regex = regex
   }
 
-  public curRegex() {
+  get normalCharacterPattern() {
+    return this.literal
+      ? patterns.normalCharacterInLiteral
+      : patterns.normalCharacter
+  }
+
+  get characterClassPattern() {
+    return this.escapeBackslash
+      ? patterns.allowEscapedBackslashCharacterClass
+      : patterns.characterClass
+  }
+
+  get wordBoundaryPattern() {
+    return this.escapeBackslash
+      ? patterns.withEscapedBackslashWordBoundary
+      : patterns.wordBoundary
+  }
+
+  get curRegex() {
     return this.regex.slice(this.index)
   }
 
   public read(): Token {
-    const literal = this.readLiteral()
-    if (literal) {
-      return literal
+    const normalCharacters = this.readNormalCharacters()
+    if (normalCharacters) {
+      return normalCharacters
     }
     const char = this.regex[this.index]
     switch (char) {
@@ -26,7 +46,7 @@ class Lexer {
           : this.token(TokenType.RegexBodyEnd)
       }
       case "\\": {
-        return this.readBackslashStart()
+        return this.readBackslash()
       }
       case ".": {
         return this.token(TokenType.CharacterClass)
@@ -49,9 +69,9 @@ class Lexer {
     }
   }
 
-  readBackslashStart(range = false): Token {
+  readBackslash(range = false): Token {
     const start = this.index
-    const matches = this.readByRegex(patterns.characterClass)
+    const matches = this.readByRegex(this.characterClassPattern)
     if (matches) {
       return {
         type: TokenType.CharacterClass,
@@ -59,18 +79,25 @@ class Lexer {
       }
     }
     if (range) {
-      if (this.curRegex()[1] === "b") {
+      if (this.escapeBackslash && this.curRegex[1] === "\\b") {
+        return {
+          type: TokenType.CharacterClass,
+          span: { start, end: this.advance(3) },
+        }
+      }
+      if (!this.escapeBackslash && this.curRegex[1] === "b") {
         return {
           type: TokenType.CharacterClass,
           span: { start, end: this.advance(2) },
         }
       }
+      if (this.curRegex[1] === "\\b") {
+      }
     } else {
-      const curRegex = this.curRegex()
-      if (curRegex[1] === "b" || curRegex[1] === "B") {
+      if (this.readByRegex(this.wordBoundaryPattern)) {
         return {
           type: TokenType.Assertion,
-          span: { start, end: this.advance(2) },
+          span: { start, end: this.index },
         }
       }
       if (this.readByRegex(patterns.backReference)) {
@@ -113,15 +140,15 @@ class Lexer {
     return matches
   }
 
-  readLiteral(): Token | null {
+  readNormalCharacters(): Token | null {
     const start = this.index
-    const curRegex = this.curRegex()
-    const matches = curRegex.match(patterns.nonLiteral)
+    const curRegex = this.curRegex
+    const matches = curRegex.match(this.normalCharacterPattern)
     if (matches && matches.index) {
       this.advance(matches.index)
       if (start !== this.index) {
         return {
-          type: TokenType.Literal,
+          type: TokenType.NormalCharacter,
           span: { start, end: this.index },
         }
       }
@@ -134,10 +161,13 @@ class Lexer {
     if (this.readTarget("]")) {
       return { type: TokenType.RangeEnd, span: { start, end: this.index } }
     }
-    if (this.curRegex()[0] === "\\") {
-      return this.readBackslashStart(true)
+    if (this.curRegex[0] === "\\") {
+      return this.readBackslash(true)
     }
-    return { type: TokenType.Literal, span: { start, end: this.advance(1) } }
+    return {
+      type: TokenType.NormalCharacter,
+      span: { start, end: this.advance(1) },
+    }
   }
 
   advance(size: number): number {

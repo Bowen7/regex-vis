@@ -52,6 +52,7 @@ export class Parser {
   parseNodes(): AST.Node[] {
     const branches: AST.Node[][] = []
     let nodes: AST.Node[] = []
+
     const pushCharacterString = (
       str: string,
       quantifier: AST.Quantifier | null
@@ -92,6 +93,7 @@ export class Parser {
         })
       }
     }
+
     while (true) {
       const {
         type,
@@ -160,7 +162,7 @@ export class Parser {
           nodes.push(node)
           break
         }
-        case TokenType.Literal: {
+        case TokenType.NormalCharacter: {
           const value = this.regex.slice(start, end)
           const quantifier = this.parseQuantifier()
           pushCharacterString(value, quantifier)
@@ -320,28 +322,11 @@ export class Parser {
 
   validate() {
     try {
-      if (this.isLiteral) {
-        const start = this.regex.indexOf("/")
-        const end = this.regex.lastIndexOf("/")
-        if (start !== 0 || end <= 0) {
-          this.message = "Invalid regular expression"
-          return false
-        }
-
-        for (let i = end + 1; i < this.regex.length; i++) {
-          if (!patterns.flag.test(this.regex[i])) {
-            this.message = `Invalid regular expression flags '${this.regex[i]}'`
-            return false
-          }
-          this.flags.push(this.regex[i] as AST.Flag)
-        }
-
-        new RegExp(this.regex.slice(1, end), this.regex.slice(end + 1))
-      } else if (this.regex) {
-        this.regex = String(new RegExp(this.regex))
-      } else {
-        this.regex = "//"
+      if (this.validateAsLiteral()) {
+        this.literal = true
+        return true
       }
+      new RegExp(this.regex)
     } catch (error) {
       if (error instanceof Error) {
         this.message = error.message
@@ -360,6 +345,8 @@ export class Parser {
     try {
       const flags = this.regex.slice(end + 1)
       new RegExp("", flags)
+      return true
     } catch (error) {}
+    return false
   }
 }
