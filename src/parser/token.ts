@@ -5,7 +5,7 @@ type Span = {
 export enum TokenType {
   RegexBodyStart,
   RegexBodyEnd,
-  Literal,
+  NormalCharacter,
   GroupStart,
   GraphEnd,
   RangeStart,
