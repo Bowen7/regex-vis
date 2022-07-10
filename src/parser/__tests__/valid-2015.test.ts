@@ -4198,14 +4198,88 @@ const tests: Tests = {
   },
 }
 
+const withoutGenRegex = [
+  "/a{/",
+  "/a{}/",
+  "/a{a}/",
+  "/a{1/",
+  "/a{1,/",
+  "/a{1,2/",
+  "/a{2,1/",
+  "/a{?/",
+  "/a{}?/",
+  "/a{a}?/",
+  "/a{1?/",
+  "/a{1,?/",
+  "/a{1,2?/",
+  "/a{2,1?/",
+  "/]/",
+  "/{/",
+  "/}/",
+  "/${1,2/",
+  "/\\c1/",
+  "/\\c/",
+  "/\\u/",
+  "/\\u1/",
+  "/\\u12/",
+  "/\\u123/",
+  "/\\u{/",
+  "/\\u{z/",
+  "/\\u{a}/",
+  "/\\u{20/",
+  "/\\u{20}/",
+  "/\\a/",
+  "/[---]/",
+  "/[\\c1]/",
+  "/[\\c]/",
+  "/[\\x]/",
+  "/[\\xz]/",
+  "/[\\x1]/",
+  "/[\\u]/",
+  "/[\\u1]/",
+  "/[\\u12]/",
+  "/[\\u123]/",
+  "/[\\u{]/",
+  "/[\\u{z]/",
+  "/[\\u{a}]/",
+  "/[\\u{20]/",
+  "/[\\u{20}]/",
+  "/[\\77]/",
+  "/[\\377]/",
+  "/[\\400]/",
+  "/[\\^]/",
+  "/[\\$]/",
+  "/[\\.]/",
+  "/[\\+]/",
+  "/[\\?]/",
+  "/[\\(]/",
+  "/[\\)]/",
+  "/[\\[]/",
+  "/[\\{]/",
+  "/[\\}]/",
+  "/[\\|]/",
+  "/[\\/]/",
+  "/[\\a]/",
+  "/[\\u{2-\\u{1}]/",
+  "/[\\a-\\z]/",
+  "/[\\c0-\\u001f]/",
+  "/[\\c_]/",
+  "/^[a-zA-Z0-9!-/:-@\\[-`{-~]*$/",
+  "/^[ｧ-ﾝﾞﾟ\\-]*$/",
+]
+
 test("parse es2015 regex", () => {
   for (const [regex, ast] of Object.entries(tests)) {
-    expect(parse(regex)).toEqual(ast)
+    expect(parse(regex, { idGenerator: () => "" })).toEqual(ast)
   }
 })
 
 test("gen es2015 regex by ast", () => {
-  for (const [regex, ast] of Object.entries(tests)) {
+  const genTests = { ...tests }
+  withoutGenRegex.forEach((regex) => {
+    delete genTests[regex]
+  })
+  for (const [regex, ast] of Object.entries(genTests)) {
     expect(gen(ast)).toEqual(regex)
   }
 })

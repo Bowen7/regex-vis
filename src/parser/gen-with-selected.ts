@@ -6,12 +6,9 @@ class CodeGenWithSelected extends CodeGen {
   private tailId = ""
   public startIndex = 0
   public endIndex = 0
-  constructor(
-    ast: AST.Regex | AST.Node[],
-    selectedIds: string[],
-    { escapeSlash = false, isLiteral = false } = {}
-  ) {
-    super(ast, { escapeSlash, isLiteral })
+  constructor(ast: AST.Regex, selectedIds: string[]) {
+    const { escapeBackslash, literal } = ast
+    super(ast, { escapeBackslash, literal })
     if (selectedIds.length > 0) {
       this.headId = selectedIds[0]
       this.tailId = selectedIds[selectedIds.length - 1]
@@ -29,15 +26,8 @@ class CodeGenWithSelected extends CodeGen {
   }
 }
 
-export const genWithSelected = (
-  ast: AST.Regex | AST.Node[],
-  selectedIds: string[],
-  { escapeSlash = false, isLiteral = false } = {}
-) => {
-  const codeGen = new CodeGenWithSelected(ast, selectedIds, {
-    escapeSlash,
-    isLiteral,
-  })
+export const genWithSelected = (ast: AST.Regex, selectedIds: string[]) => {
+  const codeGen = new CodeGenWithSelected(ast, selectedIds)
   const regex = codeGen.gen()
   return { regex, startIndex: codeGen.startIndex, endIndex: codeGen.endIndex }
 }

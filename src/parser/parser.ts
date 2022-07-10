@@ -33,9 +33,8 @@ export class Parser {
     if (!this.validate()) {
       return { type: "error", message: this.message }
     }
-    this.lexer = new Lexer(this.regex)
+    this.lexer = new Lexer(this.regex, this.escapeBackslash)
 
-    this.lexer.read()
     const body = this.parseNodes()
     return {
       id: this.id(),
@@ -129,10 +128,12 @@ export class Parser {
           break
         }
         case TokenType.BackReference: {
+          const refStart =
+            this.regex[start + 1] === "\\" ? start + 2 : start + 1
           const ref =
-            this.regex[start + 1] === "k"
-              ? this.regex.slice(start + 3, end - 1)
-              : this.regex.slice(start + 1, end)
+            this.regex[refStart] === "k"
+              ? this.regex.slice(refStart + 2, end - 1)
+              : this.regex.slice(refStart, end)
           nodes.push({
             id: this.id(),
             type: "backReference",
@@ -171,7 +172,7 @@ export class Parser {
           break
         }
         case TokenType.EscapedChar: {
-          const value = this.regex.slice(start + 1, end)
+          const value = this.regex.slice(end - 1, end)
           const quantifier = this.parseQuantifier()
           pushCharacterString(value, quantifier)
           break
@@ -347,11 +348,10 @@ export class Parser {
     if (start !== 0 || end === 0) {
       return false
     }
-    try {
-      const flags = this.regex.slice(end + 1)
-      new RegExp("", flags)
-      return true
-    } catch (error) {}
-    return false
+    const flags = this.regex.slice(end + 1)
+    new RegExp("", flags)
+    this.flags = flags.split("") as AST.Flag[]
+    this.regex = this.regex.slice(start + 1, end)
+    return true
   }
 }
