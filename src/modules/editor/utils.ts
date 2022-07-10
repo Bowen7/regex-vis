@@ -98,11 +98,10 @@ export function getInfoFromNodes(ast: AST.Regex, nodes: AST.Node[]): NodesInfo {
   if (nodes.length === 0) {
     return genInitialNodesInfo()
   }
-  const { regex, startIndex, endIndex } = genWithSelected(
-    ast,
-    [nodes[0].id, nodes[nodes.length - 1].id],
-    { escapeSlash: ast.withSlash, isLiteral: ast.withSlash }
-  )
+  const { regex, startIndex, endIndex } = genWithSelected(ast, [
+    nodes[0].id,
+    nodes[nodes.length - 1].id,
+  ])
   const group = getGroupInfo(nodes)
   const content = getContentInfo(nodes)
   const quantifierInfo = getQuantifierInfo(nodes)

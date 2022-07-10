@@ -270,8 +270,8 @@ test("parse should return correct ast when receiving '\\1'", () => {
       {
         id: "",
         type: "character",
-        kind: "class",
-        value: "\\u0001",
+        kind: "string",
+        value: "1",
         quantifier: null,
       },
     ],
@@ -345,101 +345,6 @@ test("parse should return correct ast when receiving '\\\\1'", () => {
   ).toEqual(expected1)
   expect(
     parse("\\\\1", {
-      idGenerator: () => "",
-    })
-  ).toEqual(expected2)
-})
-
-test("parse should return correct ast when receiving '\\123'", () => {
-  const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
-    body: [
-      {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\u0053",
-        quantifier: null,
-      },
-    ],
-    flags: [],
-    literal: false,
-    escapeBackslash: true,
-  }
-  const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
-    body: [
-      {
-        id: "",
-        type: "backReference",
-        ref: "123",
-      },
-    ],
-    flags: [],
-    literal: false,
-    escapeBackslash: false,
-  }
-  expect(
-    parse("\\123", {
-      idGenerator: () => "",
-      escapeBackslash: true,
-    })
-  ).toEqual(expected1)
-  expect(
-    parse("\\123", {
-      idGenerator: () => "",
-    })
-  ).toEqual(expected2)
-})
-
-test("parse should return correct ast when receiving '\\1234'", () => {
-  const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
-    body: [
-      {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\u0053",
-        quantifier: null,
-      },
-      {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "4",
-        quantifier: null,
-      },
-    ],
-    flags: [],
-    literal: false,
-    escapeBackslash: true,
-  }
-  const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
-    body: [
-      {
-        id: "",
-        type: "backReference",
-        ref: "1234",
-      },
-    ],
-    flags: [],
-    literal: false,
-    escapeBackslash: false,
-  }
-  expect(
-    parse("\\1234", {
-      idGenerator: () => "",
-      escapeBackslash: true,
-    })
-  ).toEqual(expected1)
-  expect(
-    parse("\\1234", {
       idGenerator: () => "",
     })
   ).toEqual(expected2)

@@ -4,6 +4,7 @@ export type Regex = {
   body: Node[]
   flags: Flag[]
   literal: boolean
+  escapeBackslash: boolean
 }
 
 export type RegexError = {

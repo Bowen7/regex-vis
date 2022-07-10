@@ -13,7 +13,9 @@ export const normalCharacter = /[()[|\\.^$?+*]|\{(\d+)(,|,(\d+))?\}/
 export const characterClass =
   /^\\(?:[dDwWsStrnvf0]|c[A-Za-z]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4})/
 export const withEscapedBackslashCharacterClass =
-  /^(\\{1,2}(?:[trnvf0]||x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}))|(\\{2}(?:[dDwWsS]|c[A-Za-z]))/
+  /^(?:\\{1,2}(?:[trnvf0]||x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}))|(\\{2}(?:[dDwWsS]|c[A-Za-z]))/
 export const backReference = /^\\(\d+|k<(\w+)>)/
 export const withEscapedBackslashWordBoundary = /^\\\\[bB]/
 export const wordBoundary = /^\\[bB]/
+export const escapeSequences =
+  /^\\(?:[0nrtbfv]|u[0-9A-Fa-f]{4}|x[0-9A-Fa-f]{2}|\u{[0-9A-Fa-f]{1,6}})/
