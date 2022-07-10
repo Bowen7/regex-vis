@@ -8,25 +8,32 @@ const lookAroundMap = {
 
 export class CodeGen {
   protected ast: AST.Regex | AST.Node[]
-  protected isLiteral = false
-  protected escapeSlash = false
+  protected literal = false
+  protected escapeBackslash = false
   protected regex = ""
   constructor(
     ast: AST.Regex | AST.Node[],
-    { escapeSlash = false, isLiteral = false } = {}
+    { literal = false, escapeBackslash = false } = {}
   ) {
     this.ast = ast
-    this.isLiteral = isLiteral
-    this.escapeSlash = escapeSlash
+    this.literal = literal
+    if (!Array.isArray(ast)) {
+      this.literal = this.literal || ast.literal
+    }
+    this.escapeBackslash = escapeBackslash
+  }
+
+  get backslash() {
+    return this.escapeBackslash ? "\\\\" : "\\"
   }
 
   gen() {
     const nodes = Array.isArray(this.ast) ? this.ast : this.ast.body
-    if (this.isLiteral) {
+    if (this.literal) {
       this.regex += "/"
     }
     this.genNodes(nodes)
-    if (this.isLiteral) {
+    if (this.literal) {
       this.regex += "/"
       this.genFlags()
     }
@@ -104,10 +111,8 @@ export class CodeGen {
 
   prefix(value: string) {
     return value.replace(
-      this.isLiteral || this.escapeSlash
-        ? /[|\\{}()[\]^$+*?./]/g
-        : /[|\\{}()[\]^$+*?.]/g,
-      "\\$&"
+      this.literal ? /[|\\{}()[\]^$+*?./]/g : /[|\\{}()[\]^$+*?.]/g,
+      this.backslash + "$&"
     )
   }
 
@@ -118,17 +123,17 @@ export class CodeGen {
         let str = ""
         ranges.forEach(({ from, to }, index) => {
           if (from === "]" || from === "\\") {
-            from = "\\" + from
+            from = this.backslash + from
           }
           if (to === "]" || to === "\\") {
-            to = "\\" + to
+            to = this.backslash + to
           }
           if (!(index === 0 || index === ranges.length - 1)) {
             if (from === "-") {
-              from = "\\-"
+              from = this.backslash + "-"
             }
             if (to === "-") {
-              to = "\\-"
+              to = this.backslash + "-"
             }
           }
           if (from !== to) {
@@ -197,7 +202,7 @@ export class CodeGen {
         this.regex += "$"
         break
       case "word":
-        this.regex += node.negate ? "\\B" : "\\b"
+        this.regex += this.backslash + (node.negate ? "B" : "b")
         break
       default:
         break
@@ -214,18 +219,18 @@ export class CodeGen {
   genBackReference(node: AST.BackReferenceNode) {
     const { ref } = node
     if (digitRegex.test(ref)) {
-      this.regex += `\\${ref}`
+      this.regex += this.backslash + ref
     } else {
-      this.regex += `\\k<${ref}>`
+      this.regex += this.backslash + `k<${ref}>`
     }
   }
 }
 
 const gen = (
   ast: AST.Regex | AST.Node[],
-  { escapeSlash = false, isLiteral = false } = {}
+  { escapeBackslash = false, literal = false } = {}
 ) => {
-  const codeGen = new CodeGen(ast, { escapeSlash, isLiteral })
+  const codeGen = new CodeGen(ast, { escapeBackslash, literal })
   return codeGen.gen()
 }
 

@@ -1,12 +1,13 @@
 import parse from "../parse"
 import * as AST from "../ast"
 test("parse should return correct ast when receiving a empty string", () => {
-  const expected = {
+  const expected: AST.Regex = {
     id: "",
     type: "regex",
     body: [],
     flags: [],
     literal: false,
+    escapeBackslash: true,
   }
   const result = parse("", { idGenerator: () => "", escapeBackslash: true })
   expect(result).toEqual(expected)
@@ -50,7 +51,7 @@ test("parse should return correct ast when receiving '\\\\n'", () => {
     ],
     flags: [],
     literal: false,
-    escapeBackslash: true,
+    escapeBackslash: false,
   }
   expect(
     parse("\\\\n", {
@@ -224,7 +225,7 @@ test("parse should return correct ast when receiving '\\.'", () => {
       {
         id: "",
         type: "character",
-        kind: "class",
+        kind: "string",
         value: ".",
         quantifier: null,
       },
@@ -250,13 +251,13 @@ test("parse should return correct ast when receiving '\\.'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\a", {
+    parse("\\.", {
       idGenerator: () => "",
       escapeBackslash: true,
     })
   ).toEqual(expected1)
   expect(
-    parse("\\a", {
+    parse("\\.", {
       idGenerator: () => "",
     })
   ).toEqual(expected2)

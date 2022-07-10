@@ -1,7 +1,8 @@
 import parse from "../parse"
+import * as AST from "../ast"
 
 test("parse should return correct ast when receiving lookbehind assertion", () => {
-  const expected = {
+  const expected: AST.Regex = {
     id: "",
     type: "regex",
     body: [
@@ -23,13 +24,14 @@ test("parse should return correct ast when receiving lookbehind assertion", () =
     ],
     flags: [],
     literal: true,
+    escapeBackslash: false,
   }
   const result = parse("/(?<=a)/", { idGenerator: () => "" })
   expect(result).toEqual(expected)
 })
 
 test("parse should return correct ast when receiving negate lookbehind assertion", () => {
-  const expected = {
+  const expected: AST.Regex = {
     id: "",
     type: "regex",
     body: [
@@ -51,6 +53,7 @@ test("parse should return correct ast when receiving negate lookbehind assertion
     ],
     flags: [],
     literal: true,
+    escapeBackslash: false,
   }
   const result = parse("/(?<!a)/", { idGenerator: () => "" })
   expect(result).toEqual(expected)
@@ -97,6 +100,7 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       ],
       flags: [],
       literal: true,
+      escapeBackslash: false,
     },
     "/(?<a>(?<=\\w{3}))f/": {
       id: "",
@@ -137,6 +141,7 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       ],
       flags: [],
       literal: true,
+      escapeBackslash: false,
     },
     "/(?<!(?<a>\\d){3})f/": {
       id: "",
@@ -177,6 +182,7 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       ],
       flags: [],
       literal: true,
+      escapeBackslash: false,
     },
     "/(?<a>(?<!\\D{3}))f|f/": {
       id: "",
@@ -239,6 +245,7 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       ],
       flags: [],
       literal: true,
+      escapeBackslash: false,
     },
   }
   for (const [pattern, expected] of Object.entries(cases)) {
