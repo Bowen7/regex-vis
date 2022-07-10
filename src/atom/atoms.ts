@@ -14,7 +14,8 @@ export const astAtom = atomWithImmer<AST.Regex>({
   type: "regex",
   body: [],
   flags: [],
-  withSlash: true,
+  literal: false,
+  escapeBackslash: false,
 })
 
 export const selectedIdsAtom = atom<string[]>([])

@@ -53,7 +53,7 @@ const Home: React.FC<{}> = () => {
       shouldParseRegex.current = true
       return
     }
-    const ast = parse(regex, isLiteral)
+    const ast = parse(regex)
     clearSelected()
     if (ast.type === "regex") {
       setErrorMsg(null)
@@ -81,10 +81,7 @@ const Home: React.FC<{}> = () => {
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
-      const nextRegex = gen(ast, {
-        escapeSlash: ast.withSlash,
-        isLiteral: ast.withSlash,
-      })
+      const nextRegex = gen(ast)
       if (nextRegex !== regexRef.current) {
         setRegex(nextRegex)
         shouldParseRegex.current = false

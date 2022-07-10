@@ -4,6 +4,7 @@ import * as patterns from "./patterns"
 import * as dict from "./dict"
 import Lexer from "./lexer"
 import { TokenType } from "./token"
+import { removeBackslash } from "./backslash"
 
 export type Options = {
   escapeBackslash?: boolean
@@ -42,6 +43,7 @@ export class Parser {
       body,
       flags: this.flags,
       literal: this.literal,
+      escapeBackslash: this.escapeBackslash,
     }
   }
 
@@ -324,9 +326,12 @@ export class Parser {
     try {
       if (this.validateAsLiteral()) {
         this.literal = true
-        return true
       }
-      new RegExp(this.regex)
+      let regex = this.regex
+      if (this.escapeBackslash) {
+        regex = removeBackslash(regex)
+      }
+      new RegExp(regex)
     } catch (error) {
       if (error instanceof Error) {
         this.message = error.message

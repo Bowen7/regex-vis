@@ -19,7 +19,7 @@ class Lexer {
 
   get characterClassPattern() {
     return this.escapeBackslash
-      ? patterns.allowEscapedBackslashCharacterClass
+      ? patterns.withEscapedBackslashCharacterClass
       : patterns.characterClass
   }
 
@@ -71,6 +71,23 @@ class Lexer {
 
   readBackslash(range = false): Token {
     const start = this.index
+    if (this.escapeBackslash) {
+      // character escape sequences
+      const matches = this.readByRegex(patterns.escapeSequences)
+      if (matches) {
+        return {
+          type: TokenType.CharacterClass,
+          span: { start, end: this.index },
+        }
+      }
+      if (this.curRegex[1] !== "\\") {
+        return {
+          type: TokenType.EscapedChar,
+          span: { start, end: this.advance(2) },
+        }
+      }
+      this.advance(1)
+    }
     const matches = this.readByRegex(this.characterClassPattern)
     if (matches) {
       return {
