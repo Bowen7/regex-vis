@@ -57,7 +57,7 @@ class Lexer {
   }
 
   readBackslash(range = false): Token {
-    const start = this.index
+    let start = this.index
     if (this.escapeBackslash) {
       // character escape sequences
       const matches = this.readByRegex(patterns.escapeSequences)
@@ -74,6 +74,7 @@ class Lexer {
         }
       }
       this.advance(1)
+      start++
     }
     const matches = this.readByRegex(patterns.characterClass)
     if (matches) {
@@ -83,25 +84,18 @@ class Lexer {
       }
     }
     if (range) {
-      if (this.escapeBackslash && this.curRegex[1] === "\\b") {
-        return {
-          type: TokenType.CharacterClass,
-          span: { start, end: this.advance(3) },
-        }
-      }
-      if (!this.escapeBackslash && this.curRegex[1] === "b") {
+      if (this.curRegex[1] === "b") {
         return {
           type: TokenType.CharacterClass,
           span: { start, end: this.advance(2) },
         }
       }
-      if (this.curRegex[1] === "\\b") {
-      }
     } else {
-      if (this.readByRegex(patterns.wordBoundary)) {
+      const curRegex = this.curRegex
+      if (curRegex[1] === "b" || curRegex[1] === "B") {
         return {
           type: TokenType.Assertion,
-          span: { start, end: this.index },
+          span: { start, end: this.advance(2) },
         }
       }
       if (this.readByRegex(patterns.backReference)) {

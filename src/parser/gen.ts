@@ -17,14 +17,19 @@ export class CodeGen {
   ) {
     this.ast = ast
     this.literal = literal
+    this.escapeBackslash = escapeBackslash
     if (!Array.isArray(ast)) {
       this.literal = this.literal || ast.literal
+      this.escapeBackslash = this.escapeBackslash || ast.escapeBackslash
     }
-    this.escapeBackslash = escapeBackslash
   }
 
   get backslash() {
     return this.escapeBackslash ? "\\\\" : "\\"
+  }
+
+  get characterClassPrefix() {
+    return this.escapeBackslash ? "\\" : ""
   }
 
   gen() {
@@ -148,7 +153,10 @@ export class CodeGen {
         this.regex += this.prefix(node.value)
         break
       case "class":
-        this.regex += node.value
+        this.regex +=
+          node.value === "."
+            ? node.value
+            : this.characterClassPrefix + node.value
         break
       default:
         break

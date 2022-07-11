@@ -128,12 +128,10 @@ export class Parser {
           break
         }
         case TokenType.BackReference: {
-          const refStart =
-            this.regex[start + 1] === "\\" ? start + 2 : start + 1
           const ref =
-            this.regex[refStart] === "k"
-              ? this.regex.slice(refStart + 2, end - 1)
-              : this.regex.slice(refStart, end)
+            this.regex[start + 1] === "k"
+              ? this.regex.slice(start + 3, end - 1)
+              : this.regex.slice(start + 1, end)
           nodes.push({
             id: this.id(),
             type: "backReference",
