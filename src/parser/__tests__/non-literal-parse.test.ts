@@ -22,7 +22,7 @@ test("parse should return correct ast when receiving '\\\\n'", () => {
         id: "",
         type: "character",
         kind: "class",
-        value: "\\\\n",
+        value: "\\n",
         quantifier: null,
       },
     ],
@@ -134,7 +134,7 @@ test("parse should return correct ast when receiving '\\\\d'", () => {
         id: "",
         type: "character",
         kind: "class",
-        value: "\\\\d",
+        value: "\\d",
         quantifier: null,
       },
     ],
@@ -349,4 +349,25 @@ test("parse should return correct ast when receiving '\\\\1'", () => {
       idGenerator: () => "",
     })
   ).toEqual(expected2)
+})
+
+test("parse character class should return correct ast when escapedBackslash = true", () => {
+  expect(
+    parse("\\\\d", { idGenerator: () => "", escapeBackslash: true })
+  ).toEqual({
+    id: "",
+    type: "regex",
+    body: [
+      {
+        id: "",
+        type: "character",
+        kind: "class",
+        value: "\\d",
+        quantifier: null,
+      },
+    ],
+    flags: [],
+    literal: false,
+    escapeBackslash: true,
+  })
 })
