@@ -15,7 +15,7 @@ const TestTab = () => {
   const [cases, setCases] = useLocalStorage<string[]>("test-case", [""])
   const ast = useAtomValue(astAtom)
   const regExp = useMemo(() => {
-    const regex = gen(ast)
+    const regex = gen(ast, { literal: true, escapeBackslash: false })
     return new RegExp(regex, ast.flags.join(""))
   }, [ast])
 

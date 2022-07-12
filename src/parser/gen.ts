@@ -6,6 +6,11 @@ const lookAroundMap = {
   lookbehind: ["(?<=", "(?<!"],
 }
 
+type Options = {
+  literal?: boolean
+  escapeBackslash?: boolean
+}
+
 export class CodeGen {
   protected ast: AST.Regex | AST.Node[]
   protected literal = false
@@ -13,14 +18,18 @@ export class CodeGen {
   protected regex = ""
   constructor(
     ast: AST.Regex | AST.Node[],
-    { literal = false, escapeBackslash = false } = {}
+    { literal, escapeBackslash }: Options = {}
   ) {
     this.ast = ast
-    this.literal = literal
-    this.escapeBackslash = escapeBackslash
     if (!Array.isArray(ast)) {
-      this.literal = this.literal || ast.literal
-      this.escapeBackslash = this.escapeBackslash || ast.escapeBackslash
+      this.literal = ast.literal
+      this.escapeBackslash = ast.escapeBackslash
+    }
+    if (literal !== undefined) {
+      this.literal = literal
+    }
+    if (escapeBackslash !== undefined) {
+      this.escapeBackslash = escapeBackslash
     }
   }
 
@@ -236,7 +245,7 @@ export class CodeGen {
 
 const gen = (
   ast: AST.Regex | AST.Node[],
-  { escapeBackslash = false, literal = false } = {}
+  { escapeBackslash, literal }: Options = {}
 ) => {
   const codeGen = new CodeGen(ast, { escapeBackslash, literal })
   return codeGen.gen()
