@@ -33,10 +33,8 @@ const Home: React.FC<{}> = () => {
   const [regex, setRegex, regexRef] = useCurrentState<string>(
     () => searchParams.get("r") || ""
   )
-  const [isLiteral, setIsLiteral] = useState(
-    () =>
-      searchParams.get("l") === "1" || localStorage.getItem("isLiteral") === "1"
-  )
+
+  const literal = ast.literal
 
   useEffect(() => {
     setToasts(toasts)
@@ -62,22 +60,16 @@ const Home: React.FC<{}> = () => {
     } else {
       setErrorMsg(ast.message)
     }
-  }, [regex, isLiteral, setAst, clearSelected])
+  }, [regex, setAst, clearSelected])
 
   useEffect(() => {
     // update url search
-    const nextParams: { r?: string; l?: string } = {}
+    const nextParams: { r?: string } = {}
     if (regex !== "") {
       nextParams.r = regex
     }
-    if (isLiteral) {
-      nextParams.l = "1"
-      localStorage.setItem("isLiteral", "1")
-    } else {
-      localStorage.removeItem("isLiteral")
-    }
     setSearchParams(nextParams)
-  }, [regex, setSearchParams, isLiteral])
+  }, [regex, setSearchParams])
 
   useUpdateEffect(() => {
     if (shouldGenAst.current) {
@@ -108,14 +100,13 @@ const Home: React.FC<{}> = () => {
         )}
         <RegexInput
           regex={regex}
-          isLiteral={isLiteral}
+          literal={literal}
           flags={ast.flags}
           onChange={setRegex}
-          onIsLiteralChange={setIsLiteral}
           onFlagsChange={handleFlagsChange}
         />
       </div>
-      {regex !== null && <Editor isLiteral={isLiteral} />}
+      {regex !== null && <Editor />}
       <style jsx>{`
         .wrapper {
           width: calc(100% - 275px);

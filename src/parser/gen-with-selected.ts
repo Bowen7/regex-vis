@@ -7,8 +7,7 @@ class CodeGenWithSelected extends CodeGen {
   public startIndex = 0
   public endIndex = 0
   constructor(ast: AST.Regex, selectedIds: string[]) {
-    const { escapeBackslash, literal } = ast
-    super(ast, { escapeBackslash, literal })
+    super(ast)
     if (selectedIds.length > 0) {
       this.headId = selectedIds[0]
       this.tailId = selectedIds[selectedIds.length - 1]
