@@ -3,7 +3,7 @@ import { useSearchParams } from "react-router-dom"
 import { useTheme, useToasts } from "@geist-ui/core"
 import { useAtomValue, useSetAtom, useAtom } from "jotai"
 import { parse, gen } from "@/parser"
-import { useUpdateEffect } from "react-use"
+import { useUpdateEffect, useLocalStorage } from "react-use"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import { useCurrentState } from "@/utils/hooks"
@@ -26,6 +26,10 @@ const Home: React.FC<{}> = () => {
   const { palette } = useTheme()
   const toasts = useToasts()
 
+  const [escapeBackslash, setEscapeBackslash] = useLocalStorage(
+    "escape-backslash",
+    false
+  )
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
 
@@ -34,7 +38,7 @@ const Home: React.FC<{}> = () => {
     () => searchParams.get("r") || ""
   )
 
-  const literal = ast.literal
+  const { literal } = ast
 
   useEffect(() => {
     setToasts(toasts)
@@ -51,7 +55,7 @@ const Home: React.FC<{}> = () => {
       shouldParseRegex.current = true
       return
     }
-    const ast = parse(regex)
+    const ast = parse(regex, { escapeBackslash })
     clearSelected()
     if (ast.type === "regex") {
       setErrorMsg(null)
@@ -60,7 +64,7 @@ const Home: React.FC<{}> = () => {
     } else {
       setErrorMsg(ast.message)
     }
-  }, [regex, setAst, clearSelected])
+  }, [regex, escapeBackslash, setAst, clearSelected])
 
   useEffect(() => {
     // update url search
@@ -87,6 +91,9 @@ const Home: React.FC<{}> = () => {
 
   const handleFlagsChange = (flags: string[]) => updateFlags(flags)
 
+  const handleEscapeBackslashChange = (escapeBackslash: boolean) =>
+    setEscapeBackslash(escapeBackslash)
+
   const graphShow = regex !== "" || (ast.body.length > 0 && !errorMsg)
   return (
     <>
@@ -101,9 +108,11 @@ const Home: React.FC<{}> = () => {
         <RegexInput
           regex={regex}
           literal={literal}
+          escapeBackslash={escapeBackslash!}
           flags={ast.flags}
           onChange={setRegex}
           onFlagsChange={handleFlagsChange}
+          onEscapeBackslashChange={handleEscapeBackslashChange}
         />
       </div>
       {regex !== null && <Editor />}

@@ -101,5 +101,9 @@
   "2. Decimal Numbers": "2. 小数",
   "3. Whole + Decimal Numbers": "3. 整数 + 小数",
   "4. Negative, Positive Whole + Decimal Numbers": "4. 正负 整数 + 小数",
-  "6. Date Format YYYY-MM-dd": "6. 日期格式 YYYY-MM-dd"
+  "6. Date Format YYYY-MM-dd": "6. 日期格式 YYYY-MM-dd",
+  "Flags: ": "标志: ",
+  "Allows . to match newline": "允许 . 匹配换行符",
+  "Settings: ": "设置: ",
+  "include escape ": "包括转义 "
 }
