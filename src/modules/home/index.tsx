@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
-import { useTheme, useToasts } from "@geist-ui/core"
+import { useTheme, useToasts, useClipboard } from "@geist-ui/core"
 import { useAtomValue, useSetAtom, useAtom } from "jotai"
 import { parse, gen } from "@/parser"
 import { useUpdateEffect, useLocalStorage } from "react-use"
+import { useTranslation } from "react-i18next"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import { useCurrentState } from "@/utils/hooks"
@@ -24,7 +25,9 @@ const Home: React.FC<{}> = () => {
   const updateFlags = useSetAtom(updateFlagsAtom)
   const setToasts = useSetAtom(toastsAtom)
   const { palette } = useTheme()
+  const { t } = useTranslation()
   const toasts = useToasts()
+  const { copy } = useClipboard()
 
   const [escapeBackslash, setEscapeBackslash] = useLocalStorage(
     "escape-backslash",
@@ -48,7 +51,13 @@ const Home: React.FC<{}> = () => {
     if (searchParams.get("r") === null) {
       setRegex("")
     }
-  }, [searchParams, setRegex])
+    if (searchParams.get("e") === "1") {
+      const nextSearchParams = new URLSearchParams(searchParams)
+      nextSearchParams.delete("e")
+      setEscapeBackslash(true)
+      setSearchParams(nextSearchParams)
+    }
+  }, [searchParams, setRegex, setSearchParams, setEscapeBackslash])
 
   useEffect(() => {
     if (!shouldParseRegex.current) {
@@ -94,6 +103,18 @@ const Home: React.FC<{}> = () => {
   const handleEscapeBackslashChange = (escapeBackslash: boolean) =>
     setEscapeBackslash(escapeBackslash)
 
+  const handleCopyPermalink = () => {
+    const nextSearchParams = new URLSearchParams(searchParams)
+    if (escapeBackslash) {
+      nextSearchParams.set("e", "1")
+    } else {
+      nextSearchParams.set("e", "0")
+    }
+    const permalink = `${window.location.origin}?${nextSearchParams.toString()}`
+    copy(permalink)
+    toasts.setToast({ text: t("Permalink copied.") })
+  }
+
   const graphShow = regex !== "" || (ast.body.length > 0 && !errorMsg)
   return (
     <>
@@ -113,6 +134,7 @@ const Home: React.FC<{}> = () => {
           onChange={setRegex}
           onFlagsChange={handleFlagsChange}
           onEscapeBackslashChange={handleEscapeBackslashChange}
+          onCopy={handleCopyPermalink}
         />
       </div>
       {regex !== null && <Editor />}
