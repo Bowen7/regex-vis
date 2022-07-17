@@ -24,7 +24,8 @@ test("update flags", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
   })
 
@@ -45,7 +46,8 @@ test("update flags", async () => {
       },
     ],
     flags: ["g", "i"],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
 })

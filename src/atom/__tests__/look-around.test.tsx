@@ -29,7 +29,8 @@ test("look around assertion selected", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -61,7 +62,8 @@ test("look around assertion selected", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["3"])
@@ -98,7 +100,8 @@ test("update look around assertion", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["3"])
@@ -129,7 +132,8 @@ test("update look around assertion", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["3"])
@@ -166,7 +170,8 @@ test("unLookAround", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["3"])
@@ -189,7 +194,8 @@ test("unLookAround", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["2"])

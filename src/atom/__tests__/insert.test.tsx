@@ -27,7 +27,8 @@ test("insert prev", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -58,7 +59,8 @@ test("insert prev", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["2"])
@@ -85,7 +87,8 @@ test("insert next", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -116,7 +119,8 @@ test("insert next", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["2"])
@@ -143,7 +147,8 @@ test("insert as branch", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -186,7 +191,8 @@ test("insert as branch", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["2"])

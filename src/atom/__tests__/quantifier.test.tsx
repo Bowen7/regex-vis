@@ -29,7 +29,8 @@ test("update quantifier", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -62,7 +63,8 @@ test("update quantifier", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
 })
@@ -90,7 +92,8 @@ test("add quantifier when string node value.length > 1", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -132,7 +135,8 @@ test("add quantifier when string node value.length > 1", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
 })
@@ -165,7 +169,8 @@ test("remove quantifier", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -188,7 +193,8 @@ test("remove quantifier", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
 })
