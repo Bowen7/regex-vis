@@ -31,12 +31,13 @@ const Editor = () => {
   const { t } = useTranslation()
 
   useEffect(() => {
-    if (selectedIds.length === 0) {
-      setTabValue("legend")
-    } else {
+    if (selectedIds.length > 0 && tabValue !== "edit") {
       setTabValue("edit")
     }
-  }, [selectedIds])
+    if (selectedIds.length === 0 && tabValue === "edit") {
+      setTabValue("legend")
+    }
+  }, [selectedIds, tabValue])
 
   const editDisabled = selectedIds.length === 0
 
