@@ -1,5 +1,6 @@
 import React from "react"
-import { Spacer, Checkbox, Code } from "@geist-ui/core"
+import { Spacer, Checkbox, Code, Button, Tooltip } from "@geist-ui/core"
+import Link from "@geist-ui/icons/link"
 import { useTranslation } from "react-i18next"
 import Input from "@/components/input"
 import { CheckboxEvent } from "@geist-ui/core/esm/checkbox"
@@ -11,6 +12,7 @@ type Props = {
   onChange: (regex: string) => void
   onFlagsChange: (flags: string[]) => void
   onEscapeBackslashChange: (escapeBackslash: boolean) => void
+  onCopy: () => void
 }
 const RegexInput: React.FC<Props> = ({
   regex,
@@ -20,6 +22,7 @@ const RegexInput: React.FC<Props> = ({
   onChange,
   onFlagsChange,
   onEscapeBackslashChange,
+  onCopy,
 }) => {
   const { t } = useTranslation()
   const handleFlagsChange = (flags: string[]) => {
@@ -32,14 +35,26 @@ const RegexInput: React.FC<Props> = ({
     <>
       <div className="wrapper">
         <div className="content">
-          <Input
-            data-testid="regex-input"
-            value={regex === null ? "" : regex}
-            width="100%"
-            placeholder={t("Input a regular expression")}
-            labelRight={literal ? "" : flagStr}
-            onChange={onChange}
-          />
+          <div className="input-wrapper">
+            <Input
+              data-testid="regex-input"
+              value={regex === null ? "" : regex}
+              width="100%"
+              placeholder={t("Input a regular expression")}
+              labelRight={literal ? "" : flagStr}
+              onChange={onChange}
+            />
+            <Spacer w={0.5} />
+            <Tooltip text={t("Copy permalink")}>
+              <Button
+                iconRight={<Link />}
+                auto
+                scale={2 / 3}
+                px={0.6}
+                onClick={onCopy}
+              />
+            </Tooltip>
+          </div>
           {regex !== "" && (
             <>
               <Spacer h={1} />
@@ -90,8 +105,15 @@ const RegexInput: React.FC<Props> = ({
           flex: 1;
           max-width: 900px;
         }
+        .input-wrapper {
+          display: flex;
+          align-items: center;
+        }
         .flags-settings {
           display: flex;
+        }
+        .flags-settings > :global(.group > .checkbox) {
+          margin-right: calc(calc(0.875 * 8px) * 2);
         }
       `}</style>
     </>
