@@ -3,11 +3,12 @@ import { useSearchParams } from "react-router-dom"
 import { useTheme, useToasts, useClipboard } from "@geist-ui/core"
 import { useAtomValue, useSetAtom, useAtom } from "jotai"
 import { parse, gen } from "@/parser"
-import { useUpdateEffect, useLocalStorage } from "react-use"
+import { useUpdateEffect, useLocalStorage, useEffectOnce } from "react-use"
 import { useTranslation } from "react-i18next"
 import Graph from "@/modules/graph"
 import Editor from "@/modules/editor"
 import { useCurrentState } from "@/utils/hooks"
+import { genPermalink } from "@/utils/helpers"
 import {
   editorCollapsedAtom,
   astAtom,
@@ -33,6 +34,7 @@ const Home: React.FC<{}> = () => {
     "escape-backslash",
     false
   )
+  const [, setCases] = useLocalStorage<string[]>("test-case", [""])
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
 
@@ -51,13 +53,26 @@ const Home: React.FC<{}> = () => {
     if (searchParams.get("r") === null) {
       setRegex("")
     }
+  }, [searchParams, setRegex])
+
+  useEffectOnce(() => {
+    const nextSearchParams = new URLSearchParams(searchParams)
     if (searchParams.get("e") === "1") {
-      const nextSearchParams = new URLSearchParams(searchParams)
       nextSearchParams.delete("e")
       setEscapeBackslash(true)
-      setSearchParams(nextSearchParams)
     }
-  }, [searchParams, setRegex, setSearchParams, setEscapeBackslash])
+
+    if (searchParams.get("t")) {
+      try {
+        const cases = JSON.parse(searchParams.get("t") || "")
+        setCases(cases)
+      } catch (error) {
+        console.log(error)
+      }
+      nextSearchParams.delete("t")
+    }
+    setSearchParams(nextSearchParams)
+  })
 
   useEffect(() => {
     if (!shouldParseRegex.current) {
@@ -104,13 +119,7 @@ const Home: React.FC<{}> = () => {
     setEscapeBackslash(escapeBackslash)
 
   const handleCopyPermalink = () => {
-    const nextSearchParams = new URLSearchParams(searchParams)
-    if (escapeBackslash) {
-      nextSearchParams.set("e", "1")
-    } else {
-      nextSearchParams.set("e", "0")
-    }
-    const permalink = `${window.location.origin}?${nextSearchParams.toString()}`
+    const permalink = genPermalink(escapeBackslash!)
     copy(permalink)
     toasts.setToast({ text: t("Permalink copied.") })
   }

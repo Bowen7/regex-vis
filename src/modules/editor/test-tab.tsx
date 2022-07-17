@@ -1,17 +1,18 @@
 import React, { useMemo } from "react"
-import { Button, Spacer } from "@geist-ui/core"
+import { Button, Spacer, useToasts, useClipboard } from "@geist-ui/core"
 import Plus from "@geist-ui/icons/plus"
-// import Copy from "@geist-ui/icons/copy"
-// import { useTranslation } from "react-i18next"
+import Link from "@geist-ui/icons/link"
+import { useTranslation } from "react-i18next"
 import { useAtomValue } from "jotai"
 import { useLocalStorage } from "react-use"
 import produce from "immer"
 import TestItem from "@/components/test-item"
 import { gen } from "@/parser"
 import { astAtom } from "@/atom"
+import { genPermalink } from "@/utils/helpers"
 
 const TestTab = () => {
-  // const { t } = useTranslation()
+  const { t } = useTranslation()
   const [cases, setCases] = useLocalStorage<string[]>("test-case", [""])
   const ast = useAtomValue(astAtom)
   const regExp = useMemo(() => {
@@ -19,12 +20,14 @@ const TestTab = () => {
     return new RegExp(regex, ast.flags.join(""))
   }, [ast])
 
-  // const { setToast } = useToasts()
-  // const { copy } = useClipboard()
-  // const handleCopyPermalink = () => {
-  //   copy("hello, geist-ui")
-  //   setToast({ text: t("Permalink copied.") })
-  // }
+  const { setToast } = useToasts()
+  const { copy } = useClipboard()
+
+  const handleCopyPermalink = () => {
+    const permalink = genPermalink(ast.escapeBackslash, cases)
+    copy(permalink)
+    setToast({ text: t("Permalink copied.") })
+  }
 
   const handleChange = (value: string, index: number) => {
     setCases(
@@ -72,14 +75,14 @@ const TestTab = () => {
             px={0.6}
             onClick={handleAdd}
           />
-          {/* <Spacer w={1} />
+          <Spacer w={1} />
           <Button
-            iconRight={<Copy />}
+            iconRight={<Link />}
             auto
             scale={2 / 3}
             px={0.6}
             onClick={handleCopyPermalink}
-          /> */}
+          />
         </div>
       </div>
       <style jsx>{`
