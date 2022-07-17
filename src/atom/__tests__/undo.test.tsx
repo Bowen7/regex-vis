@@ -33,7 +33,8 @@ test("undo and redo", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
 
   const ast2: AST.Regex = {
@@ -49,7 +50,8 @@ test("undo and redo", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
 
   act(() => {

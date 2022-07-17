@@ -29,7 +29,8 @@ test("group selected", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -63,7 +64,8 @@ test("group selected", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["3"])
@@ -102,7 +104,8 @@ test("update group", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["3"])
@@ -133,7 +136,8 @@ test("update group", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["3"])
@@ -172,7 +176,8 @@ test("unGroup", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["3"])
@@ -195,7 +200,8 @@ test("unGroup", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
   expect(selectedIdsAtomRef.current[0]).toEqual(["2"])

@@ -25,7 +25,8 @@ test("remove selected", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["2"])
@@ -40,9 +41,11 @@ test("remove selected", async () => {
     type: "regex",
     body: [],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
+  expect(selectedIdsAtomRef.current[0]).toEqual([])
 })
 
 test("remove selected in a choice node", async () => {
@@ -83,7 +86,8 @@ test("remove selected in a choice node", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
 
     selectedIdsAtomRef.current[1](["3"])
@@ -106,7 +110,9 @@ test("remove selected in a choice node", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
   expect(astAtomRef.current[0]).toEqual(expected)
+  expect(selectedIdsAtomRef.current[0]).toEqual([])
 })

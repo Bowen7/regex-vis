@@ -29,7 +29,8 @@ test("update content", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
     setSelectedIdsRef.current(["2"])
   })
@@ -56,7 +57,8 @@ test("update content", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
 
   expect(astAtomRef.current[0]).toEqual(expected)
@@ -90,7 +92,8 @@ test("update a string node which has quantifier", async () => {
         },
       ],
       flags: [],
-      withSlash: true,
+      literal: true,
+      escapeBackslash: false,
     })
     setSelectedIdsRef.current(["2"])
   })
@@ -129,7 +132,8 @@ test("update a string node which has quantifier", async () => {
       },
     ],
     flags: [],
-    withSlash: true,
+    literal: true,
+    escapeBackslash: false,
   }
 
   expect(astAtomRef.current[0]).toEqual(expected)
