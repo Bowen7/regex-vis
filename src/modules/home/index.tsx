@@ -10,6 +10,13 @@ import Editor, { Tab } from "@/modules/editor"
 import { useCurrentState } from "@/utils/hooks"
 import { genPermalink } from "@/utils/helpers"
 import {
+  STORAGE_ESCAPE_BACKSLASH,
+  STORAGE_TEST_CASES,
+  SEARCH_PARAM_REGEX,
+  SEARCH_PARAM_TESTS,
+  SEARCH_PARAM_ESCAPE_BACKSLASH,
+} from "@/constants"
+import {
   editorCollapsedAtom,
   astAtom,
   clearSelectedAtom,
@@ -31,17 +38,17 @@ const Home = () => {
   const { copy } = useClipboard()
 
   const [escapeBackslash, setEscapeBackslash] = useLocalStorage(
-    "escape-backslash",
+    STORAGE_ESCAPE_BACKSLASH,
     false
   )
-  const [, setCases] = useLocalStorage<string[]>("test-case", [""])
+  const [, setCases] = useLocalStorage<string[]>(STORAGE_TEST_CASES, [""])
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
 
   const [editorDefaultTab, setEditorDefaultTab] = useState<Tab>("legend")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [regex, setRegex, regexRef] = useCurrentState<string>(
-    () => searchParams.get("r") || ""
+    () => searchParams.get(SEARCH_PARAM_REGEX) || ""
   )
 
   const { literal } = ast
@@ -51,21 +58,21 @@ const Home = () => {
   }, [toasts, setToasts])
 
   useEffect(() => {
-    if (searchParams.get("r") === null) {
+    if (searchParams.get(SEARCH_PARAM_REGEX) === null) {
       setRegex("")
     }
   }, [searchParams, setRegex])
 
   useEffectOnce(() => {
     const nextSearchParams = new URLSearchParams(searchParams)
-    if (searchParams.get("e") === "1") {
-      nextSearchParams.delete("e")
+    if (searchParams.get(SEARCH_PARAM_ESCAPE_BACKSLASH) === "1") {
       setEscapeBackslash(true)
     }
+    nextSearchParams.delete(SEARCH_PARAM_ESCAPE_BACKSLASH)
 
-    if (searchParams.get("t")) {
+    if (searchParams.get(SEARCH_PARAM_TESTS)) {
       try {
-        const cases = JSON.parse(searchParams.get("t") || "")
+        const cases = JSON.parse(searchParams.get(SEARCH_PARAM_TESTS) || "")
         if (Array.isArray(cases) && cases.length > 0) {
           setEditorDefaultTab("test")
           setCases(cases)
@@ -73,7 +80,7 @@ const Home = () => {
       } catch (error) {
         console.log(error)
       }
-      nextSearchParams.delete("t")
+      nextSearchParams.delete(SEARCH_PARAM_TESTS)
     }
     setSearchParams(nextSearchParams)
   })

@@ -1,4 +1,4 @@
-// GRAPH
+// graph
 export const GRAPH_TEXT_FONT_SIZE = 16
 export const GRAPH_TEXT_LIEN_HEIGHT = GRAPH_TEXT_FONT_SIZE * 1.5
 export const GRAPH_NODE_PADDING_VERTICAL = 4
@@ -23,3 +23,12 @@ export const GRAPH_PADDING_VERTICAL = 50
 export const GRAPH_PADDING_HORIZONTAL = 50
 export const GRAPH_WITHOUT_ROOT_PADDING_VERTICAL = 5
 export const GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL = 5
+
+// storage key
+export const STORAGE_TEST_CASES = "test-cases"
+export const STORAGE_ESCAPE_BACKSLASH = "escape-backslash"
+
+// url search param
+export const SEARCH_PARAM_REGEX = "r"
+export const SEARCH_PARAM_TESTS = "t"
+export const SEARCH_PARAM_ESCAPE_BACKSLASH = "e"
