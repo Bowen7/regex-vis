@@ -10,10 +10,11 @@ import TestItem from "@/components/test-item"
 import { gen } from "@/parser"
 import { astAtom } from "@/atom"
 import { genPermalink } from "@/utils/helpers"
+import { STORAGE_TEST_CASES } from "@/constants"
 
 const TestTab = () => {
   const { t } = useTranslation()
-  const [cases, setCases] = useLocalStorage<string[]>("test-case", [""])
+  const [cases, setCases] = useLocalStorage<string[]>(STORAGE_TEST_CASES, [""])
   const ast = useAtomValue(astAtom)
   const regExp = useMemo(() => {
     const regex = gen(ast, { literal: false, escapeBackslash: false })
