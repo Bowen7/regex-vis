@@ -7,7 +7,7 @@ import { useAtom, useSetAtom, useAtomValue } from "jotai"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
-import { useEvent } from "react-use"
+import { useEvent, useUpdateEffect } from "react-use"
 import {
   undoAtom,
   redoAtom,
@@ -16,19 +16,24 @@ import {
   editorCollapsedAtom,
 } from "@/atom"
 
-type Tab = "legend" | "edit" | "test"
-const Editor = () => {
+export type Tab = "legend" | "edit" | "test"
+type Props = { defaultTab: Tab }
+const Editor = ({ defaultTab }: Props) => {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const [editorCollapsed, setEditorCollapsed] = useAtom(editorCollapsedAtom)
   const remove = useSetAtom(removeAtom)
   const undo = useSetAtom(undoAtom)
   const redo = useSetAtom(redoAtom)
 
-  const [tabValue, setTabValue] = useState<Tab>("legend")
+  const [tabValue, setTabValue] = useState<Tab>(defaultTab)
 
   const { palette } = useTheme()
 
   const { t } = useTranslation()
+
+  useUpdateEffect(() => {
+    setTabValue(defaultTab)
+  }, [defaultTab])
 
   useEffect(() => {
     if (selectedIds.length > 0 && tabValue !== "edit") {

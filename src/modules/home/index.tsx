@@ -6,7 +6,7 @@ import { parse, gen } from "@/parser"
 import { useUpdateEffect, useLocalStorage, useEffectOnce } from "react-use"
 import { useTranslation } from "react-i18next"
 import Graph from "@/modules/graph"
-import Editor from "@/modules/editor"
+import Editor, { Tab } from "@/modules/editor"
 import { useCurrentState } from "@/utils/hooks"
 import { genPermalink } from "@/utils/helpers"
 import {
@@ -18,7 +18,7 @@ import {
 } from "@/atom"
 import RegexInput from "./regex-input"
 
-const Home: React.FC<{}> = () => {
+const Home = () => {
   const [searchParams, setSearchParams] = useSearchParams()
   const editorCollapsed = useAtomValue(editorCollapsedAtom)
   const [ast, setAst] = useAtom(astAtom)
@@ -38,6 +38,7 @@ const Home: React.FC<{}> = () => {
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
 
+  const [editorDefaultTab, setEditorDefaultTab] = useState<Tab>("legend")
   const [errorMsg, setErrorMsg] = useState<string | null>(null)
   const [regex, setRegex, regexRef] = useCurrentState<string>(
     () => searchParams.get("r") || ""
@@ -65,7 +66,10 @@ const Home: React.FC<{}> = () => {
     if (searchParams.get("t")) {
       try {
         const cases = JSON.parse(searchParams.get("t") || "")
-        setCases(cases)
+        if (Array.isArray(cases) && cases.length > 0) {
+          setEditorDefaultTab("test")
+          setCases(cases)
+        }
       } catch (error) {
         console.log(error)
       }
@@ -146,7 +150,7 @@ const Home: React.FC<{}> = () => {
           onCopy={handleCopyPermalink}
         />
       </div>
-      {regex !== null && <Editor />}
+      {regex !== null && <Editor defaultTab={editorDefaultTab} />}
       <style jsx>{`
         .wrapper {
           width: calc(100% - 275px);
