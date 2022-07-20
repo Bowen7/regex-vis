@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react"
+import React, { useEffect } from "react"
 import ChevronsRight from "@geist-ui/icons/chevronsRight"
 import ChevronsLeft from "@geist-ui/icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useAtom, useSetAtom, useAtomValue } from "jotai"
+import { useCurrentState } from "@/utils/hooks"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
@@ -25,7 +26,7 @@ const Editor = ({ defaultTab }: Props) => {
   const undo = useSetAtom(undoAtom)
   const redo = useSetAtom(redoAtom)
 
-  const [tabValue, setTabValue] = useState<Tab>(defaultTab)
+  const [tabValue, setTabValue, tabValueRef] = useCurrentState<Tab>(defaultTab)
 
   const { palette } = useTheme()
 
@@ -36,13 +37,13 @@ const Editor = ({ defaultTab }: Props) => {
   }, [defaultTab])
 
   useEffect(() => {
-    if (selectedIds.length > 0 && tabValue !== "edit") {
+    if (selectedIds.length > 0 && tabValueRef.current !== "edit") {
       setTabValue("edit")
     }
-    if (selectedIds.length === 0 && tabValue === "edit") {
+    if (selectedIds.length === 0 && tabValueRef.current === "edit") {
       setTabValue("legend")
     }
-  }, [selectedIds, tabValue])
+  }, [selectedIds, tabValueRef, setTabValue])
 
   const editDisabled = selectedIds.length === 0
 
