@@ -32,7 +32,7 @@ const Home = () => {
   const clearSelected = useSetAtom(clearSelectedAtom)
   const updateFlags = useSetAtom(updateFlagsAtom)
   const setToasts = useSetAtom(toastsAtom)
-  const { palette } = useTheme()
+  const { palette, type: themeType } = useTheme()
   const { t } = useTranslation()
   const toasts = useToasts()
   const { copy } = useClipboard()
@@ -168,15 +168,22 @@ const Home = () => {
           justify-content: center;
           transition: width 0.3s ease-out;
         }
-        ::-webkit-scrollbar {
-          display: none;
-        }
-
         .graph {
           flex: 1;
           display: flex;
           overflow: auto;
           border-bottom: 1px solid ${palette.accents_2};
+        }
+        .graph ::-webkit-scrollbar {
+          -webkit-appearance: none;
+          width: 7px;
+          height: 8px;
+        }
+        .graph ::-webkit-scrollbar-thumb {
+          border-radius: 4px;
+          background-color: ${themeType === "light"
+            ? "rgba(0 ,0 ,0 , 0.5)"
+            : "rgba(255, 255, 255, 0.25)"};
         }
         .content {
           /* https://stackoverflow.com/questions/33454533/cant-scroll-to-top-of-flex-item-that-is-overflowing-container */
