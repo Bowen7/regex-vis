@@ -177,7 +177,7 @@ const Home = () => {
         .graph ::-webkit-scrollbar {
           -webkit-appearance: none;
           width: 7px;
-          height: 8px;
+          height: 6px;
         }
         .graph ::-webkit-scrollbar-thumb {
           border-radius: 4px;
