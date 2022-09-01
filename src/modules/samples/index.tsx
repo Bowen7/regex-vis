@@ -74,10 +74,6 @@ const Samples: React.FC<{}> = () => {
           margin-bottom: 48px;
         }
 
-        ::-webkit-scrollbar {
-          display: none;
-        }
-
         .svg-wrapper {
           overflow-x: auto;
         }
