@@ -39,6 +39,7 @@ export default function App() {
           box-sizing: border-box;
           font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica,
             Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+          color-scheme: ${theme};
         }
         svg {
           user-select: none;
