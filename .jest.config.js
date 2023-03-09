@@ -11,6 +11,7 @@ module.exports = {
     "^.+\\.svg$": "<rootDir>/tests/__mocks__/svgrMock.js",
     "@/(.*)$": "<rootDir>/src/$1",
     "tests/(.*)$": "<rootDir>/tests/$1",
+    "@vercel/analytics/dist/react": "identity-obj-proxy",
   },
   transformIgnorePatterns: ["node_modules/(?!(.*hex-rgb))"],
 }
