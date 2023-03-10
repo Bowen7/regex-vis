@@ -31,5 +31,6 @@ module.exports = override(
   }),
   overrideProcessEnv({
     SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
+    VERCEL_ANALYTICS_ID: JSON.stringify(process.env.VERCEL_ANALYTICS_ID),
   })
 )
