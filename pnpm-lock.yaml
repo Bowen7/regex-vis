@@ -43,6 +43,7 @@ specifiers:
   ts-jest: ^26.5.6
   ts-node: ^10.0.0
   typescript: ^4.5.4
+  web-vitals: ^3.3.0
 
 dependencies:
   '@babel/core': 7.14.6
@@ -67,6 +68,7 @@ dependencies:
   styled-jsx: 5.0.2_@babel+core@7.14.6+react@18.1.0
   tilg: 0.1.1_react@18.1.0
   typescript: 4.6.3
+  web-vitals: 3.3.0
 
 devDependencies:
   '@babel/preset-env': 7.14.2_@babel+core@7.14.6
@@ -12650,6 +12652,10 @@ packages:
     resolution: {integrity: sha512-O84QOnr0icsbFGLS0O3bI5FswxzRr8/gHwWkDlQFskhSPryQXvrTMxjxGP4+iWYoauLoBvfDpkrOauZ+0iZpDA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/wbuf/-/wbuf-1.7.3.tgz}
     dependencies:
       minimalistic-assert: 1.0.1
+    dev: false
+
+  /web-vitals/3.3.0:
+    resolution: {integrity: sha512-GZsEmJBNclIpViS/7QVOTr7Kbt4BgLeR7kQ5zCCtJVuiWsA+K6xTXaoEXssvl8yYFICEyNmA2Nr+vgBYTnS4bA==}
     dev: false
 
   /webidl-conversions/3.0.1:
