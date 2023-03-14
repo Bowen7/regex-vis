@@ -104,6 +104,16 @@ export class Parser {
         case TokenType.GraphEnd:
         case TokenType.RegexBodyEnd: {
           if (branches.length > 0) {
+            // make sure nodes not empty
+            if (nodes.length === 0) {
+              nodes.push({
+                id: this.id(),
+                type: "character",
+                kind: "string",
+                value: "",
+                quantifier: null,
+              })
+            }
             branches.push(nodes)
             const choice: AST.Node = {
               id: this.id(),
@@ -190,6 +200,16 @@ export class Parser {
           break
         }
         case TokenType.Choice: {
+          // make sure nodes not empty
+          if (nodes.length === 0) {
+            nodes.push({
+              id: this.id(),
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            })
+          }
           branches.push(nodes)
           nodes = []
           break
