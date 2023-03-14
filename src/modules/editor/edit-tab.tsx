@@ -49,7 +49,7 @@ const InfoItem = () => {
   return (
     <>
       <div className="container" data-testid="edit-tab">
-        <Insert ast={ast} nodes={nodes} />
+        <Insert nodes={nodes} />
         <Divider mt="24px" />
         <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
         {content && (
