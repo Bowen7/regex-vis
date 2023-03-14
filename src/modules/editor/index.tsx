@@ -50,7 +50,7 @@ const Editor = ({ defaultTab }: Props) => {
   useEvent("keydown", (e: Event) => {
     const event = e as KeyboardEvent
     const { key } = event
-    if (key === "Backspace") {
+    if (key === "Backspace" || key === "Delete") {
       e.preventDefault()
       return remove()
     }
