@@ -156,6 +156,13 @@ const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
       case "character":
         switch (node.kind) {
           case "string":
+            if (node.value === "") {
+              return (
+                <text className="quote" {...commonTextProps}>
+                  {t("Empty")}
+                </text>
+              )
+            }
             return renderStringCharacter(node)
           case "class":
             return renderClassCharacter(node, t)

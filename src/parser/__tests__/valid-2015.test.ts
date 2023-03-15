@@ -57,7 +57,59 @@ const tests: Tests = {
   "/||||/": {
     id: "",
     type: "regex",
-    body: [{ id: "", type: "choice", branches: [[], [], [], [], []] }],
+    body: [
+      {
+        id: "",
+        type: "choice",
+        branches: [
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+        ],
+      },
+    ],
     flags: [],
     literal: true,
     escapeBackslash: false,
@@ -725,7 +777,32 @@ const tests: Tests = {
   "/|/": {
     id: "",
     type: "regex",
-    body: [{ id: "", type: "choice", branches: [[], []] }],
+    body: [
+      {
+        id: "",
+        type: "choice",
+        branches: [
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+          [
+            {
+              id: "",
+              type: "character",
+              kind: "string",
+              value: "",
+              quantifier: null,
+            },
+          ],
+        ],
+      },
+    ],
     flags: [],
     literal: true,
     escapeBackslash: false,
