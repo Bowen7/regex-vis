@@ -1,32 +1,25 @@
 import React, { useMemo } from "react"
-import { Button, ButtonGroup, Tooltip } from "@geist-ui/core"
+import { Button, ButtonGroup } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import ShowMore from "@/components/show-more"
-import {
-  InsertBefore,
-  InsertAfter,
-  InsertBranch,
-  CapturingGroup,
-  NonCapturingGroup,
-  NamedCapturingGroup,
-  Lookahead,
-  Lookbehind,
-} from "@/components/icons"
 import { AST } from "@/parser"
 import { insertAtom, groupSelectedAtom, lookAroundSelectedAtom } from "@/atom"
 type Props = {
-  ast: AST.Regex
   nodes: AST.Node[]
 }
 
 type InsertDirection = "prev" | "next" | "branch"
 
-type Option = { desc: string; value: string; Icon: () => JSX.Element }
+type Option = {
+  value: string
+  label: string
+}
 
-const Insert: React.FC<Props> = ({ ast, nodes }) => {
-  const { t } = useTranslation()
+const Insert: React.FC<Props> = ({ nodes }) => {
+  const { t, i18n } = useTranslation()
+  const language = i18n.language
   const insert = useSetAtom(insertAtom)
   const groupSelected = useSetAtom(groupSelectedAtom)
   const lookAroundSelected = useSetAtom(lookAroundSelectedAtom)
@@ -41,22 +34,19 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
     if (!(head.type === "boundaryAssertion" && head.kind === "beginning")) {
       options.push({
         value: "prev",
-        desc: "Insert before",
-        Icon: InsertBefore,
+        label: "Before",
       })
     }
 
     options.push({
       value: "branch",
-      desc: "Insert as a branch",
-      Icon: InsertBranch,
+      label: "Parallel",
     })
 
     if (!(tail.type === "boundaryAssertion" && tail.kind === "end")) {
       options.push({
         value: "next",
-        desc: "Insert after",
-        Icon: InsertAfter,
+        label: "After",
       })
     }
     return options
@@ -67,16 +57,17 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       return []
     }
     return [
-      { desc: "Capturing group", value: "capturing", Icon: CapturingGroup },
       {
-        desc: "Non-capturing group",
-        value: "nonCapturing",
-        Icon: NonCapturingGroup,
+        value: "capturing",
+        label: "Capturing",
       },
       {
-        desc: "Named capturing group",
+        value: "nonCapturing",
+        label: "Non-\ncapturing",
+      },
+      {
         value: "namedCapturing",
-        Icon: NamedCapturingGroup,
+        label: "Named\ncapturing",
       },
     ]
   }, [nodes])
@@ -86,8 +77,8 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
       return []
     }
     return [
-      { desc: "Lookahead assertion", value: "lookahead", Icon: Lookahead },
-      { desc: "Lookbehind assertion", value: "lookbehind", Icon: Lookbehind },
+      { value: "lookahead", label: "Lookahead" },
+      { value: "lookbehind", label: "Lookahead" },
     ]
   }, [nodes])
 
@@ -115,59 +106,77 @@ const Insert: React.FC<Props> = ({ ast, nodes }) => {
     lookAroundSelected(kind as "lookahead" | "lookbehind")
 
   return (
-    <div id="test">
-      {insertOptions.length > 0 && (
-        <Cell label={t("Insert around")}>
-          <ButtonGroup>
-            {insertOptions.map(({ value, desc, Icon }) => (
-              <Button
-                onClick={() => handleInsert(value as InsertDirection)}
-                key={value}
-              >
-                <Tooltip text={t(desc)} placement="topEnd">
-                  <Icon />
-                </Tooltip>
-              </Button>
-            ))}
-          </ButtonGroup>
-        </Cell>
-      )}
-      {groupOptions.length > 0 && (
-        <Cell label={t("Group selection")} mdnLinkKey="group">
-          <ButtonGroup>
-            {groupOptions.map(({ value, desc, Icon }) => (
-              <Button onClick={() => handleWrapGroup(value)} key={value}>
-                <Tooltip text={t(desc)} placement="topEnd">
-                  <Icon />
-                </Tooltip>
-              </Button>
-            ))}
-          </ButtonGroup>
-        </Cell>
-      )}
-
-      {lookAroundOptions.length > 0 && (
-        <ShowMore id="lookAround">
-          <Cell
-            label={t("Lookahead/LookBehind assertion selection")}
-            mdnLinkKey="lookAround"
-          >
+    <>
+      <div id="test" className="insert-section">
+        {insertOptions.length > 0 && (
+          <Cell label={t("Insert around")}>
             <ButtonGroup>
-              {lookAroundOptions.map(({ value, desc, Icon }) => (
+              {insertOptions.map(({ value, label }) => (
                 <Button
-                  onClick={() => handleWrapLookAroundAssertion(value)}
+                  className={language !== "en" ? "small-button-font" : ""}
                   key={value}
+                  onClick={() => handleInsert(value as InsertDirection)}
                 >
-                  <Tooltip text={t(desc)} placement="topEnd">
-                    <Icon />
-                  </Tooltip>
+                  {t(label)}
                 </Button>
               ))}
             </ButtonGroup>
           </Cell>
-        </ShowMore>
-      )}
-    </div>
+        )}
+        {groupOptions.length > 0 && (
+          <Cell label={t("Group selection")} mdnLinkKey="group">
+            <ButtonGroup className="small-button-font">
+              {groupOptions.map(({ value, label }) => (
+                <Button
+                  className="small-button-font"
+                  key={value}
+                  onClick={() => handleWrapGroup(value)}
+                >
+                  {t(label)}
+                </Button>
+              ))}
+            </ButtonGroup>
+          </Cell>
+        )}
+
+        {lookAroundOptions.length > 0 && (
+          <ShowMore id="lookAround">
+            <Cell
+              label={t("Lookahead/LookBehind assertion selection")}
+              mdnLinkKey="lookAround"
+            >
+              <ButtonGroup>
+                {lookAroundOptions.map(({ value, label }) => (
+                  <Button
+                    className="small-button-font"
+                    key={value}
+                    onClick={() => handleWrapLookAroundAssertion(value)}
+                  >
+                    {t(label)}
+                  </Button>
+                ))}
+              </ButtonGroup>
+            </Cell>
+          </ShowMore>
+        )}
+      </div>
+      <style jsx>
+        {`
+          .insert-section :global(.btn) {
+            white-space: pre;
+            line-height: 1;
+          }
+        `}
+      </style>
+      <style jsx global>
+        {`
+          .small-button-font > .text {
+            font-size: 12px;
+            text-transform: none;
+          }
+        `}
+      </style>
+    </>
   )
 }
 
