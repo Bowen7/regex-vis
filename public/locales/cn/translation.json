@@ -97,7 +97,7 @@
   "Choose one": "选择一项",
   "UnGroup": "取消组",
   "Lookahead/LookBehind assertion": "向前/向后断言",
-  "UnLookahead/UnLookBehind assertion": "取消向前/向后断言",
+  "Cancel assertion": "取消断言",
   "times": "次数",
   "custom": "自定义",
   "1 (default)": "1 (默认)",

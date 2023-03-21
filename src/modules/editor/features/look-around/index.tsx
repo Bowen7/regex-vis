@@ -30,7 +30,7 @@ const LookAround: React.FC<Props> = ({ kind, negate }) => {
   return (
     <Cell
       label={t("Lookahead/LookBehind assertion")}
-      rightLabel={t("UnLookahead/UnLookBehind assertion")}
+      rightLabel={t("Cancel assertion")}
       onRightLabelClick={handleUnLookAround}
     >
       <Select
