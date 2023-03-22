@@ -84,6 +84,7 @@ const Cell = ({
           font-size: 0.75rem;
           color: ${palette.secondary};
           cursor: pointer;
+          text-align: right;
         }
 
         .content {
