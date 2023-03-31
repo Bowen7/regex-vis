@@ -6,9 +6,7 @@ import { useLocalStorage } from "react-use"
 // webpack 4 don't support package exports, so we need to import the file directly
 // @ts-ignore
 import { Analytics } from "@vercel/analytics/dist/react"
-
 import Routes from "./routes"
-let gtagLoaded = false
 
 export default function App() {
   const [theme, setTheme] = useLocalStorage<string>("them", "dark")
@@ -17,13 +15,6 @@ export default function App() {
     localStorage.setItem("theme", themeType)
   }
   const { palette } = useTheme()
-  if (process.env.NODE_ENV === "production") {
-    if (!gtagLoaded) {
-      gtagLoaded = true
-      gtag("js", new Date())
-      gtag("config", "G-17KCES62HF")
-    }
-  }
   return (
     <>
       <Suspense fallback={null}>
