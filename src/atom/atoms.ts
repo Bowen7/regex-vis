@@ -25,3 +25,7 @@ export const editorCollapsedAtom = atom<boolean>(false)
 export const recordLayoutEnableAtom = atom<boolean>(true)
 export const selectEnableAtom = atom<boolean>(true)
 export const toastsAtom = atom<ReturnType<typeof useToasts> | null>(null)
+
+export const sizeMapAtom = atom<Map<AST.Regex | AST.Node, [number, number]>>(
+  new Map()
+)

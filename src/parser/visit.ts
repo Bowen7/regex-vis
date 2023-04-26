@@ -1,76 +1,108 @@
 import * as AST from "./ast"
 
 export function visit(
-  ast: AST.Regex,
+  node: AST.Regex | AST.Node,
   callback: (
     node: AST.Node,
     nodeList: AST.Node[],
     index: number,
     parent: AST.ParentNode
-  ) => void
+  ) => void | boolean
 ) {
-  let queue: {
-    node: AST.Node
-    nodeList: AST.Node[]
-    index: number
-    parent: AST.ParentNode
-  }[] = ast.body.map((node, index) => ({
-    node,
-    nodeList: ast.body,
-    index,
-    parent: ast,
-  }))
-  while (queue.length !== 0) {
-    const { node, nodeList, index, parent } = queue.shift()!
-    callback(node, nodeList, index, parent)
-    if (node.type === "group" || node.type === "lookAroundAssertion") {
-      queue = queue.concat(
-        node.children.map((child, index) => ({
-          node: child,
-          nodeList: node.children,
-          index,
-          parent: node,
-        }))
-      )
+  let isFinished = false
+
+  const _visit = (
+    node: AST.Regex | AST.Node,
+    callback: (
+      node: AST.Node,
+      nodeList: AST.Node[],
+      index: number,
+      parent: AST.ParentNode
+    ) => void | boolean
+  ) => {
+    if (isFinished) {
+      return
     }
-    if (node.type === "choice") {
-      const branches = node.branches
-      for (let i = 0; i < branches.length; i++) {
-        const branch = branches[i]
-        queue = queue.concat(
-          branch.map((child, index) => ({
-            node: child,
-            nodeList: branch,
-            index,
-            parent: node,
-          }))
-        )
-      }
+    switch (node.type) {
+      case "regex":
+      case "group":
+      case "lookAroundAssertion":
+        const children = node.type === "regex" ? node.body : node.children
+        for (let index = 0; index < children.length; index++) {
+          const child = children[index]
+          if (callback(child, children, index, node)) {
+            isFinished = true
+            return
+          }
+          _visit(child, callback)
+        }
+        break
+      case "choice":
+        const { branches } = node
+        for (const branch of branches) {
+          for (let index = 0; index < branch.length; index++) {
+            const child = branch[index]
+            if (callback(child, branch, index, node)) {
+              isFinished = true
+              return
+            }
+            _visit(child, callback)
+          }
+        }
+        break
+      default:
+        break
     }
   }
+
+  _visit(node, callback)
 }
 
 export const visitNodes = (
-  ast: AST.Regex,
-  callback: (id: string, index: number, nodes: AST.Node[]) => boolean
+  node: AST.Regex | AST.Node,
+  callback: (id: string, index: number, nodes: AST.Node[]) => void | boolean
 ) => {
-  const queue = [{ id: ast.id, index: 0, nodes: ast.body }]
-  while (queue.length > 0) {
-    const { id, index, nodes } = queue.shift()!
-    if (callback(id, index, nodes)) {
+  let isFinished = false
+
+  const _visitNode = (
+    node: AST.Regex | AST.Node,
+    callback: (id: string, index: number, nodes: AST.Node[]) => void | boolean
+  ) => {
+    if (isFinished) {
       return
     }
-    nodes.forEach((node) => {
-      if (node.type === "group" || node.type === "lookAroundAssertion") {
-        queue.push({ id: node.id, index: 0, nodes: node.children })
-      } else if (node.type === "choice") {
-        const { id, branches } = node
-        branches.forEach((branch, index) =>
-          queue.push({ id, index: index, nodes: branch })
-        )
-      }
-    })
+    switch (node.type) {
+      case "regex":
+      case "group":
+      case "lookAroundAssertion":
+        const children = node.type === "regex" ? node.body : node.children
+        if (callback(node.id, 0, children)) {
+          isFinished = true
+          return
+        }
+        children.forEach((child) => {
+          visitNodes(child, callback)
+        })
+        break
+      case "choice":
+        const { branches } = node
+        for (let index = 0; index < branches.length; index++) {
+          const branch = branches[index]
+          if (callback(node.id, index, branch)) {
+            isFinished = true
+            return
+          }
+          branch.forEach((child) => {
+            visitNodes(child, callback)
+          })
+        }
+        break
+      default:
+        break
+    }
   }
+
+  _visitNode(node, callback)
 }
 
 export function getNodeById(
@@ -82,55 +114,27 @@ export function getNodeById(
   nodeList: AST.Node[]
   index: number
 } {
-  const { body } = ast
-  let queue: {
+  let ret: {
     node: AST.Node
-    parent:
-      | AST.GroupNode
-      | AST.Regex
-      | AST.LookAroundAssertionNode
-      | AST.ChoiceNode
+    parent: AST.ParentNode
     nodeList: AST.Node[]
     index: number
-  }[] = body.map((node, index) => ({
-    node,
-    parent: ast,
-    nodeList: body,
-    index,
-  }))
-  while (queue.length !== 0) {
-    const item = queue.shift()!
-    const { node } = item
+  } | null = null
+  visit(ast, (node, nodeList, index, parent) => {
     if (node.id === id) {
-      return item
-    }
-    if (node.type === "group" || node.type === "lookAroundAssertion") {
-      const { children } = node
-      queue = queue.concat(
-        children.map((cur, index) => ({
-          node: cur,
-          parent: node,
-          nodeList: children,
-          index,
-        }))
-      )
-    }
-    if (node.type === "choice") {
-      const branches = node.branches
-      for (let i = 0; i < branches.length; i++) {
-        const branch = branches[i]
-        queue = queue.concat(
-          branch.map((cur, index) => ({
-            node: cur,
-            parent: node,
-            nodeList: branch,
-            index,
-          }))
-        )
+      ret = {
+        node,
+        parent,
+        nodeList,
+        index,
       }
+      return true
     }
+  })
+  if (ret === null) {
+    throw new Error(`Node with id "${id}" not found.`)
   }
-  throw new Error("unreachable")
+  return ret!
 }
 
 export function getNodesByIds(
@@ -149,4 +153,27 @@ export function getNodesByIds(
     nodeList,
     index,
   }
+}
+
+export function lrd(
+  node: AST.Regex | AST.Node,
+  callback: (node: AST.Regex | AST.Node) => void
+) {
+  switch (node.type) {
+    case "regex":
+      node.body.forEach((child) => lrd(child, callback))
+      break
+    case "group":
+    case "lookAroundAssertion":
+      node.children.forEach((child) => lrd(child, callback))
+      break
+    case "choice":
+      node.branches.forEach((branch) => {
+        branch.forEach((child) => lrd(child, callback))
+      })
+      break
+    default:
+      break
+  }
+  callback(node)
 }
