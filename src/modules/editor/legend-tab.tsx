@@ -13,9 +13,9 @@ function Legend() {
           {t("You can select nodes by dragging or clicking")}
         </div>
         <Divider h={0.5} />
-        {legends.map(({ name, infos }) => (
+        {/* {legends.map(({ name, infos }) => (
           <LegendItem name={name} infos={infos} key={name} />
-        ))}
+        ))} */}
       </div>
       <style jsx>{`
         .container {

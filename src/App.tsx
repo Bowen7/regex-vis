@@ -7,6 +7,7 @@ import { useLocalStorage } from "react-use"
 // @ts-ignore
 import { Analytics } from "@vercel/analytics/dist/react"
 import Routes from "./routes"
+import "./index.css"
 
 export default function App() {
   const [theme, setTheme] = useLocalStorage<string>("them", "dark")

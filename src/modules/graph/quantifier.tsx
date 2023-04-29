@@ -1,61 +1,42 @@
-import React, { useLayoutEffect, useRef } from "react"
+import React from "react"
 import { AST, getQuantifierText } from "@/parser"
 import {
-  GRAPH_QUANTIFIER_ICON_WIDTH,
-  GRAPH_QUANTIFIER_ICON_HEIGHT,
   GRAPH_QUANTIFIER_TEXT_FONTSIZE,
-  GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL,
+  GRAPH_QUANTIFIER_ICON_FONTSIZE,
 } from "@/constants"
+import { QUANTIFIER_ICON, NON_GREEDY_QUANTIFIER_ICON } from "./utils"
 type Props = {
-  x: number
+  centerX: number
   y: number
   quantifier: AST.Quantifier
-  onLayout: (layout: [number, number]) => void
 }
 
 const QuantifierNode = React.memo((props: Props) => {
-  const { x, y, quantifier, onLayout } = props
-
-  const textRef = useRef<SVGTextElement>(null!)
+  const { centerX, y, quantifier } = props
 
   const text = getQuantifierText(quantifier)
-  const strokeDasharray = quantifier.greedy ? "" : "3,3"
-  const transform = `translate(${x} ${
-    y + GRAPH_QUANTIFIER_ICON_MARGIN_VERTICAL
-  })`
-
-  useLayoutEffect(() => {
-    const { width } = textRef.current.getBoundingClientRect()
-    onLayout([
-      width + GRAPH_QUANTIFIER_ICON_WIDTH,
-      GRAPH_QUANTIFIER_ICON_HEIGHT,
-    ])
-  }, [text, onLayout])
+  const icon = quantifier.greedy ? QUANTIFIER_ICON : NON_GREEDY_QUANTIFIER_ICON
 
   return (
-    <g transform={transform}>
-      <g fill="none" className="thin-stroke">
-        <path d="M18 1l3 3-3 3"></path>
-        <path d="M6 15l-3-3 3-3"></path>
-        <path
-          d="M3 9V7a3 3 0 0 13-3h14"
-          strokeDasharray={strokeDasharray}
-        ></path>
-        <path
-          d="M21 7v2a3 3 0 0 1-3 3H3"
-          strokeDasharray={strokeDasharray}
-        ></path>
-      </g>
-      <text
-        ref={textRef}
-        className="text"
-        fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
-        x={GRAPH_QUANTIFIER_ICON_WIDTH}
-        y={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
+    <text
+      className="text"
+      fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
+      textAnchor="middle"
+      x={centerX}
+      y={y}
+      dy={1.15 * GRAPH_QUANTIFIER_ICON_FONTSIZE}
+    >
+      <tspan fontFamily="repeat" fontSize={18}>
+        {icon}
+      </tspan>
+      <tspan
+        dy={
+          (GRAPH_QUANTIFIER_TEXT_FONTSIZE - GRAPH_QUANTIFIER_ICON_FONTSIZE) / 2
+        }
       >
-        {text}
-      </text>
-    </g>
+        {" " + text}
+      </tspan>
+    </text>
   )
 })
 QuantifierNode.displayName = "QuantifierNode"

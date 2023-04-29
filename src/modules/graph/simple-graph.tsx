@@ -17,7 +17,7 @@ const SimpleGraph = React.memo(({ regex }: Props) => {
   }
   return (
     <Provider initialValues={initialValues}>
-      <SvgContainer ast={ast} withRoot={false} />
+      <SvgContainer ast={ast} />
     </Provider>
   )
 })

@@ -3,9 +3,9 @@ import { useTheme, Code, Dot } from "@geist-ui/core"
 import hexRgb from "hex-rgb"
 import { useSetAtom } from "jotai"
 import { AST } from "@/parser"
-import DoubleBufferingGraph from "./double-buffering-graph"
 import { selectNodesByBoxAtom } from "@/atom"
 import { useDragSelect } from "@/utils/hooks"
+import ASTGraph from "./ast-graph"
 type Props = {
   regex: string
   ast: AST.Regex
@@ -39,7 +39,7 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
           </p>
         ) : (
           <>
-            {ast.body.length > 0 && <DoubleBufferingGraph ast={ast} />}
+            {ast.body.length > 0 && <ASTGraph ast={ast} isPrimaryGraph />}
             {Selection}
           </>
         )}

@@ -28,7 +28,7 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
         <Link to="/">
           <div className="logo">
             <LogoSvg />
-            <span>Regex-Vis</span>
+            <span>Regex Vis</span>
           </div>
         </Link>
         <div className="nav">

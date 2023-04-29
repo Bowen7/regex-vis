@@ -42,13 +42,7 @@ const DoubleBufferingGraph = memo(({ ast }: Props) => {
   return (
     <>
       {buffers.map(({ id, ast }) => (
-        <SVGContainer
-          key={id}
-          id={id}
-          ast={ast}
-          style={id === currentId ? currentStyle : wipStyle}
-          onLayout={handleLayout}
-        />
+        <SVGContainer key={id} ast={ast} />
       ))}
     </>
   )

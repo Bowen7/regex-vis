@@ -1,4 +1,4 @@
-import React, { Fragment, useLayoutEffect, useRef } from "react"
+import React, { Fragment, ReactNode, useRef } from "react"
 import { useTranslation, TFunction } from "react-i18next"
 import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import {
@@ -14,7 +14,6 @@ type Props = {
     | AST.BeginningBoundaryAssertionNode
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode
-  onLayout: (layout: [number, number]) => void
 }
 
 const commonTextProps = {
@@ -32,9 +31,9 @@ const assertionTextMap = {
 
 const renderString = (value: string, dy = 0) => (
   <text className="text" dy={dy} {...commonTextProps}>
-    <tspan className="quote">{'" '}</tspan>
+    <tspan className="quote">{'"'}</tspan>
     <tspan>{value}</tspan>
-    <tspan className="quote">{' "'}</tspan>
+    <tspan className="quote">{'"'}</tspan>
   </text>
 )
 
@@ -72,13 +71,13 @@ const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
       } else {
         texts.push(
           <text className="text" dy={dy} {...commonTextProps} key={index}>
-            <tspan className="quote">{'" '}</tspan>
+            <tspan className="quote">"</tspan>
             <tspan>{from}</tspan>
-            <tspan className="quote">{' "'}</tspan>
+            <tspan className="quote">"</tspan>
             <tspan className="quote">{" - "}</tspan>
-            <tspan className="quote">{'" '}</tspan>
+            <tspan className="quote">"</tspan>
             <tspan>{to}</tspan>
-            <tspan className="quote">{' "'}</tspan>
+            <tspan className="quote">"</tspan>
           </text>
         )
         dy += GRAPH_TEXT_LIEN_HEIGHT
@@ -140,18 +139,12 @@ const renderBoundaryAssertion = (
   )
 }
 
-const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
+const TextNode = React.memo(({ centerX, node }: Props) => {
   const gRef = useRef<SVGGElement>(null)
 
-  const { t, i18n } = useTranslation()
-  const language = i18n.language
+  const { t } = useTranslation()
 
-  useLayoutEffect(() => {
-    const { width, height } = gRef.current?.getBoundingClientRect()!
-    onLayout([width, height])
-  }, [node, language, onLayout])
-
-  const renderText = (): JSX.Element => {
+  const renderText = (): ReactNode => {
     switch (node.type) {
       case "character":
         switch (node.kind) {
@@ -168,8 +161,10 @@ const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
             return renderClassCharacter(node, t)
           case "ranges":
             return renderRangesCharacter(node, t)
+          default:
+            break
         }
-        throw new Error("unreachable")
+        return null
       case "backReference":
         return renderBackReference(node, t)
       case "boundaryAssertion":
