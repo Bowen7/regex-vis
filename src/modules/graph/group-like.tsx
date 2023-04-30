@@ -31,7 +31,8 @@ const GroupLikeNode = ({ x, y, node, selected }: Props) => {
   }
 
   const { id, children: nodeChildren } = node
-  const connectY = y + boxSize[1] / 2
+  const centerY = y + boxSize[1] / 2
+  const contentX = x + (boxSize[0] - contentSize[0]) / 2
   const contentY = y + (boxSize[1] - contentSize[1]) / 2
   return (
     <>
@@ -39,7 +40,7 @@ const GroupLikeNode = ({ x, y, node, selected }: Props) => {
       <Content
         id={node.id}
         selected={selected}
-        x={x}
+        x={contentX}
         y={contentY}
         width={contentSize[0]}
         height={contentSize[1]}
@@ -51,19 +52,22 @@ const GroupLikeNode = ({ x, y, node, selected }: Props) => {
         {nodeChildren.length > 0 && (
           <>
             <MidConnect
-              start={[x, connectY]}
-              end={[x + GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
+              start={[contentX, centerY]}
+              end={[contentX + GRAPH_NODE_MARGIN_HORIZONTAL, centerY]}
             />
             <MidConnect
-              start={[x + boxSize[0] - GRAPH_NODE_MARGIN_HORIZONTAL, connectY]}
-              end={[x + boxSize[0], connectY]}
+              start={[
+                contentX + contentSize[0] - GRAPH_NODE_MARGIN_HORIZONTAL,
+                centerY,
+              ]}
+              end={[contentX + contentSize[0], centerY]}
             />
           </>
         )}
         <Nodes
           id={id}
           index={0}
-          x={x + GRAPH_NODE_MARGIN_HORIZONTAL}
+          x={contentX + GRAPH_NODE_MARGIN_HORIZONTAL}
           y={contentY + GRAPH_GROUP_NODE_PADDING_VERTICAL}
           nodes={nodeChildren}
         />

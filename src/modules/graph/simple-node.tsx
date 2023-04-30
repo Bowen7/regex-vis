@@ -23,30 +23,29 @@ const SimpleNode = ({ x, y, node, selected }: Props) => {
   const sizeMap = useAtomValue(sizeMapAtom)
   const size = useSize(node, sizeMap)
   const { box: boxSize, content: contentSize } = size
+  const contentX = x + (boxSize[0] - contentSize[0]) / 2
+  const contentY = y + (boxSize[1] - contentSize[1]) / 2
+  const centerX = x + boxSize[0] / 2
   return (
-    <g transform={`translate(${x},${y})`}>
-      <NameAndQuantifier x={0} y={0} node={node} size={size} />
-      <g
-        transform={`translate(${(boxSize[0] - contentSize[0]) / 2},${
-          (boxSize[1] - contentSize[1]) / 2
-        })`}
+    <>
+      <NameAndQuantifier x={x} y={y} node={node} size={size} />
+      <Content
+        id={node.id}
+        selected={selected}
+        x={contentX}
+        y={contentY}
+        width={contentSize[0]}
+        height={contentSize[1]}
+        rx={GRAPH_NODE_BORDER_RADIUS}
+        ry={GRAPH_NODE_BORDER_RADIUS}
+        fill="transparent"
+        className="stroke"
       >
-        <Content
-          id={node.id}
-          selected={selected}
-          width={contentSize[0]}
-          height={contentSize[1]}
-          rx={GRAPH_NODE_BORDER_RADIUS}
-          ry={GRAPH_NODE_BORDER_RADIUS}
-          fill="transparent"
-          className="stroke"
-        >
-          <g transform={`translate(0,${0.1 * GRAPH_TEXT_FONT_SIZE})`}>
-            <TextNode centerX={contentSize[0] / 2} node={node} />
-          </g>
-        </Content>
-      </g>
-    </g>
+        <g transform={`translate(0,${0.1 * GRAPH_TEXT_FONT_SIZE + contentY})`}>
+          <TextNode centerX={centerX} node={node} />
+        </g>
+      </Content>
+    </>
   )
 }
 

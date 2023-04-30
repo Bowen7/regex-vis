@@ -34,5 +34,6 @@ export const SEARCH_PARAM_REGEX = "r"
 export const SEARCH_PARAM_TESTS = "t"
 export const SEARCH_PARAM_ESCAPE_BACKSLASH = "e"
 
-export const FONT_FAMILY = 'Menlo, Monaco, "Courier New", monospace'
-export const ICON_FONT_FAMILY = "repeat"
+export const REGEX_FONT_FAMILY = 'Menlo, Monaco, "Courier New", monospace'
+export const ICON_FONT_FAMILY =
+  'icon-font, Menlo, Monaco, "Courier New", monospace'

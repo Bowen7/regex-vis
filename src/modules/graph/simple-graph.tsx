@@ -1,7 +1,7 @@
 import React from "react"
 import { Atom, Provider } from "jotai"
 import { sizeMapAtom, isPrimaryGraphAtom } from "@/atom"
-import SvgContainer from "./container"
+import ASTGraph from "./ast-graph"
 import { parse } from "@/parser"
 type Props = {
   regex: string
@@ -18,7 +18,7 @@ const SimpleGraph = React.memo(({ regex }: Props) => {
   }
   return (
     <Provider initialValues={initialValues}>
-      <SvgContainer ast={ast} />
+      <ASTGraph ast={ast} />
     </Provider>
   )
 })

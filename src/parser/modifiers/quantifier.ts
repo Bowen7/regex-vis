@@ -28,16 +28,3 @@ export const updateQuantifier = (
   }
   return nextSelectedId
 }
-
-export const getQuantifierText = (quantifier: AST.Quantifier): string => {
-  let { min, max } = quantifier
-  let minText = `${min}`
-  let maxText = `${max}`
-  if (min === max) {
-    return minText
-  }
-  if (max === Infinity) {
-    maxText = "∞"
-  }
-  return minText + " - " + maxText
-}

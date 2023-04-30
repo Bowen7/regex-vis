@@ -1,10 +1,5 @@
 import i18n from "@/i18n"
-import {
-  AST,
-  getQuantifierText,
-  characterClassTextMap,
-  CharacterClassKey,
-} from "@/parser"
+import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import {
   GRAPH_ROOT_RADIUS,
   GRAPH_TEXT_FONT_SIZE,
@@ -13,7 +8,7 @@ import {
   GRAPH_NODE_PADDING_HORIZONTAL,
   GRAPH_NODE_MIN_WIDTH,
   GRAPH_NODE_MIN_HEIGHT,
-  FONT_FAMILY,
+  REGEX_FONT_FAMILY,
   ICON_FONT_FAMILY,
   GRAPH_QUANTIFIER_HEIGHT,
   GRAPH_NAME_HEIGHT,
@@ -24,6 +19,7 @@ import {
   getBoundaryAssertionText,
   getNameText,
   QUANTIFIER_ICON,
+  getQuantifierText,
 } from "./utils"
 
 const t = i18n.t
@@ -52,21 +48,26 @@ let ctx: CanvasRenderingContext2D | null = null
 try {
   const canvas = document.createElement("canvas")
   ctx = canvas.getContext("2d")
+  // In Chrome: if the font has not been used, the measurement will be incorrect.
+  // So, we need to draw something to use the font.
+  ctx!.font = `${GRAPH_QUANTIFIER_TEXT_FONTSIZE}px ${ICON_FONT_FAMILY}`
+  ctx!.fillText(QUANTIFIER_ICON, 0, 0)
 } catch (error) {
+  ctx = null
   console.log("canvas is not supported")
 }
 
 export const measureText = (
   text: string,
   fontSize: number,
-  fontFamily = FONT_FAMILY
+  fontFamily = REGEX_FONT_FAMILY
 ): [number, number] => {
   let width = 0
   if (ctx) {
     ctx.font = `${fontSize}px ${fontFamily}`
     ;({ width } = ctx.measureText(text))
   } else {
-    width = text.length * fontSize
+    width = text.length * fontSize * 0.75
   }
   let fontHeight = 1.5 * fontSize
   return [width, fontHeight]
@@ -80,7 +81,12 @@ const measureQuantifier = (node: AST.Node): [number, number] => {
       ICON_FONT_FAMILY
     )
     const text = getQuantifierText(node.quantifier)
-    const [textWidth] = measureText(text, GRAPH_QUANTIFIER_TEXT_FONTSIZE)
+    const [textWidth] = measureText(
+      text,
+      GRAPH_QUANTIFIER_TEXT_FONTSIZE,
+      ICON_FONT_FAMILY
+    )
+    console.log(iconWidth, textWidth)
     return [textWidth + iconWidth, GRAPH_QUANTIFIER_HEIGHT]
   }
   return ZERO_SIZE

@@ -74,3 +74,20 @@ export const useSize = (
 
 export const QUANTIFIER_ICON = "\ue900"
 export const NON_GREEDY_QUANTIFIER_ICON = "\ue901"
+export const INFINITY_ICON = "\ue902"
+
+export const getQuantifierText = (
+  quantifier: AST.Quantifier,
+  withInfinity = true
+): string => {
+  let { min, max } = quantifier
+  let minText = `${min}`
+  let maxText = `${max}`
+  if (min === max) {
+    return minText
+  }
+  if (max === Infinity) {
+    maxText = withInfinity ? INFINITY_ICON : ""
+  }
+  return minText + " - " + maxText
+}
