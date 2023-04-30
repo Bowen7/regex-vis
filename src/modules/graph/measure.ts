@@ -86,7 +86,6 @@ const measureQuantifier = (node: AST.Node): [number, number] => {
       GRAPH_QUANTIFIER_TEXT_FONTSIZE,
       ICON_FONT_FAMILY
     )
-    console.log(iconWidth, textWidth)
     return [textWidth + iconWidth, GRAPH_QUANTIFIER_HEIGHT]
   }
   return ZERO_SIZE
