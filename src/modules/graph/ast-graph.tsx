@@ -72,6 +72,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
   const isPrimaryGraph = useAtomValue(isPrimaryGraphAtom)
   const [sizeMap, setSizeMap] = useAtom(sizeMapAtom)
   const [size, setSize] = useState<[number, number]>([0, 0])
+  const [currentAST, setCurrentAST] = useState<AST.Regex | null>(null)
   const { i18n } = useTranslation()
   const { language } = i18n
   const languageRef = useRef(language)
@@ -164,6 +165,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
 
     languageRef.current = language
     setSizeMap(nextSizeMap)
+    setCurrentAST(ast)
   }, [ast, language, setSizeMap])
 
   const nodesX = isPrimaryGraph
@@ -179,14 +181,24 @@ const ASTGraph = React.memo(({ ast }: Props) => {
         height={size[1]}
         data-testid="graph"
       >
-        {isPrimaryGraph && (
-          <RootNodes
-            x={paddingH}
-            width={size[0] - 2 * paddingH}
-            centerY={size[1] / 2}
-          />
+        {currentAST && (
+          <>
+            {isPrimaryGraph && (
+              <RootNodes
+                x={paddingH}
+                width={size[0] - 2 * paddingH}
+                centerY={size[1] / 2}
+              />
+            )}
+            <Nodes
+              x={nodesX}
+              y={paddingV}
+              nodes={currentAST.body}
+              id={ast.id}
+              index={0}
+            />
+          </>
         )}
-        <Nodes x={nodesX} y={paddingV} nodes={ast.body} id={ast.id} index={0} />
       </svg>
       <style jsx>{`
         svg {
