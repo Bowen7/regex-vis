@@ -1,4 +1,4 @@
-import React, { useState, useLayoutEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { useTheme } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useAtom, useAtomValue } from "jotai"
@@ -90,7 +90,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
     ? GRAPH_PADDING_VERTICAL
     : GRAPH_WITHOUT_ROOT_PADDING_VERTICAL
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const languageChanged = languageRef.current !== language
     // if language changed, we need to re-measure all nodes
     const currentSizeMap = languageChanged
