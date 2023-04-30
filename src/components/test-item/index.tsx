@@ -39,7 +39,6 @@ const TestItem = ({ value, regExp, onChange, onRemove }: Props) => {
           <DebouncedTextarea
             value={value}
             width="225px"
-            rows={Math.min(3, value.split("\n").length)}
             onKeyDown={handleKeyDown}
             onChange={onChange}
             {...bindings}
@@ -66,6 +65,7 @@ const TestItem = ({ value, regExp, onChange, onRemove }: Props) => {
         }
         .case-input :global(textarea) {
           min-height: auto;
+          resize: vertical;
         }
         .case-input :global(svg) {
           position: absolute;
