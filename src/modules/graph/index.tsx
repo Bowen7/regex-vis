@@ -39,7 +39,7 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
           </p>
         ) : (
           <>
-            {ast.body.length > 0 && <ASTGraph ast={ast} isPrimaryGraph />}
+            {ast.body.length > 0 && <ASTGraph ast={ast} />}
             {Selection}
           </>
         )}

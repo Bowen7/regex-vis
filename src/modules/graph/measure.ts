@@ -47,16 +47,27 @@ export const DEFAULT_SIZE: NodeSize = {
   content: ZERO_SIZE,
 }
 
-const canvas = document.createElement("canvas")
-const ctx = canvas.getContext("2d")!
+let ctx: CanvasRenderingContext2D | null = null
+
+try {
+  const canvas = document.createElement("canvas")
+  ctx = canvas.getContext("2d")
+} catch (error) {
+  console.log("canvas is not supported")
+}
 
 export const measureText = (
   text: string,
   fontSize: number,
   fontFamily = FONT_FAMILY
 ): [number, number] => {
-  ctx.font = `${fontSize}px ${fontFamily}`
-  const { width } = ctx.measureText(text)
+  let width = 0
+  if (ctx) {
+    ctx.font = `${fontSize}px ${fontFamily}`
+    ;({ width } = ctx.measureText(text))
+  } else {
+    width = text.length * fontSize
+  }
   let fontHeight = 1.5 * fontSize
   return [width, fontHeight]
 }

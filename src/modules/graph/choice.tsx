@@ -27,21 +27,26 @@ const ChoiceNode = React.memo(({ x, y, selected, node }: Props) => {
     () => (sizeMap.get(node) || DEFAULT_SIZE).box,
     [node, sizeMap]
   )
-  const rects = useMemo(() => {
+  const boxes = useMemo(() => {
     let curY = y + GRAPH_CHOICE_PADDING_VERTICAL
 
-    return new Array(branches.length).fill(0).map((branch, index) => {
+    return branches.map((branch) => {
       if (!sizeMap.has(branch)) {
         return { x: 0, y: 0, width: 0, height: 0 }
       }
+
       const [branchWidth, branchHeight] = sizeMap.get(branch)!.box
-      const nodeX = x + (boxSize[0] - branchWidth) / 2
-      const nodeY = curY
+      const branchX = x + (boxSize[0] - branchWidth) / 2
+      const branchY = curY
       curY += branchHeight + GRAPH_NODE_MARGIN_VERTICAL
-      return { width: branchWidth, height: branchHeight, x: nodeX, y: nodeY }
+      return {
+        width: branchWidth,
+        height: branchHeight,
+        x: branchX,
+        y: branchY,
+      }
     })
   }, [branches, x, y, sizeMap, boxSize])
-
   return (
     <Content
       selected={selected}
@@ -58,7 +63,7 @@ const ChoiceNode = React.memo(({ x, y, selected, node }: Props) => {
           y: branchY,
           width: branchWidth,
           height: branchHeight,
-        } = rects[index]
+        } = boxes[index]
         return (
           <React.Fragment key={index}>
             <StartConnect

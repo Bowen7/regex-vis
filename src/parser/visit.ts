@@ -9,20 +9,20 @@ export function visit(
     parent: AST.ParentNode
   ) => void | boolean
 ) {
-  let isFinished = false
-
-  const _visit = (
-    node: AST.Regex | AST.Node,
-    callback: (
-      node: AST.Node,
-      nodeList: AST.Node[],
-      index: number,
-      parent: AST.ParentNode
-    ) => void | boolean
+  let found = false
+  const _callback = (
+    node: AST.Node,
+    nodeList: AST.Node[],
+    index: number,
+    parent: AST.ParentNode
   ) => {
-    if (isFinished) {
-      return
+    if (found) {
+      return true
     }
+    return callback(node, nodeList, index, parent)
+  }
+
+  const _visit = (node: AST.Regex | AST.Node) => {
     switch (node.type) {
       case "regex":
       case "group":
@@ -30,11 +30,11 @@ export function visit(
         const children = node.type === "regex" ? node.body : node.children
         for (let index = 0; index < children.length; index++) {
           const child = children[index]
-          if (callback(child, children, index, node)) {
-            isFinished = true
+          if (_callback(child, children, index, node)) {
+            found = true
             return
           }
-          _visit(child, callback)
+          _visit(child)
         }
         break
       case "choice":
@@ -42,11 +42,11 @@ export function visit(
         for (const branch of branches) {
           for (let index = 0; index < branch.length; index++) {
             const child = branch[index]
-            if (callback(child, branch, index, node)) {
-              isFinished = true
+            if (_callback(child, branch, index, node)) {
+              found = true
               return
             }
-            _visit(child, callback)
+            _visit(child)
           }
         }
         break
@@ -55,46 +55,46 @@ export function visit(
     }
   }
 
-  _visit(node, callback)
+  _visit(node)
 }
 
 export const visitNodes = (
   node: AST.Regex | AST.Node,
   callback: (id: string, index: number, nodes: AST.Node[]) => void | boolean
 ) => {
-  let isFinished = false
-
-  const _visitNode = (
-    node: AST.Regex | AST.Node,
-    callback: (id: string, index: number, nodes: AST.Node[]) => void | boolean
-  ) => {
-    if (isFinished) {
-      return
+  let found = false
+  const _callback = (id: string, index: number, nodes: AST.Node[]) => {
+    if (found) {
+      return true
     }
+    return callback(id, index, nodes)
+  }
+
+  const _visitNodes = (node: AST.Regex | AST.Node) => {
     switch (node.type) {
       case "regex":
       case "group":
       case "lookAroundAssertion":
         const children = node.type === "regex" ? node.body : node.children
-        if (callback(node.id, 0, children)) {
-          isFinished = true
+        if (_callback(node.id, 0, children)) {
+          found = true
           return
         }
-        children.forEach((child) => {
-          visitNodes(child, callback)
-        })
+        for (const child of children) {
+          _visitNodes(child)
+        }
         break
       case "choice":
         const { branches } = node
         for (let index = 0; index < branches.length; index++) {
           const branch = branches[index]
-          if (callback(node.id, index, branch)) {
-            isFinished = true
+          if (_callback(node.id, index, branch)) {
+            found = true
             return
           }
-          branch.forEach((child) => {
-            visitNodes(child, callback)
-          })
+          for (const child of branch) {
+            _visitNodes(child)
+          }
         }
         break
       default:
@@ -102,7 +102,7 @@ export const visitNodes = (
     }
   }
 
-  _visitNode(node, callback)
+  _visitNodes(node)
 }
 
 export function getNodeById(

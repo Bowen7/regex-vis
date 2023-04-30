@@ -5,21 +5,10 @@ import { sizeMapAtom, isPrimaryGraphAtom } from "@/atom"
 import SVGContainer from "./container"
 type Props = {
   ast: AST.Regex
-  isPrimaryGraph?: boolean
 }
 
-const ASTGraph = memo(({ ast, isPrimaryGraph = false }: Props) => {
-  const [initialValues] = useState<(readonly [Atom<unknown>, unknown])[]>(
-    () => [
-      [sizeMapAtom, new Map()],
-      [isPrimaryGraphAtom, isPrimaryGraph],
-    ]
-  )
-  return (
-    <Provider initialValues={initialValues}>
-      <SVGContainer ast={ast} />
-    </Provider>
-  )
+const ASTGraph = memo(({ ast }: Props) => {
+  return <SVGContainer ast={ast} />
 })
 ASTGraph.displayName = "ASTGraph"
 export default ASTGraph

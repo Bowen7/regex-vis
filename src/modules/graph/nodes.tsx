@@ -30,10 +30,8 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
 
   const boxes = useMemo(() => {
     let curX = x
-    return new Array(nodes.length).fill(0).map((_, index) => {
-      const [nodeWidth, nodeHeight] = (
-        sizeMap.get(nodes[index]) || DEFAULT_SIZE
-      ).box
+    return nodes.map((node, index) => {
+      const [nodeWidth, nodeHeight] = (sizeMap.get(node) || DEFAULT_SIZE).box
       const nodeX = curX
       const nodeY = y + (boxHeight - nodeHeight) / 2
       curX += nodeWidth + GRAPH_NODE_MARGIN_HORIZONTAL
@@ -48,9 +46,9 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
 
   const contentBoxes = useMemo(() => {
     let curX = x
-    return new Array(nodes.length).fill(0).map((_, index) => {
+    return nodes.map((node, index) => {
       const { box: boxSize, content: contentSize } =
-        sizeMap.get(nodes[index]) || DEFAULT_SIZE
+        sizeMap.get(node) || DEFAULT_SIZE
       const nodeX = curX + (boxSize[0] - contentSize[0]) / 2
       const nodeY = y + (boxHeight - contentSize[1]) / 2
       curX += boxSize[0] + GRAPH_NODE_MARGIN_HORIZONTAL
