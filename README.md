@@ -6,25 +6,17 @@
 
 
 ## Features
-- Regular expression visualizer
-- Visual editing regular expression
-- Testing regular expression
+- Visualizing regular expressions
+- Visual editing of regular expressions
+- Testing of regular expressions.
 
 ## Blog
 - [English](https://www.bowencodes.com/post/regex-vis_en)
 - [Chinese](https://www.bowencodes.com/post/regex-vis)
 
-## Deployment
+## Contribution Guide
 
-To deploy this project run
-
-```bash
-# install dependencies, use pnpm!
-$ pnpm install
-
-# serve with hot reload at localhost:3000
-$ pnpm start
-```
+[Contribution Guide](https://github.com/Bowen7/regex-vis/blob/master/.github/CONTRIBUTING.md)
 
 ## Feedback
 
