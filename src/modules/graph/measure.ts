@@ -9,16 +9,16 @@ import {
   GRAPH_NODE_MIN_WIDTH,
   GRAPH_NODE_MIN_HEIGHT,
   REGEX_FONT_FAMILY,
-  ICON_FONT_FAMILY,
-  GRAPH_QUANTIFIER_HEIGHT,
-  GRAPH_NAME_HEIGHT,
+  GRAPH_QUANTIFIER_MEASURE_HEIGHT,
+  GRAPH_NAME_MEASURE_HEIGHT,
+  GRAPH_QUOTE_PADDING,
+  GRAPH_ICON_SIZE,
 } from "@/constants"
 import {
-  getCharacterClassText,
+  tryCharacterClassText,
   getBackReferenceText,
   getBoundaryAssertionText,
   getNameText,
-  QUANTIFIER_ICON,
   getQuantifierText,
 } from "./utils"
 
@@ -48,10 +48,6 @@ let ctx: CanvasRenderingContext2D | null = null
 try {
   const canvas = document.createElement("canvas")
   ctx = canvas.getContext("2d")
-  // In Chrome: if the font has not been used, the measurement will be incorrect.
-  // So, we need to draw something to use the font.
-  ctx!.font = `${GRAPH_QUANTIFIER_TEXT_FONTSIZE}px ${ICON_FONT_FAMILY}`
-  ctx!.fillText(QUANTIFIER_ICON, 0, 0)
 } catch (error) {
   ctx = null
   console.log("canvas is not supported")
@@ -75,20 +71,20 @@ export const measureText = (
 
 const measureQuantifier = (node: AST.Node): [number, number] => {
   if ((node.type === "group" || node.type === "character") && node.quantifier) {
-    const [iconWidth] = measureText(
-      QUANTIFIER_ICON,
-      GRAPH_QUANTIFIER_TEXT_FONTSIZE,
-      ICON_FONT_FAMILY
-    )
-    const text = getQuantifierText(node.quantifier)
-    const [textWidth] = measureText(
-      text,
-      GRAPH_QUANTIFIER_TEXT_FONTSIZE,
-      ICON_FONT_FAMILY
-    )
-    return [textWidth + iconWidth, GRAPH_QUANTIFIER_HEIGHT]
+    const { quantifier } = node
+    const text = getQuantifierText(quantifier, false)
+    const [textWidth] = measureText(text, GRAPH_QUANTIFIER_TEXT_FONTSIZE)
+    const width =
+      textWidth +
+      GRAPH_ICON_SIZE +
+      (quantifier.max === Infinity ? GRAPH_ICON_SIZE : 0)
+    return [width, GRAPH_QUANTIFIER_MEASURE_HEIGHT]
   }
   return ZERO_SIZE
+}
+
+const measureTexts = (texts: string[]): [number, number][] => {
+  return texts.map((text) => measureText(text, GRAPH_TEXT_FONT_SIZE))
 }
 
 const measureNodeText = (texts: string[] | string): [number, number] => {
@@ -97,8 +93,9 @@ const measureNodeText = (texts: string[] | string): [number, number] => {
   if (typeof texts === "string") {
     ;[width, height] = measureText(texts, GRAPH_TEXT_FONT_SIZE)
   } else {
-    for (const text of texts) {
-      const [w, h] = measureText(text, GRAPH_TEXT_FONT_SIZE)
+    const sizes = measureTexts(texts)
+    for (const size of sizes) {
+      const [w, h] = size
       width = Math.max(width, w)
       height += h
     }
@@ -111,29 +108,48 @@ const measureNodeText = (texts: string[] | string): [number, number] => {
 
 const measureRanges = (ranges: AST.Range[]): [number, number] => {
   const singleRangeSet = new Set<string>()
-  const texts: string[] = []
+  let width = 0
+  let height = 0
   ranges.forEach((range) => {
+    let text = ""
+    let quotes = 0
     const { from, to } = range
     if (from.length === 1) {
       if (from === to) {
         singleRangeSet.add(from)
+        return
       } else {
-        texts.push(`"${from}" - "${to}"`)
+        text = `"${from}" - "${to}"`
+        quotes += 2
       }
     } else {
       if (from === to) {
-        texts.push(getCharacterClassText(from))
+        const res = tryCharacterClassText(from)
+        text = res[0]
+        quotes += res[1] ? 0 : 1
       } else {
-        texts.push(
-          `${getCharacterClassText(from)} - ${getCharacterClassText(to)}`
-        )
+        const fromRes = tryCharacterClassText(from)
+        const toRes = tryCharacterClassText(to)
+        text = `${fromRes[0]} - ${toRes[0]}`
+        quotes += (fromRes[1] ? 0 : 1) + (toRes[1] ? 0 : 1)
       }
     }
+    let [w, h] = measureText(text, GRAPH_TEXT_FONT_SIZE)
+    w += quotes * GRAPH_QUOTE_PADDING * 2
+    width = Math.max(width, w)
+    height += h
   })
   if (singleRangeSet.size > 0) {
-    texts.push('"' + Array.from(singleRangeSet).join("") + '"')
+    const text = '"' + Array.from(singleRangeSet).join("") + '"'
+    let [w, h] = measureText(text, GRAPH_TEXT_FONT_SIZE)
+    w += GRAPH_QUOTE_PADDING * 2
+    width = Math.max(width, w)
+    height += h
   }
-  return measureNodeText(texts)
+  return [
+    width + GRAPH_NODE_PADDING_HORIZONTAL * 2,
+    height + GRAPH_NODE_PADDING_VERTICAL * 2,
+  ]
 }
 
 const measureCharacter = (node: AST.CharacterNode): [number, number] => {
@@ -145,6 +161,7 @@ const measureCharacter = (node: AST.CharacterNode): [number, number] => {
         size = measureNodeText(t("Empty"))
       } else {
         size = measureNodeText(`"${value}"`)
+        size[0] += GRAPH_QUOTE_PADDING * 2
       }
       break
     }
@@ -156,6 +173,7 @@ const measureCharacter = (node: AST.CharacterNode): [number, number] => {
         )
       } else {
         size = measureNodeText(value)
+        size[0] += GRAPH_QUOTE_PADDING * 2
       }
       break
     }
@@ -228,7 +246,7 @@ export const measureNodeName = (
   if (node.type !== "regex") {
     const name = getNameText(node, t)
     if (name) {
-      return [measureNodeText(name)[0], GRAPH_NAME_HEIGHT]
+      return [measureNodeText(name)[0], GRAPH_NAME_MEASURE_HEIGHT]
     }
   }
   return ZERO_SIZE

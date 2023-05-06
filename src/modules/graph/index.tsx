@@ -50,10 +50,6 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
           position: relative;
           font-size: ${errorMsg ? "1em" : "0"};
         }
-        .graph :global(svg) {
-          border: 1px solid ${palette.accents_2};
-          border-radius: 5px;
-        }
       `}</style>
     </>
   )

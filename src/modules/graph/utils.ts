@@ -41,11 +41,11 @@ export const getBackReferenceText = (
   t: TFunction
 ) => `${t("Back reference")} #${node.ref}`
 
-export const getCharacterClassText = (key: string) => {
+export const tryCharacterClassText = (key: string): [string, boolean] => {
   if (key in characterClassTextMap) {
-    return characterClassTextMap[key as CharacterClassKey]
+    return [characterClassTextMap[key as CharacterClassKey], true]
   } else {
-    return key
+    return ['"' + key + '"', false]
   }
 }
 
@@ -72,22 +72,15 @@ export const useSize = (
   sizeMap: Map<AST.Node | AST.Node[], NodeSize>
 ) => useMemo(() => sizeMap.get(node) || DEFAULT_SIZE, [node, sizeMap])
 
-export const QUANTIFIER_ICON = "\ue900"
-export const NON_GREEDY_QUANTIFIER_ICON = "\ue901"
-export const INFINITY_ICON = "\ue902"
-
 export const getQuantifierText = (
   quantifier: AST.Quantifier,
   withInfinity = true
 ): string => {
   let { min, max } = quantifier
-  let minText = `${min}`
-  let maxText = `${max}`
+  let minText = min
+  let maxText = max === Infinity ? "" : max
   if (min === max) {
-    return minText
+    return " " + minText
   }
-  if (max === Infinity) {
-    maxText = withInfinity ? INFINITY_ICON : ""
-  }
-  return minText + " - " + maxText
+  return " " + minText + " - " + maxText
 }

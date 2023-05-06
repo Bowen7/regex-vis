@@ -1,59 +1,41 @@
 import React from "react"
 import { AST } from "@/parser"
-import {
-  GRAPH_QUANTIFIER_TEXT_FONTSIZE,
-  GRAPH_QUANTIFIER_ICON_FONTSIZE,
-  ICON_FONT_FAMILY,
-} from "@/constants"
-import {
-  QUANTIFIER_ICON,
-  NON_GREEDY_QUANTIFIER_ICON,
-  INFINITY_ICON,
-  getQuantifierText,
-} from "./utils"
+import InfinityIcon from "@geist-ui/icons/infinity"
+import { GRAPH_ICON_SIZE } from "@/constants"
+import { getQuantifierText } from "./utils"
 type Props = {
-  centerX: number
-  y: number
   quantifier: AST.Quantifier
 }
 
 const QuantifierNode = React.memo((props: Props) => {
-  const { centerX, y, quantifier } = props
+  const { quantifier } = props
 
   const hasInfinity = quantifier.max === Infinity
   const text = getQuantifierText(quantifier, false)
-  const icon = quantifier.greedy ? QUANTIFIER_ICON : NON_GREEDY_QUANTIFIER_ICON
 
   return (
-    <text
-      className="text"
-      fontSize={GRAPH_QUANTIFIER_TEXT_FONTSIZE}
-      textAnchor="middle"
-      x={centerX}
-      y={y}
-      dy={1.15 * GRAPH_QUANTIFIER_ICON_FONTSIZE}
-      fontFamily={ICON_FONT_FAMILY}
-    >
-      <tspan fontSize={18}>{icon}</tspan>
-      <tspan
-        dy={
-          (GRAPH_QUANTIFIER_TEXT_FONTSIZE - GRAPH_QUANTIFIER_ICON_FONTSIZE) / 2
-        }
+    <div className="text quantifier">
+      <svg
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="1.5"
+        shapeRendering="geometricPrecision"
+        viewBox="0 0 24 24"
+        height={GRAPH_ICON_SIZE}
+        width={GRAPH_ICON_SIZE}
       >
-        {" " + text}
-      </tspan>
-      {hasInfinity && (
-        <tspan
-          dy={
-            (GRAPH_QUANTIFIER_TEXT_FONTSIZE - GRAPH_QUANTIFIER_ICON_FONTSIZE) /
-              2 +
-            3.5
-          }
-        >
-          {INFINITY_ICON}
-        </tspan>
-      )}
-    </text>
+        <path d="M17 1l4 4-4 4"></path>
+        <path
+          d="M3 11V9a4 4 0 014-4h14M21 13v2a4 4 0 01-4 4H3"
+          strokeDasharray={quantifier.greedy ? "" : "4, 4"}
+        ></path>
+        <path d="M7 23l-4-4 4-4"></path>
+      </svg>
+      <span>{text}</span>
+      {hasInfinity && <InfinityIcon size={GRAPH_ICON_SIZE} />}
+    </div>
   )
 })
 QuantifierNode.displayName = "QuantifierNode"

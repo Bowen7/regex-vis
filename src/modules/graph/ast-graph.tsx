@@ -16,6 +16,7 @@ import {
   GRAPH_CHOICE_PADDING_VERTICAL,
   REGEX_FONT_FAMILY,
   GRAPH_GROUP_NODE_PADDING_VERTICAL,
+  GRAPH_QUOTE_PADDING,
 } from "@/constants"
 import RootNodes from "./root-nodes"
 import Nodes from "./nodes"
@@ -180,6 +181,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
         width={size[0]}
         height={size[1]}
         data-testid="graph"
+        className="ast-graph"
       >
         {currentAST && (
           <>
@@ -201,47 +203,66 @@ const ASTGraph = React.memo(({ ast }: Props) => {
         )}
       </svg>
       <style jsx>{`
-        svg {
+        .ast-graph {
           border: ${isPrimaryGraph ? `1px solid ${palette.accents_2}` : "none"};
           border-radius: 5px;
           font-family: ${REGEX_FONT_FAMILY};
         }
-        svg :global(text) {
+        .ast-graph :global(.text) {
+          text-align: center;
           pointer-events: none;
+          white-space: nowrap;
+          line-height: 1.5;
+          color: ${palette.foreground};
         }
-        svg :global(.box-fill) {
+        .ast-graph :global(.box-fill) {
           fill: ${palette.success};
         }
-        svg :global(.selected-fill) {
+        .ast-graph :global(.selected-fill) {
           fill: ${palette.success};
           fill-opacity: 0.3;
         }
-        svg :global(.none-stroke) {
+        .ast-graph :global(.none-stroke) {
           stroke: none;
         }
-        svg :global(.stroke) {
+        .ast-graph :global(.stroke) {
           stroke: ${palette.accents_6};
           stroke-width: 2px;
         }
-        svg :global(.thin-stroke) {
+        .ast-graph :global(.thin-stroke) {
           stroke: ${palette.accents_6};
           stroke-width: 1.5px;
         }
-        svg :global(.second-stroke) {
+        .ast-graph :global(.second-stroke) {
           stroke: ${palette.accents_3};
           stroke-width: 1.5px;
         }
-        svg :global(.text) {
-          fill: ${palette.foreground};
-        }
-        svg :global(.fill) {
+        .ast-graph :global(.fill) {
           fill: ${palette.background};
         }
-        svg :global(.transparent-fill) {
+        .ast-graph :global(.transparent-fill) {
           fill: transparent;
         }
-        svg :global(.quote) {
-          fill: ${palette.accents_4};
+        .ast-graph :global(.second-text) {
+          color: ${palette.accents_5};
+        }
+        .ast-graph :global(.with-quote::before) {
+          color: ${palette.accents_5};
+          display: inline;
+          content: '"';
+          padding-right: ${GRAPH_QUOTE_PADDING}px;
+        }
+        .ast-graph :global(.with-quote::after) {
+          color: ${palette.accents_5};
+          display: inline;
+          content: '"';
+          padding-left: ${GRAPH_QUOTE_PADDING}px;
+        }
+        .ast-graph :global(.quantifier) {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          white-space: pre;
         }
       `}</style>
     </>
