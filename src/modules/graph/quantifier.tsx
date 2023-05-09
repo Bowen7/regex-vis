@@ -11,7 +11,7 @@ const QuantifierNode = React.memo((props: Props) => {
   const { quantifier } = props
 
   const hasInfinity = quantifier.max === Infinity
-  const text = getQuantifierText(quantifier, false)
+  const text = getQuantifierText(quantifier)
 
   return (
     <div className="text quantifier">

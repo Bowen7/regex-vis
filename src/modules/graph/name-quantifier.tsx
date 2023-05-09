@@ -27,10 +27,6 @@ export const NameAndQuantifier = (props: Props) => {
   const contentX = x + (boxSize[0] - contentSize[0]) / 2
   const contentY = y + (boxSize[1] - contentSize[1]) / 2
   const centerY = y + boxSize[1] / 2
-
-  if (quantifier && quantifier.min === 0 && quantifier.max === 1) {
-    console.log(boxSize, contentSize)
-  }
   return (
     <>
       {contentX !== x && (

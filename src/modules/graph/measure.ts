@@ -72,7 +72,7 @@ export const measureText = (
 const measureQuantifier = (node: AST.Node): [number, number] => {
   if ((node.type === "group" || node.type === "character") && node.quantifier) {
     const { quantifier } = node
-    const text = getQuantifierText(quantifier, false)
+    const text = getQuantifierText(quantifier)
     const [textWidth] = measureText(text, GRAPH_QUANTIFIER_TEXT_FONTSIZE)
     const width =
       textWidth +

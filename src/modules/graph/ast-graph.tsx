@@ -102,6 +102,20 @@ const ASTGraph = React.memo(({ ast }: Props) => {
     lrd(ast, (node: AST.Node | AST.Regex) => {
       if (node.type !== "regex" && currentSizeMap.has(node)) {
         nextSizeMap.set(node, currentSizeMap.get(node)!)
+        if (node.type === "choice") {
+          const { branches } = node
+          branches.forEach((branch) => {
+            nextSizeMap.set(branch, currentSizeMap.get(branch)!)
+          })
+          return
+        } else if (
+          node.type === "group" ||
+          node.type === "lookAroundAssertion"
+        ) {
+          const { children } = node
+          nextSizeMap.set(children, currentSizeMap.get(children)!)
+          return
+        }
         return
       }
       switch (node.type) {

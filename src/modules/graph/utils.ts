@@ -72,10 +72,7 @@ export const useSize = (
   sizeMap: Map<AST.Node | AST.Node[], NodeSize>
 ) => useMemo(() => sizeMap.get(node) || DEFAULT_SIZE, [node, sizeMap])
 
-export const getQuantifierText = (
-  quantifier: AST.Quantifier,
-  withInfinity = true
-): string => {
+export const getQuantifierText = (quantifier: AST.Quantifier): string => {
   let { min, max } = quantifier
   let minText = min
   let maxText = max === Infinity ? "" : max
