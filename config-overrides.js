@@ -3,7 +3,10 @@ const {
   addWebpackAlias,
   addBabelPlugin,
   fixBabelImports,
+  // addWebpackPlugin,
 } = require("customize-cra")
+// const BundleAnalyzerPlugin =
+//   require("webpack-bundle-analyzer").BundleAnalyzerPlugin
 const path = require("path")
 
 const findWebpackPlugin = (plugins, pluginName) =>
@@ -29,6 +32,7 @@ module.exports = override(
   fixBabelImports("@geist-ui/react", {
     libraryDirectory: "esm",
   }),
+  // addWebpackPlugin(new BundleAnalyzerPlugin()),
   overrideProcessEnv({
     SENTRY_DSN: JSON.stringify(process.env.SENTRY_DSN),
     VERCEL_ANALYTICS_ID: JSON.stringify(process.env.VERCEL_ANALYTICS_ID),

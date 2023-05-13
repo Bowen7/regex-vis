@@ -1,15 +1,16 @@
 import React from "react"
 import { Atom, Provider } from "jotai"
-import { recordLayoutEnableAtom, selectEnableAtom } from "@/atom"
-import SvgContainer from "./container"
+import { sizeMapAtom, isPrimaryGraphAtom } from "@/atom"
+import ASTGraph from "./ast-graph"
 import { parse } from "@/parser"
 type Props = {
   regex: string
 }
 const initialValues: (readonly [Atom<unknown>, unknown])[] = [
-  [recordLayoutEnableAtom, false],
-  [selectEnableAtom, false],
+  [sizeMapAtom, new Map()],
+  [isPrimaryGraphAtom, false],
 ]
+
 const SimpleGraph = React.memo(({ regex }: Props) => {
   const ast = parse(regex)
   if (ast.type === "error") {
@@ -17,7 +18,7 @@ const SimpleGraph = React.memo(({ regex }: Props) => {
   }
   return (
     <Provider initialValues={initialValues}>
-      <SvgContainer ast={ast} withRoot={false} />
+      <ASTGraph ast={ast} />
     </Provider>
   )
 })

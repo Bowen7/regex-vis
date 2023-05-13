@@ -1,4 +1,4 @@
-const characterClassTextMap = {
+export const characterClassTextMap = {
   ".": "Any character",
   "\\d": "Any digit",
   "\\D": "Non-digit",
@@ -23,4 +23,3 @@ const characterClassTextMap = {
   "\\uhhhh": "",
 }
 export type CharacterClassKey = keyof typeof characterClassTextMap
-export { characterClassTextMap }

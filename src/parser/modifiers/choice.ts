@@ -20,7 +20,7 @@ export const makeChoiceValid = (ast: AST.Regex) => {
     (
       node: AST.Node,
       nodeList: AST.Node[],
-      index: number,
+      _index: number,
       parent: AST.ParentNode
     ) => {
       if (node.type === "choice") {

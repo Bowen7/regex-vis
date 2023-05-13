@@ -1,18 +1,18 @@
-import React, { useState, useCallback } from "react"
+import { useAtomValue } from "jotai"
 import { AST } from "@/parser"
 import {
+  GRAPH_NODE_BORDER_RADIUS,
+  GRAPH_TEXT_FONT_SIZE,
   GRAPH_NODE_PADDING_VERTICAL,
   GRAPH_NODE_PADDING_HORIZONTAL,
-  GRAPH_NODE_BORDER_RADIUS,
-  GRAPH_NODE_MIN_WIDTH,
-  GRAPH_NODE_MIN_HEIGHT,
 } from "@/constants"
-import { withNameQuantifier } from "./with-name-quantifier"
+import { sizeMapAtom } from "@/atom"
+import { NameAndQuantifier } from "./name-quantifier"
 import Content from "./content"
 import TextNode from "./text"
+import { useSize } from "./utils"
 
 type Props = {
-  index: number
   x: number
   y: number
   node:
@@ -22,62 +22,42 @@ type Props = {
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode
   selected: boolean
-  onLayout: (index: number, layout: [number, number]) => void
-  children: React.ReactNode
 }
 
-const _SimpleNode = ({
-  index,
-  x,
-  y,
-  node,
-  selected,
-  onLayout,
-  children,
-}: Props) => {
-  const [layout, setLayout] = useState<[number, number]>([0, 0])
-
-  const handleTextLayout = useCallback(
-    ([textWidth, textHeight]: [number, number]) => {
-      const width = Math.max(
-        textWidth + 2 * GRAPH_NODE_PADDING_HORIZONTAL,
-        GRAPH_NODE_MIN_WIDTH
-      )
-      const height = Math.max(
-        textHeight + 2 * GRAPH_NODE_PADDING_VERTICAL,
-        GRAPH_NODE_MIN_HEIGHT
-      )
-      setLayout([width, height])
-      onLayout(index, [width, height])
-    },
-    [index, onLayout]
-  )
-
+const SimpleNode = ({ x, y, node, selected }: Props) => {
+  const sizeMap = useAtomValue(sizeMapAtom)
+  const size = useSize(node, sizeMap)
+  const { box: boxSize, content: contentSize } = size
+  const contentX = x + (boxSize[0] - contentSize[0]) / 2
+  const contentY = y + (boxSize[1] - contentSize[1]) / 2
   return (
-    <g>
-      {children}
-      <g transform={`translate(${x},${y})`}>
-        <Content
-          id={node.id}
-          selected={selected}
-          width={layout[0]}
-          height={layout[1]}
-          rx={GRAPH_NODE_BORDER_RADIUS}
-          ry={GRAPH_NODE_BORDER_RADIUS}
-          fill="transparent"
-          className="stroke"
+    <>
+      <NameAndQuantifier x={x} y={y} node={node} size={size} />
+      <Content
+        id={node.id}
+        selected={selected}
+        x={contentX}
+        y={contentY}
+        width={contentSize[0]}
+        height={contentSize[1]}
+        rx={GRAPH_NODE_BORDER_RADIUS}
+        ry={GRAPH_NODE_BORDER_RADIUS}
+        fill="transparent"
+        className="stroke"
+      >
+        <foreignObject
+          x={contentX + GRAPH_NODE_PADDING_HORIZONTAL}
+          y={contentY + GRAPH_NODE_PADDING_VERTICAL}
+          width={contentSize[0] - GRAPH_NODE_PADDING_HORIZONTAL * 2}
+          height={contentSize[1] - GRAPH_NODE_PADDING_VERTICAL * 2}
+          fontSize={GRAPH_TEXT_FONT_SIZE}
         >
-          <TextNode
-            centerX={layout[0] / 2}
-            node={node}
-            onLayout={handleTextLayout}
-          />
-        </Content>
-      </g>
-    </g>
+          <TextNode node={node} />
+        </foreignObject>
+      </Content>
+    </>
   )
 }
 
-const SimpleNode = withNameQuantifier(_SimpleNode)
 SimpleNode.displayName = "SimpleNode"
 export default SimpleNode

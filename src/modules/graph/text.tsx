@@ -1,25 +1,13 @@
-import React, { Fragment, useLayoutEffect, useRef } from "react"
+import React, { Fragment } from "react"
 import { useTranslation, TFunction } from "react-i18next"
 import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
-import {
-  GRAPH_TEXT_FONT_SIZE,
-  GRAPH_TEXT_LIEN_HEIGHT,
-  GRAPH_NODE_PADDING_VERTICAL,
-} from "@/constants"
 type Props = {
-  centerX: number
   node:
     | AST.CharacterNode
     | AST.BackReferenceNode
     | AST.BeginningBoundaryAssertionNode
     | AST.EndBoundaryAssertionNode
     | AST.WordBoundaryAssertionNode
-  onLayout: (layout: [number, number]) => void
-}
-
-const commonTextProps = {
-  textAnchor: "middle",
-  fontSize: GRAPH_TEXT_FONT_SIZE,
 }
 
 const assertionTextMap = {
@@ -30,91 +18,66 @@ const assertionTextMap = {
   word: ["WordBoundary", "NonWordBoundary"],
 }
 
-const renderString = (value: string, dy = 0) => (
-  <text className="text" dy={dy} {...commonTextProps}>
-    <tspan className="quote">{'" '}</tspan>
-    <tspan>{value}</tspan>
-    <tspan className="quote">{' "'}</tspan>
-  </text>
+const renderString = (value: string) => (
+  <div className="text">
+    <span className="with-quote">{value}</span>
+  </div>
 )
 
 const renderStringCharacter = (node: AST.StringCharacterNode) =>
   renderString(node.value)
 
-const renderClassCharacter = (node: AST.ClassCharacterNode, t: TFunction) => {
-  if (node.value in characterClassTextMap) {
-    return (
-      <text className="text" {...commonTextProps}>
-        {t(characterClassTextMap[node.value as CharacterClassKey])}
-      </text>
-    )
+const renderClassCharacter = (value: string, t: TFunction) => {
+  if (value in characterClassTextMap) {
+    return <span>{t(characterClassTextMap[value as CharacterClassKey])}</span>
   } else {
-    return renderString(node.value)
+    return <span className="with-quote">{value}</span>
   }
 }
 
-const getRangeText = (key: string) => {
-  if (key in characterClassTextMap) {
-    return characterClassTextMap[key as CharacterClassKey]
-  } else {
-    return key
-  }
-}
 const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
   const singleRangeSet = new Set<string>()
   const ranges = node.ranges
   const texts: JSX.Element[] = []
-  let dy = 0
   ranges.forEach(({ from, to }, index) => {
     if (from.length === 1) {
       if (from === to) {
         singleRangeSet.add(from)
       } else {
         texts.push(
-          <text className="text" dy={dy} {...commonTextProps} key={index}>
-            <tspan className="quote">{'" '}</tspan>
-            <tspan>{from}</tspan>
-            <tspan className="quote">{' "'}</tspan>
-            <tspan className="quote">{" - "}</tspan>
-            <tspan className="quote">{'" '}</tspan>
-            <tspan>{to}</tspan>
-            <tspan className="quote">{' "'}</tspan>
-          </text>
+          <div className="text" key={index}>
+            <span className="with-quote">{from}</span>
+            <span className="second-text">{" - "}</span>
+            <span className="with-quote">{to}</span>
+          </div>
         )
-        dy += GRAPH_TEXT_LIEN_HEIGHT
       }
     } else if (from === to) {
       texts.push(
-        <text className="text" dy={dy} {...commonTextProps} key={index}>
-          {getRangeText(from)}
-        </text>
+        <div className="text" key={index}>
+          {renderClassCharacter(from, t)}
+        </div>
       )
-      dy += GRAPH_TEXT_LIEN_HEIGHT
     } else {
       texts.push(
-        <text className="text" dy={dy} {...commonTextProps} key={index}>
-          <tspan>{getRangeText(from)}</tspan>
-          <tspan className="quote">{" - "}</tspan>
-          <tspan>{getRangeText(to)}</tspan>
-        </text>
+        <div className="text" key={index}>
+          {renderClassCharacter(from, t)}
+          <span className="second-text">{" - "}</span>
+          {renderClassCharacter(to, t)}
+        </div>
       )
-      dy += GRAPH_TEXT_LIEN_HEIGHT
     }
   })
   if (singleRangeSet.size > 0) {
     const text = Array.from(singleRangeSet).join("")
-    texts.push(<Fragment key="single-range">{renderString(text, dy)}</Fragment>)
+    texts.push(<Fragment key="single-range">{renderString(text)}</Fragment>)
   }
   return <>{texts}</>
 }
 
 const renderBackReference = (node: AST.BackReferenceNode, t: TFunction) => {
   const string = `${t("Back reference")} #${node.ref}`
-  return (
-    <text className="text" {...commonTextProps}>
-      {string}
-    </text>
-  )
+  return <div className="text">{string}</div>
 }
 
 const renderBoundaryAssertion = (
@@ -133,61 +96,36 @@ const renderBoundaryAssertion = (
     string = assertionTextMap[kind]
   }
   string = t(string)
-  return (
-    <text className="text" {...commonTextProps}>
-      {string}
-    </text>
-  )
+  return <div className="text">{string}</div>
 }
 
-const TextNode = React.memo(({ centerX, node, onLayout }: Props) => {
-  const gRef = useRef<SVGGElement>(null)
+const TextNode = React.memo(({ node }: Props) => {
+  const { t } = useTranslation()
 
-  const { t, i18n } = useTranslation()
-  const language = i18n.language
-
-  useLayoutEffect(() => {
-    const { width, height } = gRef.current?.getBoundingClientRect()!
-    onLayout([width, height])
-  }, [node, language, onLayout])
-
-  const renderText = (): JSX.Element => {
-    switch (node.type) {
-      case "character":
-        switch (node.kind) {
-          case "string":
-            if (node.value === "") {
-              return (
-                <text className="quote" {...commonTextProps}>
-                  {t("Empty")}
-                </text>
-              )
-            }
-            return renderStringCharacter(node)
-          case "class":
-            return renderClassCharacter(node, t)
-          case "ranges":
-            return renderRangesCharacter(node, t)
-        }
-        throw new Error("unreachable")
-      case "backReference":
-        return renderBackReference(node, t)
-      case "boundaryAssertion":
-        return renderBoundaryAssertion(node, t)
-    }
+  switch (node.type) {
+    case "character":
+      switch (node.kind) {
+        case "string":
+          if (node.value === "") {
+            return <div className="second-text">{t("Empty")}</div>
+          }
+          return renderStringCharacter(node)
+        case "class":
+          return (
+            <div className="text">{renderClassCharacter(node.value, t)}</div>
+          )
+        case "ranges":
+          return renderRangesCharacter(node, t)
+        default:
+          break
+      }
+      return null
+    case "backReference":
+      return renderBackReference(node, t)
+    case "boundaryAssertion":
+      return renderBoundaryAssertion(node, t)
   }
-
-  return (
-    <g
-      ref={gRef}
-      fontSize={GRAPH_TEXT_FONT_SIZE}
-      transform={`translate(${centerX},${
-        GRAPH_TEXT_FONT_SIZE + GRAPH_NODE_PADDING_VERTICAL
-      })`}
-    >
-      {renderText()}
-    </g>
-  )
 })
+
 TextNode.displayName = "TextNode"
 export default TextNode
