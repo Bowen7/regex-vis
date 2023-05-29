@@ -229,6 +229,9 @@ const ASTGraph = React.memo(({ ast }: Props) => {
           line-height: 1.5;
           color: ${palette.foreground};
         }
+        .ast-graph :global(.text > span) {
+          vertical-align: middle;
+        }
         .ast-graph :global(.box-fill) {
           fill: ${palette.success};
         }
