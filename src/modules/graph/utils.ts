@@ -42,7 +42,9 @@ export const getBackReferenceText = (
 ) => `${t("Back reference")} #${node.ref}`
 
 export const tryCharacterClassText = (key: string): [string, boolean] => {
-  if (key in characterClassTextMap) {
+  if (key === "") {
+    return ["Empty", true]
+  } else if (key in characterClassTextMap) {
     return [characterClassTextMap[key as CharacterClassKey], true]
   } else {
     return ['"' + key + '"', false]

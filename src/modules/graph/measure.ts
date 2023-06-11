@@ -125,12 +125,14 @@ const measureRanges = (ranges: AST.Range[]): [number, number] => {
     } else {
       if (from === to) {
         const res = tryCharacterClassText(from)
-        text = res[0]
+        text = res[1] ? t(res[0]) : res[0]
         quotes += res[1] ? 0 : 1
       } else {
         const fromRes = tryCharacterClassText(from)
         const toRes = tryCharacterClassText(to)
-        text = `${fromRes[0]} - ${toRes[0]}`
+        const fromText = fromRes[1] ? t(fromRes[0]) : fromRes[0]
+        const toText = toRes[1] ? t(toRes[0]) : toRes[0]
+        text = `${fromText} - ${toText}`
         quotes += (fromRes[1] ? 0 : 1) + (toRes[1] ? 0 : 1)
       }
     }
@@ -167,7 +169,9 @@ const measureCharacter = (node: AST.CharacterNode): [number, number] => {
     }
     case "class": {
       const { value } = node
-      if (value in characterClassTextMap) {
+      if (value === "") {
+        size = measureNodeText(t("Empty"))
+      } else if (value in characterClassTextMap) {
         size = measureNodeText(
           t(characterClassTextMap[value as CharacterClassKey])
         )

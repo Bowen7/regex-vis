@@ -28,7 +28,9 @@ const renderStringCharacter = (node: AST.StringCharacterNode) =>
   renderString(node.value)
 
 const renderClassCharacter = (value: string, t: TFunction) => {
-  if (value in characterClassTextMap) {
+  if (value === "") {
+    return <span className="second-text">{t("Empty")}</span>
+  } else if (value in characterClassTextMap) {
     return <span>{t(characterClassTextMap[value as CharacterClassKey])}</span>
   } else {
     return <span className="with-quote">{value}</span>
