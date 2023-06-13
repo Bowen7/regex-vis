@@ -10,7 +10,7 @@ export const useDebounceInput = (
 
   useDebounce(
     () => {
-      value !== innerValue && onChange(innerValue)
+      onChange(innerValue)
     },
     ms,
     [innerValue]

@@ -13,10 +13,12 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
   const { from, to } = range
   const [focused, setFocused] = useState(false)
   const [hovered, setHovered] = useState(false)
-  const [error, setError] = useState<null | string>(null)
+  const [fromError, setFromError] = useState<null | string>(null)
+  const [toError, setToError] = useState<null | string>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const fromRef = useRef<string>(from)
   const toRef = useRef<string>(to)
+  const error = fromError || toError
 
   const { palette } = useTheme()
 
@@ -34,6 +36,7 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
   }, [palette, focused, error])
 
   const handleInputChange = (key: "from" | "to", value: string) => {
+    const setError = key === "from" ? setFromError : setToError
     if (key === "from") {
       fromRef.current = value
     } else {
@@ -49,10 +52,15 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
       return setError("The range out of order in character class")
     }
     setError(null)
+    const otherError = key === "from" ? toError : fromError
+    if (otherError) {
+      return
+    }
     onChange({ from: fromRef.current, to: toRef.current })
   }
 
-  const handleError = (error: RangeError) => {
+  const handleError = (key: "from" | "to", error: RangeError) => {
+    const setError = key === "from" ? setFromError : setToError
     let err: null | string = null
     switch (error) {
       case RangeError.EMPTY_INPUT:
@@ -77,13 +85,13 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
           <RangeInput
             value={from}
             onChange={(value: string) => handleInputChange("from", value)}
-            onError={handleError}
+            onError={(err) => handleError("from", err)}
           />
           {" - "}
           <RangeInput
             value={to}
             onChange={(value: string) => handleInputChange("to", value)}
-            onError={handleError}
+            onError={(err) => handleError("to", err)}
           />
         </div>
         {(focused || hovered) && (
