@@ -68,7 +68,7 @@
     "jest": "^26.6.0",
     "jest-canvas-mock": "^2.5.0",
     "react-app-rewired": "^2.1.6",
-    "regenerator-runtime": "^0.13.9",
+    "regenerator-runtime": "^0.14.0",
     "ts-jest": "^26.5.6",
     "ts-node": "^10.0.0",
     "webpack-bundle-analyzer": "^4.8.0"

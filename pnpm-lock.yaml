@@ -37,7 +37,7 @@ specifiers:
   react-router-dom: ^6.3.0
   react-scripts: 4.0.3
   react-use: ^17.4.0
-  regenerator-runtime: ^0.13.9
+  regenerator-runtime: ^0.14.0
   styled-jsx: ^5.0.2
   tilg: ^0.1.1
   ts-jest: ^26.5.6
@@ -89,7 +89,7 @@ devDependencies:
   jest: 26.6.0_ts-node@10.0.0
   jest-canvas-mock: 2.5.0
   react-app-rewired: 2.1.8_react-scripts@4.0.3
-  regenerator-runtime: 0.13.9
+  regenerator-runtime: 0.14.0
   ts-jest: 26.5.6_u6owhogmjz5hocps47wqjkm5zi
   ts-node: 10.0.0_pnmx6ogroqyqwc2hyqoliwxtz4
   webpack-bundle-analyzer: 4.8.0
@@ -4384,7 +4384,8 @@ packages:
     optional: true
 
   /bindings/1.5.0:
-    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz}
+    resolution: {integrity: sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==}
+    requiresBuild: true
     dependencies:
       file-uri-to-path: 1.0.0
     optional: true
@@ -6443,7 +6444,8 @@ packages:
       webpack: 4.44.2
 
   /file-uri-to-path/1.0.0:
-    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/file-uri-to-path/-/file-uri-to-path-1.0.0.tgz}
+    resolution: {integrity: sha512-0Zt+s3L7Vf1biwWZ29aARiVYLx7iMGnEUl9x33fbB/j3jR81u/O2LbqK+Bm1CDSNDKVtJ/YjwY7TUd5SkeLQLw==}
+    requiresBuild: true
     optional: true
 
   /filesize/6.1.0:
@@ -8712,7 +8714,8 @@ packages:
       thunky: 1.1.0
 
   /nan/2.14.2:
-    resolution: {integrity: sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz}
+    resolution: {integrity: sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==}
+    requiresBuild: true
     optional: true
 
   /nano-css/5.3.4_ef5jwxihqo6n7gxfmzogljlgcm:
@@ -10513,6 +10516,10 @@ packages:
 
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
+
+  /regenerator-runtime/0.14.0:
+    resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
+    dev: true
 
   /regenerator-transform/0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.5.tgz}
