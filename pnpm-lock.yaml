@@ -28,7 +28,7 @@ specifiers:
   immer: ^9.0.6
   jest: ^26.6.0
   jest-canvas-mock: ^2.5.0
-  jotai: ^1.7.1
+  jotai: ^2.0.0
   nanoid: ^3.1.16
   react: ^18.1.0
   react-app-rewired: ^2.1.6
@@ -58,7 +58,7 @@ dependencies:
   i18next-browser-languagedetector: 6.1.4
   i18next-http-backend: 1.4.0
   immer: 9.0.6
-  jotai: 1.7.1_f2doctsj6mecwv6cns5elz5mme
+  jotai: 2.3.1_xzblsqi5foayvoljr2geupzxea
   nanoid: 3.1.23
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
@@ -3339,7 +3339,6 @@ packages:
 
   /@types/prop-types/15.7.3:
     resolution: {integrity: sha512-KfRL3PuHmqQLOG+2tGpRO26Ctg+Cq1E01D2DMriKEATHgWLfeNDmq9e29Q9WIky0dQ3NPkd1mzYH8Lm936Z9qw==}
-    dev: true
 
   /@types/q/1.5.4:
     resolution: {integrity: sha512-1HcDas8SEj4z1Wc696tH56G8OlRaH/sqZOynNNB+HF0WOeXPaxTtbYzJY2oEfiUxjSKjhCKr+MvR7dCHcEelug==}
@@ -3356,7 +3355,6 @@ packages:
       '@types/prop-types': 15.7.3
       '@types/scheduler': 0.16.1
       csstype: 3.0.11
-    dev: true
 
   /@types/resolve/0.0.8:
     resolution: {integrity: sha512-auApPaJf3NPfe18hSoJkp8EbZzer2ISk7o8mCC3M9he/a04+gbMF97NkpD2S8riMGvm4BMRI59/SZQSaLTKpsQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@types/resolve/-/resolve-0.0.8.tgz}
@@ -3365,7 +3363,6 @@ packages:
 
   /@types/scheduler/0.16.1:
     resolution: {integrity: sha512-EaCxbanVeyxDRTQBkdLb3Bvl/HK7PBK6UJjsSixB0iHKoWxE5uu2Q/DgtpOhPIojN0Zl1whvOd7PoHs2P0s5eA==}
-    dev: true
 
   /@types/source-list-map/0.1.2:
     resolution: {integrity: sha512-K5K+yml8LTo9bWJI/rECfIPrGgxdpeNbj+d53lwN4QjW1MCwlkhUms+gtdzigTeUyBr09+u8BwOIY3MXvHdcsA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@types/source-list-map/-/source-list-map-0.1.2.tgz}
@@ -8234,42 +8231,19 @@ packages:
       - ts-node
       - utf-8-validate
 
-  /jotai/1.7.1_f2doctsj6mecwv6cns5elz5mme:
-    resolution: {integrity: sha512-Ucighxm0GwjvMpnLn7//CrHFSgLoL7LxHhXm7ofUNIktsRE4TAAhzrwsBb0LjJ0DuBJqQEJq9/jbHFfjO0ylYQ==}
-    engines: {node: '>=12.7.0'}
+  /jotai/2.3.1_xzblsqi5foayvoljr2geupzxea:
+    resolution: {integrity: sha512-pXhx8/MeRUAHbzayerEUf9NHvP+Ba3q9WAvIMjaSwwuSCKEFhb8UW4XuZPC+Bv4u2ufvlyrxIZ+vy5UJ3f8JsQ==}
+    engines: {node: '>=12.20.0'}
     peerDependencies:
-      '@babel/core': '*'
-      '@babel/template': '*'
-      '@urql/core': '*'
-      immer: '*'
-      optics-ts: '*'
-      react: '>=16.8'
-      react-query: '*'
-      valtio: '*'
-      wonka: '*'
-      xstate: '*'
+      '@types/react': '>=17.0.0'
+      react: '>=17.0.0'
     peerDependenciesMeta:
-      '@babel/core':
+      '@types/react':
         optional: true
-      '@babel/template':
-        optional: true
-      '@urql/core':
-        optional: true
-      immer:
-        optional: true
-      optics-ts:
-        optional: true
-      react-query:
-        optional: true
-      valtio:
-        optional: true
-      wonka:
-        optional: true
-      xstate:
+      react:
         optional: true
     dependencies:
-      '@babel/core': 7.14.6
-      immer: 9.0.6
+      '@types/react': 18.0.11
       react: 18.1.0
     dev: false
 
