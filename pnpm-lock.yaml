@@ -25,7 +25,7 @@ specifiers:
   i18next: ^21.6.16
   i18next-browser-languagedetector: ^6.1.4
   i18next-http-backend: ^1.4.0
-  immer: ^9.0.6
+  immer: ^10.0.0
   jest: ^26.6.0
   jest-canvas-mock: ^2.5.0
   jotai: ^1.7.1
@@ -57,8 +57,8 @@ dependencies:
   i18next: 21.6.16
   i18next-browser-languagedetector: 6.1.4
   i18next-http-backend: 1.4.0
-  immer: 9.0.6
-  jotai: 1.7.1_f2doctsj6mecwv6cns5elz5mme
+  immer: 10.0.2
+  jotai: 1.7.1_g2v424jpsvqtfyw7myyjze6rtm
   nanoid: 3.1.23
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
@@ -7218,12 +7218,12 @@ packages:
     resolution: {integrity: sha512-BMpfD7PpiETpBl/A6S498BaIJ6Y/ABT93ETbby2fP00v4EbvPBXWEoaR1UBPKs3iR53pJY7EtZk5KACI57i1Uw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/ignore/-/ignore-5.1.8.tgz}
     engines: {node: '>= 4'}
 
-  /immer/8.0.1:
-    resolution: {integrity: sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/immer/-/immer-8.0.1.tgz}
-
-  /immer/9.0.6:
-    resolution: {integrity: sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/immer/-/immer-9.0.6.tgz}
+  /immer/10.0.2:
+    resolution: {integrity: sha512-Rx3CqeqQ19sxUtYV9CU911Vhy8/721wRFnJv3REVGWUmoAcIwzifTsdmJte/MV+0/XpM35LZdQMBGkRIoLPwQA==}
     dev: false
+
+  /immer/8.0.1:
+    resolution: {integrity: sha512-aqXhGP7//Gui2+UrEtvxZxSquQVXTpZ7KDxfCcKAF3Vysvw0CViVaW9RZ1j1xlIYqaaaipBoqdqeibkc18PNvA==}
 
   /import-cwd/2.1.0:
     resolution: {integrity: sha1-qmzzbnInYShcs3HsZRn1PiQ1sKk=, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/import-cwd/-/import-cwd-2.1.0.tgz}
@@ -8234,7 +8234,7 @@ packages:
       - ts-node
       - utf-8-validate
 
-  /jotai/1.7.1_f2doctsj6mecwv6cns5elz5mme:
+  /jotai/1.7.1_g2v424jpsvqtfyw7myyjze6rtm:
     resolution: {integrity: sha512-Ucighxm0GwjvMpnLn7//CrHFSgLoL7LxHhXm7ofUNIktsRE4TAAhzrwsBb0LjJ0DuBJqQEJq9/jbHFfjO0ylYQ==}
     engines: {node: '>=12.7.0'}
     peerDependencies:
@@ -8269,7 +8269,7 @@ packages:
         optional: true
     dependencies:
       '@babel/core': 7.14.6
-      immer: 9.0.6
+      immer: 10.0.2
       react: 18.1.0
     dev: false
 
