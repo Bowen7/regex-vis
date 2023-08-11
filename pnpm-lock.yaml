@@ -37,7 +37,7 @@ specifiers:
   react-router-dom: ^6.3.0
   react-scripts: 4.0.3
   react-use: ^17.4.0
-  regenerator-runtime: ^0.13.9
+  regenerator-runtime: ^0.14.0
   styled-jsx: ^5.0.2
   tilg: ^0.1.1
   ts-jest: ^26.5.6
@@ -89,7 +89,7 @@ devDependencies:
   jest: 26.6.0_ts-node@10.0.0
   jest-canvas-mock: 2.5.0
   react-app-rewired: 2.1.8_react-scripts@4.0.3
-  regenerator-runtime: 0.13.9
+  regenerator-runtime: 0.14.0
   ts-jest: 26.5.6_u6owhogmjz5hocps47wqjkm5zi
   ts-node: 10.0.0_hrhvyarwtd4iqfwehfxhw6pfii
   webpack-bundle-analyzer: 4.8.0
@@ -10699,6 +10699,10 @@ packages:
 
   /regenerator-runtime/0.13.9:
     resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==}
+
+  /regenerator-runtime/0.14.0:
+    resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
+    dev: true
 
   /regenerator-transform/0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.5.tgz}
