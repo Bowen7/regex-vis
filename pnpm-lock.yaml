@@ -24,7 +24,7 @@ specifiers:
   hex-rgb: ^5.0.0
   i18next: ^21.6.16
   i18next-browser-languagedetector: ^6.1.4
-  i18next-http-backend: ^1.4.0
+  i18next-http-backend: ^2.0.0
   immer: ^9.0.6
   jest: ^26.6.0
   jest-canvas-mock: ^2.5.0
@@ -56,7 +56,7 @@ dependencies:
   hex-rgb: 5.0.0
   i18next: 21.6.16
   i18next-browser-languagedetector: 6.1.4
-  i18next-http-backend: 1.4.0
+  i18next-http-backend: 2.2.1
   immer: 9.0.6
   jotai: 1.7.1_f2doctsj6mecwv6cns5elz5mme
   nanoid: 3.1.23
@@ -5123,10 +5123,10 @@ packages:
   /create-require/1.1.1:
     resolution: {integrity: sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/create-require/-/create-require-1.1.1.tgz}
 
-  /cross-fetch/3.1.5:
-    resolution: {integrity: sha512-lvb1SBsI0Z7GDwmuid+mU3kWVBwTVUbe7S0H52yaaAdQOXq2YktTCZdlAcNKFzE6QtRz0snpw9bNiPeOIkkQvw==}
+  /cross-fetch/3.1.6:
+    resolution: {integrity: sha512-riRvo06crlE8HiqOwIpQhxwdOk4fOeR7FVM/wXoxchFEqMNUjvbs3bfo4OTgMEMHzppd4DxFBDbyySj8Cv781g==}
     dependencies:
-      node-fetch: 2.6.7
+      node-fetch: 2.6.12
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -7172,10 +7172,10 @@ packages:
       '@babel/runtime': 7.17.8
     dev: false
 
-  /i18next-http-backend/1.4.0:
-    resolution: {integrity: sha512-wsvx7E/CT1pHmBM99Vu57YLJpsrHbVjxGxf25EIJ/6oTjsvCkZZ6c3SA4TejcK5jIHfv9oLxQX8l+DFKZHZ0Gg==}
+  /i18next-http-backend/2.2.1:
+    resolution: {integrity: sha512-ZXIdn/8NJIBJ0X4hzXfc3STYxKrCKh1fYjji9HPyIpEJfvTvy8/ZlTl8RuTizzCPj2ZcWrfaecyOMKs6bQ7u5A==}
     dependencies:
-      cross-fetch: 3.1.5
+      cross-fetch: 3.1.6
     transitivePeerDependencies:
       - encoding
     dev: false
@@ -8977,8 +8977,8 @@ packages:
       lower-case: 2.0.2
       tslib: 2.2.0
 
-  /node-fetch/2.6.7:
-    resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
+  /node-fetch/2.6.12:
+    resolution: {integrity: sha512-C/fGU2E8ToujUivIO0H+tpQ6HWo4eEmchoPIoXtxCrVghxdKq+QOHqEZW7tuP3KlV3bC8FRMO5nMCC7Zm1VP6g==}
     engines: {node: 4.x || >=6.0.0}
     peerDependencies:
       encoding: ^0.1.0
@@ -11935,7 +11935,7 @@ packages:
       universalify: 0.1.2
 
   /tr46/0.0.3:
-    resolution: {integrity: sha1-gYT9NH2snNwYWZLzpmIuFLnZq2o=}
+    resolution: {integrity: sha512-N3WMsuqV66lT30CrXNbEjx4GEwlow3v6rr4mCcv6prnfwhS01rkgyFdjPNBYd9br7LpXV1+Emh01fHnq2Gdgrw==}
     dev: false
 
   /tr46/2.1.0:
@@ -12351,7 +12351,7 @@ packages:
     dev: false
 
   /webidl-conversions/3.0.1:
-    resolution: {integrity: sha1-JFNCdeKnvGvnvIZhHMFq4KVlSHE=}
+    resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
     dev: false
 
   /webidl-conversions/5.0.0:
@@ -12532,7 +12532,7 @@ packages:
     resolution: {integrity: sha512-M4yMwr6mAnQz76TbJm914+gPpB/nCwvZbJU28cUD6dR004SAxDLOOSUaB1JDRqLtaOV/vi0IC5lEAGFgrjGv/g==}
 
   /whatwg-url/5.0.0:
-    resolution: {integrity: sha1-lmRU6HZUYuN2RNNib2dCzotwll0=}
+    resolution: {integrity: sha512-saE57nupxk6v3HY35+jzBwYa0rKSy0XR8JSxZPwgLr7ys0IBzhGviA1/TUGJLmSVqs8pb9AnvICXEuOHLprYTw==}
     dependencies:
       tr46: 0.0.3
       webidl-conversions: 3.0.1
