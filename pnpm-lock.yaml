@@ -33,7 +33,7 @@ specifiers:
   react: ^18.1.0
   react-app-rewired: ^2.1.6
   react-dom: ^18.1.0
-  react-i18next: ^11.16.7
+  react-i18next: ^13.0.0
   react-router-dom: ^6.3.0
   react-scripts: 4.0.3
   react-use: ^17.4.0
@@ -62,7 +62,7 @@ dependencies:
   nanoid: 3.1.23
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
-  react-i18next: 11.16.7_47hlnquejirkg3ammbyc66ijei
+  react-i18next: 13.1.1_47hlnquejirkg3ammbyc66ijei
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-scripts: 4.0.3_mih24jlyjazy2hqp3w537qgrna
   react-use: 17.4.0_ef5jwxihqo6n7gxfmzogljlgcm
@@ -2530,6 +2530,13 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.9
+
+  /@babel/runtime/7.22.10:
+    resolution: {integrity: sha512-21t/fkKLMZI4pqP2wlmsQAWnYW1PDyKyyUV4vCi+B25ydmdaYTKXPwCj0BzSUnZf4seIiYvSA3jcZ3gdsMFkLQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.0
+    dev: false
 
   /@babel/template/7.12.13:
     resolution: {integrity: sha512-/7xxiGA57xMo/P2GVvdEumr8ONhFOhfgq2ihK3h1e6THqzTAkHbkXgB0xI9yeTfIUoH3+oAeHhqm/I43OTbbjA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@babel/template/-/template-7.12.13.tgz}
@@ -10406,10 +10413,10 @@ packages:
   /react-error-overlay/6.0.9:
     resolution: {integrity: sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz}
 
-  /react-i18next/11.16.7_47hlnquejirkg3ammbyc66ijei:
-    resolution: {integrity: sha512-7yotILJLnKfvUfrl/nt9eK9vFpVFjZPLWAwBzWL6XppSZZEvlmlKk0GBGDCAPfLfs8oND7WAbry8wGzdoiW5Nw==}
+  /react-i18next/13.1.1_47hlnquejirkg3ammbyc66ijei:
+    resolution: {integrity: sha512-V81cspLxZd37/ltd8Md5Lz99cfeqIn7vJCAUsCXuaTi1vRPKVr0dWq1DhVFUJBHpAi3PJsmFAR3/YstpP+CDYg==}
     peerDependencies:
-      i18next: '>= 19.0.0'
+      i18next: '>= 23.2.3'
       react: '>= 16.8.0'
       react-dom: '*'
       react-native: '*'
@@ -10419,8 +10426,7 @@ packages:
       react-native:
         optional: true
     dependencies:
-      '@babel/runtime': 7.17.8
-      html-escaper: 2.0.2
+      '@babel/runtime': 7.22.10
       html-parse-stringify: 3.0.1
       i18next: 21.6.16
       react: 18.1.0
@@ -10702,7 +10708,6 @@ packages:
 
   /regenerator-runtime/0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
-    dev: true
 
   /regenerator-transform/0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.5.tgz}
@@ -12301,7 +12306,7 @@ packages:
     resolution: {integrity: sha512-2ham8XPWTONajOR0ohOKOHXkm3+gaBmGut3SRuu75xLd/RRaY6vqgh8NBYYk7+RW3u5AtzPQZG8F10LHkl0lAQ==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/vm-browserify/-/vm-browserify-1.1.2.tgz}
 
   /void-elements/3.1.0:
-    resolution: {integrity: sha1-YU9/v42AHwu18GYfWy9XhXUOTwk=}
+    resolution: {integrity: sha512-Dhxzh5HZuiHQhbvTW9AMetFfBHDMYpo23Uo9btPXgdYP+3T5S+p+jgNy7spra+veYhBP2dCSgxR/i2Y02h5/6w==}
     engines: {node: '>=0.10.0'}
     dev: false
 
