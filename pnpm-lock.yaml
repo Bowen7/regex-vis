@@ -22,7 +22,7 @@ specifiers:
   babel-plugin-import: ^1.13.3
   customize-cra: ^1.0.0
   hex-rgb: ^5.0.0
-  i18next: ^21.6.16
+  i18next: ^23.0.0
   i18next-browser-languagedetector: ^6.1.4
   i18next-http-backend: ^1.4.0
   immer: ^9.0.6
@@ -54,7 +54,7 @@ dependencies:
   '@sentry/tracing': 7.7.0
   '@vercel/analytics': 1.0.2
   hex-rgb: 5.0.0
-  i18next: 21.6.16
+  i18next: 23.4.4
   i18next-browser-languagedetector: 6.1.4
   i18next-http-backend: 1.4.0
   immer: 9.0.6
@@ -62,7 +62,7 @@ dependencies:
   nanoid: 3.1.23
   react: 18.1.0
   react-dom: 18.1.0_react@18.1.0
-  react-i18next: 11.16.7_47hlnquejirkg3ammbyc66ijei
+  react-i18next: 11.16.7_xmhp7sk6igrsn7ausgcv2qxsja
   react-router-dom: 6.3.0_ef5jwxihqo6n7gxfmzogljlgcm
   react-scripts: 4.0.3_mih24jlyjazy2hqp3w537qgrna
   react-use: 17.4.0_ef5jwxihqo6n7gxfmzogljlgcm
@@ -2530,6 +2530,13 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.9
+
+  /@babel/runtime/7.22.10:
+    resolution: {integrity: sha512-21t/fkKLMZI4pqP2wlmsQAWnYW1PDyKyyUV4vCi+B25ydmdaYTKXPwCj0BzSUnZf4seIiYvSA3jcZ3gdsMFkLQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.0
+    dev: false
 
   /@babel/template/7.12.13:
     resolution: {integrity: sha512-/7xxiGA57xMo/P2GVvdEumr8ONhFOhfgq2ihK3h1e6THqzTAkHbkXgB0xI9yeTfIUoH3+oAeHhqm/I43OTbbjA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@babel/template/-/template-7.12.13.tgz}
@@ -7180,10 +7187,10 @@ packages:
       - encoding
     dev: false
 
-  /i18next/21.6.16:
-    resolution: {integrity: sha512-xJlzrVxG9CyAGsbMP1aKuiNr1Ed2m36KiTB7hjGMG2Zo4idfw3p9THUEu+GjBwIgEZ7F11ZbCzJcfv4uyfKNuw==}
+  /i18next/23.4.4:
+    resolution: {integrity: sha512-+c9B0txp/x1m5zn+QlwHaCS9vyFtmIAEXbVSFzwCX7vupm5V7va8F9cJGNJZ46X9ZtoGzhIiRC7eTIIh93TxPA==}
     dependencies:
-      '@babel/runtime': 7.17.8
+      '@babel/runtime': 7.22.10
     dev: false
 
   /iconv-lite/0.4.24:
@@ -10406,7 +10413,7 @@ packages:
   /react-error-overlay/6.0.9:
     resolution: {integrity: sha512-nQTTcUu+ATDbrSD1BZHr5kgSD4oF8OFjxun8uAaL8RwPBacGBNPf/yAuVVdx17N8XNzRDMrZ9XcKZHCjPW+9ew==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/react-error-overlay/-/react-error-overlay-6.0.9.tgz}
 
-  /react-i18next/11.16.7_47hlnquejirkg3ammbyc66ijei:
+  /react-i18next/11.16.7_xmhp7sk6igrsn7ausgcv2qxsja:
     resolution: {integrity: sha512-7yotILJLnKfvUfrl/nt9eK9vFpVFjZPLWAwBzWL6XppSZZEvlmlKk0GBGDCAPfLfs8oND7WAbry8wGzdoiW5Nw==}
     peerDependencies:
       i18next: '>= 19.0.0'
@@ -10422,7 +10429,7 @@ packages:
       '@babel/runtime': 7.17.8
       html-escaper: 2.0.2
       html-parse-stringify: 3.0.1
-      i18next: 21.6.16
+      i18next: 23.4.4
       react: 18.1.0
       react-dom: 18.1.0_react@18.1.0
     dev: false
@@ -10702,7 +10709,6 @@ packages:
 
   /regenerator-runtime/0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
-    dev: true
 
   /regenerator-transform/0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.5.tgz}
