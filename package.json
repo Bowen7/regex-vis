@@ -8,7 +8,7 @@
     "@geist-ui/icons": "^1.0.2",
     "@sentry/react": "^7.7.0",
     "@sentry/tracing": "^7.7.0",
-    "@vercel/analytics": "^0.1.11",
+    "@vercel/analytics": "^1.0.0",
     "hex-rgb": "^5.0.0",
     "i18next": "^21.6.16",
     "i18next-browser-languagedetector": "^6.1.4",
