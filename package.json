@@ -20,7 +20,7 @@
     "react-dom": "^18.1.0",
     "react-i18next": "^11.16.7",
     "react-router-dom": "^6.3.0",
-    "react-scripts": "4.0.3",
+    "react-scripts": "5.0.1",
     "react-use": "^17.4.0",
     "styled-jsx": "^5.0.2",
     "tilg": "^0.1.1",
