@@ -1,7 +1,7 @@
 import React from "react"
-import { AST } from "@/parser"
+import { AST } from "/parser"
 import InfinityIcon from "@geist-ui/icons/infinity"
-import { GRAPH_ICON_SIZE } from "@/constants"
+import { GRAPH_ICON_SIZE } from "/constants"
 import { getQuantifierText } from "./utils"
 type Props = {
   quantifier: AST.Quantifier

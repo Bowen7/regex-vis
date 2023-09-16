@@ -1,8 +1,8 @@
 import React from "react"
 import { useTranslation } from "react-i18next"
 import { useTheme } from "@geist-ui/core"
-import Cell from "@/components/cell"
-import { REGEX_FONT_FAMILY } from "@/constants"
+import Cell from "/components/cell"
+import { REGEX_FONT_FAMILY } from "/constants"
 type Prop = {
   regex: string
   startIndex: number

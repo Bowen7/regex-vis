@@ -4,7 +4,7 @@ import { useTheme, Select } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import Sun from "@geist-ui/icons/sun"
 import Moon from "@geist-ui/icons/moon"
-import { ReactComponent as LogoSvg } from "@/logo.svg"
+import { Logo } from "../logo"
 
 type Props = {
   theme: string
@@ -27,7 +27,7 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
       <header>
         <Link to="/">
           <div className="logo">
-            <LogoSvg />
+            <Logo />
             <span>Regex Vis</span>
           </div>
         </Link>

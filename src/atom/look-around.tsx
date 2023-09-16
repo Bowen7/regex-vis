@@ -3,7 +3,7 @@ import {
   updateLookAroundAssertion,
   lookAroundAssertionSelected,
   unLookAroundAssertion,
-} from "@/parser"
+} from "/parser"
 import { selectedIdsAtom, astAtom } from "./atoms"
 import { validUndoAtom } from "./utils"
 

@@ -1,5 +1,4 @@
-import i18n from "@/i18n"
-import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
+import { AST, characterClassTextMap, CharacterClassKey } from "/parser"
 import {
   GRAPH_ROOT_RADIUS,
   GRAPH_TEXT_FONT_SIZE,
@@ -13,7 +12,7 @@ import {
   GRAPH_NAME_MEASURE_HEIGHT,
   GRAPH_QUOTE_PADDING,
   GRAPH_ICON_SIZE,
-} from "@/constants"
+} from "/constants"
 import {
   tryCharacterClassText,
   getBackReferenceText,
@@ -21,6 +20,7 @@ import {
   getNameText,
   getQuantifierText,
 } from "./utils"
+import i18n from "../../i18n"
 
 const t = i18n.t
 
@@ -65,7 +65,7 @@ export const measureText = (
   } else {
     width = text.length * fontSize * 0.75
   }
-  let fontHeight = 1.5 * fontSize
+  const fontHeight = 1.5 * fontSize
   return [width, fontHeight]
 }
 

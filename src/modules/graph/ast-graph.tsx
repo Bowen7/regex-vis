@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef } from "react"
 import { useTheme } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useAtom, useAtomValue } from "jotai"
-import { isPrimaryGraphAtom, sizeMapAtom } from "@/atom"
-import { AST, lrd } from "@/parser"
+import { isPrimaryGraphAtom, sizeMapAtom } from "/atom"
+import { AST, lrd } from "/parser"
 import {
   GRAPH_PADDING_VERTICAL,
   GRAPH_PADDING_HORIZONTAL,
@@ -17,7 +17,7 @@ import {
   REGEX_FONT_FAMILY,
   GRAPH_GROUP_NODE_PADDING_VERTICAL,
   GRAPH_QUOTE_PADDING,
-} from "@/constants"
+} from "/constants"
 import RootNodes from "./root-nodes"
 import Nodes from "./nodes"
 import {

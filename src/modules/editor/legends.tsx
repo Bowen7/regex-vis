@@ -1,4 +1,4 @@
-import SimpleGraph from "@/modules/graph/simple-graph"
+import SimpleGraph from "/modules/graph/simple-graph"
 
 const legends = [
   {

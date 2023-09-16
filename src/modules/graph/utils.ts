@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { TFunction } from "react-i18next"
-import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
+import { AST, characterClassTextMap, CharacterClassKey } from "/parser"
 import { NodeSize, DEFAULT_SIZE } from "./measure"
 
 export const getQuantifier = (node: AST.Node) =>

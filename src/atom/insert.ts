@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { insertAroundSelected } from "@/parser"
+import { insertAroundSelected } from "/parser"
 import { selectedIdsAtom, astAtom } from "./atoms"
 import { validUndoAtom } from "./utils"
 

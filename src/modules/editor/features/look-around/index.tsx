@@ -3,8 +3,8 @@ import { Select, Spacer, Checkbox } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
-import Cell from "@/components/cell"
-import { updateLookAroundAtom } from "@/atom"
+import Cell from "/components/cell"
+import { updateLookAroundAtom } from "/atom"
 
 type Props = {
   kind: "lookahead" | "lookbehind"

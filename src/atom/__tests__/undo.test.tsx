@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
-import { AST } from "@/parser"
+import { AST } from "/parser"
 import { astAtom, redoStack, undoStack, selectedIdsAtom } from "../atoms"
 import { redoAtom, undoAtom } from "../undo"
 import { updateContentAtom } from "../content"
