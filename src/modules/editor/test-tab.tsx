@@ -6,11 +6,11 @@ import { useTranslation } from "react-i18next"
 import { useAtomValue } from "jotai"
 import { useLocalStorage } from "react-use"
 import produce from "immer"
-import TestItem from "@/components/test-item"
-import { gen } from "@/parser"
-import { astAtom } from "@/atom"
-import { genPermalink } from "@/utils/helpers"
-import { STORAGE_TEST_CASES } from "@/constants"
+import TestItem from "/components/test-item"
+import { gen } from "/parser"
+import { astAtom } from "/atom"
+import { genPermalink } from "/utils/helpers"
+import { STORAGE_TEST_CASES } from "/constants"
 
 const TestTab = () => {
   const { t } = useTranslation()

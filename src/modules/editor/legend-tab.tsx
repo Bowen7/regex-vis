@@ -1,7 +1,7 @@
 import { Divider } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import ArrowLeftCircle from "@geist-ui/icons/arrowLeftCircle"
-import LegendItem from "@/components/legend-item"
+import LegendItem from "/components/legend-item"
 import legends from "./legends"
 function Legend() {
   const { t } = useTranslation()

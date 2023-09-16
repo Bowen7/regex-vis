@@ -3,8 +3,8 @@ import { Checkbox } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
-import Cell from "@/components/cell"
-import { updateContentAtom } from "@/atom"
+import Cell from "/components/cell"
+import { updateContentAtom } from "/atom"
 
 type Props = {
   negate: boolean

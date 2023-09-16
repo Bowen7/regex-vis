@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { updateFlags } from "@/parser"
+import { updateFlags } from "/parser"
 import { astAtom } from "./atoms"
 import { pushUndoAtom } from "./utils"
 

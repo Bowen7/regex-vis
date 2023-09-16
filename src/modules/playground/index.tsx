@@ -1,6 +1,6 @@
 import React from "react"
-import { parse, AST } from "@/parser"
-import ASTGraph from "@/modules/graph/ast-graph"
+import { parse, AST } from "/parser"
+import ASTGraph from "/modules/graph/ast-graph"
 const r = "[a-z]"
 const ast = parse(r) as AST.Regex
 

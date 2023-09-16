@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { visitNodes, AST } from "@/parser"
+import { visitNodes, AST } from "/parser"
 import { selectedIdsAtom, nodesBoxMap, astAtom } from "./atoms"
 
 export const clearSelectedAtom = atom(null, (get, set) => {

@@ -1,12 +1,12 @@
 import { useAtomValue } from "jotai"
-import { AST } from "@/parser"
+import { AST } from "/parser"
 import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_TEXT_FONT_SIZE,
   GRAPH_NODE_PADDING_VERTICAL,
   GRAPH_NODE_PADDING_HORIZONTAL,
-} from "@/constants"
-import { sizeMapAtom } from "@/atom"
+} from "/constants"
+import { sizeMapAtom } from "/atom"
 import { NameAndQuantifier } from "./name-quantifier"
 import Content from "./content"
 import TextNode from "./text"

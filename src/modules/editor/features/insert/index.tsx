@@ -2,10 +2,10 @@ import React, { useMemo } from "react"
 import { Button, ButtonGroup } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
-import Cell from "@/components/cell"
-import ShowMore from "@/components/show-more"
-import { AST } from "@/parser"
-import { insertAtom, groupSelectedAtom, lookAroundSelectedAtom } from "@/atom"
+import Cell from "/components/cell"
+import ShowMore from "/components/show-more"
+import { AST } from "/parser"
+import { insertAtom, groupSelectedAtom, lookAroundSelectedAtom } from "/atom"
 type Props = {
   nodes: AST.Node[]
 }

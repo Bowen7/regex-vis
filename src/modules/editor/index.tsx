@@ -4,7 +4,7 @@ import ChevronsLeft from "@geist-ui/icons/chevronsLeft"
 import { Tabs, useTheme, Button } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useAtom, useSetAtom, useAtomValue } from "jotai"
-import { useCurrentState } from "@/utils/hooks"
+import { useCurrentState } from "/utils/hooks"
 import EditTab from "./edit-tab"
 import LegendTab from "./legend-tab"
 import TestTab from "./test-tab"
@@ -15,7 +15,7 @@ import {
   removeAtom,
   selectedIdsAtom,
   editorCollapsedAtom,
-} from "@/atom"
+} from "/atom"
 
 export type Tab = "legend" | "edit" | "test"
 type Props = { defaultTab: Tab }

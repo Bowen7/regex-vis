@@ -1,4 +1,4 @@
-import { characterClassTextMap, CharacterClassKey } from "@/parser"
+import { characterClassTextMap, CharacterClassKey } from "/parser"
 export const characterOptions = [
   {
     label: "Simple string",

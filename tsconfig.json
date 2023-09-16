@@ -1,28 +1,40 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
     "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "allowJs": true,
+
+    /* Bundler mode */
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true
+
+    /* Linting */
+    "strict": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noFallthroughCasesInSwitch": true,
+    "paths": {
+      "/components/*": ["./src/components/*"],
+      "/parser/*": ["./src/parser/*"],
+      "/utils/*": ["./src/utils/*"],
+      "/modules/*": ["./src/modules/*"],
+      "/atom/*": ["./src/atom/*"],
+      "/constants/*": ["./src/constants/*"],
+      "/components": ["./src/components"],
+      "/parser": ["./src/parser"],
+      "/utils": ["./src/utils"],
+      "/modules": ["./src/modules"],
+      "/atom": ["./src/atom"],
+      "/constants": ["./src/constants"]
+    }
   },
-  "include": [
-    "src",
-    "tests"
-  ],
-  "extends": "./paths.json"
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }]
 }

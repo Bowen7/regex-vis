@@ -1,11 +1,11 @@
 import { useTranslation } from "react-i18next"
-import { AST } from "@/parser"
+import { AST } from "/parser"
 import {
   GRAPH_QUANTIFIER_TEXT_FONTSIZE,
   GRAPH_NAME_TEXT_FONTSIZE,
   GRAPH_QUANTIFIER_HEIGHT,
   GRAPH_NAME_HEIGHT,
-} from "@/constants"
+} from "/constants"
 import QuantifierNode from "./quantifier"
 import MidConnect from "./mid-connect"
 import { getQuantifier, getNameText } from "./utils"

@@ -1,11 +1,11 @@
 import React, { useMemo } from "react"
 import { useAtomValue } from "jotai"
-import { AST } from "@/parser"
+import { AST } from "/parser"
 import {
   GRAPH_NODE_MARGIN_VERTICAL,
   GRAPH_CHOICE_PADDING_VERTICAL,
-} from "@/constants"
-import { sizeMapAtom } from "@/atom"
+} from "/constants"
+import { sizeMapAtom } from "/atom"
 import Nodes from "./nodes"
 import StartConnect from "./start-connect"
 import EndConnect from "./end-connect"

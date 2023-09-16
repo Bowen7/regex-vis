@@ -1,11 +1,9 @@
-import React, { Suspense } from "react"
+import { Suspense } from "react"
 import { BrowserRouter as Router } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
-import Header from "@/components/header"
 import { useLocalStorage } from "react-use"
-// webpack 4 don't support package exports, so we need to import the file directly
-// @ts-ignore
-import { Analytics } from "@vercel/analytics/dist/react"
+import { Analytics } from "@vercel/analytics/react"
+import Header from "/components/header"
 import Routes from "./routes"
 
 export default function App() {

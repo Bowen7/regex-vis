@@ -1,13 +1,13 @@
 import React, { useMemo, useEffect, ReactNode } from "react"
 import { useAtomValue } from "jotai"
-import * as AST from "@/parser/ast"
-import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
+import * as AST from "/parser/ast"
+import { GRAPH_NODE_MARGIN_HORIZONTAL } from "/constants"
 import {
   nodesBoxMap,
   selectedIdsAtom,
   isPrimaryGraphAtom,
   sizeMapAtom,
-} from "@/atom"
+} from "/atom"
 import ChoiceNode from "./choice"
 import SimpleNode from "./simple-node"
 import GroupLikeNode from "./group-like"

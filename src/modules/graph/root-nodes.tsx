@@ -1,5 +1,5 @@
 import React from "react"
-import { GRAPH_ROOT_RADIUS, GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
+import { GRAPH_ROOT_RADIUS, GRAPH_NODE_MARGIN_HORIZONTAL } from "/constants"
 import MidConnect from "./mid-connect"
 type RootNodeProps = {
   cx: number
