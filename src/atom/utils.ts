@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { AST, visit, makeChoiceValid } from "/parser"
+import { AST, visit, makeChoiceValid } from "@/parser"
 import { groupNamesAtom, astAtom, undoStack, toastsAtom } from "./atoms"
 
 export const refreshGroupAtom = atom(null, (get, set, ast: AST.Regex) => {

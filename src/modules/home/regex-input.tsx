@@ -2,9 +2,9 @@ import React from "react"
 import { Spacer, Checkbox, Code, Button, Tooltip } from "@geist-ui/core"
 import Link from "@geist-ui/icons/link"
 import { useTranslation } from "react-i18next"
-import Input from "/components/input"
+import Input from "@/components/input"
 import { CheckboxEvent } from "@geist-ui/core/esm/checkbox"
-import { REGEX_FONT_FAMILY } from "/constants"
+import { REGEX_FONT_FAMILY } from "@/constants"
 type Props = {
   regex: string
   flags: string[]

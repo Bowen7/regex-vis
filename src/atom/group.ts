@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { groupSelected, updateGroup, AST } from "/parser"
+import { groupSelected, updateGroup, AST } from "@/parser"
 import { astAtom, selectedIdsAtom } from "./atoms"
 import { refreshValidUndoAtom } from "./utils"
 

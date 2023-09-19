@@ -2,7 +2,7 @@ import React from "react"
 import { Link } from "react-router-dom"
 import { useTranslation } from "react-i18next"
 import { useTheme, Code } from "@geist-ui/core"
-import SimpleGraph from "/modules/graph/simple-graph"
+import SimpleGraph from "@/modules/graph/simple-graph"
 
 const samples = [
   { desc: "1. Whole Numbers", label: "/^\\d+$/", regex: "^\\d+$" },

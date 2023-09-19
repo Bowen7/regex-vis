@@ -2,27 +2,27 @@ import React, { useEffect, useState, useRef } from "react"
 import { useSearchParams } from "react-router-dom"
 import { useTheme, useToasts, useClipboard } from "@geist-ui/core"
 import { useAtomValue, useSetAtom, useAtom } from "jotai"
-import { parse, gen } from "/parser"
+import { parse, gen } from "@/parser"
 import { useUpdateEffect, useLocalStorage, useEffectOnce } from "react-use"
 import { useTranslation } from "react-i18next"
-import Graph from "/modules/graph"
-import Editor, { Tab } from "/modules/editor"
-import { useCurrentState } from "/utils/hooks"
-import { genPermalink } from "/utils/helpers"
+import Graph from "@/modules/graph"
+import Editor, { Tab } from "@/modules/editor"
+import { useCurrentState } from "@/utils/hooks"
+import { genPermalink } from "@/utils/helpers"
 import {
   STORAGE_ESCAPE_BACKSLASH,
   STORAGE_TEST_CASES,
   SEARCH_PARAM_REGEX,
   SEARCH_PARAM_TESTS,
   SEARCH_PARAM_ESCAPE_BACKSLASH,
-} from "/constants"
+} from "@/constants"
 import {
   editorCollapsedAtom,
   astAtom,
   clearSelectedAtom,
   updateFlagsAtom,
   toastsAtom,
-} from "/atom"
+} from "@/atom"
 import RegexInput from "./regex-input"
 
 const Home = () => {

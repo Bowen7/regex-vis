@@ -1,4 +1,4 @@
-import { characterClassTextMap, CharacterClassKey } from "/parser"
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
 export const characterOptions = [
   {
     label: "Simple string",
@@ -34,7 +34,7 @@ export const wordBoundaryAssertionOption = {
 }
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
-for (let key in characterClassTextMap) {
+for (const key in characterClassTextMap) {
   classOptions.push({
     value: key as CharacterClassKey,
     text: characterClassTextMap[key as CharacterClassKey],

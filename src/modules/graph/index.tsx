@@ -2,9 +2,9 @@ import React, { useMemo } from "react"
 import { useTheme, Code, Dot } from "@geist-ui/core"
 import hexRgb from "hex-rgb"
 import { useSetAtom } from "jotai"
-import { AST } from "/parser"
-import { selectNodesByBoxAtom } from "/atom"
-import { useDragSelect } from "/utils/hooks"
+import { AST } from "@/parser"
+import { selectNodesByBoxAtom } from "@/atom"
+import { useDragSelect } from "@/utils/hooks"
 import ASTGraph from "./ast-graph"
 type Props = {
   regex: string

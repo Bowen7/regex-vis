@@ -3,7 +3,7 @@ import { BrowserRouter as Router } from "react-router-dom"
 import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
 import { useLocalStorage } from "react-use"
 import { Analytics } from "@vercel/analytics/react"
-import Header from "/components/header"
+import Header from "@/components/header"
 import Routes from "./routes"
 
 export default function App() {

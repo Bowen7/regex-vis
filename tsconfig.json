@@ -21,18 +21,7 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "/components/*": ["./src/components/*"],
-      "/parser/*": ["./src/parser/*"],
-      "/utils/*": ["./src/utils/*"],
-      "/modules/*": ["./src/modules/*"],
-      "/atom/*": ["./src/atom/*"],
-      "/constants/*": ["./src/constants/*"],
-      "/components": ["./src/components"],
-      "/parser": ["./src/parser"],
-      "/utils": ["./src/utils"],
-      "/modules": ["./src/modules"],
-      "/atom": ["./src/atom"],
-      "/constants": ["./src/constants"]
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src"],

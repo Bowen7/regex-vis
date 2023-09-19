@@ -1,7 +1,7 @@
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
 import * as nanoid from "nanoid"
-import { AST } from "/parser"
+import { AST } from "@/parser"
 import { insertAtom } from "../insert"
 import { astAtom, selectedIdsAtom } from "../atoms"
 jest.mock("nanoid")

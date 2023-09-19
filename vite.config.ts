@@ -12,30 +12,8 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: "/components",
-        replacement: fileURLToPath(
-          new URL("./src/components", import.meta.url)
-        ),
-      },
-      {
-        find: "/parser",
-        replacement: fileURLToPath(new URL("./src/parser", import.meta.url)),
-      },
-      {
-        find: "/utils",
-        replacement: fileURLToPath(new URL("./src/utils", import.meta.url)),
-      },
-      {
-        find: "/modules",
-        replacement: fileURLToPath(new URL("./src/modules", import.meta.url)),
-      },
-      {
-        find: "/atom",
-        replacement: fileURLToPath(new URL("./src/atom", import.meta.url)),
-      },
-      {
-        find: "/constants",
-        replacement: fileURLToPath(new URL("./src/constants", import.meta.url)),
+        find: "@",
+        replacement: fileURLToPath(new URL("./src", import.meta.url)),
       },
     ],
   },

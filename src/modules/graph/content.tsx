@@ -1,7 +1,7 @@
 import React from "react"
 import { useSetAtom, useAtomValue } from "jotai"
-import { selectNodeAtom, isPrimaryGraphAtom } from "/atom"
-import { GRAPH_NODE_BORDER_RADIUS } from "/constants"
+import { selectNodeAtom, isPrimaryGraphAtom } from "@/atom"
+import { GRAPH_NODE_BORDER_RADIUS } from "@/constants"
 
 type Props = { id: string; selected: boolean } & React.ComponentProps<"rect">
 
