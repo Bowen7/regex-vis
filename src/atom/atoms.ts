@@ -1,8 +1,8 @@
 import { atom } from "jotai"
 import { atomWithImmer } from "jotai/immer"
 import { useToasts } from "@geist-ui/core"
-import { AST } from "/parser"
-import { NodeSize } from "/modules/graph/measure"
+import { AST } from "@/parser"
+import { NodeSize } from "@/modules/graph/measure"
 export const undoStack: AST.Regex[] = []
 export const redoStack: AST.Regex[] = []
 export const nodesBoxMap: Map<

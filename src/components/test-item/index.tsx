@@ -1,7 +1,7 @@
 import { useMemo } from "react"
 import { Textarea, useTheme } from "@geist-ui/core"
 import Delete from "@geist-ui/icons/delete"
-import { useDebounceInput, useFocus } from "/utils/hooks"
+import { useDebounceInput, useFocus } from "@/utils/hooks"
 
 type Props = {
   value: string

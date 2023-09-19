@@ -2,10 +2,10 @@ import React from "react"
 import { useTranslation } from "react-i18next"
 import { Note, Spacer, useToasts } from "@geist-ui/core"
 import { useSetAtom } from "jotai"
-import Input from "/components/input"
-import Cell from "/components/cell"
-import { AST } from "/parser"
-import { updateContentAtom } from "/atom"
+import Input from "@/components/input"
+import Cell from "@/components/cell"
+import { AST } from "@/parser"
+import { updateContentAtom } from "@/atom"
 
 type Props = {
   value: string

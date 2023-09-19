@@ -1,6 +1,6 @@
 import { useMemo } from "react"
 import { TFunction } from "react-i18next"
-import { AST, characterClassTextMap, CharacterClassKey } from "/parser"
+import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import { NodeSize, DEFAULT_SIZE } from "./measure"
 
 export const getQuantifier = (node: AST.Node) =>
@@ -75,9 +75,9 @@ export const useSize = (
 ) => useMemo(() => sizeMap.get(node) || DEFAULT_SIZE, [node, sizeMap])
 
 export const getQuantifierText = (quantifier: AST.Quantifier): string => {
-  let { min, max } = quantifier
-  let minText = min
-  let maxText = max === Infinity ? "" : max
+  const { min, max } = quantifier
+  const minText = min
+  const maxText = max === Infinity ? "" : max
   if (min === max) {
     return " " + minText
   }

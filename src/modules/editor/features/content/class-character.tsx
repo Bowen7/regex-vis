@@ -2,10 +2,10 @@ import React, { useMemo } from "react"
 import { Spacer, Select, Code } from "@geist-ui/core"
 import { useSetAtom } from "jotai"
 import { useTranslation } from "react-i18next"
-import Input from "/components/input"
-import Cell from "/components/cell"
-import { characterClassTextMap, CharacterClassKey } from "/parser"
-import { updateContentAtom } from "/atom"
+import Input from "@/components/input"
+import Cell from "@/components/cell"
+import { characterClassTextMap, CharacterClassKey } from "@/parser"
+import { updateContentAtom } from "@/atom"
 
 const classOptions: { value: CharacterClassKey; text: string }[] = []
 for (const key in characterClassTextMap) {

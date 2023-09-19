@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { Input as GeistInput, useTheme } from "@geist-ui/core"
-import { useDebounceInput } from "/utils/hooks"
-import { REGEX_FONT_FAMILY } from "/constants"
+import { useDebounceInput } from "@/utils/hooks"
+import { REGEX_FONT_FAMILY } from "@/constants"
 
 type Props = Omit<React.ComponentProps<typeof GeistInput>, "onChange"> & {
   validation?: RegExp

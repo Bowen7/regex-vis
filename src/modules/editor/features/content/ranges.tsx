@@ -3,10 +3,10 @@ import { useTheme, ButtonDropdown, Spacer, Checkbox } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
-import RangeOption from "/components/range-option"
-import Cell from "/components/cell"
-import { AST } from "/parser"
-import { updateContentAtom } from "/atom"
+import RangeOption from "@/components/range-option"
+import Cell from "@/components/cell"
+import { AST } from "@/parser"
+import { updateContentAtom } from "@/atom"
 
 type Prop = {
   ranges: AST.Range[]

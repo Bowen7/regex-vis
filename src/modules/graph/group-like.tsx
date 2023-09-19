@@ -1,13 +1,12 @@
-import React from "react"
 import { useAtomValue } from "jotai"
 import { useTheme } from "@geist-ui/core"
-import { AST } from "/parser"
+import { AST } from "@/parser"
 import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MARGIN_HORIZONTAL,
   GRAPH_GROUP_NODE_PADDING_VERTICAL,
-} from "/constants"
-import { sizeMapAtom } from "/atom"
+} from "@/constants"
+import { sizeMapAtom } from "@/atom"
 import { NameAndQuantifier } from "./name-quantifier"
 import Nodes from "./nodes"
 import MidConnect from "./mid-connect"

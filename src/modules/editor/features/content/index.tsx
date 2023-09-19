@@ -2,10 +2,10 @@ import React, { useMemo } from "react"
 import { useTranslation } from "react-i18next"
 import { Select, useTheme, Spacer } from "@geist-ui/core"
 import { useAtomValue, useSetAtom } from "jotai"
-import Cell from "/components/cell"
-import { AST } from "/parser"
+import Cell from "@/components/cell"
+import { AST } from "@/parser"
 import QuestionCircle from "@geist-ui/icons/questionCircle"
-import mdnLinks, { isMdnLinkKey } from "/utils/links"
+import mdnLinks, { isMdnLinkKey } from "@/utils/links"
 import SimpleString from "./simple-string"
 import ClassCharacter from "./class-character"
 import BackRef from "./back-ref"
@@ -17,7 +17,7 @@ import {
   endAssertionOption,
   wordBoundaryAssertionOption,
 } from "./helper"
-import { astAtom, groupNamesAtom, updateContentAtom } from "/atom"
+import { astAtom, groupNamesAtom, updateContentAtom } from "@/atom"
 import Ranges from "./ranges"
 
 type Prop = {

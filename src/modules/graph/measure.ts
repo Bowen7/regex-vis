@@ -1,4 +1,4 @@
-import { AST, characterClassTextMap, CharacterClassKey } from "/parser"
+import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
 import {
   GRAPH_ROOT_RADIUS,
   GRAPH_TEXT_FONT_SIZE,
@@ -12,7 +12,7 @@ import {
   GRAPH_NAME_MEASURE_HEIGHT,
   GRAPH_QUOTE_PADDING,
   GRAPH_ICON_SIZE,
-} from "/constants"
+} from "@/constants"
 import {
   tryCharacterClassText,
   getBackReferenceText,

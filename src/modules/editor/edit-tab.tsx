@@ -8,10 +8,10 @@ import Quantifier from "./features/quantifier"
 import LookAround from "./features/look-around"
 import Insert from "./features/insert"
 import { getInfoFromNodes, genInitialNodesInfo } from "./utils"
-import { AST } from "/parser"
+import { AST } from "@/parser"
 import { NodesInfo } from "./utils"
-import { getNodesByIds } from "/parser/visit"
-import { astAtom, selectedIdsAtom } from "/atom"
+import { getNodesByIds } from "@/parser/visit"
+import { astAtom, selectedIdsAtom } from "@/atom"
 
 const InfoItem = () => {
   const { layout } = useTheme()
