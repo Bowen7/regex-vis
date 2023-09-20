@@ -1,10 +1,11 @@
+import { test, expect, vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
 import * as nanoid from "nanoid"
 import { AST } from "@/parser"
 import { astAtom, selectedIdsAtom } from "../atoms"
 import { updateContentAtom } from "../content"
-jest.mock("nanoid")
+vi.mock("nanoid")
 
 test("update content", async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
@@ -97,7 +98,7 @@ test("update a string node which has quantifier", async () => {
     })
     setSelectedIdsRef.current(["2"])
   })
-  ;(nanoid.nanoid as jest.Mock).mockReturnValue("3")
+  vi.mocked(nanoid.nanoid).mockReturnValue("3")
 
   act(() => {
     setUpdateContentAtom.current({

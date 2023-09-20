@@ -1,3 +1,4 @@
+import { test, expect } from "vitest"
 import { removeBackslash } from "../backslash"
 
 test("remove backslash", () => {

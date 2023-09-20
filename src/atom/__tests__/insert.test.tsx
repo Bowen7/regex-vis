@@ -1,10 +1,11 @@
+import { test, expect, vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
 import * as nanoid from "nanoid"
 import { AST } from "@/parser"
 import { insertAtom } from "../insert"
 import { astAtom, selectedIdsAtom } from "../atoms"
-jest.mock("nanoid")
+vi.mock("nanoid")
 
 test("insert prev", async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
@@ -33,7 +34,7 @@ test("insert prev", async () => {
 
     selectedIdsAtomRef.current[1](["2"])
   })
-  ;(nanoid.nanoid as jest.Mock).mockReturnValue("3")
+  vi.mocked(nanoid.nanoid).mockReturnValue("3")
 
   act(() => {
     setInsertRef.current("prev")
@@ -93,7 +94,7 @@ test("insert next", async () => {
 
     selectedIdsAtomRef.current[1](["2"])
   })
-  ;(nanoid.nanoid as jest.Mock).mockReturnValue("3")
+  vi.mocked(nanoid.nanoid).mockReturnValue("3")
 
   act(() => {
     setInsertRef.current("next")
@@ -153,9 +154,8 @@ test("insert as branch", async () => {
 
     selectedIdsAtomRef.current[1](["2"])
   })
-  ;(nanoid.nanoid as jest.Mock)
-    .mockReturnValueOnce("3")
-    .mockReturnValueOnce("4")
+
+  vi.mocked(nanoid.nanoid).mockReturnValueOnce("3").mockReturnValueOnce("4")
 
   act(() => {
     setInsertRef.current("branch")
