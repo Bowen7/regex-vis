@@ -1,10 +1,11 @@
+import { test, expect, vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
 import * as nanoid from "nanoid"
 import { AST } from "@/parser"
 import { updateQuantifierAtom } from "../quantifier"
 import { astAtom, selectedIdsAtom } from "../atoms"
-jest.mock("nanoid")
+vi.mock("nanoid")
 
 test("update quantifier", async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
@@ -98,7 +99,7 @@ test("add quantifier when string node value.length > 1", async () => {
 
     selectedIdsAtomRef.current[1](["2"])
   })
-  ;(nanoid.nanoid as jest.Mock).mockReturnValue("3")
+  vi.mocked(nanoid.nanoid).mockReturnValue("3")
 
   act(() => {
     setUpdateQuantifierAtom.current({

@@ -1,8 +1,8 @@
+import { test, expect } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
 import { selectedIdsAtom } from "../atoms"
 import { clearSelectedAtom } from "../select"
-jest.mock("nanoid")
 
 test("clear selected", async () => {
   const { result: selectedIdsAtomRef } = renderHook(() =>

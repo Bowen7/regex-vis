@@ -1,3 +1,4 @@
+import { test, expect } from "vitest"
 import * as AST from "../ast"
 import parse from "../parse"
 import gen from "../gen"

@@ -1,3 +1,4 @@
+import { test, expect } from "vitest"
 import gen from "../gen"
 
 test("gen with literal = true", () => {
