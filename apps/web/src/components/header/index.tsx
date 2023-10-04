@@ -4,6 +4,7 @@ import { useTheme, Select } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import Sun from "@geist-ui/icons/sun"
 import Moon from "@geist-ui/icons/moon"
+import { Button } from "@ui"
 import { Logo } from "../logo"
 
 type Props = {
@@ -25,6 +26,7 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
   return (
     <>
       <header>
+        <Button>123</Button>
         <Link to="/">
           <div className="logo">
             <Logo />

@@ -1,0 +1,32 @@
+{
+  "name": "ui",
+  "version": "0.0.0",
+  "main": "./src/index.tsx",
+  "types": "./src/index.tsx",
+  "license": "MIT",
+  "scripts": {
+    "lint": "eslint .",
+    "generate:component": "turbo gen react-component",
+    "ui:add": "npx shadcn-ui@latest add"
+  },
+  "devDependencies": {
+    "@turbo/gen": "^1.10.12",
+    "@types/node": "^20.5.2",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "autoprefixer": "^10.4.14",
+    "eslint-config-custom": "workspace:*",
+    "postcss": "^8.4.24",
+    "react": "^18.2.0",
+    "tailwindcss": "^3.3.2",
+    "tsconfig": "workspace:*",
+    "typescript": "^4.5.2"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "^1.0.2",
+    "clsx": "^1.2.1",
+    "tailwind-merge": "^1.13.2",
+    "tailwindcss-animate": "^1.0.6",
+    "class-variance-authority": "^0.7.0"
+  }
+}

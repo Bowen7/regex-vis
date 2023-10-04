@@ -1,7 +1,7 @@
 /// <reference types="vitest" />
 import { defineConfig } from "vite"
 import react from "@vitejs/plugin-react-swc"
-import { fileURLToPath, URL } from "url"
+import path from "node:path"
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -11,12 +11,10 @@ export default defineConfig({
   },
   plugins: [react()],
   resolve: {
-    alias: [
-      {
-        find: "@",
-        replacement: fileURLToPath(new URL("./src", import.meta.url)),
-      },
-    ],
+    alias: {
+      "@": path.resolve(__dirname, "src"),
+      "@ui": path.resolve(__dirname, "../../packages/ui/src"),
+    },
   },
   test: {
     environment: "happy-dom",
