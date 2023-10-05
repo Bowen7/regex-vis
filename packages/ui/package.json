@@ -7,7 +7,8 @@
   "scripts": {
     "lint": "eslint .",
     "generate:component": "turbo gen react-component",
-    "ui:add": "npx shadcn-ui@latest add"
+    "ui:add": "npx shadcn-ui@latest add",
+    "ui:move": "node scripts/index.js"
   },
   "devDependencies": {
     "@turbo/gen": "^1.10.12",
