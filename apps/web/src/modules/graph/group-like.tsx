@@ -1,6 +1,6 @@
 import { useAtomValue } from "jotai"
 import { useTheme } from "@geist-ui/core"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MARGIN_HORIZONTAL,

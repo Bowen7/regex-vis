@@ -1,7 +1,7 @@
 import React, { useState, useRef, useMemo } from "react"
 import { useClickAway, useTheme } from "@geist-ui/core"
 import Trash2 from "@geist-ui/icons/trash2"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import RangeInput from "./input"
 import { RangeError } from "./utils"
 type Prop = {

@@ -1,6 +1,10 @@
 import React, { Fragment } from "react"
 import { useTranslation, TFunction } from "react-i18next"
-import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
+import {
+  AST,
+  characterClassTextMap,
+  CharacterClassKey,
+} from "@regex-vis/parser"
 type Props = {
   node:
     | AST.CharacterNode

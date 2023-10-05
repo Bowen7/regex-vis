@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import {
   GRAPH_QUANTIFIER_TEXT_FONTSIZE,
   GRAPH_NAME_TEXT_FONTSIZE,

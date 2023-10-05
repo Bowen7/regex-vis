@@ -5,7 +5,7 @@ import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
 import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import RangeInput from "@/components/range-input"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import { updateQuantifierAtom } from "@/atom"
 import { quantifierOptions } from "./helper"
 type Props = {

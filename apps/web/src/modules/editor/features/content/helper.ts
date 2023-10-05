@@ -1,4 +1,4 @@
-import { characterClassTextMap, CharacterClassKey } from "@/parser"
+import { characterClassTextMap, CharacterClassKey } from "@regex-vis/parser"
 export const characterOptions = [
   {
     label: "Simple string",

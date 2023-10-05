@@ -2,7 +2,7 @@ import React from "react"
 import { Atom, Provider } from "jotai"
 import { sizeMapAtom, isPrimaryGraphAtom } from "@/atom"
 import ASTGraph from "./ast-graph"
-import { parse } from "@/parser"
+import { parse } from "@regex-vis/parser"
 type Props = {
   regex: string
 }

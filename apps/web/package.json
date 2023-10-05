@@ -39,7 +39,8 @@
     "tilg": "^0.1.1",
     "typescript": "^5.0.0",
     "web-vitals": "^3.3.0",
-    "ui": "workspace:*"
+    "ui": "workspace:*",
+    "@regex-vis/parser": "workspace:*"
   },
   "devDependencies": {
     "@testing-library/react": "^14.0.0",

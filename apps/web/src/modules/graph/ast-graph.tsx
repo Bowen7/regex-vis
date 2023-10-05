@@ -3,7 +3,7 @@ import { useTheme } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useAtom, useAtomValue } from "jotai"
 import { isPrimaryGraphAtom, sizeMapAtom } from "@/atom"
-import { AST, lrd } from "@/parser"
+import { AST, lrd } from "@regex-vis/parser"
 import {
   GRAPH_PADDING_VERTICAL,
   GRAPH_PADDING_HORIZONTAL,
