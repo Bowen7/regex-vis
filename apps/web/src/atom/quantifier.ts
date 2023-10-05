@@ -1,5 +1,5 @@
 import { atom } from "jotai"
-import { updateQuantifier, AST } from "@/parser"
+import { updateQuantifier, AST } from "@regex-vis/parser"
 import { selectedIdsAtom, astAtom, toastsAtom } from "./atoms"
 import { refreshValidUndoAtom } from "./utils"
 

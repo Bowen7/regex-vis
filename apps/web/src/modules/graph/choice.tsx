@@ -1,6 +1,6 @@
 import React, { useMemo } from "react"
 import { useAtomValue } from "jotai"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import {
   GRAPH_NODE_MARGIN_VERTICAL,
   GRAPH_CHOICE_PADDING_VERTICAL,

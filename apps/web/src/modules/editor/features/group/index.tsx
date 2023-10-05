@@ -3,7 +3,7 @@ import { Select, Spacer } from "@geist-ui/core"
 import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import Input from "@/components/input"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import Cell from "@/components/cell"
 import { updateGroupAtom } from "@/atom"
 

@@ -2,7 +2,7 @@ import { test, expect, vi } from "vitest"
 import { renderHook, act } from "@testing-library/react"
 import { useAtom, useSetAtom } from "jotai"
 import * as nanoid from "nanoid"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import { updateGroupAtom, groupSelectedAtom } from "../group"
 import { astAtom, selectedIdsAtom } from "../atoms"
 vi.mock("nanoid")

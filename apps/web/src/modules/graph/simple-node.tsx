@@ -1,5 +1,5 @@
 import { useAtomValue } from "jotai"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import {
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_TEXT_FONT_SIZE,

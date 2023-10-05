@@ -41,6 +41,9 @@ importers:
       '@radix-ui/react-slot':
         specifier: ^1.0.2
         version: 1.0.2(@types/react@18.2.15)(react@18.2.0)
+      '@regex-vis/parser':
+        specifier: workspace:*
+        version: link:../../packages/parser
       '@sentry/react':
         specifier: ^7.7.0
         version: 7.7.0(react@18.2.0)
@@ -183,6 +186,22 @@ importers:
       typescript:
         specifier: ^4.5.3
         version: 4.5.3
+
+  packages/parser:
+    dependencies:
+      nanoid:
+        specifier: ^3.1.16
+        version: 3.3.6
+    devDependencies:
+      tsconfig:
+        specifier: workspace:*
+        version: link:../tsconfig
+      typescript:
+        specifier: ^4.5.2
+        version: 4.5.3
+      vitest:
+        specifier: ^0.34.4
+        version: 0.34.4(happy-dom@12.1.2)
 
   packages/tsconfig: {}
 

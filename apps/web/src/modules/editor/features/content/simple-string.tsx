@@ -4,7 +4,7 @@ import { Note, Spacer, useToasts } from "@geist-ui/core"
 import { useSetAtom } from "jotai"
 import Input from "@/components/input"
 import Cell from "@/components/cell"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import { updateContentAtom } from "@/atom"
 
 type Props = {

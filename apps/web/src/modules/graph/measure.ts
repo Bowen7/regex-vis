@@ -1,4 +1,8 @@
-import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
+import {
+  AST,
+  characterClassTextMap,
+  CharacterClassKey,
+} from "@regex-vis/parser"
 import {
   GRAPH_ROOT_RADIUS,
   GRAPH_TEXT_FONT_SIZE,

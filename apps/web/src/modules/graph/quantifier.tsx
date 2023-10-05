@@ -1,5 +1,5 @@
 import React from "react"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import InfinityIcon from "@geist-ui/icons/infinity"
 import { GRAPH_ICON_SIZE } from "@/constants"
 import { getQuantifierText } from "./utils"

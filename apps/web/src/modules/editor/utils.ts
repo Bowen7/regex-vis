@@ -1,4 +1,4 @@
-import { AST, genWithSelected } from "@/parser"
+import { AST, genWithSelected } from "@regex-vis/parser"
 
 export type NodesInfo = {
   id: string

@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next"
 import { useSetAtom } from "jotai"
 import Cell from "@/components/cell"
 import ShowMore from "@/components/show-more"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import { insertAtom, groupSelectedAtom, lookAroundSelectedAtom } from "@/atom"
 type Props = {
   nodes: AST.Node[]

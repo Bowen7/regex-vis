@@ -8,9 +8,9 @@ import Quantifier from "./features/quantifier"
 import LookAround from "./features/look-around"
 import Insert from "./features/insert"
 import { getInfoFromNodes, genInitialNodesInfo } from "./utils"
-import { AST } from "@/parser"
+import { AST } from "@regex-vis/parser"
 import { NodesInfo } from "./utils"
-import { getNodesByIds } from "@/parser/visit"
+import { getNodesByIds } from "@regex-vis/parser"
 import { astAtom, selectedIdsAtom } from "@/atom"
 
 const InfoItem = () => {

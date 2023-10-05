@@ -1,6 +1,6 @@
 import React, { useMemo, useEffect, ReactNode } from "react"
 import { useAtomValue } from "jotai"
-import * as AST from "@/parser/ast"
+import * as AST from "@/@regex-vis/parser/ast"
 import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
 import {
   nodesBoxMap,
