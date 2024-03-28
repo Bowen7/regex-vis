@@ -23,7 +23,7 @@ specifiers:
   customize-cra: ^1.0.0
   hex-rgb: ^5.0.0
   i18next: ^21.6.16
-  i18next-browser-languagedetector: ^6.1.4
+  i18next-browser-languagedetector: ^7.0.0
   i18next-http-backend: ^1.4.0
   immer: ^9.0.6
   jest: ^26.6.0
@@ -55,7 +55,7 @@ dependencies:
   '@vercel/analytics': 1.0.2
   hex-rgb: 5.0.0
   i18next: 21.6.16
-  i18next-browser-languagedetector: 6.1.4
+  i18next-browser-languagedetector: 7.1.0
   i18next-http-backend: 1.4.0
   immer: 9.0.6
   jotai: 1.7.1_f2doctsj6mecwv6cns5elz5mme
@@ -2530,6 +2530,13 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.13.9
+
+  /@babel/runtime/7.22.10:
+    resolution: {integrity: sha512-21t/fkKLMZI4pqP2wlmsQAWnYW1PDyKyyUV4vCi+B25ydmdaYTKXPwCj0BzSUnZf4seIiYvSA3jcZ3gdsMFkLQ==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.0
+    dev: false
 
   /@babel/template/7.12.13:
     resolution: {integrity: sha512-/7xxiGA57xMo/P2GVvdEumr8ONhFOhfgq2ihK3h1e6THqzTAkHbkXgB0xI9yeTfIUoH3+oAeHhqm/I43OTbbjA==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/@babel/template/-/template-7.12.13.tgz}
@@ -7166,10 +7173,10 @@ packages:
     resolution: {integrity: sha512-ygGZLjmXfPHj+ZWh6LwbC37l43MhfztxetbFCoYTM2VjkIUpeHgSNn7QIyVFj7YQ1Wl9Cbw5sholVJPzWvC2MQ==}
     dev: false
 
-  /i18next-browser-languagedetector/6.1.4:
-    resolution: {integrity: sha512-wukWnFeU7rKIWT66VU5i8I+3Zc4wReGcuDK2+kuFhtoxBRGWGdvYI9UQmqNL/yQH1KogWwh+xGEaIPH8V/i2Zg==}
+  /i18next-browser-languagedetector/7.1.0:
+    resolution: {integrity: sha512-cr2k7u1XJJ4HTOjM9GyOMtbOA47RtUoWRAtt52z43r3AoMs2StYKyjS3URPhzHaf+mn10hY9dZWamga5WPQjhA==}
     dependencies:
-      '@babel/runtime': 7.17.8
+      '@babel/runtime': 7.22.10
     dev: false
 
   /i18next-http-backend/1.4.0:
@@ -10702,7 +10709,6 @@ packages:
 
   /regenerator-runtime/0.14.0:
     resolution: {integrity: sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==}
-    dev: true
 
   /regenerator-transform/0.14.5:
     resolution: {integrity: sha512-eOf6vka5IO151Jfsw2NO9WpGX58W6wWmefK3I1zEGr0lOD0u8rwPaNqQL1aRxUaxLeKO3ArNh3VYg1KbaD+FFw==, registry: https://registry.yarnpkg.com/, tarball: https://registry.yarnpkg.com/regenerator-transform/-/regenerator-transform-0.14.5.tgz}
