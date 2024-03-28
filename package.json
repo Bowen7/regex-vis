@@ -14,7 +14,7 @@
     "i18next-browser-languagedetector": "^6.1.4",
     "i18next-http-backend": "^1.4.0",
     "immer": "^9.0.6",
-    "jotai": "^1.7.1",
+    "jotai": "^2.0.0",
     "nanoid": "^3.1.16",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
