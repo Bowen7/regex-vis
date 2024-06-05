@@ -12,7 +12,7 @@
     "hex-rgb": "^5.0.0",
     "i18next": "^21.6.16",
     "i18next-browser-languagedetector": "^6.1.4",
-    "i18next-http-backend": "^1.4.0",
+    "i18next-http-backend": "^2.0.0",
     "immer": "^9.0.6",
     "jotai": "^1.7.1",
     "nanoid": "^3.1.16",
