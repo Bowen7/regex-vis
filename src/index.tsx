@@ -1,18 +1,15 @@
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import * as Sentry from "@sentry/react"
-import { BrowserTracing } from "@sentry/tracing"
 import reportWebVitals from "./reportWebVitals"
 import { sendToVercelAnalytics } from "./vitals"
 import App from "./App"
 import "./i18n"
 import * as serviceWorker from "./serviceWorker"
 
-if (process.env.SENTRY_DSN) {
+if (import.meta.env.SENTRY_DSN) {
   Sentry.init({
-    dsn: process.env.SENTRY_DSN,
-    integrations: [new BrowserTracing()],
-    tracesSampleRate: 1.0,
+    dsn: import.meta.env.SENTRY_DSN,
   })
 }
 
