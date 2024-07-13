@@ -1,7 +1,7 @@
-import React from "react"
-import { useTheme } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-type Props = {
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+
+interface Props {
   name: string
   infos: {
     desc: string
@@ -9,12 +9,15 @@ type Props = {
   }[]
 }
 const LegendItem: React.FC<Props> = ({ name, infos }) => {
-  const { palette } = useTheme()
+  // const { palette } = useTheme()
   const { t } = useTranslation()
   return (
     <>
       <div className="wrapper">
-        <h5>{t(name)}:</h5>
+        <h5>
+          {t(name)}
+          :
+        </h5>
         {infos.map(({ Icon, desc }) => (
           <React.Fragment key={desc}>
             {Icon}
@@ -22,7 +25,7 @@ const LegendItem: React.FC<Props> = ({ name, infos }) => {
           </React.Fragment>
         ))}
       </div>
-      <style jsx>
+      {/* <style jsx>
         {`
           .wrapper {
             border-bottom: 1px solid ${palette.accents_2};
@@ -39,7 +42,7 @@ const LegendItem: React.FC<Props> = ({ name, infos }) => {
             margin-bottom: 24px;
           }
         `}
-      </style>
+      </style> */}
     </>
   )
 }

@@ -1,42 +1,44 @@
-import React from "react"
-import { useTheme } from "@geist-ui/core"
-import QuestionCircle from "@geist-ui/icons/questionCircle"
-import mdnLinks, { MdnLinkKey } from "@/utils/links"
+import React from 'react'
+import { QuestionMarkCircledIcon } from '@radix-ui/react-icons'
+import type { MdnLinkKey } from '@/utils/links'
+import mdnLinks from '@/utils/links'
 
-type ItemProps = {
+interface ItemProps {
   label: string
   children: React.ReactNode
 }
-const CellItem = ({ label, children }: ItemProps) => {
-  const { palette } = useTheme()
+function CellItem({ label, children }: ItemProps) {
+  // const { palette } = useTheme()
   return (
     <>
       <h6>{label}</h6>
       {children}
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         h6 {
           color: ${palette.secondary};
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }
 
-type Props = {
+interface Props {
   label: string
   mdnLinkKey?: MdnLinkKey
   rightLabel?: string
   children: React.ReactNode
   onRightLabelClick?: () => void
 }
-const Cell = ({
+function Cell({
   label,
   mdnLinkKey,
   children,
   rightLabel,
   onRightLabelClick,
-}: Props) => {
-  const { palette } = useTheme()
+}: Props) {
+  // const { palette } = useTheme()
   return (
     <>
       <div className="container">
@@ -45,7 +47,7 @@ const Cell = ({
             <h5>{label}</h5>
             {mdnLinkKey && (
               <a href={mdnLinks[mdnLinkKey]} target="_blank" rel="noreferrer">
-                <QuestionCircle size={16} />
+                <QuestionMarkCircledIcon width={16} height={16} />
               </a>
             )}
           </div>
@@ -57,7 +59,8 @@ const Cell = ({
         </div>
         <div className="content">{children}</div>
       </div>
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         .container:not(:last-of-type) {
           margin-bottom: 30px;
         }
@@ -94,7 +97,8 @@ const Cell = ({
         .content > :global(h6:not(:first-of-type)) {
           margin-top: calc(7.625pt - 0.5px);
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }

@@ -1,15 +1,15 @@
-import React from "react"
-import { useTheme } from "@geist-ui/core"
-import { useLocalStorage } from "react-use"
-import { useTranslation } from "react-i18next"
-import ChevronDown from "@geist-ui/icons/chevronDown"
-type Props = {
+import React from 'react'
+import { useLocalStorage } from 'react-use'
+import { useTranslation } from 'react-i18next'
+import { ChevronDownIcon } from '@radix-ui/react-icons'
+
+interface Props {
   id: string
   children: React.ReactNode
 }
-const ShowMore = ({ id, children }: Props) => {
+function ShowMore({ id, children }: Props) {
   const { t } = useTranslation()
-  const { palette, expressiveness } = useTheme()
+  // const { palette, expressiveness } = useTheme()
   const [expanded, setExpanded] = useLocalStorage(id, false)
   const handleClick = () => setExpanded(!expanded)
   return (
@@ -17,11 +17,12 @@ const ShowMore = ({ id, children }: Props) => {
       {expanded && children}
       <div className="wrapper">
         <span className="btn" onClick={handleClick}>
-          {expanded ? t("show less") : t("show more")}
-          <ChevronDown size={12} className={expanded ? "expand" : ""} />
+          {expanded ? t('show less') : t('show more')}
+          {/* <ChevronDownIcon size={12} className={expanded ? 'expand' : ''} /> */}
         </span>
       </div>
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         .wrapper {
           display: flex;
           align-items: center;
@@ -53,7 +54,8 @@ const ShowMore = ({ id, children }: Props) => {
           background: ${palette.accents_2};
           height: 1px;
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }

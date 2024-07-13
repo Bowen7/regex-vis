@@ -1,33 +1,31 @@
-import React from "react"
-import { useTheme, ButtonDropdown, Spacer, Checkbox } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-import { useSetAtom } from "jotai"
-import { CheckboxEvent } from "@geist-ui/core/dist/checkbox/checkbox"
-import RangeOption from "@/components/range-option"
-import Cell from "@/components/cell"
-import { AST } from "@/parser"
-import { updateContentAtom } from "@/atom"
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSetAtom } from 'jotai'
+import RangeOption from '@/components/range-option'
+import Cell from '@/components/cell'
+import type { AST } from '@/parser'
+import { updateContentAtom } from '@/atom'
 
-type Prop = {
+interface Prop {
   ranges: AST.Range[]
   negate: boolean
 }
 
 const commonUsedRanges = [
-  { from: "", to: "", desc: "A Empty Range" },
-  { from: "0", to: "9", desc: "0 - 9" },
-  { from: "a", to: "z", desc: "a - z" },
-  { from: "A", to: "Z", desc: "A - Z" },
+  { from: '', to: '', desc: 'A Empty Range' },
+  { from: '0', to: '9', desc: '0 - 9' },
+  { from: 'a', to: 'z', desc: 'a - z' },
+  { from: 'A', to: 'Z', desc: 'A - Z' },
 ]
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
   const { t } = useTranslation()
   const updateContent = useSetAtom(updateContentAtom)
-  const { palette } = useTheme()
+  // const { palette } = useTheme()
 
   const handleAdd = (newRanges: AST.Range[]) => {
     const payload: AST.RangesCharacter = {
-      kind: "ranges",
+      kind: 'ranges',
       ranges: ranges.concat(newRanges),
       negate,
     }
@@ -36,7 +34,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
 
   const handleRangeChange = (index: number, range: AST.Range) => {
     const payload: AST.RangesCharacter = {
-      kind: "ranges",
+      kind: 'ranges',
       ranges: ranges.map((_range, _index) => {
         if (_index === index) {
           return range
@@ -50,7 +48,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
 
   const handleRemove = (index: number) => {
     const payload: AST.RangesCharacter = {
-      kind: "ranges",
+      kind: 'ranges',
       ranges: ranges.filter((_, _index) => {
         return index !== _index
       }),
@@ -59,13 +57,13 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
     updateContent(payload)
   }
 
-  const handleGreedyChange = (e: CheckboxEvent) => {
-    const negate = e.target.checked
-    updateContent({ kind: "ranges", ranges, negate })
-  }
+  // const handleGreedyChange = (e: CheckboxEvent) => {
+  //   const negate = e.target.checked
+  //   updateContent({ kind: 'ranges', ranges, negate })
+  // }
 
   return (
-    <Cell.Item label={t("Ranges")}>
+    <Cell.Item label={t('Ranges')}>
       <div className="range-options">
         {ranges.map((range, index) => (
           <RangeOption
@@ -76,7 +74,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
           />
         ))}
       </div>
-      <Spacer h={0.5} />
+      {/* <Spacer h={0.5} />
       <ButtonDropdown scale={0.75}>
         {commonUsedRanges.map(({ from, to, desc }, index) => (
           <ButtonDropdown.Item
@@ -87,13 +85,15 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
             {desc}
           </ButtonDropdown.Item>
         ))}
-      </ButtonDropdown>
+      </ButtonDropdown> */}
       <Cell.Item label="Negate">
-        <Checkbox checked={negate} onChange={handleGreedyChange}>
-          {t("negate")}
-        </Checkbox>
+        {/* <Checkbox checked={negate} onChange={handleGreedyChange}>
+          {t('negate')}
+        </Checkbox> */}
+        <></>
       </Cell.Item>
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         h6 {
           color: ${palette.secondary};
         }
@@ -101,7 +101,8 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
         .range-options > :global(.range-wrapper:not(:first-child)) {
           margin-top: 12px;
         }
-      `}</style>
+      `}
+      </style> */}
     </Cell.Item>
   )
 }

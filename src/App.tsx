@@ -1,29 +1,18 @@
-import React, { Suspense } from "react"
-import { BrowserRouter as Router } from "react-router-dom"
-import { GeistProvider, CssBaseline, useTheme } from "@geist-ui/core"
-import Header from "@/components/header"
-import { useLocalStorage } from "react-use"
-import Routes from "./routes"
+import { BrowserRouter as Router } from 'react-router-dom'
+import Routes from './routes'
+import Header from '@/components/header'
+import { ThemeProvider } from '@/components/theme-provider'
 
 export default function App() {
-  const [theme, setTheme] = useLocalStorage<string>("them", "dark")
-  const handleThemeChange = (themeType: string) => {
-    setTheme(themeType)
-    localStorage.setItem("theme", themeType)
-  }
-  const { palette } = useTheme()
   return (
     <>
-      <Suspense fallback={null}>
-        <GeistProvider themeType={theme}>
-          <CssBaseline />
-          <Router>
-            <Header theme={theme!} onThemeChange={handleThemeChange} />
-            <Routes />
-          </Router>
-        </GeistProvider>
-      </Suspense>
-      <style jsx global>{`
+      <ThemeProvider defaultTheme="dark" storageKey="theme">
+        <Router>
+          <Header />
+          <Routes />
+        </Router>
+      </ThemeProvider>
+      {/* <style jsx global>{`
         ::selection {
           background: ${palette.successLight} !important;
           color: #fff !important;
@@ -40,7 +29,7 @@ export default function App() {
         .tooltip-content {
           width: max-content !important;
         }
-      `}</style>
+      `}</style> */}
     </>
   )
 }

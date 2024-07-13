@@ -1,23 +1,15 @@
-import { memo } from "react"
-import { NavLink, Link } from "react-router-dom"
-import { useTheme, Select } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-import Sun from "@geist-ui/icons/sun"
-import Moon from "@geist-ui/icons/moon"
-import Logo from "@/logo.svg?react"
+import { memo } from 'react'
+import { Link, NavLink } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
+import Logo from '@/logo.svg?react'
+import { ModeToggle } from '@/components/mode-toggle'
 
-type Props = {
-  theme: string
-  onThemeChange: (theme: string) => void
-}
-const Header = memo(({ onThemeChange, theme }: Props) => {
-  const { palette } = useTheme()
-  const activeStyle = {
-    color: palette.success,
-  }
-
+const Header = memo(() => {
   const { t, i18n } = useTranslation()
   const language = i18n.language
+  const activeStyle = {
+    // color: palette.success,
+  }
 
   const handleLanguageChange = (value: string | string[]) => {
     i18n.changeLanguage(value as string)
@@ -36,13 +28,13 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
             to="/"
             style={({ isActive }) => (isActive ? activeStyle : {})}
           >
-            {t("Home")}
+            {t('Home')}
           </NavLink>
           <NavLink
             to="/samples"
             style={({ isActive }) => (isActive ? activeStyle : {})}
           >
-            {t("Samples")}
+            {t('Samples')}
           </NavLink>
           <a
             href="https://github.com/Bowen7/regex-vis"
@@ -51,7 +43,7 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
           >
             Github
           </a>
-          <Select
+          {/* <Select
             value={language}
             width="100px"
             disableMatchWidth
@@ -60,23 +52,12 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
           >
             <Select.Option value="en">English</Select.Option>
             <Select.Option value="cn">简体中文</Select.Option>
-          </Select>
-          {theme === "dark" ? (
-            <Moon
-              size={18}
-              onClick={() => onThemeChange("light")}
-              color={palette.foreground}
-            />
-          ) : (
-            <Sun
-              size={18}
-              onClick={() => onThemeChange("dark")}
-              color={palette.foreground}
-            />
-          )}
+          </Select> */}
+          <ModeToggle />
         </div>
       </header>
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         header {
           display: flex;
           flex-direction: row;
@@ -121,7 +102,8 @@ const Header = memo(({ onThemeChange, theme }: Props) => {
           vertical-align: middle;
           cursor: pointer;
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 })

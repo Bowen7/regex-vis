@@ -1,27 +1,26 @@
-import React from "react"
-import { Select, Spacer } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-import { useSetAtom } from "jotai"
-import Input from "@/components/input"
-import { AST } from "@/parser"
-import Cell from "@/components/cell"
-import { updateGroupAtom } from "@/atom"
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSetAtom } from 'jotai'
+import Input from '@/components/input'
+import type { AST } from '@/parser'
+import Cell from '@/components/cell'
+import { updateGroupAtom } from '@/atom'
 
-type GroupSelectProps = {
+interface GroupSelectProps {
   group: AST.Group
 }
 export const groupOptions = [
   {
-    value: "capturing",
-    label: "Capturing group",
+    value: 'capturing',
+    label: 'Capturing group',
   },
   {
-    value: "nonCapturing",
-    label: "Non-capturing group",
+    value: 'nonCapturing',
+    label: 'Non-capturing group',
   },
   {
-    value: "namedCapturing",
-    label: "Named capturing group",
+    value: 'namedCapturing',
+    label: 'Named capturing group',
   },
 ]
 
@@ -30,20 +29,20 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   const updateGroup = useSetAtom(updateGroupAtom)
   const { kind } = group
 
-  const handleGroupChange = (kind: AST.GroupKind, name = "") => {
+  const handleGroupChange = (kind: AST.GroupKind, name = '') => {
     let payload: AST.Group
     switch (kind) {
-      case "capturing":
-        payload = { kind, name: "", index: 0 }
+      case 'capturing':
+        payload = { kind, name: '', index: 0 }
         break
-      case "namedCapturing":
+      case 'namedCapturing':
         if (!name) {
-          name = "name"
+          name = 'name'
         }
         payload = { kind, name, index: 0 }
         break
-      case "nonCapturing":
-        payload = { kind: "nonCapturing" }
+      case 'nonCapturing':
+        payload = { kind: 'nonCapturing' }
         break
     }
     updateGroup(payload)
@@ -59,15 +58,15 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
 
   return (
     <>
-      <Cell
-        label={t("Group")}
-        rightLabel={t("UnGroup")}
+      {/* <Cell
+        label={t('Group')}
+        rightLabel={t('UnGroup')}
         onRightLabelClick={handleUnGroup}
       >
         <Select
           value={kind}
           onChange={onSelectChange}
-          getPopupContainer={() => document.getElementById("editor-content")}
+          getPopupContainer={() => document.getElementById('editor-content')}
           disableMatchWidth
         >
           {groupOptions.map(({ value, label }) => (
@@ -76,7 +75,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
             </Select.Option>
           ))}
         </Select>
-        {group.kind === "namedCapturing" && (
+        {group.kind === 'namedCapturing' && (
           <>
             <Spacer h={0.5} />
             <Input
@@ -86,7 +85,7 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
             />
           </>
         )}
-      </Cell>
+      </Cell> */}
     </>
   )
 }

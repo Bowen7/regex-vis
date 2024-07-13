@@ -1,30 +1,30 @@
-import { useMemo } from "react"
-import { Textarea, useTheme } from "@geist-ui/core"
-import Delete from "@geist-ui/icons/delete"
-import { useDebounceInput, useFocus } from "@/utils/hooks"
+import { useMemo } from 'react'
+import { CrossCircledIcon } from '@radix-ui/react-icons'
+import { useDebounceInput, useFocus } from '@/utils/hooks'
+import { Textarea } from '@/components/ui/textarea'
 
-type Props = {
+interface Props {
   value: string
   regExp: RegExp
   onChange: (value: string) => void
   onRemove: () => void
 }
 
-const DebouncedTextarea = ({
+function DebouncedTextarea({
   value,
   onChange,
   ...restProps
-}: Omit<React.ComponentProps<typeof Textarea>, "onChange"> & {
+}: Omit<React.ComponentProps<typeof Textarea>, 'onChange'> & {
   onChange: (value: string) => void
-}) => {
+}) {
   const debouncedBindings = useDebounceInput(value as string, onChange)
   return <Textarea {...restProps} {...debouncedBindings} />
 }
 
-const TestItem = ({ value, regExp, onChange, onRemove }: Props) => {
-  const { palette } = useTheme()
+function TestItem({ value, regExp, onChange, onRemove }: Props) {
+  // const { palette } = useTheme()
   const { focused, bindings } = useFocus()
-  const isError = useMemo(() => !regExp.test(value), [value, regExp])
+  // const isError = useMemo(() => !regExp.test(value), [value, regExp])
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation()
   }
@@ -38,23 +38,23 @@ const TestItem = ({ value, regExp, onChange, onRemove }: Props) => {
         <div className="case-input">
           <DebouncedTextarea
             value={value}
-            width="225px"
+            // width="225px"
             onKeyDown={handleKeyDown}
             onChange={onChange}
             {...bindings}
           />
-          {focused && (
-            <Delete
+          {/* {focused && (
+            <CrossCircledIcon
               cursor="pointer"
               size={20}
               onClick={onRemove}
               onMouseDown={handleMouseDown}
             />
-          )}
+          )} */}
         </div>
         <div className="status" />
       </div>
-      <style jsx>{`
+      {/* <style jsx>{`
         .test-item {
           display: flex;
           align-items: center;
@@ -78,7 +78,7 @@ const TestItem = ({ value, regExp, onChange, onRemove }: Props) => {
           background-color: ${isError ? palette.error : palette.cyan};
           border-radius: 100%;
         }
-      `}</style>
+      `}</style> */}
     </>
   )
 }

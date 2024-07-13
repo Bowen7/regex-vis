@@ -1,20 +1,19 @@
-import React, { useEffect, useState } from "react"
-import { Divider, useTheme } from "@geist-ui/core"
-import { useAtomValue } from "jotai"
-import ContentEditor from "./features/content"
-import Group from "./features/group"
-import Expression from "./features/expression"
-import Quantifier from "./features/quantifier"
-import LookAround from "./features/look-around"
-import Insert from "./features/insert"
-import { getInfoFromNodes, genInitialNodesInfo } from "./utils"
-import { AST } from "@/parser"
-import { NodesInfo } from "./utils"
-import { getNodesByIds } from "@/parser/visit"
-import { astAtom, selectedIdsAtom } from "@/atom"
+import { useEffect, useState } from 'react'
+import { useAtomValue } from 'jotai'
+import ContentEditor from './features/content'
+import Group from './features/group'
+import Expression from './features/expression'
+import Quantifier from './features/quantifier'
+import LookAround from './features/look-around'
+import Insert from './features/insert'
+import type { NodesInfo } from './utils'
+import { genInitialNodesInfo, getInfoFromNodes } from './utils'
+import type { AST } from '@/parser'
+import { getNodesByIds } from '@/parser/visit'
+import { astAtom, selectedIdsAtom } from '@/atom'
 
-const InfoItem = () => {
-  const { layout } = useTheme()
+function InfoItem() {
+  // const { layout } = useTheme()
 
   const [nodes, setNodes] = useState<AST.Node[]>([])
   const selectedIds = useAtomValue(selectedIdsAtom)
@@ -50,7 +49,7 @@ const InfoItem = () => {
     <>
       <div className="container" data-testid="edit-tab">
         <Insert nodes={nodes} />
-        <Divider mt="24px" />
+        {/* <Divider mt="24px" /> */}
         <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
         {content && (
           <ContentEditor content={content} id={id} quantifier={quantifier} />
@@ -61,7 +60,8 @@ const InfoItem = () => {
           <LookAround kind={lookAround.kind} negate={lookAround.negate} />
         )}
       </div>
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         .container {
           padding: 12px;
         }
@@ -102,7 +102,8 @@ const InfoItem = () => {
         .container :global(summary) {
           height: calc(1.687 * 16pt);
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }

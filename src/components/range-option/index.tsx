@@ -1,10 +1,11 @@
-import React, { useState, useRef, useMemo } from "react"
-import { useClickAway, useTheme } from "@geist-ui/core"
-import Trash2 from "@geist-ui/icons/trash2"
-import { AST } from "@/parser"
-import RangeInput from "./input"
-import { RangeError } from "./utils"
-type Prop = {
+import React, { useMemo, useRef, useState } from 'react'
+import { TrashIcon } from '@radix-ui/react-icons'
+import { useOnClickOutside } from 'usehooks-ts'
+import RangeInput from './input'
+import { RangeError } from './utils'
+import type { AST } from '@/parser'
+
+interface Prop {
   range: AST.Range
   onChange: (range: AST.Range) => void
   onRemove: () => void
@@ -20,54 +21,58 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
   const toRef = useRef<string>(to)
   const error = fromError || toError
 
-  const { palette } = useTheme()
+  // const { palette } = useTheme()
 
-  useClickAway(wrapRef, () => setFocused(false))
+  useOnClickOutside(wrapRef, () => setFocused(false))
   const handleWrapperClick = () => setFocused(true)
 
-  const borderColor = useMemo(() => {
-    if (error) {
-      return palette.error
-    }
-    if (focused) {
-      return palette.success
-    }
-    return palette.accents_2
-  }, [palette, focused, error])
+  // const borderColor = useMemo(() => {
+  //   if (error) {
+  //     return palette.error
+  //   }
+  //   if (focused) {
+  //     return palette.success
+  //   }
+  //   return palette.accents_2
+  // }, [palette, focused, error])
 
-  const handleInputChange = (key: "from" | "to", value: string) => {
-    const setError = key === "from" ? setFromError : setToError
-    if (key === "from") {
+  const handleInputChange = (key: 'from' | 'to', value: string) => {
+    const setError = key === 'from' ? setFromError : setToError
+    if (key === 'from') {
       fromRef.current = value
-    } else {
+    }
+    else {
       toRef.current = value
     }
     let isOutOfOrder = false
     try {
+      // eslint-disable-next-line no-new
       new RegExp(`[${fromRef.current}-${toRef.current}]`)
-    } catch (error) {
+    }
+    // eslint-disable-next-line unused-imports/no-unused-vars
+    catch (error) {
       isOutOfOrder = true
     }
     if (isOutOfOrder) {
-      return setError("The range out of order in character class")
+      return setError('The range out of order in character class')
     }
     setError(null)
-    const otherError = key === "from" ? toError : fromError
+    const otherError = key === 'from' ? toError : fromError
     if (otherError) {
       return
     }
     onChange({ from: fromRef.current, to: toRef.current })
   }
 
-  const handleError = (key: "from" | "to", error: RangeError) => {
-    const setError = key === "from" ? setFromError : setToError
+  const handleError = (key: 'from' | 'to', error: RangeError) => {
+    const setError = key === 'from' ? setFromError : setToError
     let err: null | string = null
     switch (error) {
       case RangeError.EMPTY_INPUT:
-        err = "The range input can't be empty"
+        err = 'The range input can\'t be empty'
         break
       case RangeError.INVALID_RANGE:
-        err = "Invalid range input"
+        err = 'Invalid range input'
         break
     }
     setError(err)
@@ -84,24 +89,25 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
         <div className="range-option" onClick={handleWrapperClick}>
           <RangeInput
             value={from}
-            onChange={(value: string) => handleInputChange("from", value)}
-            onError={(err) => handleError("from", err)}
+            onChange={(value: string) => handleInputChange('from', value)}
+            onError={err => handleError('from', err)}
           />
-          {" - "}
+          {' - '}
           <RangeInput
             value={to}
-            onChange={(value: string) => handleInputChange("to", value)}
-            onError={(err) => handleError("to", err)}
+            onChange={(value: string) => handleInputChange('to', value)}
+            onError={err => handleError('to', err)}
           />
         </div>
         {(focused || hovered) && (
           <span className="operations">
-            <Trash2 size={18} color={palette.accents_6} onClick={onRemove} />
+            {/* <TrashIcon size={18} color={palette.accents_6} onClick={onRemove} /> */}
           </span>
         )}
       </div>
       {error && <div className="error-msg">{error}</div>}
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         .range-option {
           display: inline-block;
           border: 1px solid ${borderColor};
@@ -134,7 +140,8 @@ const RangeOption: React.FC<Prop> = ({ range, onChange, onRemove }) => {
           cursor: pointer;
           vertical-align: middle;
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }

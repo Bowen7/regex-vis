@@ -1,21 +1,23 @@
-import { atom } from "jotai"
-import { AST, visit, makeChoiceValid } from "@/parser"
-import { groupNamesAtom, astAtom, undoStack, toastsAtom } from "./atoms"
+import { atom } from 'jotai'
+import { astAtom, groupNamesAtom, undoStack } from './atoms'
+import type { AST } from '@/parser'
+import { makeChoiceValid, visit } from '@/parser'
 
 export const refreshGroupAtom = atom(null, (get, set, ast: AST.Regex) => {
   let groupIndex = 0
   const groupNames: string[] = []
   visit(ast, (node: AST.Node) => {
     if (
-      node.type === "group" &&
-      (node.kind === "capturing" || node.kind === "namedCapturing")
+      node.type === 'group'
+      && (node.kind === 'capturing' || node.kind === 'namedCapturing')
     ) {
       const index = ++groupIndex
       node.index = index
-      if (node.kind === "capturing") {
+      if (node.kind === 'capturing') {
         node.name = index.toString()
         groupNames.push(index.toString())
-      } else {
+      }
+      else {
         groupNames.push(node.name)
       }
     }
@@ -29,8 +31,9 @@ export const pushUndoAtom = atom(null, (get) => {
 
 export const makeChoiceValidAtom = atom(null, (get, set, ast: AST.Regex) => {
   if (!makeChoiceValid(ast)) {
-    const toasts = get(toastsAtom)
-    toasts && toasts.setToast({ text: "Group automatically" })
+    // TODO
+    // const toasts = get(toastsAtom)
+    // toasts && toasts.setToast({ text: "Group automatically" })
   }
 })
 

@@ -1,11 +1,9 @@
-import React from "react"
-import { Spacer, Checkbox, Code, Button, Tooltip } from "@geist-ui/core"
-import Link from "@geist-ui/icons/link"
-import { useTranslation } from "react-i18next"
-import Input from "@/components/input"
-import { CheckboxEvent } from "@geist-ui/core/esm/checkbox"
-import { REGEX_FONT_FAMILY } from "@/constants"
-type Props = {
+import React from 'react'
+import { useTranslation } from 'react-i18next'
+import Input from '@/components/input'
+import { REGEX_FONT_FAMILY } from '@/constants'
+
+interface Props {
   regex: string
   flags: string[]
   literal: boolean
@@ -29,9 +27,9 @@ const RegexInput: React.FC<Props> = ({
   const handleFlagsChange = (flags: string[]) => {
     onFlagsChange(flags)
   }
-  const handleEscapeBackslashChange = (e: CheckboxEvent) =>
-    onEscapeBackslashChange(e.target.checked)
-  const flagStr = flags.join("")
+  // const handleEscapeBackslashChange = (e: CheckboxEvent) =>
+  //   onEscapeBackslashChange(e.target.checked)
+  const flagStr = flags.join('')
   return (
     <>
       <div className="wrapper">
@@ -39,14 +37,14 @@ const RegexInput: React.FC<Props> = ({
           <div className="input-wrapper">
             <Input
               data-testid="regex-input"
-              value={regex === null ? "" : regex}
+              value={regex === null ? '' : regex}
               width="100%"
-              placeholder={t("Input a regular expression")}
-              labelRight={literal ? "" : flagStr}
+              placeholder={t('Input a regular expression')}
+              // labelRight={literal ? '' : flagStr}
               onChange={onChange}
             />
-            <Spacer w={0.5} />
-            <Tooltip text={t("Copy permalink")}>
+            {/* <Spacer w={0.5} />
+            <Tooltip text={t('Copy permalink')}>
               <Button
                 iconRight={<Link />}
                 auto
@@ -54,48 +52,49 @@ const RegexInput: React.FC<Props> = ({
                 px={0.6}
                 onClick={onCopy}
               />
-            </Tooltip>
+            </Tooltip> */}
           </div>
-          {regex !== "" && (
+          {regex !== '' && (
             <>
-              <Spacer h={1} />
+              {/* <Spacer h={1} />
               <div className="flags-settings">
-                <label>{t("Flags: ")}</label>
+                <label>{t('Flags: ')}</label>
                 <Spacer w={0.5} />
                 <Checkbox.Group
                   value={flags}
                   onChange={handleFlagsChange}
                   scale={0.75}
                 >
-                  <Checkbox value="g">{t("Global search")}</Checkbox>
-                  <Checkbox value="i">{t("Case-insensitive")}</Checkbox>
-                  <Checkbox value="m">{t("Multi-line")}</Checkbox>
+                  <Checkbox value="g">{t('Global search')}</Checkbox>
+                  <Checkbox value="i">{t('Case-insensitive')}</Checkbox>
+                  <Checkbox value="m">{t('Multi-line')}</Checkbox>
                   <Checkbox value="s">
-                    {t("Allows . to match newline")}
+                    {t('Allows . to match newline')}
                   </Checkbox>
                 </Checkbox.Group>
                 {!literal && (
                   <>
                     <Spacer w={1} />
-                    <label>{t("Settings: ")}</label>
+                    <label>{t('Settings: ')}</label>
                     <Spacer w={0.5} />
                     <div>
                       <Checkbox
                         checked={escapeBackslash}
                         onChange={handleEscapeBackslashChange}
                       >
-                        {t("include escape ")}
+                        {t('include escape ')}
                         <Code>\</Code>
                       </Checkbox>
                     </div>
                   </>
                 )}
-              </div>
+              </div> */}
             </>
           )}
         </div>
       </div>
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         .wrapper {
           display: flex;
           align-items: center;
@@ -119,7 +118,8 @@ const RegexInput: React.FC<Props> = ({
         .flags-settings > :global(.group > .checkbox) {
           margin-right: calc(calc(0.875 * 8px) * 2);
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }

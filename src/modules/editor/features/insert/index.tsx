@@ -1,18 +1,18 @@
-import React, { useMemo } from "react"
-import { Button, ButtonGroup } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-import { useSetAtom } from "jotai"
-import Cell from "@/components/cell"
-import ShowMore from "@/components/show-more"
-import { AST } from "@/parser"
-import { insertAtom, groupSelectedAtom, lookAroundSelectedAtom } from "@/atom"
-type Props = {
+import React, { useMemo } from 'react'
+import { useTranslation } from 'react-i18next'
+import { useSetAtom } from 'jotai'
+import Cell from '@/components/cell'
+import ShowMore from '@/components/show-more'
+import type { AST } from '@/parser'
+import { groupSelectedAtom, insertAtom, lookAroundSelectedAtom } from '@/atom'
+
+interface Props {
   nodes: AST.Node[]
 }
 
-type InsertDirection = "prev" | "next" | "branch"
+type InsertDirection = 'prev' | 'next' | 'branch'
 
-type Option = {
+interface Option {
   value: string
   label: string
 }
@@ -31,54 +31,54 @@ const Insert: React.FC<Props> = ({ nodes }) => {
     }
     const head = nodes[0]
     const tail = nodes[nodes.length - 1]
-    if (!(head.type === "boundaryAssertion" && head.kind === "beginning")) {
+    if (!(head.type === 'boundaryAssertion' && head.kind === 'beginning')) {
       options.push({
-        value: "prev",
-        label: "Before",
+        value: 'prev',
+        label: 'Before',
       })
     }
 
     options.push({
-      value: "branch",
-      label: "Parallel",
+      value: 'branch',
+      label: 'Parallel',
     })
 
-    if (!(tail.type === "boundaryAssertion" && tail.kind === "end")) {
+    if (!(tail.type === 'boundaryAssertion' && tail.kind === 'end')) {
       options.push({
-        value: "next",
-        label: "After",
+        value: 'next',
+        label: 'After',
       })
     }
     return options
   }, [nodes])
 
   const groupOptions: Option[] = useMemo(() => {
-    if (nodes.length === 1 && nodes[0].type === "group") {
+    if (nodes.length === 1 && nodes[0].type === 'group') {
       return []
     }
     return [
       {
-        value: "capturing",
-        label: "Capturing",
+        value: 'capturing',
+        label: 'Capturing',
       },
       {
-        value: "nonCapturing",
-        label: "Non-\ncapturing",
+        value: 'nonCapturing',
+        label: 'Non-\ncapturing',
       },
       {
-        value: "namedCapturing",
-        label: "Named\ncapturing",
+        value: 'namedCapturing',
+        label: 'Named\ncapturing',
       },
     ]
   }, [nodes])
 
   const lookAroundOptions: Option[] = useMemo(() => {
-    if (nodes.length === 1 && nodes[0].type === "lookAroundAssertion") {
+    if (nodes.length === 1 && nodes[0].type === 'lookAroundAssertion') {
       return []
     }
     return [
-      { value: "lookahead", label: "Lookahead" },
-      { value: "lookbehind", label: "Lookahead" },
+      { value: 'lookahead', label: 'Lookahead' },
+      { value: 'lookbehind', label: 'Lookahead' },
     ]
   }, [nodes])
 
@@ -87,14 +87,14 @@ const Insert: React.FC<Props> = ({ nodes }) => {
   const handleWrapGroup = (kind: string) => {
     let payload: AST.Group
     switch (kind) {
-      case "capturing":
-        payload = { kind, name: "", index: 0 }
+      case 'capturing':
+        payload = { kind, name: '', index: 0 }
         break
-      case "nonCapturing":
+      case 'nonCapturing':
         payload = { kind }
         break
-      case "namedCapturing":
-        payload = { kind, name: "name", index: 0 }
+      case 'namedCapturing':
+        payload = { kind, name: 'name', index: 0 }
         break
       default:
         return
@@ -103,29 +103,30 @@ const Insert: React.FC<Props> = ({ nodes }) => {
   }
 
   const handleWrapLookAroundAssertion = (kind: string) =>
-    lookAroundSelected(kind as "lookahead" | "lookbehind")
+    lookAroundSelected(kind as 'lookahead' | 'lookbehind')
 
   return (
     <>
       <div id="test" className="insert-section">
         {insertOptions.length > 0 && (
-          <Cell label={t("Insert around")}>
-            <ButtonGroup>
+          <Cell label={t('Insert around')}>
+            {/* <ButtonGroup>
               {insertOptions.map(({ value, label }) => (
                 <Button
-                  className={language !== "en" ? "small-button-font" : ""}
+                  className={language !== 'en' ? 'small-button-font' : ''}
                   key={value}
                   onClick={() => handleInsert(value as InsertDirection)}
                 >
                   {t(label)}
                 </Button>
               ))}
-            </ButtonGroup>
+            </ButtonGroup> */}
+            <></>
           </Cell>
         )}
         {groupOptions.length > 0 && (
-          <Cell label={t("Group selection")} mdnLinkKey="group">
-            <ButtonGroup className="small-button-font">
+          <Cell label={t('Group selection')} mdnLinkKey="group">
+            {/* <ButtonGroup className="small-button-font">
               {groupOptions.map(({ value, label }) => (
                 <Button
                   className="small-button-font"
@@ -135,17 +136,18 @@ const Insert: React.FC<Props> = ({ nodes }) => {
                   {t(label)}
                 </Button>
               ))}
-            </ButtonGroup>
+            </ButtonGroup> */}
+            <></>
           </Cell>
         )}
 
         {lookAroundOptions.length > 0 && (
           <ShowMore id="lookAround">
             <Cell
-              label={t("Lookahead/LookBehind assertion selection")}
+              label={t('Lookahead/LookBehind assertion selection')}
               mdnLinkKey="lookAround"
             >
-              <ButtonGroup>
+              {/* <ButtonGroup>
                 {lookAroundOptions.map(({ value, label }) => (
                   <Button
                     className="small-button-font"
@@ -155,12 +157,13 @@ const Insert: React.FC<Props> = ({ nodes }) => {
                     {t(label)}
                   </Button>
                 ))}
-              </ButtonGroup>
+              </ButtonGroup> */}
+              <></>
             </Cell>
           </ShowMore>
         )}
       </div>
-      <style jsx>
+      {/* <style jsx>
         {`
           .insert-section :global(.btn) {
             white-space: pre;
@@ -175,7 +178,7 @@ const Insert: React.FC<Props> = ({ nodes }) => {
             text-transform: none;
           }
         `}
-      </style>
+      </style> */}
     </>
   )
 }

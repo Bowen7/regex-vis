@@ -1,25 +1,24 @@
-import React, { useEffect } from "react"
-import ChevronsRight from "@geist-ui/icons/chevronsRight"
-import ChevronsLeft from "@geist-ui/icons/chevronsLeft"
-import { Tabs, useTheme, Button } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-import { useAtom, useSetAtom, useAtomValue } from "jotai"
-import { useCurrentState } from "@/utils/hooks"
-import EditTab from "./edit-tab"
-import LegendTab from "./legend-tab"
-import TestTab from "./test-tab"
-import { useEvent, useUpdateEffect } from "react-use"
+import React, { useEffect } from 'react'
+import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
+import { useTranslation } from 'react-i18next'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useEvent, useUpdateEffect } from 'react-use'
+import EditTab from './edit-tab'
+import LegendTab from './legend-tab'
+import TestTab from './test-tab'
+import { useCurrentState } from '@/utils/hooks'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  undoAtom,
+  editorCollapsedAtom,
   redoAtom,
   removeAtom,
   selectedIdsAtom,
-  editorCollapsedAtom,
-} from "@/atom"
+  undoAtom,
+} from '@/atom'
 
-export type Tab = "legend" | "edit" | "test"
-type Props = { defaultTab: Tab }
-const Editor = ({ defaultTab }: Props) => {
+export type Tab = 'legend' | 'edit' | 'test'
+interface Props { defaultTab: Tab }
+function Editor({ defaultTab }: Props) {
   const selectedIds = useAtomValue(selectedIdsAtom)
   const [editorCollapsed, setEditorCollapsed] = useAtom(editorCollapsedAtom)
   const remove = useSetAtom(removeAtom)
@@ -28,7 +27,7 @@ const Editor = ({ defaultTab }: Props) => {
 
   const [tabValue, setTabValue, tabValueRef] = useCurrentState<Tab>(defaultTab)
 
-  const { palette } = useTheme()
+  // const { palette } = useTheme()
 
   const { t } = useTranslation()
 
@@ -37,29 +36,29 @@ const Editor = ({ defaultTab }: Props) => {
   }, [defaultTab])
 
   useEffect(() => {
-    if (selectedIds.length > 0 && tabValueRef.current !== "edit") {
-      setTabValue("edit")
+    if (selectedIds.length > 0 && tabValueRef.current !== 'edit') {
+      setTabValue('edit')
     }
-    if (selectedIds.length === 0 && tabValueRef.current === "edit") {
-      setTabValue("legend")
+    if (selectedIds.length === 0 && tabValueRef.current === 'edit') {
+      setTabValue('legend')
     }
   }, [selectedIds, tabValueRef, setTabValue])
 
   const editDisabled = selectedIds.length === 0
 
-  useEvent("keydown", (e: Event) => {
+  useEvent('keydown', (e: Event) => {
     const event = e as KeyboardEvent
     const { key } = event
-    if (key === "Backspace" || key === "Delete") {
+    if (key === 'Backspace' || key === 'Delete') {
       e.preventDefault()
       return remove()
     }
     const metaKey = event.ctrlKey || event.metaKey
-    if (metaKey && event.shiftKey && key === "z") {
+    if (metaKey && event.shiftKey && key === 'z') {
       e.preventDefault()
       return redo()
     }
-    if (metaKey && key === "z") {
+    if (metaKey && key === 'z') {
       e.preventDefault()
       return undo()
     }
@@ -69,43 +68,44 @@ const Editor = ({ defaultTab }: Props) => {
 
   const unCollapseEditor = () => setEditorCollapsed(false)
 
-  const containerClassName =
-    "container" + (editorCollapsed ? " collapsed-container" : "")
+  const containerClassName
+    = `container${editorCollapsed ? ' collapsed-container' : ''}`
   return (
     <>
       <div id="editor-container" className={containerClassName}>
-        <Tabs
+        {/* <Tabs
           value={tabValue}
           onChange={(value: string) => setTabValue(value as Tab)}
           hideDivider
         >
           <div className="content" id="editor-content">
-            <Tabs.Item value="legend" label={t("Legends")}>
+            <Tabs.Item value="legend" label={t('Legends')}>
               <LegendTab />
             </Tabs.Item>
-            <Tabs.Item value="edit" label={t("Edit")} disabled={editDisabled}>
+            <Tabs.Item value="edit" label={t('Edit')} disabled={editDisabled}>
               <EditTab />
             </Tabs.Item>
-            <Tabs.Item value="test" label={t("Test")}>
+            <Tabs.Item value="test" label={t('Test')}>
               <TestTab />
             </Tabs.Item>
           </div>
-        </Tabs>
+        </Tabs> */}
         <footer onClick={collapseEditor}>
-          <ChevronsRight color={palette.secondary} size={20} />
+          {/* <ChevronsRight color={palette.secondary} size={20} /> */}
         </footer>
       </div>
       {editorCollapsed && (
         <span className="uncollapse-btn">
-          <Button
+          {/* <Button
             iconRight={<ChevronsLeft />}
             auto
             shadow
             onClick={unCollapseEditor}
-          />
+          /> */}
         </span>
       )}
-      <style jsx>{`
+      {/* <style jsx>
+        {`
         .container {
           position: fixed;
           top: 64px;
@@ -162,7 +162,8 @@ const Editor = ({ defaultTab }: Props) => {
           justify-content: center;
           height: 45px;
         }
-      `}</style>
+      `}
+      </style> */}
     </>
   )
 }
