@@ -1,26 +1,28 @@
-import React, { useEffect } from 'react'
-import { ChevronLeftIcon, ChevronRightIcon } from '@radix-ui/react-icons'
+import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEvent, useUpdateEffect } from 'react-use'
+import clsx from 'clsx'
 import EditTab from './edit-tab'
 import LegendTab from './legend-tab'
 import TestTab from './test-tab'
 import { useCurrentState } from '@/utils/hooks'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
-  editorCollapsedAtom,
   redoAtom,
   removeAtom,
   selectedIdsAtom,
   undoAtom,
 } from '@/atom'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 export type Tab = 'legend' | 'edit' | 'test'
-interface Props { defaultTab: Tab }
-function Editor({ defaultTab }: Props) {
+interface Props {
+  defaultTab: Tab
+  collapsed: boolean
+}
+function Editor({ defaultTab, collapsed }: Props) {
   const selectedIds = useAtomValue(selectedIdsAtom)
-  const [editorCollapsed, setEditorCollapsed] = useAtom(editorCollapsedAtom)
   const remove = useSetAtom(removeAtom)
   const undo = useSetAtom(undoAtom)
   const redo = useSetAtom(redoAtom)
@@ -64,46 +66,32 @@ function Editor({ defaultTab }: Props) {
     }
   })
 
-  const collapseEditor = () => setEditorCollapsed(true)
-
-  const unCollapseEditor = () => setEditorCollapsed(false)
-
-  const containerClassName
-    = `container${editorCollapsed ? ' collapsed-container' : ''}`
   return (
     <>
-      <div id="editor-container" className={containerClassName}>
-        {/* <Tabs
-          value={tabValue}
-          onChange={(value: string) => setTabValue(value as Tab)}
-          hideDivider
-        >
-          <div className="content" id="editor-content">
-            <Tabs.Item value="legend" label={t('Legends')}>
+      <Tabs
+        value={tabValue}
+        onValueChange={(value: string) => setTabValue(value as Tab)}
+        className={clsx('flex flex-col h-[calc(100vh-64px)] py-4 border-l transition-width', collapsed ? 'w-[0px]' : 'w-[300px]')}
+      >
+        <TabsList className="grid grid-cols-3 mx-4">
+          <TabsTrigger value="legend">{t('Legends')}</TabsTrigger>
+          <TabsTrigger value="edit" disabled={editDisabled}>{t('Edit')}</TabsTrigger>
+          <TabsTrigger value="test">{t('Test')}</TabsTrigger>
+        </TabsList>
+        <ScrollArea className="flex-1">
+          <div className="w-[300px] p-4">
+            <TabsContent value="legend">
               <LegendTab />
-            </Tabs.Item>
-            <Tabs.Item value="edit" label={t('Edit')} disabled={editDisabled}>
+            </TabsContent>
+            <TabsContent value="edit">
               <EditTab />
-            </Tabs.Item>
-            <Tabs.Item value="test" label={t('Test')}>
+            </TabsContent>
+            <TabsContent value="test">
               <TestTab />
-            </Tabs.Item>
+            </TabsContent>
           </div>
-        </Tabs> */}
-        <footer onClick={collapseEditor}>
-          {/* <ChevronsRight color={palette.secondary} size={20} /> */}
-        </footer>
-      </div>
-      {editorCollapsed && (
-        <span className="uncollapse-btn">
-          {/* <Button
-            iconRight={<ChevronsLeft />}
-            auto
-            shadow
-            onClick={unCollapseEditor}
-          /> */}
-        </span>
-      )}
+        </ScrollArea>
+      </Tabs>
       {/* <style jsx>
         {`
         .container {

@@ -1,7 +1,7 @@
-import React from 'react'
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SimpleGraph from '@/modules/graph/simple-graph'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 const samples = [
   { desc: '1. Whole Numbers', label: '/^\\d+$/', regex: '^\\d+$' },
@@ -38,7 +38,7 @@ function Samples() {
   // const { palette } = useTheme()
   return (
     <>
-      <div className="wrapper">
+      <ScrollArea className="flex-1">
         <div className="content">
           {samples.map(({ desc, label, regex }) => (
             <Link to={`/?r=${encodeURIComponent(`/${regex}/`)}`} key={regex}>
@@ -55,7 +55,7 @@ function Samples() {
             </Link>
           ))}
         </div>
-      </div>
+      </ScrollArea>
       {/* <style jsx>
         {`
         .wrapper {

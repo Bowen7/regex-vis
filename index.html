@@ -16,9 +16,11 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
     <div id="portal"></div>
-    <!-- Cloudflare Web Analytics -->
-      <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f684c9449da14b2396a0a944c9acb39f"}'></script>
-    <!-- End Cloudflare Web Analytics -->
+    <% if (!isDev) { %>
+      <!-- Cloudflare Web Analytics -->
+        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f684c9449da14b2396a0a944c9acb39f"}'></script>
+      <!-- End Cloudflare Web Analytics -->
+    <% } %>
     <script type="module" src="/src/index.tsx"></script>
   </body>
 </html>

@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import { ViewVerticalIcon } from '@radix-ui/react-icons'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffectOnce, useLocalStorage, useUpdateEffect } from 'react-use'
+import { useCopyToClipboard } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
+import clsx from 'clsx'
 import RegexInput from './regex-input'
 import { gen, parse } from '@/parser'
 import Graph from '@/modules/graph'
@@ -20,20 +23,26 @@ import {
 import {
   astAtom,
   clearSelectedAtom,
-  editorCollapsedAtom,
   updateFlagsAtom,
 } from '@/atom'
+import { useToast } from '@/components/ui/use-toast'
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from '@/components/ui/resizable'
+import { Toggle } from '@/components/ui/toggle'
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
-  const editorCollapsed = useAtomValue(editorCollapsedAtom)
+  const [editorCollapsed, setEditorCollapsed] = useState(false)
   const [ast, setAst] = useAtom(astAtom)
   const clearSelected = useSetAtom(clearSelectedAtom)
   const updateFlags = useSetAtom(updateFlagsAtom)
   // const { palette, type: themeType } = useTheme()
   const { t } = useTranslation()
-  // const toasts = useToasts()
-  // const { copy } = useClipboard()
+  const { toast } = useToast()
+  const [, copy] = useCopyToClipboard()
 
   const [escapeBackslash, setEscapeBackslash] = useLocalStorage(
     STORAGE_ESCAPE_BACKSLASH,
@@ -71,8 +80,7 @@ function Home() {
           setEditorDefaultTab('test')
           setCases(cases)
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.error(error)
       }
       nextSearchParams.delete(SEARCH_PARAM_TESTS)
@@ -91,8 +99,7 @@ function Home() {
       setErrorMsg(null)
       setAst(ast)
       shouldGenAst.current = false
-    }
-    else {
+    } else {
       setErrorMsg(ast.message)
     }
   }, [regex, escapeBackslash, setAst, clearSelected])
@@ -113,13 +120,10 @@ function Home() {
         setRegex(nextRegex)
         shouldParseRegex.current = false
       }
-    }
-    else {
+    } else {
       shouldGenAst.current = true
     }
   }, [ast])
-
-  const style = editorCollapsed || regex === null ? { width: '100%' } : {}
 
   const handleFlagsChange = (flags: string[]) => updateFlags(flags)
 
@@ -128,33 +132,45 @@ function Home() {
 
   const handleCopyPermalink = () => {
     const permalink = genPermalink(escapeBackslash!)
-    // copy(permalink)
-    // toasts.setToast({ text: t('Permalink copied.') })
+    copy(permalink)
+    toast({ description: t('Permalink copied.') })
   }
 
   const graphShow = regex !== '' || (ast.body.length > 0 && !errorMsg)
   return (
     <>
-      <div className="wrapper" style={style}>
-        {graphShow && (
-          <div className="graph">
-            <div className="content">
-              <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
+      <div
+        className="flex-1 flex"
+      >
+        <div className={clsx('flex-1 relative flex flex-col', { 'items-center': !graphShow })}>
+          {graphShow && (
+            <div className="flex-1">
+              <div className="content">
+                <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
+              </div>
             </div>
-          </div>
-        )}
-        <RegexInput
-          regex={regex}
-          literal={literal}
-          escapeBackslash={escapeBackslash!}
-          flags={ast.flags}
-          onChange={setRegex}
-          onFlagsChange={handleFlagsChange}
-          onEscapeBackslashChange={handleEscapeBackslashChange}
-          onCopy={handleCopyPermalink}
-        />
+          )}
+          <RegexInput
+            regex={regex}
+            literal={literal}
+            escapeBackslash={escapeBackslash!}
+            flags={ast.flags}
+            onChange={setRegex}
+            onFlagsChange={handleFlagsChange}
+            onEscapeBackslashChange={handleEscapeBackslashChange}
+            onCopy={handleCopyPermalink}
+          />
+          <Toggle
+            size="sm"
+            className="absolute top-2 right-2"
+            pressed={!editorCollapsed}
+            onPressedChange={(pressed: boolean) => setEditorCollapsed(!pressed)}
+          >
+            <ViewVerticalIcon />
+          </Toggle>
+        </div>
+        {regex !== null && <Editor defaultTab={editorDefaultTab} collapsed={editorCollapsed} />}
       </div>
-      {regex !== null && <Editor defaultTab={editorDefaultTab} />}
       {/* <style jsx>
         {`
         .wrapper {

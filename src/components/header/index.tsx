@@ -1,110 +1,50 @@
 import { memo } from 'react'
 import { Link, NavLink } from 'react-router-dom'
+import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
-import Logo from '@/logo.svg?react'
+import { LanguageSelect } from '@/components/language-select'
 import { ModeToggle } from '@/components/mode-toggle'
+import { Logo } from '@/components/logo'
+
+function navLinkClassName({ isActive }: { isActive: boolean }) {
+  return clsx('transition-colors hover:text-foreground/80', isActive ? 'text-foreground' : 'text-foreground/60')
+}
 
 const Header = memo(() => {
-  const { t, i18n } = useTranslation()
-  const language = i18n.language
-  const activeStyle = {
-    // color: palette.success,
-  }
-
-  const handleLanguageChange = (value: string | string[]) => {
-    i18n.changeLanguage(value as string)
-  }
+  const { t } = useTranslation()
   return (
-    <>
-      <header>
-        <Link to="/">
-          <div className="logo">
-            <Logo />
-            <span>Regex Vis</span>
-          </div>
-        </Link>
-        <div className="nav">
-          <NavLink
-            to="/"
-            style={({ isActive }) => (isActive ? activeStyle : {})}
-          >
-            {t('Home')}
-          </NavLink>
-          <NavLink
-            to="/samples"
-            style={({ isActive }) => (isActive ? activeStyle : {})}
-          >
-            {t('Samples')}
-          </NavLink>
-          <a
-            href="https://github.com/Bowen7/regex-vis"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Github
-          </a>
-          {/* <Select
-            value={language}
-            width="100px"
-            disableMatchWidth
-            scale={0.5}
-            onChange={handleLanguageChange}
-          >
-            <Select.Option value="en">English</Select.Option>
-            <Select.Option value="cn">简体中文</Select.Option>
-          </Select> */}
-          <ModeToggle />
+    <header className="h-[64px] flex items-center justify-between border-b">
+      <Link to="/" className="ml-9">
+        <div className="flex items-end">
+          <Logo width={32} height={32} className="mr-4" />
+          <span className="font-bold">Regex Vis</span>
         </div>
-      </header>
-      {/* <style jsx>
-        {`
-        header {
-          display: flex;
-          flex-direction: row;
-          justify-content: space-between;
-          align-items: center;
-          padding: 24px 36px;
-          height: 64px;
-          border-bottom: 1px solid ${palette.accents_2};
-        }
-        .logo span {
-          font-weight: bold;
-          color: ${palette.foreground};
-        }
-        .logo :global(svg) {
-          width: 32px;
-          height: 32px;
-          margin-right: 24px;
-          vertical-align: bottom;
-        }
-        .logo :global(.fill-accents-8) {
-          fill: ${palette.accents_8};
-        }
-        .logo :global(.stroke-accents-8) {
-          stroke: ${palette.accents_8};
-        }
-        .logo :global(.fill-success) {
-          fill: ${palette.success};
-        }
-
-        .nav :global(:not(:last-child)) {
-          margin-right: 32px;
-        }
-        .nav :global(a) {
-          color: ${palette.accents_4};
-          font-size: 14px;
-        }
-        .nav :global(.select) {
-          min-width: auto;
-        }
-
-        header :global(svg) {
-          vertical-align: middle;
-          cursor: pointer;
-        }
-      `}
-      </style> */}
-    </>
+      </Link>
+      <div className="flex gap-6 items-center text-sm mr-9">
+        <NavLink
+          to="/"
+          className={navLinkClassName}
+        >
+          {t('Home')}
+        </NavLink>
+        <NavLink
+          to="/samples"
+          className={navLinkClassName}
+        >
+          {t('Samples')}
+        </NavLink>
+        <a
+          href="https://github.com/Bowen7/regex-vis"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-foreground/60"
+        >
+          Github
+        </a>
+        <LanguageSelect />
+        <ModeToggle />
+      </div>
+    </header>
   )
 })
 

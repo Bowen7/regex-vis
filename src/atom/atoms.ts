@@ -21,7 +21,6 @@ export const astAtom = atomWithImmer<AST.Regex>({
 
 export const selectedIdsAtom = atom<string[]>([])
 export const groupNamesAtom = atom<string[]>([])
-export const editorCollapsedAtom = atom<boolean>(false)
 
 export const sizeMapAtom = atom<Map<AST.Node | AST.Node[], NodeSize>>(new Map())
 export const isPrimaryGraphAtom = atom<boolean>(true)

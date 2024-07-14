@@ -6,7 +6,7 @@ function Legend() {
   const { t } = useTranslation()
   return (
     <>
-      <div className="container">
+      <div>
         <div className="tip">
           {/* <ArrowLeftCircle size={14} /> */}
           {t('You can select nodes by dragging or clicking')}

@@ -1,7 +1,16 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import Input from '@/components/input'
+import { Link2Icon } from '@radix-ui/react-icons'
+import { Input } from '@/components/ui/input'
 import { REGEX_FONT_FAMILY } from '@/constants'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import { Button } from '@/components/ui/button'
+import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group'
 
 interface Props {
   regex: string
@@ -13,6 +22,21 @@ interface Props {
   onEscapeBackslashChange: (escapeBackslash: boolean) => void
   onCopy: () => void
 }
+
+const FLAGS = [{
+  value: 'g',
+  label: 'Global search',
+}, {
+  value: 'i',
+  label: 'Case-insensitive',
+}, {
+  value: 'm',
+  label: 'Multi-line',
+}, {
+  value: 's',
+  label: 'Allows . to match newline',
+}]
+
 const RegexInput: React.FC<Props> = ({
   regex,
   flags,
@@ -30,97 +54,65 @@ const RegexInput: React.FC<Props> = ({
   // const handleEscapeBackslashChange = (e: CheckboxEvent) =>
   //   onEscapeBackslashChange(e.target.checked)
   const flagStr = flags.join('')
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    e.stopPropagation()
+  }
   return (
-    <>
-      <div className="wrapper">
-        <div className="content">
-          <div className="input-wrapper">
-            <Input
-              data-testid="regex-input"
-              value={regex === null ? '' : regex}
-              width="100%"
-              placeholder={t('Input a regular expression')}
-              // labelRight={literal ? '' : flagStr}
-              onChange={onChange}
-            />
-            {/* <Spacer w={0.5} />
-            <Tooltip text={t('Copy permalink')}>
-              <Button
-                iconRight={<Link />}
-                auto
-                scale={2 / 3}
-                px={0.6}
-                onClick={onCopy}
-              />
-            </Tooltip> */}
-          </div>
-          {regex !== '' && (
-            <>
-              {/* <Spacer h={1} />
-              <div className="flags-settings">
-                <label>{t('Flags: ')}</label>
-                <Spacer w={0.5} />
-                <Checkbox.Group
-                  value={flags}
-                  onChange={handleFlagsChange}
-                  scale={0.75}
+    <div className="px-4 py-8 border-t flex justify-center">
+      <div className="max-w-4xl flex-1 flex flex-col items-center gap-4">
+        <div className="flex w-full justify-center gap-4">
+          <Input
+            data-testid="regex-input"
+            value={regex === null ? '' : regex}
+            placeholder={t('Input a regular expression')}
+            // labelRight={literal ? '' : flagStr}
+            className="flex-1"
+            onChange={onChange}
+            onKeyDown={handleKeyDown}
+          />
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Button
+                  variant="outline"
+                  size="icon"
+                  onClick={onCopy}
                 >
-                  <Checkbox value="g">{t('Global search')}</Checkbox>
-                  <Checkbox value="i">{t('Case-insensitive')}</Checkbox>
-                  <Checkbox value="m">{t('Multi-line')}</Checkbox>
-                  <Checkbox value="s">
-                    {t('Allows . to match newline')}
-                  </Checkbox>
-                </Checkbox.Group>
-                {!literal && (
-                  <>
-                    <Spacer w={1} />
-                    <label>{t('Settings: ')}</label>
-                    <Spacer w={0.5} />
-                    <div>
-                      <Checkbox
-                        checked={escapeBackslash}
-                        onChange={handleEscapeBackslashChange}
-                      >
-                        {t('include escape ')}
-                        <Code>\</Code>
-                      </Checkbox>
-                    </div>
-                  </>
-                )}
-              </div> */}
-            </>
-          )}
+                  <Link2Icon />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{t('Copy permalink')}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         </div>
+        {regex !== '' && (
+          <div className="flex items-center gap-3">
+            <label className="mr-2">{t('Flags: ')}</label>
+            <CheckboxGroup
+              value={flags}
+              onChange={handleFlagsChange}
+            >
+              {FLAGS.map(({ value, label }) => {
+                return (
+                  <label
+                    key={value}
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                  >
+                    <div className="flex items-center gap-1">
+                      <CheckboxItem value={value} />
+                      {label}
+                    </div>
+                  </label>
+                )
+              })}
+            </CheckboxGroup>
+          </div>
+        )}
       </div>
-      {/* <style jsx>
-        {`
-        .wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          padding: 24px;
-        }
-        .wrapper :global(input) {
-          font-family: ${REGEX_FONT_FAMILY};
-        }
-        .content {
-          flex: 1;
-          max-width: 900px;
-        }
-        .input-wrapper {
-          display: flex;
-          align-items: center;
-        }
-        .flags-settings {
-          display: flex;
-        }
-        .flags-settings > :global(.group > .checkbox) {
-          margin-right: calc(calc(0.875 * 8px) * 2);
-        }
-      `}
-      </style> */}
-    </>
+    </div>
   )
 }
 export default RegexInput

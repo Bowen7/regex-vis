@@ -23,8 +23,8 @@ const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
   const [bindings, Selection] = useDragSelect({
     disabled: !!errorMsg,
     style: {
-      backgroundColor: selectionColor,
-      border: `1.5px solid ${palette.success}`,
+      // backgroundColor: selectionColor,
+      // border: `1.5px solid ${palette.success}`,
       borderRadius: '4px',
     },
     onSelect: box => selectNodesByBox(box),
