@@ -1,21 +1,22 @@
-import { useState, useRef } from "react"
-import { useEvent } from "react-use"
+import clsx from 'clsx'
+import { useRef, useState } from 'react'
+import { useEvent } from 'react-use'
 
 function captureClick(e: MouseEvent) {
   e.stopPropagation()
-  window.removeEventListener("click", captureClick, true)
+  window.removeEventListener('click', captureClick, true)
 }
 
-type Options = {
+interface Options {
   disabled?: boolean
-  style?: React.CSSProperties
-  onSelect: (box: { x1: number; y1: number; x2: number; y2: number }) => void
+  className?: string
+  onSelect: (box: { x1: number, y1: number, x2: number, y2: number }) => void
 }
-export const useDragSelect = ({
+export function useDragSelect({
   disabled = false,
-  style = {},
+  className = '',
   onSelect,
-}: Options) => {
+}: Options) {
   const dragging = useRef(false)
   const moving = useRef(false)
   const start = useRef<[number, number]>([0, 0])
@@ -33,7 +34,7 @@ export const useDragSelect = ({
     const { x, y, width, height } = rect
     if (width > 5 && height > 5) {
       // prevent click event on node
-      window.addEventListener("click", captureClick, true)
+      window.addEventListener('click', captureClick, true)
       onSelect({ x1: x, y1: y, x2: x + width, y2: y + height })
     }
     dragging.current = false
@@ -41,7 +42,7 @@ export const useDragSelect = ({
     setRect({ x: 0, y: 0, width: 0, height: 0 })
   }
 
-  useEvent("mouseup", handleMouseUp)
+  useEvent('mouseup', handleMouseUp)
 
   const bindings = {
     onMouseDown: (e: React.MouseEvent<HTMLDivElement>) => {
@@ -69,15 +70,14 @@ export const useDragSelect = ({
   const Selection = width > 0 && height > 0 && (
     <div
       style={{
-        position: "absolute",
         top: `${y}px`,
         left: `${x}px`,
         width: `${width}px`,
         height: `${height}px`,
-        pointerEvents: "none",
-        ...style,
       }}
-    ></div>
+      className={clsx('absolute pointer-events-none', className)}
+    >
+    </div>
   )
   return [bindings, Selection]
 }

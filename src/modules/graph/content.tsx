@@ -1,11 +1,11 @@
-import React from "react"
-import { useSetAtom, useAtomValue } from "jotai"
-import { selectNodeAtom, isPrimaryGraphAtom } from "@/atom"
-import { GRAPH_NODE_BORDER_RADIUS } from "@/constants"
+import React from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { isPrimaryGraphAtom, selectNodeAtom } from '@/atom'
+import { GRAPH_NODE_BORDER_RADIUS } from '@/constants'
 
-type Props = { id: string; selected: boolean } & React.ComponentProps<"rect">
+type Props = { id: string, selected: boolean } & React.ComponentProps<'rect'>
 
-const Content = ({ id, selected, children, ...restProps }: Props) => {
+function Content({ id, selected, children, ...restProps }: Props) {
   const selectNode = useSetAtom(selectNodeAtom)
   const isPrimaryGraph = useAtomValue(isPrimaryGraphAtom)
   const handleClick = (e: React.MouseEvent) => {
@@ -20,15 +20,16 @@ const Content = ({ id, selected, children, ...restProps }: Props) => {
       {selected && (
         <rect
           {...restProps}
-          className="selected-fill"
+          className="bg-blue-500/30"
           rx={GRAPH_NODE_BORDER_RADIUS}
           ry={GRAPH_NODE_BORDER_RADIUS}
-        ></rect>
+        >
+        </rect>
       )}
       {children}
     </g>
   )
 }
 
-Content.displayName = "Content"
+Content.displayName = 'Content'
 export default Content

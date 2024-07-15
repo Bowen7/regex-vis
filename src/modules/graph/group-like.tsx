@@ -20,7 +20,6 @@ interface Props {
 }
 
 function GroupLikeNode({ x, y, node, selected }: Props) {
-  // const { palette } = useTheme()
   const sizeMap = useAtomValue(sizeMapAtom)
   const size = useSize(node, sizeMap)
   const { box: boxSize, content: contentSize } = size
@@ -45,8 +44,7 @@ function GroupLikeNode({ x, y, node, selected }: Props) {
         height={contentSize[1]}
         rx={GRAPH_NODE_BORDER_RADIUS}
         ry={GRAPH_NODE_BORDER_RADIUS}
-        // stroke={palette.accents_3}
-        className="transparent-fill second-stroke"
+        className="stroke-foreground/30 fill-transparent "
       >
         {nodeChildren.length > 0 && (
           <>

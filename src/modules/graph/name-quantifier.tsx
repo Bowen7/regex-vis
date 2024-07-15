@@ -1,23 +1,28 @@
-import { useTranslation } from "react-i18next"
-import { AST } from "@/parser"
+import { useTranslation } from 'react-i18next'
+import QuantifierNode from './quantifier'
+import MidConnect from './mid-connect'
+import { getNameText, getQuantifier } from './utils'
+import type { NodeSize } from './measure'
 import {
-  GRAPH_QUANTIFIER_TEXT_FONTSIZE,
+  GRAPH_NAME_HEIGHT,
   GRAPH_NAME_TEXT_FONTSIZE,
   GRAPH_QUANTIFIER_HEIGHT,
-  GRAPH_NAME_HEIGHT,
-} from "@/constants"
-import QuantifierNode from "./quantifier"
-import MidConnect from "./mid-connect"
-import { getQuantifier, getNameText } from "./utils"
-import { NodeSize } from "./measure"
+  GRAPH_QUANTIFIER_TEXT_FONTSIZE,
+} from '@/constants'
+import type { AST } from '@/parser'
 
-type Props = { node: AST.Node; x: number; y: number; size: NodeSize }
+interface Props {
+  node: AST.Node
+  x: number
+  y: number
+  size: NodeSize
+}
 //    name
 //  --------
 // | content |
 //  --------
 //  quantifier
-export const NameAndQuantifier = (props: Props) => {
+export function NameAndQuantifier(props: Props) {
   const { t } = useTranslation()
   const { x, y, node, size } = props
   const quantifier = getQuantifier(node)
@@ -46,7 +51,7 @@ export const NameAndQuantifier = (props: Props) => {
           height={GRAPH_NAME_HEIGHT}
           fontSize={GRAPH_NAME_TEXT_FONTSIZE}
         >
-          <div className="text">{name}</div>
+          <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle">{name}</div>
         </foreignObject>
       )}
       {quantifier && (

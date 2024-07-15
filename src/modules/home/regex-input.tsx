@@ -1,6 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link2Icon } from '@radix-ui/react-icons'
+import clsx from 'clsx'
 import { Input } from '@/components/ui/input'
 import { REGEX_FONT_FAMILY } from '@/constants'
 import {
@@ -21,6 +22,7 @@ interface Props {
   onFlagsChange: (flags: string[]) => void
   onEscapeBackslashChange: (escapeBackslash: boolean) => void
   onCopy: () => void
+  className?: string
 }
 
 const FLAGS = [{
@@ -46,6 +48,7 @@ const RegexInput: React.FC<Props> = ({
   onFlagsChange,
   onEscapeBackslashChange,
   onCopy,
+  className,
 }) => {
   const { t } = useTranslation()
   const handleFlagsChange = (flags: string[]) => {
@@ -59,7 +62,7 @@ const RegexInput: React.FC<Props> = ({
     e.stopPropagation()
   }
   return (
-    <div className="px-4 py-8 border-t flex justify-center">
+    <div className={clsx('px-4 py-8 flex justify-center', className)}>
       <div className="max-w-4xl flex-1 flex flex-col items-center gap-4">
         <div className="flex w-full justify-center gap-4">
           <Input

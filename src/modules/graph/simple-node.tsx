@@ -1,18 +1,18 @@
-import { useAtomValue } from "jotai"
-import { AST } from "@/parser"
+import { useAtomValue } from 'jotai'
+import { NameAndQuantifier } from './name-quantifier'
+import Content from './content'
+import TextNode from './text'
+import { useSize } from './utils'
+import { sizeMapAtom } from '@/atom'
 import {
   GRAPH_NODE_BORDER_RADIUS,
-  GRAPH_TEXT_FONT_SIZE,
-  GRAPH_NODE_PADDING_VERTICAL,
   GRAPH_NODE_PADDING_HORIZONTAL,
-} from "@/constants"
-import { sizeMapAtom } from "@/atom"
-import { NameAndQuantifier } from "./name-quantifier"
-import Content from "./content"
-import TextNode from "./text"
-import { useSize } from "./utils"
+  GRAPH_NODE_PADDING_VERTICAL,
+  GRAPH_TEXT_FONT_SIZE,
+} from '@/constants'
+import type { AST } from '@/parser'
 
-type Props = {
+interface Props {
   x: number
   y: number
   node:
@@ -24,7 +24,7 @@ type Props = {
   selected: boolean
 }
 
-const SimpleNode = ({ x, y, node, selected }: Props) => {
+function SimpleNode({ x, y, node, selected }: Props) {
   const sizeMap = useAtomValue(sizeMapAtom)
   const size = useSize(node, sizeMap)
   const { box: boxSize, content: contentSize } = size
@@ -43,7 +43,7 @@ const SimpleNode = ({ x, y, node, selected }: Props) => {
         rx={GRAPH_NODE_BORDER_RADIUS}
         ry={GRAPH_NODE_BORDER_RADIUS}
         fill="transparent"
-        className="stroke"
+        className="stroke-foreground/60"
       >
         <foreignObject
           x={contentX + GRAPH_NODE_PADDING_HORIZONTAL}
@@ -59,5 +59,5 @@ const SimpleNode = ({ x, y, node, selected }: Props) => {
   )
 }
 
-SimpleNode.displayName = "SimpleNode"
+SimpleNode.displayName = 'SimpleNode'
 export default SimpleNode

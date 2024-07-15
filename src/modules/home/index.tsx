@@ -138,75 +138,38 @@ function Home() {
 
   const graphShow = regex !== '' || (ast.body.length > 0 && !errorMsg)
   return (
-    <>
-      <div
-        className="flex-1 flex"
-      >
-        <div className={clsx('flex-1 relative flex flex-col', { 'items-center': !graphShow })}>
-          {graphShow && (
-            <div className="flex-1">
-              <div className="content">
-                <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
-              </div>
-            </div>
-          )}
-          <RegexInput
-            regex={regex}
-            literal={literal}
-            escapeBackslash={escapeBackslash!}
-            flags={ast.flags}
-            onChange={setRegex}
-            onFlagsChange={handleFlagsChange}
-            onEscapeBackslashChange={handleEscapeBackslashChange}
-            onCopy={handleCopyPermalink}
-          />
-          <Toggle
-            size="sm"
-            className="absolute top-2 right-2"
-            pressed={!editorCollapsed}
-            onPressedChange={(pressed: boolean) => setEditorCollapsed(!pressed)}
-          >
-            <ViewVerticalIcon />
-          </Toggle>
-        </div>
-        {regex !== null && <Editor defaultTab={editorDefaultTab} collapsed={editorCollapsed} />}
+    <div
+      className="flex-1 flex"
+    >
+      <div className={clsx('flex-1 relative flex flex-col', { 'justify-center': !graphShow })}>
+        {graphShow && (
+          <div className="flex-1 flex items-center justify-center">
+            {/* TODO scroll area */}
+            <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
+          </div>
+        )}
+        <RegexInput
+          regex={regex}
+          literal={literal}
+          escapeBackslash={escapeBackslash!}
+          flags={ast.flags}
+          onChange={setRegex}
+          onFlagsChange={handleFlagsChange}
+          onEscapeBackslashChange={handleEscapeBackslashChange}
+          onCopy={handleCopyPermalink}
+          className={clsx({ 'border-t': graphShow })}
+        />
+        <Toggle
+          size="sm"
+          className="absolute top-2 right-2"
+          pressed={!editorCollapsed}
+          onPressedChange={(pressed: boolean) => setEditorCollapsed(!pressed)}
+        >
+          <ViewVerticalIcon />
+        </Toggle>
       </div>
-      {/* <style jsx>
-        {`
-        .wrapper {
-          width: calc(100% - 275px);
-          height: calc(100vh - 64px);
-          background: ${palette.accents_1};
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-          transition: width 0.3s ease-out;
-        }
-        .graph {
-          flex: 1;
-          display: flex;
-          overflow: auto;
-          border-bottom: 1px solid ${palette.accents_2};
-        }
-        .graph ::-webkit-scrollbar {
-          -webkit-appearance: none;
-          width: 7px;
-          height: 6px;
-        }
-        .graph ::-webkit-scrollbar-thumb {
-          border-radius: 4px;
-          background-color: ${themeType === 'light'
-            ? 'rgba(0 ,0 ,0 , 0.5)'
-            : 'rgba(255, 255, 255, 0.25)'};
-        }
-        .content {
-          https://stackoverflow.com/questions/33454533/cant-scroll-to-top-of-flex-item-that-is-overflowing-container
-          margin: auto;
-          padding: 24px;
-        }
-      `}
-      </style> */}
-    </>
+      {regex !== null && <Editor defaultTab={editorDefaultTab} collapsed={editorCollapsed} />}
+    </div>
   )
 }
 

@@ -1,4 +1,5 @@
 import React from 'react'
+import { Infinity as InfinityIcon } from '@phosphor-icons/react'
 import { getQuantifierText } from './utils'
 import type { AST } from '@/parser'
 import { GRAPH_ICON_SIZE } from '@/constants'
@@ -14,7 +15,7 @@ const QuantifierNode = React.memo((props: Props) => {
   const text = getQuantifierText(quantifier)
 
   return (
-    <div className="text quantifier">
+    <div className="text-center pointer-events-none leading-normal text-foreground [&>span]:align-middle flex items-center justify-center whitespace-pre">
       <svg
         fill="none"
         stroke="currentColor"
@@ -35,7 +36,7 @@ const QuantifierNode = React.memo((props: Props) => {
         <path d="M7 23l-4-4 4-4"></path>
       </svg>
       <span>{text}</span>
-      {/* {hasInfinity && <InfinityIcon size={GRAPH_ICON_SIZE} />} */}
+      {hasInfinity && <InfinityIcon size={GRAPH_ICON_SIZE} />}
     </div>
   )
 })

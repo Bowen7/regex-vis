@@ -1,6 +1,7 @@
-import React from "react"
-import MidConnect from "./mid-connect"
-type Props = {
+import React from 'react'
+import MidConnect from './mid-connect'
+
+interface Props {
   start: [number, number]
   end: [number, number]
 }
@@ -12,9 +13,9 @@ const EndConnect: React.FC<Props> = React.memo((props) => {
   const M = `M${start[0]},${start[1]}`
   const L1 = `L${end[0] - 20},${start[1]}`
   const L3 = `L${end[0]},${end[1]}`
-  let A1 = ""
-  let L2 = ""
-  let A2 = ""
+  let A1 = ''
+  let L2 = ''
+  let A2 = ''
   if (end[1] > start[1]) {
     A1 = `A5 5 0 0 1, ${end[0] - 15},${start[1] + 5}`
     L2 = `L${end[0] - 15},${end[1] - 5}`
@@ -25,8 +26,8 @@ const EndConnect: React.FC<Props> = React.memo((props) => {
     A2 = `A5 5 0 0 1, ${end[0] - 10},${end[1]}`
   }
   const path = M + L1 + A1 + L2 + A2 + L3
-  return <path d={path} className="stroke" fill="none"></path>
+  return <path d={path} className="stroke-foreground/60" fill="none"></path>
 })
-EndConnect.displayName = "EndConnect"
+EndConnect.displayName = 'EndConnect'
 
 export default EndConnect

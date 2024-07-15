@@ -1,7 +1,8 @@
-import React from "react"
-import { GRAPH_ROOT_RADIUS, GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
-import MidConnect from "./mid-connect"
-type RootNodeProps = {
+import React from 'react'
+import MidConnect from './mid-connect'
+import { GRAPH_NODE_MARGIN_HORIZONTAL, GRAPH_ROOT_RADIUS } from '@/constants'
+
+interface RootNodeProps {
   cx: number
   cy: number
 }
@@ -10,12 +11,12 @@ const RootNode = React.memo(({ cx, cy }: RootNodeProps) => (
     cx={cx}
     cy={cy}
     r={GRAPH_ROOT_RADIUS}
-    className="stroke transparent-fill"
+    className="stroke-foreground/60 fill-transparent"
   />
 ))
-RootNode.displayName = "RootNode"
+RootNode.displayName = 'RootNode'
 
-type RootNodesProps = {
+interface RootNodesProps {
   x: number
   width: number
   centerY: number
@@ -37,6 +38,6 @@ const RootNodes = React.memo(({ x, width, centerY }: RootNodesProps) => (
     <RootNode cx={x + width - GRAPH_ROOT_RADIUS} cy={centerY} />
   </>
 ))
-RootNodes.displayName = "RootNodes"
+RootNodes.displayName = 'RootNodes'
 
 export default RootNodes

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAtom, useAtomValue } from 'jotai'
+import clsx from 'clsx'
 import RootNodes from './root-nodes'
 import Nodes from './nodes'
 import type {
@@ -103,8 +104,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
             nextSizeMap.set(branch, currentSizeMap.get(branch)!)
           })
           return
-        }
-        else if (
+        } else if (
           node.type === 'group'
           || node.type === 'lookAroundAssertion'
         ) {
@@ -126,8 +126,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
               + GRAPH_NODE_MARGIN_HORIZONTAL * 2
             const height = bodySize[1] + GRAPH_PADDING_VERTICAL * 2
             setSize([width, height])
-          }
-          else {
+          } else {
             const width
               = bodySize[0] + GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL * 2
             const height = bodySize[1] + GRAPH_WITHOUT_ROOT_PADDING_VERTICAL * 2
@@ -192,7 +191,8 @@ const ASTGraph = React.memo(({ ast }: Props) => {
         width={size[0]}
         height={size[1]}
         data-testid="graph"
-        className="ast-graph"
+        className={clsx('rounded-lg select-none [&_div]:pointer-events-none', { border: isPrimaryGraph })}
+        style={{ fontFamily: REGEX_FONT_FAMILY }}
       >
         {currentAST && (
           <>
@@ -220,47 +220,6 @@ const ASTGraph = React.memo(({ ast }: Props) => {
           border-radius: 5px;
           font-family: ${REGEX_FONT_FAMILY};
         }
-        .ast-graph :global(.text) {
-          text-align: center;
-          pointer-events: none;
-          white-space: nowrap;
-          line-height: 1.5;
-          color: ${palette.foreground};
-        }
-        .ast-graph :global(.text > span) {
-          vertical-align: middle;
-        }
-        .ast-graph :global(.box-fill) {
-          fill: ${palette.success};
-        }
-        .ast-graph :global(.selected-fill) {
-          fill: ${palette.success};
-          fill-opacity: 0.3;
-        }
-        .ast-graph :global(.none-stroke) {
-          stroke: none;
-        }
-        .ast-graph :global(.stroke) {
-          stroke: ${palette.accents_6};
-          stroke-width: 2px;
-        }
-        .ast-graph :global(.thin-stroke) {
-          stroke: ${palette.accents_6};
-          stroke-width: 1.5px;
-        }
-        .ast-graph :global(.second-stroke) {
-          stroke: ${palette.accents_3};
-          stroke-width: 1.5px;
-        }
-        .ast-graph :global(.fill) {
-          fill: ${palette.background};
-        }
-        .ast-graph :global(.transparent-fill) {
-          fill: transparent;
-        }
-        .ast-graph :global(.second-text) {
-          color: ${palette.accents_5};
-        }
         .ast-graph :global(.with-quote::before) {
           color: ${palette.accents_5};
           display: inline;
@@ -272,12 +231,6 @@ const ASTGraph = React.memo(({ ast }: Props) => {
           display: inline;
           content: '"';
           padding-left: ${GRAPH_QUOTE_PADDING}px;
-        }
-        .ast-graph :global(.quantifier) {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          white-space: pre;
         }
       `}
       </style> */}

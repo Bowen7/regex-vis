@@ -18,11 +18,11 @@ export const GRAPH_QUANTIFIER_TEXT_FONTSIZE = 14
 export const GRAPH_NAME_TEXT_FONTSIZE = 14
 export const GRAPH_QUANTIFIER_HEIGHT = Math.max(
   GRAPH_QUANTIFIER_TEXT_FONTSIZE * 1.5,
-  GRAPH_ICON_SIZE
+  GRAPH_ICON_SIZE,
 )
 export const GRAPH_NAME_HEIGHT = Math.max(
   GRAPH_NAME_TEXT_FONTSIZE * 1.5,
-  GRAPH_ICON_SIZE
+  GRAPH_ICON_SIZE,
 )
 export const GRAPH_QUOTE_PADDING = 2
 
@@ -32,12 +32,12 @@ export const GRAPH_WITHOUT_ROOT_PADDING_VERTICAL = 5
 export const GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL = 5
 
 // storage key
-export const STORAGE_TEST_CASES = "test-cases"
-export const STORAGE_ESCAPE_BACKSLASH = "escape-backslash"
+export const STORAGE_TEST_CASES = 'test-cases'
+export const STORAGE_ESCAPE_BACKSLASH = 'escape-backslash'
 
 // url search param
-export const SEARCH_PARAM_REGEX = "r"
-export const SEARCH_PARAM_TESTS = "t"
-export const SEARCH_PARAM_ESCAPE_BACKSLASH = "e"
+export const SEARCH_PARAM_REGEX = 'r'
+export const SEARCH_PARAM_TESTS = 't'
+export const SEARCH_PARAM_ESCAPE_BACKSLASH = 'e'
 
 export const REGEX_FONT_FAMILY = 'Menlo, Monaco, "Courier New", monospace'
