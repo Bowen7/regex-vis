@@ -26,12 +26,8 @@ import {
   updateFlagsAtom,
 } from '@/atom'
 import { useToast } from '@/components/ui/use-toast'
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from '@/components/ui/resizable'
 import { Toggle } from '@/components/ui/toggle'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -139,14 +135,16 @@ function Home() {
   const graphShow = regex !== '' || (ast.body.length > 0 && !errorMsg)
   return (
     <div
-      className="flex-1 flex"
+      className="flex-1  flex"
     >
-      <div className={clsx('flex-1 relative flex flex-col', { 'justify-center': !graphShow })}>
+      <div className={clsx('flex-1 relative flex flex-col min-w-0', { 'justify-center': !graphShow })}>
         {graphShow && (
-          <div className="flex-1 flex items-center justify-center">
-            {/* TODO scroll area */}
-            <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
-          </div>
+          <ScrollArea className="flex-1 basis-0">
+            <div className="flex items-center justify-center p-8">
+              <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         )}
         <RegexInput
           regex={regex}

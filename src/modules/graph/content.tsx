@@ -20,7 +20,7 @@ function Content({ id, selected, children, ...restProps }: Props) {
       {selected && (
         <rect
           {...restProps}
-          className="bg-blue-500/30"
+          className="fill-blue-500/30"
           rx={GRAPH_NODE_BORDER_RADIUS}
           ry={GRAPH_NODE_BORDER_RADIUS}
         >

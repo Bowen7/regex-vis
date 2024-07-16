@@ -65,7 +65,6 @@ function measureBranches(branches: AST.Node[][], currentSizeMap: Map<AST.Node | 
 }
 
 const ASTGraph = React.memo(({ ast }: Props) => {
-  // const { palette } = useTheme()
   const isPrimaryGraph = useAtomValue(isPrimaryGraphAtom)
   const [sizeMap, setSizeMap] = useAtom(sizeMapAtom)
   const [size, setSize] = useState<[number, number]>([0, 0])
@@ -184,57 +183,34 @@ const ASTGraph = React.memo(({ ast }: Props) => {
     : paddingH
 
   return (
-    <>
-      <svg
-        version="1.1"
-        xmlns="http://www.w3.org/2000/svg"
-        width={size[0]}
-        height={size[1]}
-        data-testid="graph"
-        className={clsx('rounded-lg select-none [&_div]:pointer-events-none', { border: isPrimaryGraph })}
-        style={{ fontFamily: REGEX_FONT_FAMILY }}
-      >
-        {currentAST && (
-          <>
-            {isPrimaryGraph && (
-              <RootNodes
-                x={paddingH}
-                width={size[0] - 2 * paddingH}
-                centerY={size[1] / 2}
-              />
-            )}
-            <Nodes
-              x={nodesX}
-              y={paddingV}
-              nodes={currentAST.body}
-              id={ast.id}
-              index={0}
+    <svg
+      version="1.1"
+      xmlns="http://www.w3.org/2000/svg"
+      width={size[0]}
+      height={size[1]}
+      data-testid="graph"
+      className={clsx('rounded-lg select-none [&_div]:pointer-events-none', { border: isPrimaryGraph })}
+      style={{ fontFamily: REGEX_FONT_FAMILY }}
+    >
+      {currentAST && (
+        <>
+          {isPrimaryGraph && (
+            <RootNodes
+              x={paddingH}
+              width={size[0] - 2 * paddingH}
+              centerY={size[1] / 2}
             />
-          </>
-        )}
-      </svg>
-      {/* <style jsx>
-        {`
-        .ast-graph {
-          border: ${isPrimaryGraph ? `1px solid ${palette.accents_2}` : 'none'};
-          border-radius: 5px;
-          font-family: ${REGEX_FONT_FAMILY};
-        }
-        .ast-graph :global(.with-quote::before) {
-          color: ${palette.accents_5};
-          display: inline;
-          content: '"';
-          padding-right: ${GRAPH_QUOTE_PADDING}px;
-        }
-        .ast-graph :global(.with-quote::after) {
-          color: ${palette.accents_5};
-          display: inline;
-          content: '"';
-          padding-left: ${GRAPH_QUOTE_PADDING}px;
-        }
-      `}
-      </style> */}
-    </>
+          )}
+          <Nodes
+            x={nodesX}
+            y={paddingV}
+            nodes={currentAST.body}
+            id={ast.id}
+            index={0}
+          />
+        </>
+      )}
+    </svg>
   )
 })
 ASTGraph.displayName = 'ASTGraph'

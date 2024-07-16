@@ -3,6 +3,16 @@ import type { TFunction } from 'react-i18next'
 import { useTranslation } from 'react-i18next'
 import type { AST, CharacterClassKey } from '@/parser'
 import { characterClassTextMap } from '@/parser'
+import {
+  GRAPH_QUOTE_PADDING,
+} from '@/constants'
+
+function LeftQuote() {
+  return <span className="text-foreground/50 inline" style={{ paddingRight: `${GRAPH_QUOTE_PADDING}px` }}>"</span>
+}
+function RightQuote() {
+  return <span className="text-foreground/50 inline" style={{ paddingLeft: `${GRAPH_QUOTE_PADDING}px` }}>"</span>
+}
 
 interface Props {
   node:
@@ -24,7 +34,11 @@ const assertionTextMap = {
 function renderString(value: string) {
   return (
     <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle">
-      <span className="with-quote">{value}</span>
+      <span>
+        <LeftQuote />
+        {value}
+        <RightQuote />
+      </span>
     </div>
   )
 }
@@ -39,7 +53,13 @@ function renderClassCharacter(value: string, t: TFunction) {
   } else if (value in characterClassTextMap) {
     return <span>{t(characterClassTextMap[value as CharacterClassKey])}</span>
   } else {
-    return <span className="with-quote">{value}</span>
+    return (
+      <span>
+        <LeftQuote />
+        {value}
+        <RightQuote />
+      </span>
+    )
   }
 }
 
@@ -54,9 +74,17 @@ function renderRangesCharacter(node: AST.RangesCharacterNode, t: TFunction) {
       } else {
         texts.push(
           <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={index}>
-            <span className="with-quote">{from}</span>
+            <span>
+              <LeftQuote />
+              {from}
+              <RightQuote />
+            </span>
             <span className="text-foreground/50">{' - '}</span>
-            <span className="with-quote">{to}</span>
+            <span>
+              <LeftQuote />
+              {to}
+              <RightQuote />
+            </span>
           </div>,
         )
       }
