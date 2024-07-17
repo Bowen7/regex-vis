@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ViewVerticalIcon } from '@radix-ui/react-icons'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtom, useSetAtom } from 'jotai'
 import { useEffectOnce, useLocalStorage, useUpdateEffect } from 'react-use'
 import { useCopyToClipboard } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
@@ -14,10 +14,8 @@ import Editor from '@/modules/editor'
 import { useCurrentState } from '@/utils/hooks'
 import { genPermalink } from '@/utils/helpers'
 import {
-  SEARCH_PARAM_ESCAPE_BACKSLASH,
   SEARCH_PARAM_REGEX,
   SEARCH_PARAM_TESTS,
-  STORAGE_ESCAPE_BACKSLASH,
   STORAGE_TEST_CASES,
 } from '@/constants'
 import {
@@ -35,15 +33,10 @@ function Home() {
   const [ast, setAst] = useAtom(astAtom)
   const clearSelected = useSetAtom(clearSelectedAtom)
   const updateFlags = useSetAtom(updateFlagsAtom)
-  // const { palette, type: themeType } = useTheme()
   const { t } = useTranslation()
   const { toast } = useToast()
   const [, copy] = useCopyToClipboard()
 
-  const [escapeBackslash, setEscapeBackslash] = useLocalStorage(
-    STORAGE_ESCAPE_BACKSLASH,
-    false,
-  )
   const [, setCases] = useLocalStorage<string[]>(STORAGE_TEST_CASES, [''])
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
@@ -64,10 +57,6 @@ function Home() {
 
   useEffectOnce(() => {
     const nextSearchParams = new URLSearchParams(searchParams)
-    if (searchParams.get(SEARCH_PARAM_ESCAPE_BACKSLASH) === '1') {
-      setEscapeBackslash(true)
-    }
-    nextSearchParams.delete(SEARCH_PARAM_ESCAPE_BACKSLASH)
 
     if (searchParams.get(SEARCH_PARAM_TESTS)) {
       try {
@@ -89,7 +78,7 @@ function Home() {
       shouldParseRegex.current = true
       return
     }
-    const ast = parse(regex, { escapeBackslash })
+    const ast = parse(regex)
     clearSelected()
     if (ast.type === 'regex') {
       setErrorMsg(null)
@@ -98,7 +87,7 @@ function Home() {
     } else {
       setErrorMsg(ast.message)
     }
-  }, [regex, escapeBackslash, setAst, clearSelected])
+  }, [regex, setAst, clearSelected])
 
   useEffect(() => {
     // update url search
@@ -123,11 +112,8 @@ function Home() {
 
   const handleFlagsChange = (flags: string[]) => updateFlags(flags)
 
-  const handleEscapeBackslashChange = (escapeBackslash: boolean) =>
-    setEscapeBackslash(escapeBackslash)
-
   const handleCopyPermalink = () => {
-    const permalink = genPermalink(escapeBackslash!)
+    const permalink = genPermalink()
     copy(permalink)
     toast({ description: t('Permalink copied.') })
   }
@@ -135,12 +121,12 @@ function Home() {
   const graphShow = regex !== '' || (ast.body.length > 0 && !errorMsg)
   return (
     <div
-      className="flex-1  flex"
+      className="flex-1 flex min-h-0"
     >
       <div className={clsx('flex-1 relative flex flex-col min-w-0', { 'justify-center': !graphShow })}>
         {graphShow && (
-          <ScrollArea className="flex-1 basis-0">
-            <div className="flex items-center justify-center p-8">
+          <ScrollArea className="flex-1 min-h-0 h-full">
+            <div className="flex items-center justify-center p-8 h-full">
               <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
             </div>
             <ScrollBar orientation="horizontal" />
@@ -149,11 +135,9 @@ function Home() {
         <RegexInput
           regex={regex}
           literal={literal}
-          escapeBackslash={escapeBackslash!}
           flags={ast.flags}
           onChange={setRegex}
           onFlagsChange={handleFlagsChange}
-          onEscapeBackslashChange={handleEscapeBackslashChange}
           onCopy={handleCopyPermalink}
           className={clsx({ 'border-t': graphShow })}
         />

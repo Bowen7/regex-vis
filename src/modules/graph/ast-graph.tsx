@@ -23,11 +23,9 @@ import {
   GRAPH_NODE_MARGIN_VERTICAL,
   GRAPH_PADDING_HORIZONTAL,
   GRAPH_PADDING_VERTICAL,
-  GRAPH_QUOTE_PADDING,
   GRAPH_ROOT_RADIUS,
   GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL,
   GRAPH_WITHOUT_ROOT_PADDING_VERTICAL,
-  REGEX_FONT_FAMILY,
 } from '@/constants'
 
 interface Props {
@@ -189,8 +187,7 @@ const ASTGraph = React.memo(({ ast }: Props) => {
       width={size[0]}
       height={size[1]}
       data-testid="graph"
-      className={clsx('rounded-lg select-none [&_div]:pointer-events-none', { border: isPrimaryGraph })}
-      style={{ fontFamily: REGEX_FONT_FAMILY }}
+      className={clsx('rounded-lg select-none [&_div]:pointer-events-none font-mono', { border: isPrimaryGraph })}
     >
       {currentAST && (
         <>

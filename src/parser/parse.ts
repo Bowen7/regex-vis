@@ -1,6 +1,7 @@
-import { Parser, Options } from "./parser"
+import type { Options } from './parser'
+import { Parser } from './parser'
 
-const parse = (regex: string, options: Options = {}) => {
+function parse(regex: string, options: Options = {}) {
   const parser = new Parser(regex, options)
   return parser.parse()
 }

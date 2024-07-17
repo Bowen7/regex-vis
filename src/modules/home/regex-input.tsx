@@ -3,7 +3,6 @@ import { useTranslation } from 'react-i18next'
 import { Link2Icon } from '@radix-ui/react-icons'
 import clsx from 'clsx'
 import { Input } from '@/components/ui/input'
-import { REGEX_FONT_FAMILY } from '@/constants'
 import {
   Tooltip,
   TooltipContent,
@@ -17,10 +16,8 @@ interface Props {
   regex: string
   flags: string[]
   literal: boolean
-  escapeBackslash: boolean
   onChange: (regex: string) => void
   onFlagsChange: (flags: string[]) => void
-  onEscapeBackslashChange: (escapeBackslash: boolean) => void
   onCopy: () => void
   className?: string
 }
@@ -43,10 +40,8 @@ const RegexInput: React.FC<Props> = ({
   regex,
   flags,
   literal,
-  escapeBackslash,
   onChange,
   onFlagsChange,
-  onEscapeBackslashChange,
   onCopy,
   className,
 }) => {
@@ -54,8 +49,6 @@ const RegexInput: React.FC<Props> = ({
   const handleFlagsChange = (flags: string[]) => {
     onFlagsChange(flags)
   }
-  // const handleEscapeBackslashChange = (e: CheckboxEvent) =>
-  //   onEscapeBackslashChange(e.target.checked)
   const flagStr = flags.join('')
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -64,19 +57,20 @@ const RegexInput: React.FC<Props> = ({
   return (
     <div className={clsx('px-4 py-8 flex justify-center', className)}>
       <div className="max-w-4xl flex-1 flex flex-col items-center gap-4">
-        <div className="flex w-full justify-center gap-4">
+        <div className="flex w-full justify-center">
           <Input
             data-testid="regex-input"
             value={regex === null ? '' : regex}
             placeholder={t('Input a regular expression')}
             // labelRight={literal ? '' : flagStr}
-            className="flex-1"
+            className="flex-1 font-mono rounded-r-none"
             onChange={onChange}
             onKeyDown={handleKeyDown}
           />
+          <span className="h-9 inline-flex items-center px-2 border border-l-0 rounded-r-md text-sm">{flagStr}</span>
           <TooltipProvider>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger asChild className="ml-4">
                 <Button
                   variant="outline"
                   size="icon"

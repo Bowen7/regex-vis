@@ -22,7 +22,7 @@ function TestTab() {
   // const { copy } = useClipboard()
 
   const handleCopyPermalink = () => {
-    const permalink = genPermalink(ast.escapeBackslash, cases)
+    const permalink = genPermalink(cases)
     // copy(permalink)
     // setToast({ text: t('Permalink copied.') })
   }

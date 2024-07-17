@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SimpleGraph from '@/modules/graph/simple-graph'
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
 
 const samples = [
   { desc: '1. Whole Numbers', label: '/^\\d+$/', regex: '^\\d+$' },
@@ -35,49 +35,31 @@ const samples = [
 ]
 function Samples() {
   const { t } = useTranslation()
-  // const { palette } = useTheme()
   return (
-    <>
-      <ScrollArea className="flex-1">
-        <div className="content">
-          {samples.map(({ desc, label, regex }) => (
-            <Link to={`/?r=${encodeURIComponent(`/${regex}/`)}`} key={regex}>
-              <div className="sample">
-                <p>
-                  {t(desc)}
+    <ScrollArea className="flex-1">
+      <div>
+        <div className="max-w-7xl my-0 mx-auto p-6 flex flex-col gap-y-12">
+          {samples.map(({ desc, label, regex }) => {
+            const linkTo = `/?r=${encodeURIComponent(`/${regex}/`)}`
+            return (
+              <div key={regex}>
+                <Link to={linkTo}>
+                  <span>{t(desc)}</span>
                   :
-                  {/* <Code>{label}</Code> */}
-                </p>
-                <div className="svg-wrapper">
-                  <SimpleGraph regex={regex} />
-                </div>
+                  <span className="ml-2 text-teal-400 font-mono text-sm">{label}</span>
+                </Link>
+                <ScrollArea>
+                  <Link to={linkTo}>
+                    <SimpleGraph regex={regex} />
+                  </Link>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
               </div>
-            </Link>
-          ))}
+            )
+          })}
         </div>
-      </ScrollArea>
-      {/* <style jsx>
-        {`
-        .wrapper {
-          height: calc(100vh - 64px);
-          overflow-y: auto;
-          background-color: ${palette.accents_1};
-        }
-        .content {
-          max-width: 1200px;
-          padding: 24px;
-          margin: 0 auto;
-        }
-        .sample {
-          margin-bottom: 48px;
-        }
-
-        .svg-wrapper {
-          overflow-x: auto;
-        }
-      `}
-      </style> */}
-    </>
+      </div>
+    </ScrollArea>
   )
 }
 
