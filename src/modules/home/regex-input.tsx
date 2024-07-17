@@ -50,6 +50,7 @@ const RegexInput: React.FC<Props> = ({
     onFlagsChange(flags)
   }
   const flagStr = flags.join('')
+  const flagShow = !literal && flagStr
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation()
@@ -62,12 +63,11 @@ const RegexInput: React.FC<Props> = ({
             data-testid="regex-input"
             value={regex === null ? '' : regex}
             placeholder={t('Input a regular expression')}
-            // labelRight={literal ? '' : flagStr}
-            className="flex-1 font-mono rounded-r-none"
+            className={clsx('flex-1 font-mono', { 'rounded-r-none': flagShow })}
             onChange={onChange}
             onKeyDown={handleKeyDown}
           />
-          <span className="h-9 inline-flex items-center px-2 border border-l-0 rounded-r-md text-sm">{flagStr}</span>
+          {flagShow && <span className="h-9 inline-flex items-center px-2 border border-l-0 rounded-r-md text-sm">{flagStr}</span>}
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild className="ml-4">
