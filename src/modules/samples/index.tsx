@@ -38,7 +38,7 @@ function Samples() {
   return (
     <ScrollArea className="flex-1">
       <div>
-        <div className="max-w-7xl my-0 mx-auto p-6 flex flex-col gap-y-12">
+        <div className="max-w-7xl my-0 mx-auto p-6 flex flex-col space-y-12">
           {samples.map(({ desc, label, regex }) => {
             const linkTo = `/?r=${encodeURIComponent(`/${regex}/`)}`
             return (

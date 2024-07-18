@@ -57,7 +57,7 @@ const RegexInput: React.FC<Props> = ({
   }
   return (
     <div className={clsx('px-4 py-8 flex justify-center', className)}>
-      <div className="max-w-4xl flex-1 flex flex-col items-center gap-4">
+      <div className="max-w-4xl flex-1 flex flex-col items-center space-y-4">
         <div className="flex w-full justify-center">
           <Input
             data-testid="regex-input"
@@ -86,7 +86,7 @@ const RegexInput: React.FC<Props> = ({
           </TooltipProvider>
         </div>
         {regex !== '' && (
-          <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-3">
             <label className="mr-2">{t('Flags: ')}</label>
             <CheckboxGroup
               value={flags}
@@ -98,7 +98,7 @@ const RegexInput: React.FC<Props> = ({
                     key={value}
                     className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
                   >
-                    <div className="flex items-center gap-1">
+                    <div className="flex items-center space-x-1">
                       <CheckboxItem value={value} />
                       {label}
                     </div>

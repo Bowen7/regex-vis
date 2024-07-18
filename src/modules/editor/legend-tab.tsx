@@ -1,36 +1,28 @@
+import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import legends from './legends'
-import LegendItem from '@/components/legend-item'
 
 function Legend() {
   const { t } = useTranslation()
   return (
-    <>
-      <div>
-        <div className="tip">
-          {/* <ArrowLeftCircle size={14} /> */}
+    <div className="divide-y-2 *:py-4 first:*:pt-0 last:*:pb-0">
+      {/* TODO move the tip to the graph */}
+      {/* <div className="tip">
+          <ArrowLeftCircle size={14} />
           {t('You can select nodes by dragging or clicking')}
+        </div> */}
+      {legends.map(({ name, infos }) => (
+        <div key={name}>
+          <h5>{t(name)}</h5>
+          {infos.map(({ Icon, desc }) => (
+            <Fragment key={desc}>
+              {Icon}
+              <span>{t(desc)}</span>
+            </Fragment>
+          ))}
         </div>
-        {/* <Divider h={0.5} /> */}
-        {legends.map(({ name, infos }) => (
-          <LegendItem name={name} infos={infos} key={name} />
-        ))}
-      </div>
-      {/* <style jsx>
-        {`
-        .container {
-          padding: 0 12px;
-        }
-        .tip {
-          font-size: 14px;
-        }
-        .tip :global(svg) {
-          margin-right: 6px;
-          vertical-align: middle;
-        }
-      `}
-      </style> */}
-    </>
+      ))}
+    </div>
   )
 }
 
