@@ -96,11 +96,11 @@ const RegexInput: React.FC<Props> = ({
                 return (
                   <label
                     key={value}
-                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                    className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
                   >
-                    <div className="flex items-center space-x-1">
+                    <div className="flex items-center space-x-2">
                       <CheckboxItem value={value} />
-                      {label}
+                      <span>{label}</span>
                     </div>
                   </label>
                 )

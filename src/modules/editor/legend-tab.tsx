@@ -1,4 +1,3 @@
-import { Fragment } from 'react'
 import { useTranslation } from 'react-i18next'
 import legends from './legends'
 
@@ -13,13 +12,15 @@ function Legend() {
         </div> */}
       {legends.map(({ name, infos }) => (
         <div key={name}>
-          <h5>{t(name)}</h5>
-          {infos.map(({ Icon, desc }) => (
-            <Fragment key={desc}>
-              {Icon}
-              <span>{t(desc)}</span>
-            </Fragment>
-          ))}
+          <h5 className="font-bold mb-4">{t(name)}</h5>
+          <div className="space-y-6">
+            {infos.map(({ Icon, desc }) => (
+              <div key={desc}>
+                {Icon}
+                <span className="text-foreground/80">{t(desc)}</span>
+              </div>
+            ))}
+          </div>
         </div>
       ))}
     </div>

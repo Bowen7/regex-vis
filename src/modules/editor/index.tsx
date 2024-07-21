@@ -67,92 +67,30 @@ function Editor({ defaultTab, collapsed }: Props) {
   })
 
   return (
-    <>
-      <Tabs
-        value={tabValue}
-        onValueChange={(value: string) => setTabValue(value as Tab)}
-        className={clsx('flex flex-col h-[calc(100vh-64px)] py-4 border-l transition-width', collapsed ? 'w-[0px]' : 'w-[300px]')}
-      >
-        <TabsList className="grid grid-cols-3 mx-4">
-          <TabsTrigger value="legend">{t('Legends')}</TabsTrigger>
-          <TabsTrigger value="edit" disabled={editDisabled}>{t('Edit')}</TabsTrigger>
-          <TabsTrigger value="test">{t('Test')}</TabsTrigger>
-        </TabsList>
-        <ScrollArea className="flex-1">
-          <div className="w-[300px] p-4">
-            <TabsContent value="legend">
-              <LegendTab />
-            </TabsContent>
-            <TabsContent value="edit">
-              <EditTab />
-            </TabsContent>
-            <TabsContent value="test">
-              <TestTab />
-            </TabsContent>
-          </div>
-        </ScrollArea>
-      </Tabs>
-      {/* <style jsx>
-        {`
-        .container {
-          position: fixed;
-          top: 64px;
-          right: 0;
-          height: calc(100% - 64px);
-          width: 275px;
-          border-left: 1px solid ${palette.accents_2};
-          transition: transform 0.3s ease-out;
-        }
-        .collapsed-container {
-          transform: translateX(275px);
-        }
-
-        footer {
-          height: 45px;
-          text-align: center;
-          line-height: 45px;
-          border-top: 2px solid ${palette.accents_1};
-          cursor: pointer;
-        }
-        footer :global(svg) {
-          vertical-align: middle;
-        }
-
-        .uncollapse-btn :global(button) {
-          position: fixed;
-          right: 24px;
-          bottom: 24px;
-        }
-        .uncollapse-btn :global(svg) {
-          width: 20px;
-          height: 20px;
-        }
-        .container > :global(.tabs) {
-          height: calc(100% - 45px);
-        }
-        .container > :global(.tabs > .content) {
-          height: calc(100% - 45px);
-        }
-        .content {
-          position: relative;
-          height: calc(100%);
-          overflow-y: auto;
-        }
-        .container > :global(.tabs > header) {
-          padding: 0 12px;
-        }
-        .container > :global(.tabs > header .highlight) {
-          display: none;
-        }
-        .container :global(.tabs > header .tab) {
-          width: 33.3%;
-          margin: 0;
-          justify-content: center;
-          height: 45px;
-        }
-      `}
-      </style> */}
-    </>
+    <Tabs
+      value={tabValue}
+      onValueChange={(value: string) => setTabValue(value as Tab)}
+      className={clsx('flex flex-col h-[calc(100vh-64px)] py-4 border-l transition-width', collapsed ? 'w-[0px]' : 'w-[300px]')}
+    >
+      <TabsList className="grid grid-cols-3 mx-4 mb-6">
+        <TabsTrigger value="legend">{t('Legends')}</TabsTrigger>
+        <TabsTrigger value="edit" disabled={editDisabled}>{t('Edit')}</TabsTrigger>
+        <TabsTrigger value="test">{t('Test')}</TabsTrigger>
+      </TabsList>
+      <ScrollArea className="flex-1">
+        <div className="w-[300px] p-4 pt-0">
+          <TabsContent value="legend">
+            <LegendTab />
+          </TabsContent>
+          <TabsContent value="edit">
+            <EditTab />
+          </TabsContent>
+          <TabsContent value="test">
+            <TestTab />
+          </TabsContent>
+        </div>
+      </ScrollArea>
+    </Tabs>
   )
 }
 
