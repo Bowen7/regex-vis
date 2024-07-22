@@ -1,12 +1,17 @@
-import * as React from 'react'
+import React from 'react'
+import { useDebounceChange } from '@/utils/hooks/use-debounce-change'
 
 import { cn } from '@/utils'
 
-export interface TextareaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+export type TextareaProps =
+  Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> & {
+    debounced?: boolean
+    onChange: (value: string) => void
+  }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, value, debounced = true, onChange, ...props }, ref) => {
+    const debouncedProps = useDebounceChange(debounced, value as string, onChange)
     return (
       <textarea
         className={cn(
@@ -14,6 +19,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className,
         )}
         ref={ref}
+        {...debouncedProps}
         {...props}
       />
     )

@@ -1,6 +1,5 @@
-import type { ChangeEvent } from 'react'
-import React, { useState } from 'react'
-import { useDebounceCallback } from 'usehooks-ts'
+import React from 'react'
+import { useDebounceChange } from '@/utils/hooks/use-debounce-change'
 
 import { cn } from '@/utils'
 
@@ -10,20 +9,9 @@ export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onCh
 }
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, value, onChange, debounced = false, ...props }, ref) => {
-    const [innerValue, setInnerValue] = useState(value)
+  ({ className, type, value, onChange, debounced = true, ...props }, ref) => {
+    const debouncedProps = useDebounceChange(debounced, value as string, onChange)
 
-    const debouncedOnChange = useDebounceCallback(onChange, 300)
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
-      if (debounced) {
-        setInnerValue(value)
-        debouncedOnChange(value)
-      } else {
-        onChange(value)
-      }
-    }
     return (
       <input
         type={type}
@@ -32,8 +20,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className,
         )}
         ref={ref}
-        value={debounced ? innerValue : value}
-        onChange={handleChange}
+        {...debouncedProps}
         {...props}
       />
     )

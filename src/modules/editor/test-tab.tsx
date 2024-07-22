@@ -3,11 +3,15 @@ import { useTranslation } from 'react-i18next'
 import { useAtomValue } from 'jotai'
 import { useLocalStorage } from 'react-use'
 import produce from 'immer'
+import { useCopyToClipboard } from 'usehooks-ts'
+import { Link as LinkIcon, Plus as PlusIcon } from '@phosphor-icons/react'
 import TestItem from '@/components/test-item'
 import { gen } from '@/parser'
 import { astAtom } from '@/atom'
 import { genPermalink } from '@/utils/helpers'
 import { STORAGE_TEST_CASES } from '@/constants'
+import { useToast } from '@/components/ui/use-toast'
+import { Button } from '@/components/ui/button'
 
 function TestTab() {
   const { t } = useTranslation()
@@ -18,13 +22,16 @@ function TestTab() {
     return new RegExp(regex, ast.flags.join(''))
   }, [ast])
 
+  const { toast } = useToast()
+  const [, copy] = useCopyToClipboard()
+
   // const { setToast } = useToasts()
   // const { copy } = useClipboard()
 
   const handleCopyPermalink = () => {
     const permalink = genPermalink(cases)
-    // copy(permalink)
-    // setToast({ text: t('Permalink copied.') })
+    copy(permalink)
+    toast({ description: t('Permalink copied.') })
   }
 
   const handleChange = (value: string, index: number) => {
@@ -53,34 +60,26 @@ function TestTab() {
 
   return (
     <>
-      <div className="wrapper">
-        {cases!.map((value, index) => (
-          <React.Fragment key={index}>
-            <TestItem
-              value={value}
-              regExp={regExp}
-              onChange={value => handleChange(value, index)}
-              onRemove={() => handleRemove(index)}
-            />
-            {/* <Spacer h={0.5} /> */}
-          </React.Fragment>
-        ))}
-        <div className="btn">
-          {/* <Button
-            // iconRight={<Plus />}
-            auto
-            scale={2 / 3}
-            px={0.6}
-            onClick={handleAdd}
-          /> */}
-          {/* <Spacer w={1} /> */}
-          {/* <Button
-            iconRight={<Link />}
-            auto
-            scale={2 / 3}
-            px={0.6}
-            onClick={handleCopyPermalink}
-          /> */}
+      <div>
+        <div className="space-y-6">
+          {cases!.map((value, index) => (
+            <React.Fragment key={index}>
+              <TestItem
+                value={value}
+                regExp={regExp}
+                onChange={value => handleChange(value, index)}
+                onRemove={() => handleRemove(index)}
+              />
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="flex justify-end space-x-2 mt-4">
+          <Button variant="ghost" size="icon" onClick={handleAdd}>
+            <PlusIcon className="h-4 w-4" />
+          </Button>
+          <Button variant="ghost" size="icon" onClick={handleCopyPermalink}>
+            <LinkIcon className="h-4 w-4" />
+          </Button>
         </div>
       </div>
       {/* <style jsx>

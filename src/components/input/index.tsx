@@ -19,7 +19,7 @@ const Input: React.FC<Props> = (props) => {
   } = props
   const [invalid, setInvalid] = useState(false)
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const onKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation()
   }
 
@@ -38,7 +38,7 @@ const Input: React.FC<Props> = (props) => {
     <>
       {invalid && <p className="error-msg">{errMsg}</p>}
       <UIInput
-        onKeyDown={handleKeyDown}
+        onKeyDown={onKeyDown}
         {...restProps}
         value={value}
         onChange={event => debouncedOnChange(event.target.value)}

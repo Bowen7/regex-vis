@@ -1,6 +1,5 @@
 import { useMemo } from 'react'
-import { CrossCircledIcon } from '@radix-ui/react-icons'
-import { useDebounceInput, useFocus } from '@/utils/hooks'
+import { Check as CheckIcon, Trash as TrashIcon, X as XIcon } from '@phosphor-icons/react'
 import { Textarea } from '@/components/ui/textarea'
 
 interface Props {
@@ -10,76 +9,26 @@ interface Props {
   onRemove: () => void
 }
 
-function DebouncedTextarea({
-  value,
-  onChange,
-  ...restProps
-}: Omit<React.ComponentProps<typeof Textarea>, 'onChange'> & {
-  onChange: (value: string) => void
-}) {
-  const debouncedBindings = useDebounceInput(value as string, onChange)
-  return <Textarea {...restProps} {...debouncedBindings} />
-}
-
 function TestItem({ value, regExp, onChange, onRemove }: Props) {
-  // const { palette } = useTheme()
-  const { focused, bindings } = useFocus()
-  // const isError = useMemo(() => !regExp.test(value), [value, regExp])
-  const handleKeyDown = (e: React.KeyboardEvent) => {
+  const isPass = useMemo(() => regExp.test(value), [value, regExp])
+
+  const onKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation()
   }
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    e.preventDefault()
-  }
   return (
-    <>
-      <div className="test-item">
-        <div className="case-input">
-          <DebouncedTextarea
-            value={value}
-            // width="225px"
-            onKeyDown={handleKeyDown}
-            onChange={onChange}
-            {...bindings}
-          />
-          {/* {focused && (
-            <CrossCircledIcon
-              cursor="pointer"
-              size={20}
-              onClick={onRemove}
-              onMouseDown={handleMouseDown}
-            />
-          )} */}
-        </div>
-        <div className="status" />
+    <div className="focus-within:outline-none focus-within:ring-1 focus-within:ring-ring rounded-md">
+      <Textarea
+        value={value}
+        onChange={onChange}
+        className="rounded-b-none"
+        onKeyDown={onKeyDown}
+      />
+      <div className="border border-t-0 rounded-b-md flex justify-between items-center pl-4 bg-muted">
+        {isPass ? <CheckIcon className="h-4 w-4 fill-green-700 dark:fill-green-500" /> : <XIcon className="h-4 w-4 fill-red-700 dark:fill-red-500" />}
+        <TrashIcon className="h-4 w-4 p-2 box-content cursor-pointer fill-foreground/80" onClick={onRemove} />
       </div>
-      {/* <style jsx>{`
-        .test-item {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .case-input {
-          position: relative;
-        }
-        .case-input :global(textarea) {
-          min-height: auto;
-          resize: vertical;
-        }
-        .case-input :global(svg) {
-          position: absolute;
-          top: -10px;
-          right: -20px;
-        }
-        .status {
-          width: 10px;
-          height: 10px;
-          background-color: ${isError ? palette.error : palette.cyan};
-          border-radius: 100%;
-        }
-      `}</style> */}
-    </>
+    </div>
   )
 }
 
