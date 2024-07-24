@@ -1,7 +1,8 @@
 import React from 'react'
 import { useLocalStorage } from 'react-use'
 import { useTranslation } from 'react-i18next'
-import { ChevronDownIcon } from '@radix-ui/react-icons'
+import { CaretDown as CaretDownIcon } from '@phosphor-icons/react'
+import clsx from 'clsx'
 
 interface Props {
   id: string
@@ -9,53 +10,17 @@ interface Props {
 }
 function ShowMore({ id, children }: Props) {
   const { t } = useTranslation()
-  // const { palette, expressiveness } = useTheme()
   const [expanded, setExpanded] = useLocalStorage(id, false)
   const handleClick = () => setExpanded(!expanded)
   return (
     <>
       {expanded && children}
-      <div className="wrapper">
-        <span className="btn" onClick={handleClick}>
+      <div className="text-center">
+        <div className="inline-flex items-center gap-x-2 py-1 px-3 rounded-full cursor-pointer select-none text-xs shadow" onClick={handleClick}>
           {expanded ? t('show less') : t('show more')}
-          {/* <ChevronDownIcon size={12} className={expanded ? 'expand' : ''} /> */}
-        </span>
+          <CaretDownIcon className={clsx({ 'rotate-180': expanded }, 'transition-transform')} />
+        </div>
       </div>
-      {/* <style jsx>
-        {`
-        .wrapper {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .btn {
-          padding: 4px 10px;
-          border-radius: 100px;
-          box-shadow: ${expressiveness.shadowSmall};
-          color: ${palette.accents_5};
-          font-size: 12px;
-          cursor: pointer;
-          user-select: none;
-        }
-        .btn:hover {
-          color: ${palette.foreground};
-          box-shadow: ${expressiveness.shadowMedium};
-        }
-        .btn :global(svg) {
-          vertical-align: middle;
-          margin-left: 2px;
-          transition: transform 0.5s ease-out;
-        }
-        .btn :global(.expand) {
-          transform: rotate(180deg);
-        }
-        .line {
-          flex: 1;
-          background: ${palette.accents_2};
-          height: 1px;
-        }
-      `}
-      </style> */}
     </>
   )
 }

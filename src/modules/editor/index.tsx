@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAtom, useAtomValue, useSetAtom } from 'jotai'
+import { useAtomValue, useSetAtom } from 'jotai'
 import { useEvent, useUpdateEffect } from 'react-use'
 import clsx from 'clsx'
 import EditTab from './edit-tab'
@@ -28,8 +28,6 @@ function Editor({ defaultTab, collapsed }: Props) {
   const redo = useSetAtom(redoAtom)
 
   const [tabValue, setTabValue, tabValueRef] = useCurrentState<Tab>(defaultTab)
-
-  // const { palette } = useTheme()
 
   const { t } = useTranslation()
 

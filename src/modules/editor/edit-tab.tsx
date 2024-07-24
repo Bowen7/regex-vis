@@ -12,9 +12,7 @@ import type { AST } from '@/parser'
 import { getNodesByIds } from '@/parser/visit'
 import { astAtom, selectedIdsAtom } from '@/atom'
 
-function InfoItem() {
-  // const { layout } = useTheme()
-
+function EditTab() {
   const [nodes, setNodes] = useState<AST.Node[]>([])
   const selectedIds = useAtomValue(selectedIdsAtom)
   const ast = useAtomValue(astAtom)
@@ -47,9 +45,8 @@ function InfoItem() {
 
   return (
     <>
-      <div className="container" data-testid="edit-tab">
+      <div data-testid="edit-tab">
         <Insert nodes={nodes} />
-        {/* <Divider mt="24px" /> */}
         <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
         {content && (
           <ContentEditor content={content} id={id} quantifier={quantifier} />
@@ -108,4 +105,4 @@ function InfoItem() {
   )
 }
 
-export default InfoItem
+export default EditTab

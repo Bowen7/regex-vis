@@ -1,10 +1,13 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
+import clsx from 'clsx'
 import Cell from '@/components/cell'
 import ShowMore from '@/components/show-more'
 import type { AST } from '@/parser'
 import { groupSelectedAtom, insertAtom, lookAroundSelectedAtom } from '@/atom'
+import { ButtonGroup } from '@/components/ui/button-group'
+import { Button } from '@/components/ui/button'
 
 interface Props {
   nodes: AST.Node[]
@@ -106,80 +109,59 @@ const Insert: React.FC<Props> = ({ nodes }) => {
     lookAroundSelected(kind as 'lookahead' | 'lookbehind')
 
   return (
-    <>
-      <div id="test" className="insert-section">
-        {insertOptions.length > 0 && (
-          <Cell label={t('Insert around')}>
-            {/* <ButtonGroup>
-              {insertOptions.map(({ value, label }) => (
+    <div className="space-y-4">
+      {insertOptions.length > 0 && (
+        <Cell label={t('Insert around')}>
+          <ButtonGroup variant="outline">
+            {insertOptions.map(({ value, label }) => (
+              <Button
+                key={value}
+                variant="outline"
+                onClick={() => handleInsert(value as InsertDirection)}
+              >
+                {t(label)}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Cell>
+      )}
+      {groupOptions.length > 0 && (
+        <Cell label={t('Group selection')} mdnLinkKey="group">
+          <ButtonGroup variant="outline">
+            {groupOptions.map(({ value, label }) => (
+              <Button
+                key={value}
+                className={clsx('whitespace-pre', { 'text-xs': language === 'en' })}
+                variant="outline"
+                onClick={() => handleWrapGroup(value)}
+              >
+                {t(label)}
+              </Button>
+            ))}
+          </ButtonGroup>
+        </Cell>
+      )}
+      {lookAroundOptions.length > 0 && (
+        <ShowMore id="lookAround">
+          <Cell
+            label={t('Lookahead/LookBehind assertion')}
+            mdnLinkKey="lookAround"
+          >
+            <ButtonGroup variant="outline">
+              {lookAroundOptions.map(({ value, label }) => (
                 <Button
-                  className={language !== 'en' ? 'small-button-font' : ''}
                   key={value}
-                  onClick={() => handleInsert(value as InsertDirection)}
+                  variant="outline"
+                  onClick={() => handleWrapLookAroundAssertion(value)}
                 >
                   {t(label)}
                 </Button>
               ))}
-            </ButtonGroup> */}
-            <></>
+            </ButtonGroup>
           </Cell>
-        )}
-        {groupOptions.length > 0 && (
-          <Cell label={t('Group selection')} mdnLinkKey="group">
-            {/* <ButtonGroup className="small-button-font">
-              {groupOptions.map(({ value, label }) => (
-                <Button
-                  className="small-button-font"
-                  key={value}
-                  onClick={() => handleWrapGroup(value)}
-                >
-                  {t(label)}
-                </Button>
-              ))}
-            </ButtonGroup> */}
-            <></>
-          </Cell>
-        )}
-
-        {lookAroundOptions.length > 0 && (
-          <ShowMore id="lookAround">
-            <Cell
-              label={t('Lookahead/LookBehind assertion selection')}
-              mdnLinkKey="lookAround"
-            >
-              {/* <ButtonGroup>
-                {lookAroundOptions.map(({ value, label }) => (
-                  <Button
-                    className="small-button-font"
-                    key={value}
-                    onClick={() => handleWrapLookAroundAssertion(value)}
-                  >
-                    {t(label)}
-                  </Button>
-                ))}
-              </ButtonGroup> */}
-              <></>
-            </Cell>
-          </ShowMore>
-        )}
-      </div>
-      {/* <style jsx>
-        {`
-          .insert-section :global(.btn) {
-            white-space: pre;
-            line-height: 1;
-          }
-        `}
-      </style>
-      <style jsx global>
-        {`
-          .small-button-font > .text {
-            font-size: 12px;
-            text-transform: none;
-          }
-        `}
-      </style> */}
-    </>
+        </ShowMore>
+      )}
+    </div>
   )
 }
 
