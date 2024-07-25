@@ -16,7 +16,7 @@ function ShowMore({ id, children }: Props) {
     <>
       {expanded && children}
       <div className="text-center">
-        <div className="inline-flex items-center gap-x-2 py-1 px-3 rounded-full cursor-pointer select-none text-xs shadow" onClick={handleClick}>
+        <div className="inline-flex items-center gap-x-2 py-1 px-3 rounded-full cursor-pointer select-none text-xs shadow border" onClick={handleClick}>
           {expanded ? t('show less') : t('show more')}
           <CaretDownIcon className={clsx({ 'rotate-180': expanded }, 'transition-transform')} />
         </div>

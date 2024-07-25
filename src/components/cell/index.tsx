@@ -10,14 +10,15 @@ interface ItemProps {
 }
 function CellItem({ label, children }: ItemProps) {
   return (
-    <>
-      <h6 className="text-secondary-foreground">{label}</h6>
+    <div>
+      <h6 className="text-foreground/60 font-semibold mb-2 text-sm">{label}</h6>
       {children}
-    </>
+    </div>
   )
 }
 
 interface Props {
+  className?: string
   label: string
   mdnLinkKey?: MdnLinkKey
   rightLabel?: string
@@ -25,6 +26,7 @@ interface Props {
   onRightLabelClick?: () => void
 }
 function Cell({
+  className,
   label,
   mdnLinkKey,
   children,
@@ -33,20 +35,20 @@ function Cell({
 }: Props) {
   return (
     <div>
-      <div className={clsx('flex items-center mb-2', { 'justify-between': rightLabel })}>
+      <div className={clsx('flex items-center mb-2.5', { 'justify-between': rightLabel })}>
         <h5 className="font-semibold">{label}</h5>
         {mdnLinkKey && (
           <a href={mdnLinks[mdnLinkKey]} target="_blank" rel="noreferrer" className="ml-2">
-            <QuestionIcon className="w-5 h-5" />
+            <QuestionIcon className="w-4 h-4" />
           </a>
         )}
         {rightLabel && (
-          <span className="text-secondary-foreground cursor-pointer" onClick={onRightLabelClick}>
+          <span className="text-foreground/50 cursor-pointer text-xs" onClick={onRightLabelClick}>
             {rightLabel}
           </span>
         )}
       </div>
-      <div className="content">{children}</div>
+      <div className={className}>{children}</div>
     </div>
   )
 }

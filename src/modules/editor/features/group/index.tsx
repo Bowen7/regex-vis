@@ -1,10 +1,17 @@
-import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
-import Input from '@/components/input'
+import { Input } from '@/components/ui/input'
 import type { AST } from '@/parser'
 import Cell from '@/components/cell'
 import { updateGroupAtom } from '@/atom'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface GroupSelectProps {
   group: AST.Group
@@ -24,7 +31,7 @@ export const groupOptions = [
   },
 ]
 
-const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
+function GroupSelect({ group }: GroupSelectProps) {
   const { t } = useTranslation()
   const updateGroup = useSetAtom(updateGroupAtom)
   const { kind } = group
@@ -51,42 +58,43 @@ const GroupSelect: React.FC<GroupSelectProps> = ({ group }) => {
   const handleGroupNameChange = (value: string) =>
     handleGroupChange(kind, value)
 
-  const onSelectChange = (value: string | string[]) =>
+  const onSelectChange = (value: string) =>
     handleGroupChange(value as AST.GroupKind)
 
   const handleUnGroup = () => updateGroup(null)
 
   return (
-    <>
-      {/* <Cell
-        label={t('Group')}
-        rightLabel={t('UnGroup')}
-        onRightLabelClick={handleUnGroup}
-      >
-        <Select
-          value={kind}
-          onChange={onSelectChange}
-          getPopupContainer={() => document.getElementById('editor-content')}
-          disableMatchWidth
-        >
-          {groupOptions.map(({ value, label }) => (
-            <Select.Option value={value} key={value}>
-              <span>{t(label)}</span>
-            </Select.Option>
-          ))}
-        </Select>
-        {group.kind === 'namedCapturing' && (
-          <>
-            <Spacer h={0.5} />
-            <Input
-              label="Group's name"
-              value={group.name}
-              onChange={handleGroupNameChange}
-            />
-          </>
-        )}
-      </Cell> */}
-    </>
+    <Cell
+      label={t('Group')}
+      rightLabel={t('UnGroup')}
+      onRightLabelClick={handleUnGroup}
+      className="space-y-2"
+    >
+      <Select value={kind} onValueChange={onSelectChange}>
+        <SelectTrigger className="px-2 w-48">
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {groupOptions.map(({ value, label }) => (
+              <SelectItem value={value} key={value}>
+                <span>{t(label)}</span>
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+      {group.kind === 'namedCapturing' && (
+        <div className="flex items-center">
+          <span className="rounded-l-md border h-9 border-r-0 leading-9 px-2 text-xs bg-muted">{t('Group\'s name')}</span>
+          <Input
+            className="flex-1 rounded-l-none"
+            value={group.name}
+            onChange={handleGroupNameChange}
+          />
+        </div>
+      )}
+    </Cell>
   )
 }
 

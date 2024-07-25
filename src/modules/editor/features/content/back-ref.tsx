@@ -4,7 +4,9 @@ import { useTranslation } from 'react-i18next'
 import Cell from '@/components/cell'
 import { groupNamesAtom, updateContentAtom } from '@/atom'
 
-interface Props { reference: string }
+interface Props {
+  reference: string
+}
 const BackRef: React.FC<Props> = ({ reference }) => {
   const { t } = useTranslation()
   const groupNames = useAtomValue(groupNamesAtom)

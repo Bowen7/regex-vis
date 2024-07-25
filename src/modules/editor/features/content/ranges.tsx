@@ -57,7 +57,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
     updateContent(payload)
   }
 
-  // const handleGreedyChange = (e: CheckboxEvent) => {
+  // const onGreedyChange = (e: CheckboxEvent) => {
   //   const negate = e.target.checked
   //   updateContent({ kind: 'ranges', ranges, negate })
   // }
@@ -87,7 +87,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
         ))}
       </ButtonDropdown> */}
       <Cell.Item label="Negate">
-        {/* <Checkbox checked={negate} onChange={handleGreedyChange}>
+        {/* <Checkbox checked={negate} onChange={onGreedyChange}>
           {t('negate')}
         </Checkbox> */}
         <></>

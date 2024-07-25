@@ -45,7 +45,7 @@ function EditTab() {
 
   return (
     <>
-      <div data-testid="edit-tab">
+      <div data-testid="edit-tab" className="space-y-6">
         <Insert nodes={nodes} />
         <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
         {content && (

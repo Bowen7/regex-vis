@@ -20,7 +20,7 @@ const Header = memo(() => {
           <span className="font-bold">Regex Vis</span>
         </div>
       </Link>
-      <div className="flex space-x-6 items-center text-sm mr-9">
+      <div className="flex space-x-8 items-center text-sm mr-9">
         <NavLink
           to="/"
           className={navLinkClassName}

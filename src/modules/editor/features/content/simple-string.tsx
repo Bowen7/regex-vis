@@ -1,10 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
-import Input from '@/components/input'
+import { RocketIcon } from '@radix-ui/react-icons'
+import { Input } from '@/components/ui/input'
 import Cell from '@/components/cell'
 import type { AST } from '@/parser'
 import { updateContentAtom } from '@/atom'
+import { useToast } from '@/components/ui/use-toast'
+import { Alert, AlertDescription } from '@/components/ui/alert'
 
 interface Props {
   value: string
@@ -13,11 +16,11 @@ interface Props {
 const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
   const { t } = useTranslation()
   const updateContent = useSetAtom(updateContentAtom)
-  // const { setToast } = useToasts()
+  const { toast } = useToast()
 
   const handleChange = (value: string) => {
     if (value.length > 1 && quantifier) {
-      // setToast({ text: 'Group selection automatically' })
+      toast({ description: 'Group selection automatically' })
     }
     updateContent({
       kind: 'string',
@@ -27,11 +30,15 @@ const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
 
   return (
     <Cell.Item label={t('Value')}>
-      {/* <Note type="secondary" style={{ lineHeight: 1.5 }} scale={0.5}>
-        {t('The input will be escaped automatically.')}
-      </Note>
-      <Spacer h={0.5} /> */}
-      <Input value={value} onChange={handleChange} />
+      <div className="space-y-2">
+        <Alert className="p-2">
+          <RocketIcon className="h-5 w-5" />
+          <AlertDescription className="!pl-9">
+            {t('The input will be escaped automatically.')}
+          </AlertDescription>
+        </Alert>
+        <Input value={value} onChange={handleChange} />
+      </div>
     </Cell.Item>
   )
 }

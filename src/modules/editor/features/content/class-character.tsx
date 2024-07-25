@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 import { useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
-import Input from '@/components/input'
+import { Input } from '@/components/ui/input'
 import Cell from '@/components/cell'
 import type { CharacterClassKey } from '@/parser'
 import { characterClassTextMap } from '@/parser'
@@ -28,8 +28,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
   const classKind = useMemo(() => {
     if (xhhRegex.test(value)) {
       return '\\xhh'
-    }
-    else if (uhhhhRegex.test(value)) {
+    } else if (uhhhhRegex.test(value)) {
       return '\\uhhhh'
     }
     return value
@@ -39,8 +38,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
     value = value as string
     if (value === '\\xhh') {
       value = '\\x00'
-    }
-    else if (value === '\\uhhhh') {
+    } else if (value === '\\uhhhh') {
       value = '\\u0000'
     }
     updateContent({

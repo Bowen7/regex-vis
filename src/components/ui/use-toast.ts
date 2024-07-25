@@ -95,8 +95,7 @@ export function reducer(state: State, action: Action): State {
       // but I'll keep it here for simplicity
       if (toastId) {
         addToRemoveQueue(toastId)
-      }
-      else {
+      } else {
         state.toasts.forEach((toast) => {
           addToRemoveQueue(toast.id)
         })
