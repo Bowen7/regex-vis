@@ -32,7 +32,7 @@ const SimpleString: React.FC<Props> = ({ value, quantifier }) => {
     <Cell.Item label={t('Value')}>
       <div className="space-y-2">
         <Alert className="p-2">
-          <RocketIcon className="h-5 w-5" />
+          <RocketIcon className="h-4 w-4" />
           <AlertDescription className="!pl-9">
             {t('The input will be escaped automatically.')}
           </AlertDescription>

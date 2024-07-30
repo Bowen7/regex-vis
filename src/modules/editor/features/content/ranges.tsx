@@ -1,10 +1,13 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
+import { PlusCircledIcon } from '@radix-ui/react-icons'
 import { useSetAtom } from 'jotai'
-import RangeOption from '@/components/range-option'
+import { Button } from '@/components/ui/button'
+import { RangeInput } from '@/components/range-input'
 import Cell from '@/components/cell'
 import type { AST } from '@/parser'
 import { updateContentAtom } from '@/atom'
+import { ButtonDropdown, ButtonDropdownItem } from '@/components/button-dropdown'
 
 interface Prop {
   ranges: AST.Range[]
@@ -12,7 +15,7 @@ interface Prop {
 }
 
 const commonUsedRanges = [
-  { from: '', to: '', desc: 'A Empty Range' },
+  // { from: '', to: '', desc: 'An Empty Range' },
   { from: '0', to: '9', desc: '0 - 9' },
   { from: 'a', to: 'z', desc: 'a - z' },
   { from: 'A', to: 'Z', desc: 'A - Z' },
@@ -64,17 +67,35 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
 
   return (
     <Cell.Item label={t('Ranges')}>
-      <div className="range-options">
-        {ranges.map((range, index) => (
-          <RangeOption
-            range={range}
-            key={index}
-            onChange={(range: AST.Range) => handleRangeChange(index, range)}
-            onRemove={() => handleRemove(index)}
-          />
-        ))}
-      </div>
-      {/* <Spacer h={0.5} />
+      <div className="space-y-4">
+        <div className="space-y-2">
+          {ranges.map((range, index) => (
+            <RangeInput
+              start={range.from}
+              end={range.to}
+              key={index}
+              onChange={(range: AST.Range) => handleRangeChange(index, range)}
+              onRemove={() => handleRemove(index)}
+            />
+          ))}
+        </div>
+        <div className="flex items-center space-x-2">
+          <Button variant="outline" className="font-normal">
+            <PlusCircledIcon className="mr-2 h-4 w-4" />
+            An Empty Range
+          </Button>
+          <ButtonDropdown>
+            {commonUsedRanges.map(({ from, to, desc }, index) => (
+              <ButtonDropdownItem
+                onClick={() => handleAdd([{ from, to }])}
+                key={index}
+              >
+                {desc}
+              </ButtonDropdownItem>
+            ))}
+          </ButtonDropdown>
+        </div>
+        {/* <Spacer h={0.5} />
       <ButtonDropdown scale={0.75}>
         {commonUsedRanges.map(({ from, to, desc }, index) => (
           <ButtonDropdown.Item
@@ -86,13 +107,13 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
           </ButtonDropdown.Item>
         ))}
       </ButtonDropdown> */}
-      <Cell.Item label="Negate">
-        {/* <Checkbox checked={negate} onChange={onGreedyChange}>
+        <Cell.Item label="Negate">
+          {/* <Checkbox checked={negate} onChange={onGreedyChange}>
           {t('negate')}
         </Checkbox> */}
-        <></>
-      </Cell.Item>
-      {/* <style jsx>
+          <></>
+        </Cell.Item>
+        {/* <style jsx>
         {`
         h6 {
           color: ${palette.secondary};
@@ -103,6 +124,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
         }
       `}
       </style> */}
+      </div>
     </Cell.Item>
   )
 }

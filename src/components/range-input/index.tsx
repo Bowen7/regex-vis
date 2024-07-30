@@ -1,137 +1,59 @@
-import React, { useMemo, useRef, useState } from 'react'
-import { TrashIcon } from '@radix-ui/react-icons'; import { useOnClickOutside } from 'usehooks-ts'
-import Input from '../input'
+import React from 'react'
+import { Trash as TrashIcon } from '@phosphor-icons/react'
+import clsx from 'clsx'
+import { Input } from '@/components/ui/input'
+import { useFocus } from '@/utils/hooks/use-focus'
+import { useHover } from '@/utils/hooks/use-hover'
 
 interface Prop {
+  className?: string
   start: string
   end: string
   startPlaceholder?: string
   endPlaceholder?: string
-  width?: number
   removable?: boolean
-  controlled?: boolean
   onChange: (start: string, end: string) => void
   onRemove?: () => void
-  validate?: (start: string, end: string) => null | string
 }
-const RangeOption: React.FC<Prop> = ({
+export const RangeInput: React.FC<Prop> = ({
+  className,
   start,
   end,
   startPlaceholder = '',
   endPlaceholder = '',
-  width = 186,
-  removable = false,
-  controlled = true,
+  removable = true,
   onChange,
   onRemove,
-  validate,
 }) => {
-  // const { palette } = useTheme()
+  const { hovered, hoverProps } = useHover()
+  const { focused, focusProps } = useFocus()
+  const removeBtnVisible = hovered || focused
 
-  const [focused, setFocused] = useState(false)
-  const [hovered, setHovered] = useState(false)
-  const [error, setError] = useState<null | string>(null)
-
-  const [defaultStart] = useState(start)
-  const [defaultEnd] = useState(end)
-
-  const wrapRef = useRef<HTMLDivElement>(null)
-  const startRef = useRef<string>(start)
-  const endRef = useRef<string>(end)
-
-  // const borderColor = useMemo(() => {
-  //   if (error) {
-  //     return palette.error
-  //   }
-  //   if (focused) {
-  //     return palette.success
-  //   }
-  //   return palette.accents_2
-  // }, [palette, focused, error])
-
-  useOnClickOutside(wrapRef, () => setFocused(false))
-  const handleWrapperClick = () => setFocused(true)
-
-  const handleInputChange = (key: 'start' | 'end', value: string) => {
-    if (key === 'start') {
-      startRef.current = value
-    }
-    else {
-      endRef.current = value
-    }
-    const error
-      = (validate && validate(startRef.current, endRef.current)) || null
-    setError(error)
-    if (error === null) {
-      onChange(startRef.current, endRef.current)
-    }
-  }
   return (
-    <>
-      <div
-        ref={wrapRef}
-        className="range-wrapper"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
-      >
-        <div
-          className="range-content"
-          onClick={handleWrapperClick}
-          style={{ width }}
-        >
-          <Input
-            value={controlled ? start : defaultStart}
-            placeholder={startPlaceholder}
-            onChange={(value: string) => handleInputChange('start', value)}
-          />
-          <span>{' - '}</span>
-          <Input
-            value={controlled ? end : defaultEnd}
-            placeholder={endPlaceholder}
-            onChange={(value: string) => handleInputChange('end', value)}
-          />
-        </div>
-        {removable && (focused || hovered) && (
-          <span className="operations">
-            {/* <TrashIcon size={18} color={palette.accents_6} onClick={onRemove} /> */}
-          </span>
-        )}
+    <div {...hoverProps} {...focusProps} className={clsx('flex items-center', className)}>
+      <div className="flex items-center space-x-2">
+        <Input
+          className="flex-1"
+          value={start}
+          placeholder={startPlaceholder}
+          onChange={(value: string) => handleInputChange('start', value)}
+        />
+        <span>{' - '}</span>
+        <Input
+          className="flex-1"
+          value={end}
+          placeholder={endPlaceholder}
+          onChange={(value: string) => handleInputChange('end', value)}
+        />
       </div>
-      {error && <div className="error-msg">{error}</div>}
-      {/* <style jsx>
-        {`
-        .range-wrapper {
-          display: flex;
-          align-items: center;
-        }
-        .range-content {
-          display: flex;
-          align-items: center;
-          border: 1px solid ${borderColor};
-          border-radius: 5px;
-        }
-
-        .range-content :global(.input-wrapper) {
-          border: none;
-        }
-        .range-content :global(input) {
-          text-align: center;
-        }
-
-        .operations {
-          display: inline-block;
-          padding: 0 12px;
-        }
-        .operations > :global(svg) {
-          vertical-align: middle;
-        }
-
-        .error-msg {
-          color: ${palette.error};
-        }
-      `}
-      </style> */}
-    </>
+      {removable && (
+        <span className={clsx('p-2 cursor-pointer', {
+          invisible: !removeBtnVisible,
+        })}
+        >
+          <TrashIcon className="w-4 h-4" onClick={onRemove} />
+        </span>
+      )}
+    </div>
   )
 }
-export default RangeOption

@@ -92,7 +92,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
   }
 
   return (
-    <Cell label={t('Content')} className="space-y-4">
+    <Cell label={t('Content')} className="space-y-6">
       <Cell.Item label={t('Type')}>
         <div className="flex items-center space-x-2">
           <Select value={content.kind} onValueChange={onTypeChange}>

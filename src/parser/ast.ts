@@ -1,44 +1,44 @@
-export type Regex = {
+export interface Regex {
   id: string
-  type: "regex"
+  type: 'regex'
   body: Node[]
   flags: Flag[]
   literal: boolean
   escapeBackslash: boolean
 }
 
-export type RegexError = {
-  type: "error"
+export interface RegexError {
+  type: 'error'
   message: string
 }
 
-export type Flag = "d" | "g" | "i" | "m" | "s" | "u" | "y"
+export type Flag = 'd' | 'g' | 'i' | 'm' | 's' | 'u' | 'y'
 
 export type Quantifier =
   | {
-      kind: "?"
-      min: 0
-      max: 1
-      greedy: boolean
-    }
+    kind: '?'
+    min: 0
+    max: 1
+    greedy: boolean
+  }
   | {
-      kind: "*"
-      min: 0
-      max: typeof Infinity
-      greedy: boolean
-    }
+    kind: '*'
+    min: 0
+    max: typeof Infinity
+    greedy: boolean
+  }
   | {
-      kind: "+"
-      min: 1
-      max: typeof Infinity
-      greedy: boolean
-    }
+    kind: '+'
+    min: 1
+    max: typeof Infinity
+    greedy: boolean
+  }
   | {
-      kind: "custom"
-      min: number
-      max: number
-      greedy: boolean
-    }
+    kind: 'custom'
+    min: number
+    max: number
+    greedy: boolean
+  }
 
 export interface NodeBase {
   id: string
@@ -46,33 +46,33 @@ export interface NodeBase {
 }
 
 export interface StringCharacterNode extends NodeBase {
-  type: "character"
-  kind: "string"
+  type: 'character'
+  kind: 'string'
   value: string
   quantifier: Quantifier | null
 }
 
-export type Range = {
+export interface Range {
   from: string
   to: string
 }
 export interface RangesCharacterNode extends NodeBase {
-  type: "character"
-  kind: "ranges"
+  type: 'character'
+  kind: 'ranges'
   ranges: Range[]
   negate: boolean
   quantifier: Quantifier | null
 }
 
 export interface ClassCharacterNode extends NodeBase {
-  type: "character"
-  kind: "class"
+  type: 'character'
+  kind: 'class'
   value: string
   quantifier: Quantifier | null
 }
 
-export type RangesCharacter = {
-  kind: "ranges"
+export interface RangesCharacter {
+  kind: 'ranges'
   ranges: Range[]
   negate: boolean
 }
@@ -82,24 +82,24 @@ export type CharacterNode =
   | RangesCharacterNode
   | ClassCharacterNode
 
-export type GroupKind = "capturing" | "nonCapturing" | "namedCapturing"
+export type GroupKind = 'capturing' | 'nonCapturing' | 'namedCapturing'
 
 export type Group =
   | {
-      kind: "nonCapturing"
-    }
-  | { kind: "namedCapturing" | "capturing"; name: string; index: number }
+    kind: 'nonCapturing'
+  }
+  | { kind: 'namedCapturing' | 'capturing', name: string, index: number }
 
 export interface NonCapturingGroupNode extends NodeBase {
-  type: "group"
-  kind: "nonCapturing"
+  type: 'group'
+  kind: 'nonCapturing'
   children: Node[]
   quantifier: Quantifier | null
 }
 
 export interface NamedCapturingGroupNode extends NodeBase {
-  type: "group"
-  kind: "namedCapturing"
+  type: 'group'
+  kind: 'namedCapturing'
   children: Node[]
   name: string
   index: number
@@ -107,8 +107,8 @@ export interface NamedCapturingGroupNode extends NodeBase {
 }
 
 export interface CapturingGroupNode extends NodeBase {
-  type: "group"
-  kind: "capturing"
+  type: 'group'
+  kind: 'capturing'
   children: Node[]
   name: string
   index: number
@@ -121,29 +121,32 @@ export type GroupNode =
   | CapturingGroupNode
 
 export interface ChoiceNode extends NodeBase {
-  type: "choice"
+  type: 'choice'
   branches: Node[][]
 }
 
 export interface BeginningBoundaryAssertionNode extends NodeBase {
-  type: "boundaryAssertion"
-  kind: "beginning"
+  type: 'boundaryAssertion'
+  kind: 'beginning'
 }
 export interface EndBoundaryAssertionNode extends NodeBase {
-  type: "boundaryAssertion"
-  kind: "end"
+  type: 'boundaryAssertion'
+  kind: 'end'
 }
 
 export interface WordBoundaryAssertionNode extends NodeBase {
-  type: "boundaryAssertion"
-  kind: "word"
+  type: 'boundaryAssertion'
+  kind: 'word'
   negate: boolean
 }
 
-export type LookAround = { kind: "lookahead" | "lookbehind"; negate: boolean }
+export interface LookAround {
+  kind: 'lookahead' | 'lookbehind'
+  negate: boolean
+}
 export interface LookAroundAssertionNode extends NodeBase {
-  type: "lookAroundAssertion"
-  kind: "lookahead" | "lookbehind"
+  type: 'lookAroundAssertion'
+  kind: 'lookahead' | 'lookbehind'
   negate: boolean
   children: Node[]
 }
@@ -155,19 +158,19 @@ export type AssertionNode =
   | LookAroundAssertionNode
 
 export interface BackReferenceNode extends NodeBase {
-  type: "backReference"
+  type: 'backReference'
   ref: string
 }
 
 export type Content =
-  | { kind: "string" | "class"; value: string }
-  | { kind: "ranges"; ranges: Range[]; negate: boolean }
-  | { kind: "backReference"; ref: string }
-  | { kind: "beginningAssertion" | "endAssertion" }
-  | { kind: "wordBoundaryAssertion"; negate: boolean }
+  | { kind: 'string' | 'class', value: string }
+  | { kind: 'ranges', ranges: Range[], negate: boolean }
+  | { kind: 'backReference', ref: string }
+  | { kind: 'beginningAssertion' | 'endAssertion' }
+  | { kind: 'wordBoundaryAssertion', negate: boolean }
 
 export interface RootNode extends NodeBase {
-  type: "root"
+  type: 'root'
 }
 
 export type Node =

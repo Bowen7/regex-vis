@@ -6,7 +6,7 @@ import Cell from '@/components/cell'
 import ShowMore from '@/components/show-more'
 import type { AST } from '@/parser'
 import { groupSelectedAtom, insertAtom, lookAroundSelectedAtom } from '@/atom'
-import { ButtonGroup } from '@/components/ui/button-group'
+import { ButtonGroup } from '@/components/button-group'
 import { Button } from '@/components/ui/button'
 
 interface Props {
@@ -109,7 +109,7 @@ const Insert: React.FC<Props> = ({ nodes }) => {
     lookAroundSelected(kind as 'lookahead' | 'lookbehind')
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {insertOptions.length > 0 && (
         <Cell label={t('Insert around')}>
           <ButtonGroup variant="outline">
