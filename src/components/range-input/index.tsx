@@ -7,18 +7,16 @@ import { useHover } from '@/utils/hooks/use-hover'
 
 interface Prop {
   className?: string
-  start: string
-  end: string
+  value: { start: string, end: string }
   startPlaceholder?: string
   endPlaceholder?: string
   removable?: boolean
-  onChange: (start: string, end: string) => void
+  onChange: (value: { start: string, end: string }) => void
   onRemove?: () => void
 }
 export const RangeInput: React.FC<Prop> = ({
   className,
-  start,
-  end,
+  value,
   startPlaceholder = '',
   endPlaceholder = '',
   removable = true,
@@ -29,21 +27,28 @@ export const RangeInput: React.FC<Prop> = ({
   const { focused, focusProps } = useFocus()
   const removeBtnVisible = hovered || focused
 
+  const onStartChange = (start: string) => {
+    onChange({ start, end: value.end })
+  }
+  const onEndChange = (end: string) => {
+    onChange({ start: value.start, end })
+  }
+
   return (
     <div {...hoverProps} {...focusProps} className={clsx('flex items-center', className)}>
       <div className="flex items-center space-x-2">
         <Input
           className="flex-1"
-          value={start}
+          value={value.start}
           placeholder={startPlaceholder}
-          onChange={(value: string) => handleInputChange('start', value)}
+          onChange={onStartChange}
         />
         <span>{' - '}</span>
         <Input
           className="flex-1"
-          value={end}
+          value={value.end}
           placeholder={endPlaceholder}
-          onChange={(value: string) => handleInputChange('end', value)}
+          onChange={onEndChange}
         />
       </div>
       {removable && (
