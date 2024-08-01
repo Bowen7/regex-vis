@@ -3,11 +3,12 @@ import { useTranslation } from 'react-i18next'
 import { PlusCircledIcon } from '@radix-ui/react-icons'
 import { useSetAtom } from 'jotai'
 import { Button } from '@/components/ui/button'
-import { RangeInput } from '@/components/range-input'
+import { type Range, RangeInput } from '@/components/range-input'
 import Cell from '@/components/cell'
 import type { AST } from '@/parser'
 import { updateContentAtom } from '@/atom'
 import { ButtonDropdown, ButtonDropdownItem } from '@/components/button-dropdown'
+import { type Transformer, Validation, type ValidatorResult } from '@/components/validation'
 
 interface Prop {
   ranges: AST.Range[]
@@ -20,6 +21,78 @@ const commonUsedRanges = [
   { from: 'a', to: 'z', desc: 'a - z' },
   { from: 'A', to: 'Z', desc: 'A - Z' },
 ]
+
+const rangeTransformers: [Transformer<AST.Range, Range>, Transformer<Range, AST.Range>] = [(range: AST.Range): Range => {
+  return {
+    start: range.from,
+    end: range.to,
+  }
+}, (range: Range): AST.Range => {
+  return {
+    from: range.start,
+    to: range.end,
+  }
+}]
+
+function rangeValidator(range: Range): ValidatorResult {
+  let { start, end } = range
+  start = start.trim()
+  end = end.trim()
+  if (!start && !end) {
+    return {
+      ok: true,
+    }
+  }
+  if (!start) {
+    return {
+      ok: false,
+      error: {
+        type: 'start',
+        message: '',
+      },
+    }
+  }
+  if (!end) {
+    return {
+      ok: false,
+      error: {
+        type: 'end',
+        message: '',
+      },
+    }
+  }
+  try {
+    // TODO find a better way to validate the range
+    // eslint-disable-next-line no-new
+    new RegExp(`[${start}-${end}]`)
+  // eslint-disable-next-line unused-imports/no-unused-vars
+  } catch (e) {
+    return {
+      ok: false,
+      error: {
+        type: 'order',
+        message: 'The range out of order in character class',
+      },
+    }
+  }
+  return {
+    ok: true,
+  }
+}
+
+function rangeClassName(result: ValidatorResult) {
+  if (result.ok) {
+    return ''
+  }
+  const { error } = result
+  if (error.type === 'start') {
+    return '[&_:is(input):first-child]:border-red-500'
+  } else if (error.type === 'end') {
+    return '[&_:is(input):last-child]:border-red-500'
+  } else {
+    return '[&>input]:text-red-500'
+  }
+}
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
   const { t } = useTranslation()
@@ -35,7 +108,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
     updateContent(payload)
   }
 
-  const handleRangeChange = (index: number, range: AST.Range) => {
+  const onRangeChange = (index: number, range: AST.Range) => {
     const payload: AST.RangesCharacter = {
       kind: 'ranges',
       ranges: ranges.map((_range, _index) => {
@@ -70,13 +143,23 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
       <div className="space-y-4">
         <div className="space-y-2">
           {ranges.map((range, index) => (
-            <RangeInput
-              start={range.from}
-              end={range.to}
-              key={index}
-              onChange={(range: AST.Range) => handleRangeChange(index, range)}
-              onRemove={() => handleRemove(index)}
-            />
+            // eslint-disable-next-line react/no-missing-key
+            <Validation
+              className={rangeClassName}
+              value={range}
+              transformers={rangeTransformers}
+              onChange={(range: AST.Range) => onRangeChange(index, range)}
+              validator={rangeValidator}
+            >
+              {(value: Range, onChange: (value: Range) => void) => (
+                <RangeInput
+                  value={value}
+                  onChange={onChange}
+                  onRemove={() => handleRemove(index)}
+                />
+              )}
+
+            </Validation>
           ))}
         </div>
         <div className="flex items-center space-x-2">

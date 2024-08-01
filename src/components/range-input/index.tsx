@@ -5,13 +5,18 @@ import { Input } from '@/components/ui/input'
 import { useFocus } from '@/utils/hooks/use-focus'
 import { useHover } from '@/utils/hooks/use-hover'
 
+export interface Range {
+  start: string
+  end: string
+}
+
 interface Prop {
   className?: string
-  value: { start: string, end: string }
+  value: Range
   startPlaceholder?: string
   endPlaceholder?: string
   removable?: boolean
-  onChange: (value: { start: string, end: string }) => void
+  onChange: (value: Range) => void
   onRemove?: () => void
 }
 export const RangeInput: React.FC<Prop> = ({

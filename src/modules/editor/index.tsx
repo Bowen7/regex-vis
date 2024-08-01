@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAtomValue, useSetAtom } from 'jotai'
 import { useEvent, useUpdateEffect } from 'react-use'
+import { useEventListener } from 'usehooks-ts'
 import clsx from 'clsx'
 import EditTab from './edit-tab'
 import LegendTab from './legend-tab'
@@ -46,8 +47,12 @@ function Editor({ defaultTab, collapsed }: Props) {
 
   const editDisabled = selectedIds.length === 0
 
-  useEvent('keydown', (e: Event) => {
+  useEventListener('keydown', (e: Event) => {
     const event = e as KeyboardEvent
+    const tagName = (event.target as HTMLElement)?.tagName
+    if (tagName === 'INPUT' || tagName === 'TEXTAREA') {
+      return
+    }
     const { key } = event
     if (key === 'Backspace' || key === 'Delete') {
       e.preventDefault()
