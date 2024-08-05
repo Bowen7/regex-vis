@@ -2,6 +2,7 @@ import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Question as QuestionIcon } from '@phosphor-icons/react'
 import { useAtomValue, useSetAtom } from 'jotai'
+import { nanoid } from 'nanoid'
 import SimpleString from './simple-string'
 import ClassCharacter from './class-character'
 import BackRef from './back-ref'
@@ -71,7 +72,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
       case 'ranges':
         payload = {
           kind: 'ranges',
-          ranges: [{ from: '', to: '' }],
+          ranges: [{ id: nanoid(), from: '', to: '' }],
           negate: false,
         }
         break

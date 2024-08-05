@@ -44,64 +44,18 @@ function EditTab() {
   }, [ast, nodes])
 
   return (
-    <>
-      <div data-testid="edit-tab" className="space-y-6">
-        <Insert nodes={nodes} />
-        <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
-        {content && (
-          <ContentEditor content={content} id={id} quantifier={quantifier} />
-        )}
-        {group && <Group group={group} />}
-        {hasQuantifier && <Quantifier quantifier={quantifier} />}
-        {lookAround && (
-          <LookAround kind={lookAround.kind} negate={lookAround.negate} />
-        )}
-      </div>
-      {/* <style jsx>
-        {`
-        .container {
-          padding: 12px;
-        }
-        .button {
-          text-align: center;
-        }
-
-        .container :global(h3) {
-          font-size: 1.15rem;
-        }
-
-        .container :global(input) {
-          font-size: 0.75rem;
-        }
-
-        .container :global(.btn-group) {
-          margin: 0;
-        }
-        .container :global(.btn-group .btn) {
-          width: 80px;
-          padding: 0;
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .container :global(.btn-group .tooltip) {
-          line-height: 0;
-        }
-
-        .container :global(.btn-dropdown button) {
-          height: calc(1.687 * 16pt);
-        }
-
-        .container :global(details) {
-          border-radius: 0 ${layout.radius} ${layout.radius} 0;
-        }
-
-        .container :global(summary) {
-          height: calc(1.687 * 16pt);
-        }
-      `}
-      </style> */}
-    </>
+    <div data-testid="edit-tab" className="space-y-6">
+      <Insert nodes={nodes} />
+      <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
+      {content && (
+        <ContentEditor content={content} id={id} quantifier={quantifier} />
+      )}
+      {group && <Group group={group} />}
+      {hasQuantifier && <Quantifier quantifier={quantifier} />}
+      {lookAround && (
+        <LookAround kind={lookAround.kind} negate={lookAround.negate} />
+      )}
+    </div>
   )
 }
 

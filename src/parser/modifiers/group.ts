@@ -1,7 +1,7 @@
-import { nanoid } from "nanoid"
-import * as AST from "../ast"
-import { getNodeById, getNodesByIds } from "../visit"
-import { replaceFromLists } from "./replace"
+import { nanoid } from 'nanoid'
+import type * as AST from '../ast'
+import { getNodeById, getNodesByIds } from '../visit'
+import { replaceFromLists } from './replace'
 
 function unGroup(nodeList: AST.Node[], selectNode: AST.GroupNode) {
   const { children } = selectNode
@@ -12,11 +12,11 @@ function unGroup(nodeList: AST.Node[], selectNode: AST.GroupNode) {
 export const updateGroup = (
   ast: AST.Regex,
   selectedIds: string[],
-  group: AST.Group | null
+  group: AST.Group | null,
 ) => {
   let nextSelectedIds: string[] = selectedIds
   const { node, nodeList, index } = getNodeById(ast, selectedIds[0])
-  if (node.type === "group") {
+  if (node.type === 'group') {
     if (group === null) {
       nextSelectedIds = unGroup(nodeList, node)
     } else {
@@ -37,37 +37,37 @@ export const updateGroup = (
 export const groupSelected = (
   ast: AST.Regex,
   selectedIds: string[],
-  group: AST.Group
+  group: AST.Group,
 ) => {
   const id = nanoid()
   let groupNode: AST.GroupNode
   const { nodes, nodeList } = getNodesByIds(ast, selectedIds)
   switch (group.kind) {
-    case "capturing":
+    case 'capturing':
       groupNode = {
         id,
-        type: "group",
-        kind: "capturing",
+        type: 'group',
+        kind: 'capturing',
         children: [],
-        name: "",
+        name: '',
         index: 0,
         quantifier: null,
       }
       break
-    case "nonCapturing":
+    case 'nonCapturing':
       groupNode = {
         id,
-        type: "group",
-        kind: "nonCapturing",
+        type: 'group',
+        kind: 'nonCapturing',
         children: [],
         quantifier: null,
       }
       break
-    case "namedCapturing":
+    case 'namedCapturing':
       groupNode = {
         id,
-        type: "group",
-        kind: "namedCapturing",
+        type: 'group',
+        kind: 'namedCapturing',
         children: [],
         name: group.name,
         index: 0,

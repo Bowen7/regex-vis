@@ -1,52 +1,44 @@
 import { memo, useCallback, useState } from 'react'
-
-export type ValidatorResult = {
-  ok: true
-} | {
-  ok: false
-  error: { type: string, message: string }
-}
+import type { ZodIssue, ZodType, z } from 'zod'
 
 export type Transformer<I, O> = (value: I) => O
 
-const defaultTransformers = [(value: any) => value, (value: any) => value]
-
-interface Props<I, O = I> {
-  className?: (result: ValidatorResult) => string
+interface Props<I, O> {
+  className?: (errors: ZodIssue[]) => string
+  transformer: Transformer<I, O>
+  errorFormatter: (errors: ZodIssue[]) => string
   children: (value: O, onChange: (value: O) => void) => React.ReactNode
   value: I
   onChange: (value: I) => void
-  transformers?: [(value: I) => O, (value: O) => I]
-  validator: (value: O) => ValidatorResult
+  schema: ZodType<I, z.ZodTypeDef, O>
 }
 
 function InnerValidation<I, O>(props: Props<I, O>) {
   const {
     className,
+    transformer,
     children,
     value,
     onChange,
-    validator,
-    transformers = defaultTransformers,
+    schema,
+    errorFormatter,
   } = props
-  const [innerValue, setInnerValue] = useState(() => transformers[0](value))
-  const [result, setResult] = useState<ValidatorResult>({ ok: true })
+  const [innerValue, setInnerValue] = useState(() => transformer(value))
+  const [errors, setErrors] = useState<ZodIssue[]>([])
 
   const onValueChange = useCallback((value: O) => {
     setInnerValue(value)
-    const result = validator(value)
-    setResult(result)
-    if (result.ok) {
-      onChange(transformers[1](value))
-    } else {
-      console.error(result.error)
+    const result = schema.safeParse(value)
+    setErrors(result.error?.errors ?? [])
+    if (result.success) {
+      onChange(result.data)
     }
-  }, [setInnerValue, onChange, validator, transformers])
+  }, [setInnerValue, onChange, schema])
 
   return (
-    <div className={className ? className(result) : ''}>
+    <div className={className ? className(errors) : ''}>
       {children(innerValue as O, onValueChange)}
-      {result.ok ? null : <div className="text-red-500 text-xs">{result.error.message}</div>}
+      {errors.length > 0 ? <div className="text-red-500 text-xs">{errorFormatter(errors)}</div> : null }
     </div>
   )
 }

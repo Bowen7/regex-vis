@@ -53,6 +53,7 @@ export interface StringCharacterNode extends NodeBase {
 }
 
 export interface Range {
+  id: string
   from: string
   to: string
 }

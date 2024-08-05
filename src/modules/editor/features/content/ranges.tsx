@@ -2,13 +2,16 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { PlusCircledIcon } from '@radix-ui/react-icons'
 import { useSetAtom } from 'jotai'
+import { z } from 'zod'
+import { nanoid } from 'nanoid'
 import { Button } from '@/components/ui/button'
 import { type Range, RangeInput } from '@/components/range-input'
 import Cell from '@/components/cell'
 import type { AST } from '@/parser'
 import { updateContentAtom } from '@/atom'
 import { ButtonDropdown, ButtonDropdownItem } from '@/components/button-dropdown'
-import { type Transformer, Validation, type ValidatorResult } from '@/components/validation'
+import { type Transformer, Validation } from '@/components/validation'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface Prop {
   ranges: AST.Range[]
@@ -16,113 +19,109 @@ interface Prop {
 }
 
 const commonUsedRanges = [
-  // { from: '', to: '', desc: 'An Empty Range' },
   { from: '0', to: '9', desc: '0 - 9' },
   { from: 'a', to: 'z', desc: 'a - z' },
   { from: 'A', to: 'Z', desc: 'A - Z' },
 ]
 
-const rangeTransformers: [Transformer<AST.Range, Range>, Transformer<Range, AST.Range>] = [(range: AST.Range): Range => {
+const rangeTransformer: Transformer<AST.Range, Range> = (range: AST.Range): Range => {
   return {
     start: range.from,
     end: range.to,
   }
-}, (range: Range): AST.Range => {
-  return {
-    from: range.start,
-    to: range.end,
-  }
-}]
+}
 
-function rangeValidator(range: Range): ValidatorResult {
-  let { start, end } = range
-  start = start.trim()
-  end = end.trim()
-  if (!start && !end) {
-    return {
-      ok: true,
-    }
-  }
-  if (!start) {
-    return {
-      ok: false,
-      error: {
-        type: 'start',
-        message: '',
-      },
-    }
-  }
-  if (!end) {
-    return {
-      ok: false,
-      error: {
-        type: 'end',
-        message: '',
-      },
-    }
-  }
+const unicodeRegex = /^(?:\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]{4}\}|\\u\{[0-9a-fA-F]{5}\})$/
+const emptySchema = z.string().length(0)
+const singleValueSchema = z.string().length(1).or(z.string().regex(unicodeRegex))
+const rangeRefine = ({ start, end }: Range) => {
   try {
     // TODO find a better way to validate the range
     // eslint-disable-next-line no-new
     new RegExp(`[${start}-${end}]`)
   // eslint-disable-next-line unused-imports/no-unused-vars
   } catch (e) {
-    return {
-      ok: false,
-      error: {
-        type: 'order',
-        message: 'The range out of order in character class',
-      },
-    }
+    return false
   }
-  return {
-    ok: true,
-  }
+  return true
 }
 
-function rangeClassName(result: ValidatorResult) {
-  if (result.ok) {
+export const rangeSchema: z.ZodType<AST.Range, z.ZodTypeDef, Range> = z.object({
+  start: emptySchema,
+  end: emptySchema,
+}).or(z.object({
+  start: singleValueSchema,
+  end: singleValueSchema,
+})).refine(rangeRefine).transform((value: Range) => ({
+  from: value.start,
+  to: value.end,
+  id: '',
+}))
+
+const rangeClassName = (errors: z.ZodIssue[]) => {
+  if (errors.length === 0) {
     return ''
   }
-  const { error } = result
-  if (error.type === 'start') {
-    return '[&_:is(input):first-child]:border-red-500'
-  } else if (error.type === 'end') {
-    return '[&_:is(input):last-child]:border-red-500'
-  } else {
-    return '[&>input]:text-red-500'
+  const bothClassName = '[&_:is(input)]:!ring-transparent [&_:is(input)]:!border-red-500'
+  const startClassName = '[&_:is(input):first-child]:!ring-transparent [&_:is(input):first-child]:!border-red-500'
+  const endClassName = '[&_:is(input):last-child]:!ring-transparent [&_:is(input):first-child]:!border-red-500'
+  const hasCustomError = errors.some(error => error.code === 'custom')
+  // The range out of order in character class
+  if (hasCustomError) {
+    return bothClassName
   }
+  const hasStartError = errors.some(error => error.path[0] === 'start')
+  const hasEndError = errors.some(error => error.path[0] === 'end')
+  if (hasStartError && hasEndError) {
+    return bothClassName
+  }
+  if (hasStartError) {
+    return startClassName
+  }
+  if (hasEndError) {
+    return endClassName
+  }
+  return ''
+}
+
+const errorFormatter = (errors: z.ZodIssue[]) => {
+  const hasCustomError = errors.some(error => error.code === 'custom')
+  if (hasCustomError) {
+    return 'The range out of order in character class'
+  }
+  return 'The range value must be a single character or unicode'
 }
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
   const { t } = useTranslation()
   const updateContent = useSetAtom(updateContentAtom)
-  // const { palette } = useTheme()
 
-  const handleAdd = (newRanges: AST.Range[]) => {
+  const onAdd = (range: Omit<AST.Range, 'id'>) => {
     const payload: AST.RangesCharacter = {
       kind: 'ranges',
-      ranges: ranges.concat(newRanges),
+      ranges: [...ranges, { ...range, id: nanoid() }],
       negate,
     }
     updateContent(payload)
   }
 
   const onRangeChange = (index: number, range: AST.Range) => {
+    const { id, ...rangeWithoutId } = range
+    const newRanges = [...ranges]
+    const newRange = {
+      ...newRanges[index],
+      ...rangeWithoutId,
+    }
+    newRanges[index] = newRange
     const payload: AST.RangesCharacter = {
       kind: 'ranges',
-      ranges: ranges.map((_range, _index) => {
-        if (_index === index) {
-          return range
-        }
-        return _range
-      }),
+      ranges: newRanges,
       negate,
     }
     updateContent(payload)
   }
 
-  const handleRemove = (index: number) => {
+  const onRemove = (index: number) => {
     const payload: AST.RangesCharacter = {
       kind: 'ranges',
       ranges: ranges.filter((_, _index) => {
@@ -133,29 +132,29 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
     updateContent(payload)
   }
 
-  // const onGreedyChange = (e: CheckboxEvent) => {
-  //   const negate = e.target.checked
-  //   updateContent({ kind: 'ranges', ranges, negate })
-  // }
+  const onGreedyChange = (checked: boolean) => {
+    updateContent({ kind: 'ranges', ranges, negate: checked })
+  }
 
   return (
     <Cell.Item label={t('Ranges')}>
       <div className="space-y-4">
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {ranges.map((range, index) => (
-            // eslint-disable-next-line react/no-missing-key
             <Validation
+              key={range.id}
               className={rangeClassName}
               value={range}
-              transformers={rangeTransformers}
+              transformer={rangeTransformer}
               onChange={(range: AST.Range) => onRangeChange(index, range)}
-              validator={rangeValidator}
+              schema={rangeSchema}
+              errorFormatter={errorFormatter}
             >
               {(value: Range, onChange: (value: Range) => void) => (
                 <RangeInput
                   value={value}
                   onChange={onChange}
-                  onRemove={() => handleRemove(index)}
+                  onRemove={() => onRemove(index)}
                 />
               )}
 
@@ -163,50 +162,35 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
           ))}
         </div>
         <div className="flex items-center space-x-2">
-          <Button variant="outline" className="font-normal">
+          <Button
+            variant="outline"
+            className="font-normal"
+            onClick={() => onAdd({ from: '', to: '' })}
+          >
             <PlusCircledIcon className="mr-2 h-4 w-4" />
-            An Empty Range
+            {t('An Empty Range')}
           </Button>
           <ButtonDropdown>
-            {commonUsedRanges.map(({ from, to, desc }, index) => (
+            {commonUsedRanges.map(({ from, to, desc }) => (
               <ButtonDropdownItem
-                onClick={() => handleAdd([{ from, to }])}
-                key={index}
+                onClick={() => onAdd({ from, to })}
+                key={desc}
               >
                 {desc}
               </ButtonDropdownItem>
             ))}
           </ButtonDropdown>
         </div>
-        {/* <Spacer h={0.5} />
-      <ButtonDropdown scale={0.75}>
-        {commonUsedRanges.map(({ from, to, desc }, index) => (
-          <ButtonDropdown.Item
-            main={index === 0}
-            onClick={() => handleAdd([{ from, to }])}
-            key={index}
+        <div>
+          <label
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
           >
-            {desc}
-          </ButtonDropdown.Item>
-        ))}
-      </ButtonDropdown> */}
-        <Cell.Item label="Negate">
-          {/* <Checkbox checked={negate} onChange={onGreedyChange}>
-          {t('negate')}
-        </Checkbox> */}
-          <></>
-        </Cell.Item>
-        {/* <style jsx>
-        {`
-        h6 {
-          color: ${palette.secondary};
-        }
-
-        .range-options > :global(.range-wrapper:not(:first-child)) {
-          margin-top: 12px;
-        }
-      `}
-      </style> */}
+            <div className="flex items-center space-x-2">
+              <h6 className="text-foreground/60 font-semibold text-sm">{t('Negate')}</h6>
+              <Checkbox checked={negate} onCheckedChange={onGreedyChange} />
+            </div>
+          </label>
+        </div>
       </div>
     </Cell.Item>
   )

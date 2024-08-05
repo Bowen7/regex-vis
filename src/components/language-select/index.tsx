@@ -15,7 +15,7 @@ export function LanguageSelect() {
   return (
     <Select value={language} onValueChange={i18n.changeLanguage}>
       <SelectTrigger className="w-[100px] px-2 text-xs h-8">
-        <SelectValue placeholder="Select a language" className="" />
+        <SelectValue placeholder="Select a language" />
       </SelectTrigger>
       <SelectContent>
         <SelectGroup>

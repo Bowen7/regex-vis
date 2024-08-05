@@ -3,6 +3,14 @@ import { useAtomValue, useSetAtom } from 'jotai'
 import { useTranslation } from 'react-i18next'
 import Cell from '@/components/cell'
 import { groupNamesAtom, updateContentAtom } from '@/atom'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
 interface Props {
   reference: string
@@ -19,27 +27,31 @@ const BackRef: React.FC<Props> = ({ reference }) => {
     return [reference, ...groupNames]
   }, [groupNames, reference])
 
-  const handleChange = (value: string | string[]) =>
+  const onChange = (value: string | string[]) =>
     updateContent({ kind: 'backReference', ref: value as string })
+
   return (
     <Cell.Item label={t('Back Reference')}>
-      <></>
-      {/* <Select
-        placeholder={t('Choose one')}
+      <Select
         value={reference}
-        onChange={handleChange}
-        getPopupContainer={() => document.getElementById('editor-content')}
-        disableMatchWidth
+        onValueChange={onChange}
       >
-        {options.map(option => (
-          <Select.Option value={option} key={option}>
-            {t('Group')}
-            {' '}
-            #
-            {option}
-          </Select.Option>
-        ))}
-      </Select> */}
+        <SelectTrigger className="w-52">
+          <SelectValue placeholder={t('Choose one')} className="" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {options.map(option => (
+              <SelectItem value={option} key={option}>
+                {t('Group')}
+                {' '}
+                #
+                {option}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
     </Cell.Item>
   )
 }

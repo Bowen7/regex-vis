@@ -3,6 +3,7 @@ import { Question as QuestionIcon } from '@phosphor-icons/react'
 import clsx from 'clsx'
 import type { MdnLinkKey } from '@/utils/links'
 import mdnLinks from '@/utils/links'
+import { Button } from '@/components/ui/button'
 
 interface ItemProps {
   label: string
@@ -43,9 +44,9 @@ function Cell({
           </a>
         )}
         {rightLabel && (
-          <span className="text-foreground/50 cursor-pointer text-xs" onClick={onRightLabelClick}>
+          <Button onClick={onRightLabelClick} variant="outline" size="sm" className="px-2 h-7">
             {rightLabel}
-          </span>
+          </Button>
         )}
       </div>
       <div className={className}>{children}</div>
