@@ -1,16 +1,48 @@
-import React from 'react'
-import { useDebounceChange } from '@/utils/hooks/use-debounce-change'
-
+import React, { useCallback, useEffect } from 'react'
+import { useDebounceCallback } from 'usehooks-ts'
+import { useFocus } from '@/utils/hooks'
 import { cn } from '@/utils'
+import { useLatest } from '@/utils/hooks/use-latest'
 
 export type InputProps = Omit<React.InputHTMLAttributes<HTMLInputElement>, 'onChange'> & {
-  debounced?: boolean
   onChange: (value: string) => void
 }
 
+const DEBOUNCE_DELAY = 300
+
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ className, type, value, onChange, debounced = true, ...props }, ref) => {
-    const debouncedProps = useDebounceChange(debounced, value as string, onChange)
+  ({ className, type, value, onChange, ...rest }, ref) => {
+    const latestOnChange = useLatest(onChange)
+
+    const onInputChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      latestOnChange.current(e.target.value)
+    }, [latestOnChange])
+
+    const debouncedChange = useDebounceCallback(onInputChange, DEBOUNCE_DELAY)
+
+    const { focused, focusProps } = useFocus({
+      // flush debouncedChange on blur
+      onBlur: debouncedChange.flush,
+    })
+
+    // flush debouncedChange on unmount
+    useEffect(() => {
+      return () => {
+        debouncedChange.flush()
+      }
+    }, [debouncedChange])
+
+    const props: React.ComponentProps<'input'> = {
+      onChange: debouncedChange,
+      ...focusProps,
+      ...rest,
+    }
+
+    if (!focused) {
+      props.value = value
+    } else {
+      props.defaultValue = value
+    }
 
     return (
       <input
@@ -20,7 +52,6 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           className,
         )}
         ref={ref}
-        {...debouncedProps}
         {...props}
       />
     )
