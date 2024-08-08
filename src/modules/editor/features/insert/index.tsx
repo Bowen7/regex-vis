@@ -144,7 +144,7 @@ const Insert: React.FC<Props> = ({ nodes }) => {
       {lookAroundOptions.length > 0 && (
         <ShowMore id="lookAround">
           <Cell
-            label={t('Lookahead/LookBehind assertion')}
+            label={t('Lookaround assertion')}
             mdnLinkKey="lookAround"
           >
             <ButtonGroup variant="outline">

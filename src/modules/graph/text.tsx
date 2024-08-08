@@ -55,9 +55,7 @@ function renderClassCharacter(value: string, t: TFunction) {
   } else {
     return (
       <span>
-        <LeftQuote />
         {value}
-        <RightQuote />
       </span>
     )
   }
@@ -67,13 +65,13 @@ function renderRangesCharacter(node: AST.RangesCharacterNode, t: TFunction) {
   const singleRangeSet = new Set<string>()
   const ranges = node.ranges
   const texts: JSX.Element[] = []
-  ranges.forEach(({ from, to }, index) => {
+  ranges.forEach(({ from, to, id }) => {
     if (from.length === 1) {
       if (from === to) {
         singleRangeSet.add(from)
       } else {
         texts.push(
-          <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={index}>
+          <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={id}>
             <span>
               <LeftQuote />
               {from}
@@ -90,13 +88,13 @@ function renderRangesCharacter(node: AST.RangesCharacterNode, t: TFunction) {
       }
     } else if (from === to) {
       texts.push(
-        <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={index}>
+        <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={id}>
           {renderClassCharacter(from, t)}
         </div>,
       )
     } else {
       texts.push(
-        <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={index}>
+        <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={id}>
           {renderClassCharacter(from, t)}
           <span className="text-foreground/50">{' - '}</span>
           {renderClassCharacter(to, t)}

@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
+import { SelectionSlash } from '@phosphor-icons/react'
 import { Input } from '@/components/ui/input'
 import type { AST } from '@/parser'
 import Cell from '@/components/cell'
@@ -61,13 +62,16 @@ function GroupSelect({ group }: GroupSelectProps) {
   const onSelectChange = (value: string) =>
     handleGroupChange(value as AST.GroupKind)
 
-  const handleUnGroup = () => updateGroup(null)
+  const unGroup = () => updateGroup(null)
 
   return (
     <Cell
       label={t('Group')}
-      rightLabel={t('UnGroup')}
-      onRightLabelClick={handleUnGroup}
+      rightIcon={(
+        <SelectionSlash className="w-4 h-4" />
+      )}
+      rightTooltip={t('UnGroup')}
+      onRightIconClick={unGroup}
       className="space-y-2"
     >
       <Select value={kind} onValueChange={onSelectChange}>

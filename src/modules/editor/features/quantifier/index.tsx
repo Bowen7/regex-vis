@@ -1,11 +1,72 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
-import { quantifierOptions } from './helper'
+import { z } from 'zod'
+import { useLatest } from 'react-use'
 import Cell from '@/components/cell'
-import RangeInput from '@/components/range-input'
+import { type Range, RangeInput } from '@/components/range-input'
 import type { AST } from '@/parser'
 import { updateQuantifierAtom } from '@/atom'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
+import { Validation } from '@/components/validation'
+
+const QUANTIFIER_OPTIONS = [
+  { value: 'non', label: '1 (default)', code: '' },
+  { value: '?', label: '0 or 1', code: '?' },
+  { value: '*', label: '0 or more', code: '*' },
+  { value: '+', label: '1 or more', code: '+' },
+  {
+    value: 'custom',
+    label: 'custom',
+    code: '{min,max}',
+  },
+]
+
+const INFINITY = 'Infinity'
+
+const singleValueSchema = (z.literal(INFINITY).transform(() => Infinity)).or(z.coerce.number().int().nonnegative())
+const emptyStartSchema = z.string().length(0).transform(() => 0)
+const emptyEndSchema = z.string().length(0).transform(() => Infinity)
+const rangeSchema = z.union([
+  z.object({
+    start: emptyStartSchema,
+    end: emptyEndSchema,
+  }),
+  z.object({
+    start: emptyStartSchema,
+    end: singleValueSchema,
+  }),
+  z.object({
+    start: singleValueSchema,
+    end: emptyEndSchema,
+  }),
+  z.object({
+    start: singleValueSchema,
+    end: singleValueSchema,
+  }),
+]).refine(({ start, end }) => start !== Infinity || end !== Infinity, {
+  message: 'Min cannot be Infinity',
+}).refine(({ start, end }) => start <= end, {
+  message: 'Numbers out of order in the quantifier',
+}).transform(({ start, end }) => ({
+  min: start,
+  max: end,
+})) as z.ZodType<{ min: number, max: number }, z.ZodTypeDef, Range>
+
+const rangeTransformer = (quantifier: AST.Quantifier): Range => {
+  return {
+    start: `${quantifier.min}`,
+    end: `${quantifier.max}`,
+  }
+}
 
 interface Props {
   quantifier: AST.Quantifier | null
@@ -14,28 +75,10 @@ interface Props {
 const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   const { t } = useTranslation()
   const updateQuantifier = useSetAtom(updateQuantifierAtom)
-  const quantifierRef = useRef<AST.Quantifier | null>(quantifier)
-  const [kind, setKind] = useState('non')
-  const [min, setMin] = useState('')
-  const [max, setMax] = useState('')
-  const [minPlaceholder, setMinPlaceholder] = useState('')
-  const [maxPlaceholder, setMaxPlaceholder] = useState('')
+  const [customRange, setCustomRange] = useState<Range | null>(null)
+  const latestGreedy = useLatest<boolean>(quantifier?.greedy ?? true)
 
-  useEffect(() => {
-    quantifierRef.current = quantifier
-    if (!quantifier) {
-      setKind('non')
-      return
-    }
-    if (quantifier.kind === 'custom') {
-      const { min, max } = quantifier
-      setMin(`${min}`)
-      setMax(`${max}`)
-    }
-    setKind(quantifier.kind)
-  }, [quantifier])
-
-  const handleChange = (value: string | string[]) => {
+  const onKindChange = (value: string) => {
     const greedy = quantifier?.greedy || true
     let nextQuantifier: AST.Quantifier | null = null
     switch (value) {
@@ -53,44 +96,27 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
     }
     if (['non', '*', '?', '+'].includes(value as string)) {
       updateQuantifier(nextQuantifier)
-    }
-    else {
-      setKind(value as string)
+    } else {
+      setCustomRange({
+        start: '',
+        end: '',
+      })
     }
   }
 
-  const validateCustomRange = (min: string, max: string): string | null => {
-    if (min === '' && max === '') {
-      return 'At least one input is not empty'
+  useEffect(() => {
+    const result = rangeSchema.safeParse(customRange)
+    if (result.success) {
+      updateQuantifier({
+        kind: 'custom',
+        greedy: latestGreedy.current,
+        ...result.data,
+      })
     }
+  }, [customRange, latestGreedy, updateQuantifier])
 
-    const minNumber = Number(min)
-    const maxNumber = Number(max)
-    if (
-      Number.isNaN(minNumber)
-      || Number.isNaN(maxNumber)
-      || minNumber < 0
-      || maxNumber < 0
-    ) {
-      return 'Only positive numbers can be entered'
-    }
-
-    if (min && max && minNumber > maxNumber) {
-      return 'Numbers out of order in the quantifier'
-    }
-    return null
-  }
-
-  const handleCustomRangeChange = (min: string, max: string) => {
-    if (min === '') {
-      setMinPlaceholder('0')
-      min = '0'
-    }
-    if (max === '') {
-      setMaxPlaceholder('Infinity')
-      max = 'Infinity'
-    }
-    const greedy = quantifier?.greedy || false
+  const onCustomRangeChange = ({ min, max }: Partial<AST.Quantifier>) => {
+    const greedy = quantifier?.greedy ?? false
     updateQuantifier({
       kind: 'custom',
       min: Number(min),
@@ -99,56 +125,64 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
     })
   }
 
-  // const handleGreedyChange = (e: CheckboxEvent) => {
-  //   const greedy = e.target.checked
-  //   updateQuantifier({
-  //     ...(quantifierRef.current as AST.Quantifier),
-  //     greedy,
-  //   })
-  // }
+  const onGreedyChange = (greedy: boolean) => {
+    updateQuantifier({
+      ...(quantifierRef.current as AST.Quantifier),
+      greedy,
+    })
+  }
   return (
-    <>
-      {/* <Cell label={t('Quantifier')}>
-        <Cell.Item label={t('times')}>
-          <Select
-            value={kind}
-            onChange={handleChange}
-            getPopupContainer={() => document.getElementById('editor-content')}
-            disableMatchWidth
+    <Cell label={t('Quantifier')} className="space-y-4">
+      <Cell.Item label={t('times')}>
+        <Select
+          value={kind}
+          onValueChange={onKindChange}
+        >
+          <SelectTrigger className="w-52">
+            <SelectValue placeholder={t('Choose one')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {QUANTIFIER_OPTIONS.map(({ value, label, code }) => (
+                <SelectItem value={value} key={value}>
+                  {code && <span className="text-teal-400 font-mono text-sm mr-2">{code}</span>}
+                  <span>{t(label)}</span>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {quantifier?.kind === 'custom' && (
+          <Validation
+            value={quantifier}
+            transformer={rangeTransformer}
+            schema={rangeSchema}
+            onChange={onCustomRangeChange}
           >
-            {quantifierOptions.map(({ value, label }) => (
-              <Select.Option value={value} key={value}>
-                <span>{t(label)}</span>
-              </Select.Option>
-            ))}
-          </Select>
-          {kind === 'custom' && (
-            <>
-              <Spacer h={0.5} />
+            {(value: Range, onChange: (value: Range) => void) => (
               <RangeInput
-                start={min}
-                end={max}
-                startPlaceholder={minPlaceholder}
-                endPlaceholder={maxPlaceholder}
-                controlled={false}
-                onChange={handleCustomRangeChange}
-                validate={validateCustomRange}
+                value={value}
+                startPlaceholder="0"
+                endPlaceholder={INFINITY}
+                onChange={onChange}
               />
-            </>
-          )}
-        </Cell.Item>
-        {kind !== 'non' && (
-          <Cell.Item label="greedy">
-            <Checkbox
-              checked={quantifier?.greedy}
-              onChange={handleGreedyChange}
-            >
-              {t('greedy')}
-            </Checkbox>
-          </Cell.Item>
+            )}
+          </Validation>
         )}
-      </Cell> */}
-    </>
+      </Cell.Item>
+      {quantifier && (
+        <div>
+          <label
+            className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+          >
+            <div className="flex items-center space-x-2">
+              <h6 className="text-foreground/60 font-semibold text-sm">{t('Greedy')}</h6>
+              <Checkbox checked={quantifier?.greedy ?? true} onCheckedChange={onGreedyChange} />
+            </div>
+          </label>
+        </div>
+      )}
+    </Cell>
   )
 }
 

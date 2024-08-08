@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useAtomValue, useSetAtom } from 'jotai'
-import { useEvent, useUpdateEffect } from 'react-use'
+import { useUpdateEffect } from 'react-use'
 import { useEventListener } from 'usehooks-ts'
 import clsx from 'clsx'
 import EditTab from './edit-tab'
@@ -16,6 +16,12 @@ import {
   undoAtom,
 } from '@/atom'
 import { ScrollArea } from '@/components/ui/scroll-area'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 export type Tab = 'legend' | 'edit' | 'test'
 interface Props {
@@ -75,24 +81,46 @@ function Editor({ defaultTab, collapsed }: Props) {
       onValueChange={(value: string) => setTabValue(value as Tab)}
       className={clsx('flex flex-col h-[calc(100vh-64px)] py-4 border-l transition-width', collapsed ? 'w-[0px]' : 'w-[300px]')}
     >
-      <TabsList className="grid grid-cols-3 mx-4 mb-6">
-        <TabsTrigger value="legend">{t('Legends')}</TabsTrigger>
-        <TabsTrigger value="edit" disabled={editDisabled}>{t('Edit')}</TabsTrigger>
-        <TabsTrigger value="test">{t('Test')}</TabsTrigger>
-      </TabsList>
-      <ScrollArea className="flex-1">
-        <div className="w-[300px] p-4 pt-0">
-          <TabsContent value="legend">
-            <LegendTab />
-          </TabsContent>
-          <TabsContent value="edit">
-            <EditTab />
-          </TabsContent>
-          <TabsContent value="test">
-            <TestTab />
-          </TabsContent>
-        </div>
-      </ScrollArea>
+      <TooltipProvider delayDuration={500}>
+        <Tooltip>
+          <TabsList className="grid grid-cols-3 mx-4 mb-6">
+            <TabsTrigger value="legend">{t('Legends')}</TabsTrigger>
+            <TabsTrigger
+              value="edit"
+              disabled={editDisabled}
+              asChild={editDisabled}
+              className={
+                clsx({ 'cursor-not-allowed': editDisabled }, '!pointer-events-auto')
+              }
+            >
+              {editDisabled
+                ? (
+                    <TooltipTrigger>
+                      {t('Edit')}
+                    </TooltipTrigger>
+                  )
+                : t('Edit')}
+            </TabsTrigger>
+            <TabsTrigger value="test">{t('Test')}</TabsTrigger>
+          </TabsList>
+          <ScrollArea className="flex-1">
+            <div className="w-[300px] p-4 pt-0">
+              <TabsContent value="legend">
+                <LegendTab />
+              </TabsContent>
+              <TabsContent value="edit">
+                <EditTab />
+              </TabsContent>
+              <TabsContent value="test">
+                <TestTab />
+              </TabsContent>
+            </div>
+          </ScrollArea>
+          <TooltipContent>
+            <p>{t('You have to select nodes first')}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
     </Tabs>
   )
 }

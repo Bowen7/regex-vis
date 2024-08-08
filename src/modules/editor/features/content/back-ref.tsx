@@ -37,7 +37,7 @@ const BackRef: React.FC<Props> = ({ reference }) => {
         onValueChange={onChange}
       >
         <SelectTrigger className="w-52">
-          <SelectValue placeholder={t('Choose one')} className="" />
+          <SelectValue placeholder={t('Choose one')} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

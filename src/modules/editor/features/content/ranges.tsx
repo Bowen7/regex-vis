@@ -132,8 +132,8 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
     updateContent(payload)
   }
 
-  const onGreedyChange = (checked: boolean) => {
-    updateContent({ kind: 'ranges', ranges, negate: checked })
+  const onNegateChange = (negate: boolean) => {
+    updateContent({ kind: 'ranges', ranges, negate })
   }
 
   return (
@@ -157,7 +157,6 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
                   onRemove={() => onRemove(index)}
                 />
               )}
-
             </Validation>
           ))}
         </div>
@@ -187,7 +186,7 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
           >
             <div className="flex items-center space-x-2">
               <h6 className="text-foreground/60 font-semibold text-sm">{t('Negate')}</h6>
-              <Checkbox checked={negate} onCheckedChange={onGreedyChange} />
+              <Checkbox checked={negate} onCheckedChange={onNegateChange} />
             </div>
           </label>
         </div>

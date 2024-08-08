@@ -43,14 +43,14 @@ export const RangeInput: React.FC<Prop> = ({
     <div {...hoverProps} {...focusProps} className={clsx('flex items-center', className)}>
       <div className="flex items-center space-x-2">
         <Input
-          className="flex-1"
+          className="flex-1 font-mono"
           value={value.start}
           placeholder={startPlaceholder}
           onChange={onStartChange}
         />
         <span>{' - '}</span>
         <Input
-          className="flex-1"
+          className="flex-1 font-mono"
           value={value.end}
           placeholder={endPlaceholder}
           onChange={onEndChange}

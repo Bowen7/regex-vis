@@ -4,6 +4,12 @@ import clsx from 'clsx'
 import type { MdnLinkKey } from '@/utils/links'
 import mdnLinks from '@/utils/links'
 import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface ItemProps {
   label: string
@@ -22,31 +28,42 @@ interface Props {
   className?: string
   label: string
   mdnLinkKey?: MdnLinkKey
-  rightLabel?: string
+  rightIcon?: React.ReactNode
+  rightTooltip?: string
+  onRightIconClick?: () => void
   children: React.ReactNode
-  onRightLabelClick?: () => void
 }
 function Cell({
   className,
   label,
   mdnLinkKey,
   children,
-  rightLabel,
-  onRightLabelClick,
+  rightIcon,
+  rightTooltip,
+  onRightIconClick,
 }: Props) {
   return (
     <div>
-      <div className={clsx('flex items-center mb-2.5', { 'justify-between': rightLabel })}>
+      <div className={clsx('flex items-center mb-2.5', { 'justify-between': !!rightIcon })}>
         <h5 className="font-semibold">{label}</h5>
         {mdnLinkKey && (
           <a href={mdnLinks[mdnLinkKey]} target="_blank" rel="noreferrer" className="ml-2">
             <QuestionIcon className="w-4 h-4" />
           </a>
         )}
-        {rightLabel && (
-          <Button onClick={onRightLabelClick} variant="outline" size="sm" className="px-2 h-7">
-            {rightLabel}
-          </Button>
+        {rightIcon && (
+          <TooltipProvider delayDuration={500}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={onRightIconClick} variant="outline" size="icon" className="px-2 h-7">
+                  {rightIcon}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{rightTooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
       </div>
       <div className={className}>{children}</div>

@@ -43,7 +43,7 @@
   "Add A Case": "添加一个用例",
   "Insert around": "插入节点",
   "Group selection": "分组",
-  "Lookahead/LookBehind assertion": "向前/向后断言",
+  "Lookaround assertion": "向前/向后断言",
   "Before": "向前插入",
   "Parallel": "插入或",
   "After": "向后插入",
