@@ -12,7 +12,7 @@ import {
 } from '@/constants'
 import type { AST } from '@/parser'
 
-interface Props {
+type Props = {
   x: number
   y: number
   node: AST.Node
@@ -44,7 +44,7 @@ function GroupLikeNode({ x, y, node, selected }: Props) {
         height={contentSize[1]}
         rx={GRAPH_NODE_BORDER_RADIUS}
         ry={GRAPH_NODE_BORDER_RADIUS}
-        className="stroke-foreground/30 fill-transparent "
+        className="stroke-[1.5] stroke-foreground/30 fill-transparent "
       >
         {nodeChildren.length > 0 && (
           <>

@@ -2,7 +2,7 @@ import React from 'react'
 import MidConnect from './mid-connect'
 import { GRAPH_NODE_MARGIN_HORIZONTAL, GRAPH_ROOT_RADIUS } from '@/constants'
 
-interface RootNodeProps {
+type RootNodeProps = {
   cx: number
   cy: number
 }
@@ -11,12 +11,12 @@ const RootNode = React.memo(({ cx, cy }: RootNodeProps) => (
     cx={cx}
     cy={cy}
     r={GRAPH_ROOT_RADIUS}
-    className="stroke-foreground/60 fill-transparent"
+    className="stroke-[1.5] stroke-foreground/60 fill-transparent"
   />
 ))
 RootNode.displayName = 'RootNode'
 
-interface RootNodesProps {
+type RootNodesProps = {
   x: number
   width: number
   centerY: number
