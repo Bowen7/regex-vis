@@ -51,7 +51,7 @@ function EditTab() {
         <ContentEditor content={content} id={id} quantifier={quantifier} />
       )}
       {group && <Group group={group} />}
-      {hasQuantifier && <Quantifier quantifier={quantifier} />}
+      {hasQuantifier && <Quantifier quantifier={quantifier} key={id} />}
       {lookAround && (
         <LookAround kind={lookAround.kind} negate={lookAround.negate} />
       )}

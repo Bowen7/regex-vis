@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react"
-import { useDebounce } from "react-use"
+import type React from 'react'
+import { useEffect, useState } from 'react'
+import { useDebounce } from 'react-use'
 
 export const useDebounceInput = (
   value: string,
   onChange: (value: string) => void,
-  ms = 300
+  ms = 300,
 ) => {
   const [innerValue, setInnerValue] = useState(value)
 
@@ -13,7 +14,7 @@ export const useDebounceInput = (
       onChange(innerValue)
     },
     ms,
-    [innerValue]
+    [innerValue],
   )
 
   useEffect(() => {
@@ -21,7 +22,7 @@ export const useDebounceInput = (
   }, [value])
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => setInnerValue(e.target.value)
 
   return { value: innerValue, onChange: handleChange }

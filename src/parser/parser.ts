@@ -6,7 +6,7 @@ import Lexer from './lexer'
 import { TokenType } from './token'
 import { removeBackslash } from './backslash'
 
-export interface Options {
+export type Options = {
   escapeBackslash?: boolean
   idGenerator?: (size?: number) => string
 }

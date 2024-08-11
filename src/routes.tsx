@@ -1,8 +1,9 @@
-import { Routes as ReactRouters, Route } from "react-router-dom"
-import Home from "./modules/home"
-import Samples from "./modules/samples"
-import Playground from "@/modules/playground"
-const isDev = import.meta.env.MODE === "development"
+import { Routes as ReactRouters, Route } from 'react-router-dom'
+import Home from './modules/home'
+import Samples from './modules/samples'
+import Playground from '@/modules/playground'
+
+const isDev = import.meta.env.MODE === 'development'
 
 export default function Routes() {
   return (

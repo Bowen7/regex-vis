@@ -9,7 +9,7 @@ import { updateContentAtom } from '@/atom'
 import { useToast } from '@/components/ui/use-toast'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 
-interface Props {
+type Props = {
   value: string
   quantifier: AST.Quantifier | null
 }

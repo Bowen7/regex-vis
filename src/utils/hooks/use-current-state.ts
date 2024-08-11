@@ -19,27 +19,29 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-import {
+import type {
   Dispatch,
   MutableRefObject,
   SetStateAction,
+} from 'react'
+import {
+  useCallback,
   useEffect,
   useRef,
   useState,
-  useCallback,
-} from "react"
+} from 'react'
 
 export type CurrentStateType<S> = [
   S,
   Dispatch<SetStateAction<S>>,
-  MutableRefObject<S>
+  MutableRefObject<S>,
 ]
 
 export const useCurrentState = <S>(
-  initialState: S | (() => S)
+  initialState: S | (() => S),
 ): CurrentStateType<S> => {
   const [state, setState] = useState<S>(() => {
-    return typeof initialState === "function"
+    return typeof initialState === 'function'
       ? (initialState as () => S)()
       : initialState
   })
@@ -50,8 +52,8 @@ export const useCurrentState = <S>(
   }, [state])
 
   const setValue = useCallback((val: SetStateAction<S>) => {
-    const result =
-      typeof val === "function"
+    const result
+      = typeof val === 'function'
         ? (val as (prevState: S) => S)(ref.current)
         : val
     ref.current = result

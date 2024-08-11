@@ -1,28 +1,30 @@
-import parse from "../parse"
-import * as AST from "../ast"
-test("parse should return correct ast when receiving a empty string", () => {
+import { expect, it } from 'vitest'
+import parse from '../parse'
+import type * as AST from '../ast'
+
+it('parse should return correct ast when receiving a empty string', () => {
   const expected: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [],
     flags: [],
     literal: false,
     escapeBackslash: true,
   }
-  const result = parse("", { idGenerator: () => "", escapeBackslash: true })
+  const result = parse('', { idGenerator: () => '', escapeBackslash: true })
   expect(result).toEqual(expected)
 })
 
-test("parse should return correct ast when receiving '\\\\n'", () => {
+it('parse should return correct ast when receiving \'\\\\n\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\n",
+        id: '',
+        type: 'character',
+        kind: 'class',
+        value: '\\n',
         quantifier: null,
       },
     ],
@@ -31,21 +33,21 @@ test("parse should return correct ast when receiving '\\\\n'", () => {
     escapeBackslash: true,
   }
   expect(
-    parse("\\\\n", {
-      idGenerator: () => "",
+    parse('\\\\n', {
+      idGenerator: () => '',
       escapeBackslash: true,
-    })
+    }),
   ).toEqual(expected1)
 
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "\\n",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '\\n',
         quantifier: null,
       },
     ],
@@ -54,22 +56,22 @@ test("parse should return correct ast when receiving '\\\\n'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\\\n", {
-      idGenerator: () => "",
-    })
+    parse('\\\\n', {
+      idGenerator: () => '',
+    }),
   ).toEqual(expected2)
 })
 
-test("parse should return correct ast when receiving '\\n'", () => {
+it('parse should return correct ast when receiving \'\\n\'', () => {
   const expected: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\n",
+        id: '',
+        type: 'character',
+        kind: 'class',
+        value: '\\n',
         quantifier: null,
       },
     ],
@@ -78,24 +80,24 @@ test("parse should return correct ast when receiving '\\n'", () => {
     escapeBackslash: true,
   }
   expect(
-    parse("\\n", { idGenerator: () => "", escapeBackslash: true })
+    parse('\\n', { idGenerator: () => '', escapeBackslash: true }),
   ).toEqual(expected)
-  expect(parse("\\n", { idGenerator: () => "" })).toEqual({
+  expect(parse('\\n', { idGenerator: () => '' })).toEqual({
     ...expected,
     escapeBackslash: false,
   })
 })
 
-test("parse should return correct ast when receiving '\\d'", () => {
+it('parse should return correct ast when receiving \'\\d\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "d",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: 'd',
         quantifier: null,
       },
     ],
@@ -104,14 +106,14 @@ test("parse should return correct ast when receiving '\\d'", () => {
     escapeBackslash: true,
   }
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\d",
+        id: '',
+        type: 'character',
+        kind: 'class',
+        value: '\\d',
         quantifier: null,
       },
     ],
@@ -120,21 +122,21 @@ test("parse should return correct ast when receiving '\\d'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\d", { idGenerator: () => "", escapeBackslash: true })
+    parse('\\d', { idGenerator: () => '', escapeBackslash: true }),
   ).toEqual(expected1)
-  expect(parse("\\d", { idGenerator: () => "" })).toEqual(expected2)
+  expect(parse('\\d', { idGenerator: () => '' })).toEqual(expected2)
 })
 
-test("parse should return correct ast when receiving '\\\\d'", () => {
+it('parse should return correct ast when receiving \'\\\\d\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\d",
+        id: '',
+        type: 'character',
+        kind: 'class',
+        value: '\\d',
         quantifier: null,
       },
     ],
@@ -143,14 +145,14 @@ test("parse should return correct ast when receiving '\\\\d'", () => {
     escapeBackslash: true,
   }
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "\\d",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '\\d',
         quantifier: null,
       },
     ],
@@ -159,28 +161,28 @@ test("parse should return correct ast when receiving '\\\\d'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\\\d", {
-      idGenerator: () => "",
+    parse('\\\\d', {
+      idGenerator: () => '',
       escapeBackslash: true,
-    })
+    }),
   ).toEqual(expected1)
   expect(
-    parse("\\\\d", {
-      idGenerator: () => "",
-    })
+    parse('\\\\d', {
+      idGenerator: () => '',
+    }),
   ).toEqual(expected2)
 })
 
-test("parse should return correct ast when receiving '\\\\a'", () => {
+it('parse should return correct ast when receiving \'\\\\a\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "a",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: 'a',
         quantifier: null,
       },
     ],
@@ -189,14 +191,14 @@ test("parse should return correct ast when receiving '\\\\a'", () => {
     escapeBackslash: true,
   }
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "\\a",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '\\a',
         quantifier: null,
       },
     ],
@@ -205,28 +207,28 @@ test("parse should return correct ast when receiving '\\\\a'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\\\a", {
-      idGenerator: () => "",
+    parse('\\\\a', {
+      idGenerator: () => '',
       escapeBackslash: true,
-    })
+    }),
   ).toEqual(expected1)
   expect(
-    parse("\\\\a", {
-      idGenerator: () => "",
-    })
+    parse('\\\\a', {
+      idGenerator: () => '',
+    }),
   ).toEqual(expected2)
 })
 
-test("parse should return correct ast when receiving '\\.'", () => {
+it('parse should return correct ast when receiving \'\\.\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: ".",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '.',
         quantifier: null,
       },
     ],
@@ -235,14 +237,14 @@ test("parse should return correct ast when receiving '\\.'", () => {
     escapeBackslash: true,
   }
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: ".",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '.',
         quantifier: null,
       },
     ],
@@ -251,28 +253,28 @@ test("parse should return correct ast when receiving '\\.'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\.", {
-      idGenerator: () => "",
+    parse('\\.', {
+      idGenerator: () => '',
       escapeBackslash: true,
-    })
+    }),
   ).toEqual(expected1)
   expect(
-    parse("\\.", {
-      idGenerator: () => "",
-    })
+    parse('\\.', {
+      idGenerator: () => '',
+    }),
   ).toEqual(expected2)
 })
 
-test("parse should return correct ast when receiving '\\1'", () => {
+it('parse should return correct ast when receiving \'\\1\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "1",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '1',
         quantifier: null,
       },
     ],
@@ -281,13 +283,13 @@ test("parse should return correct ast when receiving '\\1'", () => {
     escapeBackslash: true,
   }
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "backReference",
-        ref: "1",
+        id: '',
+        type: 'backReference',
+        ref: '1',
       },
     ],
     flags: [],
@@ -295,27 +297,27 @@ test("parse should return correct ast when receiving '\\1'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\1", {
-      idGenerator: () => "",
+    parse('\\1', {
+      idGenerator: () => '',
       escapeBackslash: true,
-    })
+    }),
   ).toEqual(expected1)
   expect(
-    parse("\\1", {
-      idGenerator: () => "",
-    })
+    parse('\\1', {
+      idGenerator: () => '',
+    }),
   ).toEqual(expected2)
 })
 
-test("parse should return correct ast when receiving '\\\\1'", () => {
+it('parse should return correct ast when receiving \'\\\\1\'', () => {
   const expected1: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "backReference",
-        ref: "1",
+        id: '',
+        type: 'backReference',
+        ref: '1',
       },
     ],
     flags: [],
@@ -323,14 +325,14 @@ test("parse should return correct ast when receiving '\\\\1'", () => {
     escapeBackslash: true,
   }
   const expected2: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "string",
-        value: "\\1",
+        id: '',
+        type: 'character',
+        kind: 'string',
+        value: '\\1',
         quantifier: null,
       },
     ],
@@ -339,30 +341,30 @@ test("parse should return correct ast when receiving '\\\\1'", () => {
     escapeBackslash: false,
   }
   expect(
-    parse("\\\\1", {
-      idGenerator: () => "",
+    parse('\\\\1', {
+      idGenerator: () => '',
       escapeBackslash: true,
-    })
+    }),
   ).toEqual(expected1)
   expect(
-    parse("\\\\1", {
-      idGenerator: () => "",
-    })
+    parse('\\\\1', {
+      idGenerator: () => '',
+    }),
   ).toEqual(expected2)
 })
 
-test("parse character class should return correct ast when escapedBackslash = true", () => {
+it('parse character class should return correct ast when escapedBackslash = true', () => {
   expect(
-    parse("\\\\d", { idGenerator: () => "", escapeBackslash: true })
+    parse('\\\\d', { idGenerator: () => '', escapeBackslash: true }),
   ).toEqual({
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "character",
-        kind: "class",
-        value: "\\d",
+        id: '',
+        type: 'character',
+        kind: 'class',
+        value: '\\d',
         quantifier: null,
       },
     ],

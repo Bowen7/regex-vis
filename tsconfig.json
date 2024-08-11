@@ -11,7 +11,7 @@
       "tests/*": ["../tests/*"]
     },
     "resolveJsonModule": true,
-    "types": ["vite/client", "vite-plugin-svgr/client"],
+    "types": ["vite/client"],
     "allowJs": true,
     "strict": true,
     "noFallthroughCasesInSwitch": true,

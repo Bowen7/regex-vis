@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
 import { z } from 'zod'
-import { useLatest } from 'react-use'
 import Cell from '@/components/cell'
 import { type Range, RangeInput } from '@/components/range-input'
 import type { AST } from '@/parser'
@@ -31,52 +30,61 @@ const QUANTIFIER_OPTIONS = [
 ]
 
 const INFINITY = 'Infinity'
+const INVALID_VALUE = 'Invalid quantifier value'
+const startRegex = /^[1-9]\d*$|^$/
+const endRegex = /^[1-9]\d*$|^$|^Infinity$/
+const startSchema = z.string()
+  .superRefine((input, ctx) => {
+    if (startRegex.test(input)) {
+      return
+    }
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      fatal: true,
+      message: INVALID_VALUE,
+    })
+  })
+  .transform(text => text ? Number(text) : 0)
+const endSchema = z.string()
+  .superRefine((input, ctx) => {
+    if (endRegex.test(input)) {
+      return
+    }
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      fatal: true,
+      message: INVALID_VALUE,
+    })
+  })
+  .transform(text => (text === '' || text === INFINITY) ? Infinity : Number(text))
 
-const singleValueSchema = (z.literal(INFINITY).transform(() => Infinity)).or(z.coerce.number().int().nonnegative())
-const emptyStartSchema = z.string().length(0).transform(() => 0)
-const emptyEndSchema = z.string().length(0).transform(() => Infinity)
-const rangeSchema = z.union([
-  z.object({
-    start: emptyStartSchema,
-    end: emptyEndSchema,
-  }),
-  z.object({
-    start: emptyStartSchema,
-    end: singleValueSchema,
-  }),
-  z.object({
-    start: singleValueSchema,
-    end: emptyEndSchema,
-  }),
-  z.object({
-    start: singleValueSchema,
-    end: singleValueSchema,
-  }),
-]).refine(({ start, end }) => start !== Infinity || end !== Infinity, {
-  message: 'Min cannot be Infinity',
-}).refine(({ start, end }) => start <= end, {
-  message: 'Numbers out of order in the quantifier',
-}).transform(({ start, end }) => ({
-  min: start,
-  max: end,
-})) as z.ZodType<{ min: number, max: number }, z.ZodTypeDef, Range>
+const rangeSchema = z.object({
+  start: startSchema,
+  end: endSchema,
+})
+  .refine(({ start, end }) => start <= end, {
+    message: 'Numbers out of order in the quantifier',
+    path: ['start', 'end'],
+  }).transform(({ start, end }) => ({
+    min: start,
+    max: end,
+  })) as z.ZodType<{ min: number, max: number }, z.ZodTypeDef, Range>
 
-const rangeTransformer = (quantifier: AST.Quantifier): Range => {
-  return {
-    start: `${quantifier.min}`,
-    end: `${quantifier.max}`,
-  }
-}
-
-interface Props {
+type Props = {
   quantifier: AST.Quantifier | null
 }
 
 const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   const { t } = useTranslation()
   const updateQuantifier = useSetAtom(updateQuantifierAtom)
-  const [customRange, setCustomRange] = useState<Range | null>(null)
-  const latestGreedy = useLatest<boolean>(quantifier?.greedy ?? true)
+  const [customRange, setCustomRange] = useState<Range | null>(() => quantifier
+    ? ({
+        start: quantifier.min.toString(),
+        end: quantifier.max.toString(),
+      })
+    : null)
+
+  const kind = quantifier?.kind ?? 'non'
 
   const onKindChange = (value: string) => {
     const greedy = quantifier?.greedy || true
@@ -91,32 +99,27 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
       case '+':
         nextQuantifier = { kind: '+', min: 1, max: Infinity, greedy }
         break
+      case 'custom': {
+        const min = quantifier?.min ?? 1
+        const max = quantifier?.max ?? 1
+        nextQuantifier = { kind: 'custom', min, max, greedy }
+        setCustomRange({
+          start: min.toString(),
+          end: max.toString(),
+        })
+        break
+      }
       default:
         break
     }
-    if (['non', '*', '?', '+'].includes(value as string)) {
-      updateQuantifier(nextQuantifier)
-    } else {
-      setCustomRange({
-        start: '',
-        end: '',
-      })
+    if (value !== 'custom') {
+      setCustomRange(null)
     }
+    updateQuantifier(nextQuantifier)
   }
 
-  useEffect(() => {
-    const result = rangeSchema.safeParse(customRange)
-    if (result.success) {
-      updateQuantifier({
-        kind: 'custom',
-        greedy: latestGreedy.current,
-        ...result.data,
-      })
-    }
-  }, [customRange, latestGreedy, updateQuantifier])
-
-  const onCustomRangeChange = ({ min, max }: Partial<AST.Quantifier>) => {
-    const greedy = quantifier?.greedy ?? false
+  const onCustomRangeChange = ({ min, max }: { min: number, max: number }) => {
+    const greedy = quantifier?.greedy ?? true
     updateQuantifier({
       kind: 'custom',
       min: Number(min),
@@ -126,49 +129,54 @@ const QuantifierItem: React.FC<Props> = ({ quantifier }) => {
   }
 
   const onGreedyChange = (greedy: boolean) => {
+    if (!quantifier) {
+      return
+    }
     updateQuantifier({
-      ...(quantifierRef.current as AST.Quantifier),
+      ...(quantifier),
       greedy,
     })
   }
+
   return (
     <Cell label={t('Quantifier')} className="space-y-4">
       <Cell.Item label={t('times')}>
-        <Select
-          value={kind}
-          onValueChange={onKindChange}
-        >
-          <SelectTrigger className="w-52">
-            <SelectValue placeholder={t('Choose one')} />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {QUANTIFIER_OPTIONS.map(({ value, label, code }) => (
-                <SelectItem value={value} key={value}>
-                  {code && <span className="text-teal-400 font-mono text-sm mr-2">{code}</span>}
-                  <span>{t(label)}</span>
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        {quantifier?.kind === 'custom' && (
-          <Validation
-            value={quantifier}
-            transformer={rangeTransformer}
-            schema={rangeSchema}
-            onChange={onCustomRangeChange}
+        <div className="space-y-2">
+          <Select
+            value={kind}
+            onValueChange={onKindChange}
           >
-            {(value: Range, onChange: (value: Range) => void) => (
-              <RangeInput
-                value={value}
-                startPlaceholder="0"
-                endPlaceholder={INFINITY}
-                onChange={onChange}
-              />
-            )}
-          </Validation>
-        )}
+            <SelectTrigger className="w-52">
+              <SelectValue placeholder={t('Choose one')} />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {QUANTIFIER_OPTIONS.map(({ value, label, code }) => (
+                  <SelectItem value={value} key={value}>
+                    {code && <span className="text-teal-400 font-mono text-sm mr-2">{code}</span>}
+                    <span>{t(label)}</span>
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {customRange && (
+            <Validation
+              defaultValue={customRange}
+              schema={rangeSchema}
+              onChange={onCustomRangeChange}
+            >
+              {(value: Range, onChange: (value: Range) => void) => (
+                <RangeInput
+                  value={value}
+                  startPlaceholder="0"
+                  endPlaceholder={INFINITY}
+                  onChange={onChange}
+                />
+              )}
+            </Validation>
+          )}
+        </div>
       </Cell.Item>
       {quantifier && (
         <div>

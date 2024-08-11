@@ -10,10 +10,10 @@ import Cell from '@/components/cell'
 import type { AST } from '@/parser'
 import { updateContentAtom } from '@/atom'
 import { ButtonDropdown, ButtonDropdownItem } from '@/components/button-dropdown'
-import { type Transformer, Validation } from '@/components/validation'
+import { Validation } from '@/components/validation'
 import { Checkbox } from '@/components/ui/checkbox'
 
-interface Prop {
+type Prop = {
   ranges: AST.Range[]
   negate: boolean
 }
@@ -24,16 +24,17 @@ const commonUsedRanges = [
   { from: 'A', to: 'Z', desc: 'A - Z' },
 ]
 
-const rangeTransformer: Transformer<AST.Range, Range> = (range: AST.Range): Range => {
-  return {
-    start: range.from,
-    end: range.to,
-  }
-}
-
 const unicodeRegex = /^(?:\\u[0-9a-fA-F]{4}|\\u\{[0-9a-fA-F]{4}\}|\\u\{[0-9a-fA-F]{5}\})$/
-const emptySchema = z.string().length(0)
-const singleValueSchema = z.string().length(1).or(z.string().regex(unicodeRegex))
+const singleValueSchema = z.string().superRefine((input, ctx) => {
+  if (input.length === 1 || unicodeRegex.test(input)) {
+    return
+  }
+  ctx.addIssue({
+    code: z.ZodIssueCode.custom,
+    fatal: true,
+    message: 'The range value must be a single character or unicode',
+  })
+})
 const rangeRefine = ({ start, end }: Range) => {
   try {
     // TODO find a better way to validate the range
@@ -47,50 +48,14 @@ const rangeRefine = ({ start, end }: Range) => {
 }
 
 export const rangeSchema: z.ZodType<AST.Range, z.ZodTypeDef, Range> = z.object({
-  start: emptySchema,
-  end: emptySchema,
-}).or(z.object({
   start: singleValueSchema,
   end: singleValueSchema,
-})).refine(rangeRefine).transform((value: Range) => ({
-  from: value.start,
-  to: value.end,
-  id: '',
-}))
-
-const rangeClassName = (errors: z.ZodIssue[]) => {
-  if (errors.length === 0) {
-    return ''
-  }
-  const bothClassName = '[&_:is(input)]:!ring-transparent [&_:is(input)]:!border-red-500'
-  const startClassName = '[&_:is(input):first-child]:!ring-transparent [&_:is(input):first-child]:!border-red-500'
-  const endClassName = '[&_:is(input):last-child]:!ring-transparent [&_:is(input):first-child]:!border-red-500'
-  const hasCustomError = errors.some(error => error.code === 'custom')
-  // The range out of order in character class
-  if (hasCustomError) {
-    return bothClassName
-  }
-  const hasStartError = errors.some(error => error.path[0] === 'start')
-  const hasEndError = errors.some(error => error.path[0] === 'end')
-  if (hasStartError && hasEndError) {
-    return bothClassName
-  }
-  if (hasStartError) {
-    return startClassName
-  }
-  if (hasEndError) {
-    return endClassName
-  }
-  return ''
-}
-
-const errorFormatter = (errors: z.ZodIssue[]) => {
-  const hasCustomError = errors.some(error => error.code === 'custom')
-  if (hasCustomError) {
-    return 'The range out of order in character class'
-  }
-  return 'The range value must be a single character or unicode'
-}
+}).refine(rangeRefine, { message: 'The range out of order in character class', path: ['start', 'end'] })
+  .transform((value: Range) => ({
+    from: value.start,
+    to: value.end,
+    id: '',
+  }))
 
 const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
   const { t } = useTranslation()
@@ -143,12 +108,9 @@ const Ranges: React.FC<Prop> = ({ ranges, negate }) => {
           {ranges.map((range, index) => (
             <Validation
               key={range.id}
-              className={rangeClassName}
-              value={range}
-              transformer={rangeTransformer}
+              defaultValue={{ start: range.from, end: range.to }}
               onChange={(range: AST.Range) => onRangeChange(index, range)}
               schema={rangeSchema}
-              errorFormatter={errorFormatter}
             >
               {(value: Range, onChange: (value: Range) => void) => (
                 <RangeInput

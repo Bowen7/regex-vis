@@ -28,7 +28,7 @@ for (const key in characterClassTextMap) {
 const xhhSchema = z.string().regex(/^\\x[0-9a-fA-F]{2}$/)
 const uhhhhSchema = z.string().regex(/^\\u[0-9a-fA-F]{4}$/)
 
-interface Props {
+type Props = {
   value: string
 }
 const ClassCharacter: React.FC<Props> = ({ value }) => {
@@ -62,6 +62,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
       kind: 'class',
       value,
     })
+
   return (
     <Cell.Item label={t('Class')}>
       <div className="space-y-2">
@@ -84,7 +85,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
           </SelectContent>
         </Select>
         {classKind === '\\xhh' && (
-          <Validation value={value} onChange={onInputChange} schema={xhhSchema}>
+          <Validation defaultValue={value} onChange={onInputChange} schema={xhhSchema}>
             {(value: string, onChange: (value: string) => void) => (
               <Input
                 className="w-52 font-mono"
@@ -95,7 +96,7 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
           </Validation>
         )}
         {classKind === '\\uhhhh' && (
-          <Validation value={value} onChange={onInputChange} schema={uhhhhSchema}>
+          <Validation defaultValue={value} onChange={onInputChange} schema={uhhhhSchema}>
             {(value: string, onChange: (value: string) => void) => (
               <Input
                 className="w-52 font-mono"

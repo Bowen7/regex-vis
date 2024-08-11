@@ -28,7 +28,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-interface Prop {
+type Prop = {
   content: AST.Content
   id: string
   quantifier: AST.Quantifier | null
@@ -124,7 +124,7 @@ const ContentEditor: React.FC<Prop> = ({ content, id, quantifier }) => {
       {content.kind === 'ranges' && (
         <Ranges ranges={content.ranges} negate={content.negate} />
       )}
-      {content.kind === 'class' && <ClassCharacter value={content.value} />}
+      {content.kind === 'class' && <ClassCharacter value={content.value} key={id} />}
       {content.kind === 'backReference' && (
         <BackRef reference={content.ref} />
       )}

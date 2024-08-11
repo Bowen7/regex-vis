@@ -7,7 +7,7 @@ function captureClick(e: MouseEvent) {
   window.removeEventListener('click', captureClick, true)
 }
 
-interface Options {
+type Options = {
   disabled?: boolean
   className?: string
   onSelect: (box: { x1: number, y1: number, x2: number, y2: number }) => void

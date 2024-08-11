@@ -5,12 +5,12 @@ import { Input } from '@/components/ui/input'
 import { useFocus } from '@/utils/hooks/use-focus'
 import { useHover } from '@/utils/hooks/use-hover'
 
-export interface Range {
+export type Range = {
   start: string
   end: string
 }
 
-interface Prop {
+type Prop = {
   className?: string
   value: Range
   startPlaceholder?: string
@@ -46,6 +46,7 @@ export const RangeInput: React.FC<Prop> = ({
           className="flex-1 font-mono"
           value={value.start}
           placeholder={startPlaceholder}
+          errorPath="start"
           onChange={onStartChange}
         />
         <span>{' - '}</span>
@@ -53,6 +54,7 @@ export const RangeInput: React.FC<Prop> = ({
           className="flex-1 font-mono"
           value={value.end}
           placeholder={endPlaceholder}
+          errorPath="end"
           onChange={onEndChange}
         />
       </div>

@@ -1,30 +1,33 @@
-import { renderHook, act } from "@testing-library/react"
-import { useAtom, useSetAtom } from "jotai"
-import * as nanoid from "nanoid"
-import { AST } from "@/parser"
-import { updateQuantifierAtom } from "../quantifier"
-import { astAtom, selectedIdsAtom } from "../atoms"
-jest.mock("nanoid")
+import { expect, it, vi } from 'vitest'
+import { act } from 'react'
+import { renderHook } from '@testing-library/react'
+import { useAtom, useSetAtom } from 'jotai'
+import { nanoid } from 'nanoid'
+import { updateQuantifierAtom } from '../quantifier'
+import { astAtom, selectedIdsAtom } from '../atoms'
+import type { AST } from '@/parser'
 
-test("update quantifier", async () => {
+vi.mock('nanoid')
+
+it('update quantifier', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: selectedIdsAtomRef } = renderHook(() =>
-    useAtom(selectedIdsAtom)
+    useAtom(selectedIdsAtom),
   )
   const { result: setUpdateQuantifierAtom } = renderHook(() =>
-    useSetAtom(updateQuantifierAtom)
+    useSetAtom(updateQuantifierAtom),
   )
 
   act(() => {
     astAtomRef.current[1]({
-      id: "1",
-      type: "regex",
+      id: '1',
+      type: 'regex',
       body: [
         {
-          id: "2",
-          type: "character",
-          kind: "string",
-          value: "f",
+          id: '2',
+          type: 'character',
+          kind: 'string',
+          value: 'f',
           quantifier: null,
         },
       ],
@@ -33,12 +36,12 @@ test("update quantifier", async () => {
       escapeBackslash: false,
     })
 
-    selectedIdsAtomRef.current[1](["2"])
+    selectedIdsAtomRef.current[1](['2'])
   })
 
   act(() => {
     setUpdateQuantifierAtom.current({
-      kind: "+",
+      kind: '+',
       min: 1,
       max: Infinity,
       greedy: false,
@@ -46,16 +49,16 @@ test("update quantifier", async () => {
   })
 
   const expected: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "2",
-        type: "character",
-        kind: "string",
-        value: "f",
+        id: '2',
+        type: 'character',
+        kind: 'string',
+        value: 'f',
         quantifier: {
-          kind: "+",
+          kind: '+',
           min: 1,
           max: Infinity,
           greedy: false,
@@ -69,25 +72,25 @@ test("update quantifier", async () => {
   expect(astAtomRef.current[0]).toEqual(expected)
 })
 
-test("add quantifier when string node value.length > 1", async () => {
+it('add quantifier when string node value.length > 1', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: selectedIdsAtomRef } = renderHook(() =>
-    useAtom(selectedIdsAtom)
+    useAtom(selectedIdsAtom),
   )
   const { result: setUpdateQuantifierAtom } = renderHook(() =>
-    useSetAtom(updateQuantifierAtom)
+    useSetAtom(updateQuantifierAtom),
   )
 
   act(() => {
     astAtomRef.current[1]({
-      id: "1",
-      type: "regex",
+      id: '1',
+      type: 'regex',
       body: [
         {
-          id: "2",
-          type: "character",
-          kind: "string",
-          value: "foo",
+          id: '2',
+          type: 'character',
+          kind: 'string',
+          value: 'foo',
           quantifier: null,
         },
       ],
@@ -96,13 +99,14 @@ test("add quantifier when string node value.length > 1", async () => {
       escapeBackslash: false,
     })
 
-    selectedIdsAtomRef.current[1](["2"])
+    selectedIdsAtomRef.current[1](['2'])
   })
-  ;(nanoid.nanoid as jest.Mock).mockReturnValue("3")
+
+  vi.mocked(nanoid).mockReturnValue('3')
 
   act(() => {
     setUpdateQuantifierAtom.current({
-      kind: "+",
+      kind: '+',
       min: 1,
       max: Infinity,
       greedy: false,
@@ -110,25 +114,25 @@ test("add quantifier when string node value.length > 1", async () => {
   })
 
   const expected: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "3",
-        type: "group",
-        kind: "nonCapturing",
+        id: '3',
+        type: 'group',
+        kind: 'nonCapturing',
         quantifier: {
-          kind: "+",
+          kind: '+',
           min: 1,
           max: Infinity,
           greedy: false,
         },
         children: [
           {
-            id: "2",
-            type: "character",
-            kind: "string",
-            value: "foo",
+            id: '2',
+            type: 'character',
+            kind: 'string',
+            value: 'foo',
             quantifier: null,
           },
         ],
@@ -141,27 +145,27 @@ test("add quantifier when string node value.length > 1", async () => {
   expect(astAtomRef.current[0]).toEqual(expected)
 })
 
-test("remove quantifier", async () => {
+it('remove quantifier', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: selectedIdsAtomRef } = renderHook(() =>
-    useAtom(selectedIdsAtom)
+    useAtom(selectedIdsAtom),
   )
   const { result: setUpdateQuantifierAtom } = renderHook(() =>
-    useSetAtom(updateQuantifierAtom)
+    useSetAtom(updateQuantifierAtom),
   )
 
   act(() => {
     astAtomRef.current[1]({
-      id: "1",
-      type: "regex",
+      id: '1',
+      type: 'regex',
       body: [
         {
-          id: "2",
-          type: "character",
-          kind: "string",
-          value: "f",
+          id: '2',
+          type: 'character',
+          kind: 'string',
+          value: 'f',
           quantifier: {
-            kind: "+",
+            kind: '+',
             min: 1,
             max: Infinity,
             greedy: false,
@@ -173,7 +177,7 @@ test("remove quantifier", async () => {
       escapeBackslash: false,
     })
 
-    selectedIdsAtomRef.current[1](["2"])
+    selectedIdsAtomRef.current[1](['2'])
   })
 
   act(() => {
@@ -181,14 +185,14 @@ test("remove quantifier", async () => {
   })
 
   const expected: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "2",
-        type: "character",
-        kind: "string",
-        value: "f",
+        id: '2',
+        type: 'character',
+        kind: 'string',
+        value: 'f',
         quantifier: null,
       },
     ],

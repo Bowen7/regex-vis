@@ -24,7 +24,7 @@ import {
 } from '@/components/ui/tooltip'
 
 export type Tab = 'legend' | 'edit' | 'test'
-interface Props {
+type Props = {
   defaultTab: Tab
   collapsed: boolean
 }

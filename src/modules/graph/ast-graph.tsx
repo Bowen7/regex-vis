@@ -28,7 +28,7 @@ import {
   GRAPH_WITHOUT_ROOT_PADDING_VERTICAL,
 } from '@/constants'
 
-interface Props {
+type Props = {
   ast: AST.Regex
 }
 

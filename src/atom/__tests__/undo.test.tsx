@@ -1,17 +1,19 @@
-import { renderHook, act } from "@testing-library/react"
-import { useAtom, useSetAtom } from "jotai"
-import { AST } from "@/parser"
-import { astAtom, redoStack, undoStack, selectedIdsAtom } from "../atoms"
-import { redoAtom, undoAtom } from "../undo"
-import { updateContentAtom } from "../content"
+import { expect, it } from 'vitest'
+import { act } from 'react'
+import { renderHook } from '@testing-library/react'
+import { useAtom, useSetAtom } from 'jotai'
+import { astAtom, redoStack, selectedIdsAtom, undoStack } from '../atoms'
+import { redoAtom, undoAtom } from '../undo'
+import { updateContentAtom } from '../content'
+import type { AST } from '@/parser'
 
-test("undo and redo", async () => {
+it('undo and redo', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: setUpdateContentAtom } = renderHook(() =>
-    useSetAtom(updateContentAtom)
+    useSetAtom(updateContentAtom),
   )
   const { result: setSelectedIdsRef } = renderHook(() =>
-    useSetAtom(selectedIdsAtom)
+    useSetAtom(selectedIdsAtom),
   )
   const { result: setUndoAtom } = renderHook(() => useSetAtom(undoAtom))
   const { result: setRedoAtom } = renderHook(() => useSetAtom(redoAtom))
@@ -21,14 +23,14 @@ test("undo and redo", async () => {
   undoStack.length = 0
 
   const ast1: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "2",
-        type: "character",
-        kind: "string",
-        value: "foo",
+        id: '2',
+        type: 'character',
+        kind: 'string',
+        value: 'foo',
         quantifier: null,
       },
     ],
@@ -38,14 +40,14 @@ test("undo and redo", async () => {
   }
 
   const ast2: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "2",
-        type: "character",
-        kind: "string",
-        value: "123",
+        id: '2',
+        type: 'character',
+        kind: 'string',
+        value: '123',
         quantifier: null,
       },
     ],
@@ -56,11 +58,11 @@ test("undo and redo", async () => {
 
   act(() => {
     astAtomRef.current[1](ast1)
-    setSelectedIdsRef.current(["2"])
+    setSelectedIdsRef.current(['2'])
   })
 
   act(() => {
-    setUpdateContentAtom.current({ kind: "string", value: "123" })
+    setUpdateContentAtom.current({ kind: 'string', value: '123' })
   })
 
   expect(undoStack).toEqual([ast1])

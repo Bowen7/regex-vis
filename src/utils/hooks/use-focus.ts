@@ -1,6 +1,6 @@
 import { type FocusEvent, useState } from 'react'
 
-interface FocusOptions {
+type FocusOptions = {
   onFocus?: (e: FocusEvent) => void
   onBlur?: (e: FocusEvent) => void
 }

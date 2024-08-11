@@ -1,25 +1,27 @@
-import { renderHook, act } from "@testing-library/react"
-import { useAtom, useSetAtom } from "jotai"
-import { AST } from "@/parser"
-import { updateFlagsAtom } from "../flags"
-import { astAtom } from "../atoms"
+import { expect, it } from 'vitest'
+import { act } from 'react'
+import { renderHook } from '@testing-library/react'
+import { useAtom, useSetAtom } from 'jotai'
+import { updateFlagsAtom } from '../flags'
+import { astAtom } from '../atoms'
+import type { AST } from '@/parser'
 
-test("update flags", async () => {
+it('update flags', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: setUpdateFlagsAtom } = renderHook(() =>
-    useSetAtom(updateFlagsAtom)
+    useSetAtom(updateFlagsAtom),
   )
 
   act(() => {
     astAtomRef.current[1]({
-      id: "1",
-      type: "regex",
+      id: '1',
+      type: 'regex',
       body: [
         {
-          id: "2",
-          type: "character",
-          kind: "string",
-          value: "foo",
+          id: '2',
+          type: 'character',
+          kind: 'string',
+          value: 'foo',
           quantifier: null,
         },
       ],
@@ -30,22 +32,22 @@ test("update flags", async () => {
   })
 
   act(() => {
-    setUpdateFlagsAtom.current(["g", "i"])
+    setUpdateFlagsAtom.current(['g', 'i'])
   })
 
   const expected: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "2",
-        type: "character",
-        kind: "string",
-        value: "foo",
+        id: '2',
+        type: 'character',
+        kind: 'string',
+        value: 'foo',
         quantifier: null,
       },
     ],
-    flags: ["g", "i"],
+    flags: ['g', 'i'],
     literal: true,
     escapeBackslash: false,
   }

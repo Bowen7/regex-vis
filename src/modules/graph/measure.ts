@@ -25,7 +25,7 @@ import {
 
 const t = i18n.t
 
-export interface NodeSize {
+export type NodeSize = {
   box: [number, number]
   content: [number, number]
 }
@@ -49,9 +49,9 @@ let ctx: CanvasRenderingContext2D | null = null
 try {
   const canvas = document.createElement('canvas')
   ctx = canvas.getContext('2d')
+// eslint-disable-next-line unused-imports/no-unused-vars
 } catch (error) {
   ctx = null
-  console.log('canvas is not supported')
 }
 
 export function measureText(text: string, fontSize: number, fontFamily = REGEX_FONT_FAMILY): [number, number] {
