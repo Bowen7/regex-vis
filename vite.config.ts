@@ -14,12 +14,12 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      'tailwind.config.js': path.resolve(__dirname, 'tailwind.config.js'),
+      'tailwind.config': path.resolve(__dirname, 'tailwind.config.ts'),
     },
   },
   optimizeDeps: {
     include: [
-      'tailwind.config.js',
+      'tailwind.config.ts',
     ],
   },
   test: {
