@@ -1,6 +1,7 @@
-import * as dict from "./dict"
-import * as patterns from "./patterns"
-import { Token, TokenType } from "./token"
+import * as dict from './dict'
+import * as patterns from './patterns'
+import type { Token } from './token'
+import { TokenType } from './token'
 
 class Lexer {
   regex: string
@@ -29,14 +30,14 @@ class Lexer {
     }
     const char = this.curRegex[0]
     switch (char) {
-      case "\\": {
+      case '\\': {
         return this.readBackslash()
       }
-      case ".": {
+      case '.': {
         return this.token(TokenType.CharacterClass)
       }
-      case "^":
-      case "$": {
+      case '^':
+      case '$': {
         return this.token(TokenType.Assertion)
       }
       case undefined: {
@@ -67,7 +68,7 @@ class Lexer {
           span: { start, end: this.index },
         }
       }
-      if (this.curRegex[1] !== "\\") {
+      if (this.curRegex[1] !== '\\') {
         return {
           type: TokenType.EscapedChar,
           span: { start, end: this.advance(2) },
@@ -84,7 +85,7 @@ class Lexer {
       }
     }
     if (range) {
-      if (this.curRegex[1] === "b") {
+      if (this.curRegex[1] === 'b') {
         return {
           type: TokenType.CharacterClass,
           span: { start, end: this.advance(2) },
@@ -92,7 +93,7 @@ class Lexer {
       }
     } else {
       const curRegex = this.curRegex
-      if (curRegex[1] === "b" || curRegex[1] === "B") {
+      if (curRegex[1] === 'b' || curRegex[1] === 'B') {
         return {
           type: TokenType.Assertion,
           span: { start, end: this.advance(2) },
@@ -141,7 +142,7 @@ class Lexer {
   readNormalCharacters(): Token | null {
     const start = this.index
     const curRegex = this.curRegex
-    if (curRegex === "") {
+    if (curRegex === '') {
       return null
     }
     const matches = curRegex.match(this.specialCharacterPattern)
@@ -162,10 +163,10 @@ class Lexer {
 
   public readRange(): Token {
     const start = this.index
-    if (this.readTarget("]")) {
+    if (this.readTarget(']')) {
       return { type: TokenType.RangeEnd, span: { start, end: this.index } }
     }
-    if (this.curRegex[0] === "\\") {
+    if (this.curRegex[0] === '\\') {
       return this.readBackslash(true)
     }
     return {
