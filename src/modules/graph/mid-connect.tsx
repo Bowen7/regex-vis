@@ -7,7 +7,7 @@ type Props = {
 const MidConnect: React.FC<Props> = React.memo((props) => {
   const { start, end } = props
   const path = `M${start[0]},${start[1]}L${end[0]},${end[1]}`
-  return <path d={path} className="stroke-[1.5] stroke-foreground/60" fill="none"></path>
+  return <path d={path} className="stroke-[1.5] stroke-graph" fill="none"></path>
 })
 MidConnect.displayName = 'MidConnect'
 

@@ -11,7 +11,7 @@ const RootNode = React.memo(({ cx, cy }: RootNodeProps) => (
     cx={cx}
     cy={cy}
     r={GRAPH_ROOT_RADIUS}
-    className="stroke-[1.5] stroke-foreground/60 fill-transparent"
+    className="stroke-[1.5] stroke-graph fill-transparent"
   />
 ))
 RootNode.displayName = 'RootNode'
