@@ -9,7 +9,7 @@ export function ButtonGroup(props: Props) {
   return (
     <div
       {...rest}
-      className={clsx('flex items-center [&>button]:rounded-none [&>button]:font-normal [&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md', {
+      className={clsx('flex items-center [&>button]:rounded-none [&>button]:font-normal [&>button]:px-3 [&>*:first-child]:rounded-l-md [&>*:last-child]:rounded-r-md', {
         '[&>*:not(:last-child)]:border-r-0': variant === 'outline',
       }, className)}
     />

@@ -1,7 +1,6 @@
 import React, { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useSetAtom } from 'jotai'
-import clsx from 'clsx'
 import Cell from '@/components/cell'
 import ShowMore from '@/components/show-more'
 import type { AST } from '@/parser'
@@ -21,8 +20,7 @@ type Option = {
 }
 
 const Insert: React.FC<Props> = ({ nodes }) => {
-  const { t, i18n } = useTranslation()
-  const language = i18n.language
+  const { t } = useTranslation()
   const insert = useSetAtom(insertAtom)
   const groupSelected = useSetAtom(groupSelectedAtom)
   const lookAroundSelected = useSetAtom(lookAroundSelectedAtom)
@@ -66,11 +64,11 @@ const Insert: React.FC<Props> = ({ nodes }) => {
       },
       {
         value: 'nonCapturing',
-        label: 'Non-\ncapturing',
+        label: 'Non-cap',
       },
       {
         value: 'namedCapturing',
-        label: 'Named\ncapturing',
+        label: 'Named cap',
       },
     ]
   }, [nodes])
@@ -131,7 +129,6 @@ const Insert: React.FC<Props> = ({ nodes }) => {
             {groupOptions.map(({ value, label }) => (
               <Button
                 key={value}
-                className={clsx('whitespace-pre', { 'text-xs': language === 'en' })}
                 variant="outline"
                 onClick={() => handleWrapGroup(value)}
               >

@@ -79,7 +79,7 @@ function Editor({ defaultTab, collapsed }: Props) {
     <Tabs
       value={tabValue}
       onValueChange={(value: string) => setTabValue(value as Tab)}
-      className={clsx('flex flex-col h-[calc(100vh-64px)] py-4 border-l transition-width', collapsed ? 'w-[0px]' : 'w-[300px]')}
+      className={clsx('flex flex-col h-[calc(100vh-64px)] py-4 border-l transition-width', collapsed ? 'w-[0px]' : 'w-[305px]')}
     >
       <TooltipProvider delayDuration={500}>
         <Tooltip>
@@ -104,7 +104,7 @@ function Editor({ defaultTab, collapsed }: Props) {
             <TabsTrigger value="test">{t('Test')}</TabsTrigger>
           </TabsList>
           <ScrollArea className="flex-1">
-            <div className="w-[300px] p-4 pt-0">
+            <div className="w-[305px] p-4 pt-0">
               <TabsContent value="legend">
                 <LegendTab />
               </TabsContent>
