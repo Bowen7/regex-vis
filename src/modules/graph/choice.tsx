@@ -12,7 +12,7 @@ import {
 } from '@/constants'
 import type { AST } from '@/parser'
 
-interface Props {
+type Props = {
   x: number
   y: number
   node: AST.ChoiceNode

@@ -7,7 +7,7 @@ import { selectNodesByBoxAtom } from '@/atom'
 import { useDragSelect } from '@/utils/hooks'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 
-interface Props {
+type Props = {
   regex: string
   ast: AST.Regex
   errorMsg?: string | null

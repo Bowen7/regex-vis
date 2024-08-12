@@ -1,14 +1,13 @@
-import React from "react"
-import { parse, AST } from "@/parser"
-import ASTGraph from "@/modules/graph/ast-graph"
-const r = "[a-z]"
+import type { AST } from '@/parser'
+import { parse } from '@/parser'
+import ASTGraph from '@/modules/graph/ast-graph'
+
+const r = '[a-z]'
 const ast = parse(r) as AST.Regex
 
-const Playground: React.FC<{}> = () => {
+const Playground = () => {
   return (
-    <>
-      <ASTGraph ast={ast} />
-    </>
+    <ASTGraph ast={ast} />
   )
 }
 export default Playground

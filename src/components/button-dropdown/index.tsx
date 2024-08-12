@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 
-interface Props {
+type Props = {
   children: React.ReactNode
   buttonProps?: React.ComponentProps<typeof Button>
 }

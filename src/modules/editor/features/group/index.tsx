@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-interface GroupSelectProps {
+type GroupSelectProps = {
   group: AST.Group
 }
 export const groupOptions = [

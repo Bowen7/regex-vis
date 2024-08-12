@@ -14,7 +14,7 @@ import { STORAGE_TEST_CASES } from '@/constants'
 import { useToast } from '@/components/ui/use-toast'
 import { Button } from '@/components/ui/button'
 
-interface Case {
+type Case = {
   value: string
   id: string
 }

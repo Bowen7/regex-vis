@@ -4,7 +4,7 @@ import { getQuantifierText } from './utils'
 import type { AST } from '@/parser'
 import { GRAPH_ICON_SIZE } from '@/constants'
 
-interface Props {
+type Props = {
   quantifier: AST.Quantifier
 }
 

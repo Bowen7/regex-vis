@@ -5,7 +5,7 @@ import Cell from '@/components/cell'
 import { updateContentAtom } from '@/atom'
 import { Checkbox } from '@/components/ui/checkbox'
 
-interface Props {
+type Props = {
   negate: boolean
 }
 const WordBoundary: React.FC<Props> = ({ negate }) => {

@@ -12,7 +12,7 @@ import {
 import { Button } from '@/components/ui/button'
 import { CheckboxGroup, CheckboxItem } from '@/components/ui/checkbox-group'
 
-interface Props {
+type Props = {
   regex: string
   flags: string[]
   literal: boolean

@@ -16,7 +16,7 @@ import {
 import { GRAPH_NODE_MARGIN_HORIZONTAL } from '@/constants'
 import type * as AST from '@/parser/ast'
 
-interface Props {
+type Props = {
   id: string
   index: number
   x: number
@@ -32,7 +32,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
 
   const boxes = useMemo(() => {
     let curX = x
-    return nodes.map((node, index) => {
+    return nodes.map((node) => {
       const [nodeWidth, nodeHeight] = (sizeMap.get(node) || DEFAULT_SIZE).box
       const nodeX = curX
       const nodeY = y + (boxHeight - nodeHeight) / 2
@@ -48,7 +48,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
 
   const contentBoxes = useMemo(() => {
     let curX = x
-    return nodes.map((node, index) => {
+    return nodes.map((node) => {
       const { box: boxSize, content: contentSize }
         = sizeMap.get(node) || DEFAULT_SIZE
       const nodeX = curX + (boxSize[0] - contentSize[0]) / 2

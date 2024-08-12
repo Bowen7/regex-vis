@@ -1,7 +1,8 @@
-import { atom } from "jotai"
-import { updateContent, AST } from "@/parser"
-import { astAtom, selectedIdsAtom } from "./atoms"
-import { refreshValidUndoAtom } from "./utils"
+import { atom } from 'jotai'
+import { astAtom, selectedIdsAtom } from './atoms'
+import { refreshValidUndoAtom } from './utils'
+import type { AST } from '@/parser'
+import { updateContent } from '@/parser'
 
 export const updateContentAtom = atom(
   null,
@@ -15,5 +16,5 @@ export const updateContentAtom = atom(
       set(selectedIdsAtom, [nextSelectedId])
       set(refreshValidUndoAtom, draft)
     })
-  }
+  },
 )

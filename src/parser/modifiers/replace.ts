@@ -1,8 +1,9 @@
-import * as AST from "../ast"
+import type * as AST from '../ast'
+
 export function replaceFromLists(
   nodeList: AST.Node[],
   oldNodes: AST.Node[],
-  newNodes: AST.Node[]
+  newNodes: AST.Node[],
 ) {
   const start = oldNodes[0]
   const startIndex = nodeList.findIndex(({ id }) => id === start.id)

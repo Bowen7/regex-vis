@@ -12,7 +12,7 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 
-interface Props {
+type Props = {
   reference: string
 }
 const BackRef: React.FC<Props> = ({ reference }) => {

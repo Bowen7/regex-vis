@@ -10,7 +10,7 @@ const CheckboxGroupContext = createContext<{
       onChange: () => {},
     })
 
-interface GroupProps {
+type GroupProps = {
   value: string[]
   onChange: (value: string[]) => void
   children: ReactNode

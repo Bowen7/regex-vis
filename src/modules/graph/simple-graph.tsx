@@ -6,7 +6,7 @@ import ASTGraph from './ast-graph'
 import { isPrimaryGraphAtom, sizeMapAtom } from '@/atom'
 import { parse } from '@/parser'
 
-interface Props {
+type Props = {
   regex: string
 }
 

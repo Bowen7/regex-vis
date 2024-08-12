@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 import { Check as CheckIcon, Trash as TrashIcon, X as XIcon } from '@phosphor-icons/react'
 import { Textarea } from '@/components/ui/textarea'
 
-interface Props {
+type Props = {
   value: string
   regExp: RegExp
   onChange: (value: string) => void
@@ -19,7 +19,7 @@ function TestItem({ value, regExp, onChange, onRemove }: Props) {
   return (
     <div className="focus-within:outline-none focus-within:ring-1 focus-within:ring-ring rounded-md">
       <Textarea
-        value={value}
+        defaultValue={value}
         onChange={onChange}
         className="rounded-b-none"
         onKeyDown={onKeyDown}

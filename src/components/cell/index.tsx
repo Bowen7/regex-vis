@@ -11,7 +11,7 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip'
 
-interface ItemProps {
+type ItemProps = {
   label: string
   children: React.ReactNode
 }
@@ -24,7 +24,7 @@ function CellItem({ label, children }: ItemProps) {
   )
 }
 
-interface Props {
+type Props = {
   className?: string
   label: string
   mdnLinkKey?: MdnLinkKey

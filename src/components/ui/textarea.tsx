@@ -1,17 +1,30 @@
-import React from 'react'
-import { useDebounceChange } from '@/utils/hooks/use-debounce-change'
+import React, { useCallback } from 'react'
+import { useDebounceCallback } from 'usehooks-ts'
+import { useLatest } from '@/utils/hooks/use-latest'
 
 import { cn } from '@/utils'
 
+const DEBOUNCE_DELAY = 500
+
 export type TextareaProps =
-  Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange'> & {
-    debounced?: boolean
+  Omit<React.TextareaHTMLAttributes<HTMLTextAreaElement>, 'onChange' | 'value'> & {
     onChange: (value: string) => void
   }
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
-  ({ className, value, debounced = true, onChange, ...props }, ref) => {
-    const debouncedProps = useDebounceChange(debounced, value as string, onChange)
+  ({ className, onChange, ...props }, ref) => {
+    const latestOnChange = useLatest(onChange)
+
+    const onTextChange = useCallback((text: string) => {
+      latestOnChange.current(text)
+    }, [latestOnChange])
+
+    const debouncedOnTextChange = useDebounceCallback(onTextChange, DEBOUNCE_DELAY)
+
+    const onInputChange = useCallback((e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      debouncedOnTextChange(e.target.value)
+    }, [debouncedOnTextChange])
+
     return (
       <textarea
         className={cn(
@@ -19,7 +32,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
           className,
         )}
         ref={ref}
-        {...debouncedProps}
+        onChange={onInputChange}
         {...props}
       />
     )

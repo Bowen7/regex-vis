@@ -1,9 +1,9 @@
-import { CodeGen } from "./gen"
-import * as AST from "./ast"
+import { CodeGen } from './gen'
+import type * as AST from './ast'
 
 class CodeGenWithSelected extends CodeGen {
-  private headId = ""
-  private tailId = ""
+  private headId = ''
+  private tailId = ''
   public startIndex = 0
   public endIndex = 0
   constructor(ast: AST.Regex, selectedIds: string[]) {

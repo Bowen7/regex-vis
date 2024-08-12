@@ -2,13 +2,13 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 
 type Theme = 'dark' | 'light' | 'system'
 
-interface ThemeProviderProps {
+type ThemeProviderProps = {
   children: React.ReactNode
   defaultTheme?: Theme
   storageKey?: string
 }
 
-interface ThemeProviderState {
+type ThemeProviderState = {
   theme: Theme
   setTheme: (theme: Theme) => void
 }
@@ -54,7 +54,7 @@ export function ThemeProvider({
       localStorage.setItem(storageKey, theme)
       setTheme(theme)
     },
-  }), [])
+  }), [theme, storageKey])
 
   return (
     <ThemeProviderContext.Provider {...props} value={value}>

@@ -1,12 +1,12 @@
-import * as AST from "../ast"
-import { replaceFromLists } from "./replace"
+import type * as AST from '../ast'
+import { replaceFromLists } from './replace'
 
-type Path = { node: AST.Node; nodeList: AST.Node[] }
+type Path = { node: AST.Node, nodeList: AST.Node[] }
 const visit = (
   ast: AST.Regex | AST.Node[],
   id: string,
   paths: Path[] = [],
-  callback: () => void
+  callback: () => void,
 ): true | void => {
   const nodes = Array.isArray(ast) ? ast : ast.body
   for (let i = 0; i < nodes.length; i++) {
@@ -18,12 +18,12 @@ const visit = (
     }
 
     if (
-      node.type === "choice" ||
-      node.type === "group" ||
-      node.type === "lookAroundAssertion"
+      node.type === 'choice'
+      || node.type === 'group'
+      || node.type === 'lookAroundAssertion'
     ) {
       paths.push({ nodeList: nodes, node })
-      if (node.type === "choice") {
+      if (node.type === 'choice') {
         const branches = node.branches
         for (let i = 0; i < branches.length; i++) {
           if (visit(branches[i], id, paths, callback)) {
@@ -60,13 +60,13 @@ export const removeSelected = (ast: AST.Regex, selectedIds: string[]) => {
     while (paths.length !== 0) {
       const { node, nodeList } = paths.pop()!
       if (
-        (node.type === "group" || node.type === "lookAroundAssertion") &&
-        node.children.length === 0
+        (node.type === 'group' || node.type === 'lookAroundAssertion')
+        && node.children.length === 0
       ) {
         removeFromList(nodeList, [node.id])
       }
-      if (node.type === "choice") {
-        node.branches = node.branches.filter((branch) => branch.length > 0)
+      if (node.type === 'choice') {
+        node.branches = node.branches.filter(branch => branch.length > 0)
         if (node.branches.length === 1) {
           replaceFromLists(nodeList, [node], node.branches[0])
         }

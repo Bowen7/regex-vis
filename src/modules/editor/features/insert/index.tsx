@@ -9,13 +9,13 @@ import { groupSelectedAtom, insertAtom, lookAroundSelectedAtom } from '@/atom'
 import { ButtonGroup } from '@/components/button-group'
 import { Button } from '@/components/ui/button'
 
-interface Props {
+type Props = {
   nodes: AST.Node[]
 }
 
 type InsertDirection = 'prev' | 'next' | 'branch'
 
-interface Option {
+type Option = {
   value: string
   label: string
 }

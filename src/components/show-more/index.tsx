@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next'
 import { CaretDown as CaretDownIcon } from '@phosphor-icons/react'
 import clsx from 'clsx'
 
-interface Props {
+type Props = {
   id: string
   children: React.ReactNode
 }

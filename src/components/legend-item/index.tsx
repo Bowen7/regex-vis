@@ -1,7 +1,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 
-interface Props {
+type Props = {
   name: string
   infos: {
     desc: string
@@ -9,41 +9,20 @@ interface Props {
   }[]
 }
 const LegendItem: React.FC<Props> = ({ name, infos }) => {
-  // const { palette } = useTheme()
   const { t } = useTranslation()
   return (
-    <>
-      <div className="wrapper">
-        <h5>
-          {t(name)}
-          :
-        </h5>
-        {infos.map(({ Icon, desc }) => (
-          <React.Fragment key={desc}>
-            {Icon}
-            <span className="desc">{t(desc)}</span>
-          </React.Fragment>
-        ))}
-      </div>
-      {/* <style jsx>
-        {`
-          .wrapper {
-            border-bottom: 1px solid ${palette.accents_2};
-            padding: 12px 0;
-          }
-          .wrapper :global(> svg) {
-            display: block;
-          }
-          .desc {
-            display: block;
-            color: ${palette.accents_6};
-          }
-          .wrapper > span:not(:last-of-type) {
-            margin-bottom: 24px;
-          }
-        `}
-      </style> */}
-    </>
+    <div className="wrapper">
+      <h5>
+        {t(name)}
+        :
+      </h5>
+      {infos.map(({ Icon, desc }) => (
+        <React.Fragment key={desc}>
+          {Icon}
+          <span className="desc">{t(desc)}</span>
+        </React.Fragment>
+      ))}
+    </div>
   )
 }
 

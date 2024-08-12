@@ -2,7 +2,7 @@ import React from 'react'
 import { useTranslation } from 'react-i18next'
 import Cell from '@/components/cell'
 
-interface Prop {
+type Prop = {
   regex: string
   startIndex: number
   endIndex: number

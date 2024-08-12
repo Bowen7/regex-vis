@@ -14,7 +14,7 @@ import {
 } from '@/components/ui/select'
 import { Checkbox } from '@/components/ui/checkbox'
 
-interface Props {
+type Props = {
   kind: 'lookahead' | 'lookbehind'
   negate: boolean
 }

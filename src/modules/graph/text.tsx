@@ -14,7 +14,7 @@ function RightQuote() {
   return <span className="text-foreground/50 inline" style={{ paddingLeft: `${GRAPH_QUOTE_PADDING}px` }}>"</span>
 }
 
-interface Props {
+type Props = {
   node:
     | AST.CharacterNode
     | AST.BackReferenceNode
