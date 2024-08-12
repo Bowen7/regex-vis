@@ -1,3 +1,8 @@
+import resolveConfig from 'tailwindcss/resolveConfig'
+import tailwindConfig from 'tailwind.config'
+
+const fullTailwindConfig = resolveConfig(tailwindConfig)
+
 // graph
 export const GRAPH_TEXT_FONT_SIZE = 16
 export const GRAPH_NODE_PADDING_VERTICAL = 2
@@ -18,11 +23,11 @@ export const GRAPH_QUANTIFIER_TEXT_FONTSIZE = 14
 export const GRAPH_NAME_TEXT_FONTSIZE = 14
 export const GRAPH_QUANTIFIER_HEIGHT = Math.max(
   GRAPH_QUANTIFIER_TEXT_FONTSIZE * 1.5,
-  GRAPH_ICON_SIZE
+  GRAPH_ICON_SIZE,
 )
 export const GRAPH_NAME_HEIGHT = Math.max(
   GRAPH_NAME_TEXT_FONTSIZE * 1.5,
-  GRAPH_ICON_SIZE
+  GRAPH_ICON_SIZE,
 )
 export const GRAPH_QUOTE_PADDING = 2
 
@@ -32,12 +37,10 @@ export const GRAPH_WITHOUT_ROOT_PADDING_VERTICAL = 5
 export const GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL = 5
 
 // storage key
-export const STORAGE_TEST_CASES = "test-cases"
-export const STORAGE_ESCAPE_BACKSLASH = "escape-backslash"
+export const STORAGE_TEST_CASES = 'test-cases'
 
 // url search param
-export const SEARCH_PARAM_REGEX = "r"
-export const SEARCH_PARAM_TESTS = "t"
-export const SEARCH_PARAM_ESCAPE_BACKSLASH = "e"
+export const SEARCH_PARAM_REGEX = 'r'
+export const SEARCH_PARAM_TESTS = 't'
 
-export const REGEX_FONT_FAMILY = 'Menlo, Monaco, "Courier New", monospace'
+export const REGEX_FONT_FAMILY = fullTailwindConfig.theme.fontFamily.mono.join(', ')

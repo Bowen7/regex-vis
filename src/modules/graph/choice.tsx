@@ -1,16 +1,16 @@
-import React, { useMemo } from "react"
-import { useAtomValue } from "jotai"
-import { AST } from "@/parser"
+import React, { useMemo } from 'react'
+import { useAtomValue } from 'jotai'
+import Nodes from './nodes'
+import StartConnect from './start-connect'
+import EndConnect from './end-connect'
+import Content from './content'
+import { DEFAULT_SIZE } from './measure'
+import { sizeMapAtom } from '@/atom'
 import {
-  GRAPH_NODE_MARGIN_VERTICAL,
   GRAPH_CHOICE_PADDING_VERTICAL,
-} from "@/constants"
-import { sizeMapAtom } from "@/atom"
-import Nodes from "./nodes"
-import StartConnect from "./start-connect"
-import EndConnect from "./end-connect"
-import Content from "./content"
-import { DEFAULT_SIZE } from "./measure"
+  GRAPH_NODE_MARGIN_VERTICAL,
+} from '@/constants'
+import type { AST } from '@/parser'
 
 type Props = {
   x: number
@@ -25,7 +25,7 @@ const ChoiceNode = React.memo(({ x, y, selected, node }: Props) => {
 
   const boxSize = useMemo(
     () => (sizeMap.get(node) || DEFAULT_SIZE).box,
-    [node, sizeMap]
+    [node, sizeMap],
   )
   const boxes = useMemo(() => {
     let curY = y + GRAPH_CHOICE_PADDING_VERTICAL
@@ -51,7 +51,7 @@ const ChoiceNode = React.memo(({ x, y, selected, node }: Props) => {
     <Content
       selected={selected}
       id={node.id}
-      className="transparent-fill"
+      className="fill-transparent"
       x={x}
       y={y}
       width={boxSize[0]}
@@ -88,5 +88,5 @@ const ChoiceNode = React.memo(({ x, y, selected, node }: Props) => {
     </Content>
   )
 })
-ChoiceNode.displayName = "ChoiceName"
+ChoiceNode.displayName = 'ChoiceName'
 export default ChoiceNode

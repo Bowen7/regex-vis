@@ -1,35 +1,29 @@
-import { Divider } from "@geist-ui/core"
-import { useTranslation } from "react-i18next"
-import ArrowLeftCircle from "@geist-ui/icons/arrowLeftCircle"
-import LegendItem from "@/components/legend-item"
-import legends from "./legends"
+import { useTranslation } from 'react-i18next'
+import legends from './legends'
+
 function Legend() {
   const { t } = useTranslation()
   return (
-    <>
-      <div className="container">
-        <div className="tip">
+    <div className="divide-y-2 *:py-4 first:*:pt-0 last:*:pb-0">
+      {/* TODO move the tip to the graph */}
+      {/* <div className="tip">
           <ArrowLeftCircle size={14} />
-          {t("You can select nodes by dragging or clicking")}
+          {t('You can select nodes by dragging or clicking')}
+        </div> */}
+      {legends.map(({ name, infos }) => (
+        <div key={name}>
+          <h5 className="font-bold mb-4">{t(name)}</h5>
+          <div className="space-y-6">
+            {infos.map(({ Icon, desc }) => (
+              <div key={desc}>
+                {Icon}
+                <span className="text-foreground/80">{t(desc)}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <Divider h={0.5} />
-        {legends.map(({ name, infos }) => (
-          <LegendItem name={name} infos={infos} key={name} />
-        ))}
-      </div>
-      <style jsx>{`
-        .container {
-          padding: 0 12px;
-        }
-        .tip {
-          font-size: 14px;
-        }
-        .tip :global(svg) {
-          margin-right: 6px;
-          vertical-align: middle;
-        }
-      `}</style>
-    </>
+      ))}
+    </div>
   )
 }
 

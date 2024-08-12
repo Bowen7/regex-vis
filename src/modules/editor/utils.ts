@@ -1,19 +1,21 @@
-import { AST, genWithSelected } from "@/parser"
+import { nanoid } from 'nanoid'
+import type { AST } from '@/parser'
+import { genWithSelected } from '@/parser'
 
-export type NodesInfo = {
+export interface NodesInfo {
   id: string
   regex: string
   startIndex: number
   endIndex: number
   group: AST.Group | null
-  lookAround: { kind: "lookahead" | "lookbehind"; negate: boolean } | null
+  lookAround: { kind: 'lookahead' | 'lookbehind', negate: boolean } | null
   content: AST.Content | null
   hasQuantifier: boolean
   quantifier: AST.Quantifier | null
 }
 
 export const genInitialNodesInfo = (): NodesInfo => ({
-  regex: "",
+  regex: '',
   startIndex: 0,
   endIndex: 0,
   group: null,
@@ -21,7 +23,7 @@ export const genInitialNodesInfo = (): NodesInfo => ({
   content: null,
   hasQuantifier: false,
   quantifier: null,
-  id: "",
+  id: '',
 })
 
 const getGroupInfo = (nodes: AST.Node[]): AST.Group | null => {
@@ -29,10 +31,10 @@ const getGroupInfo = (nodes: AST.Node[]): AST.Group | null => {
     return null
   }
   const node = nodes[0]
-  if (node.type !== "group") {
+  if (node.type !== 'group') {
     return null
   }
-  if (node.kind === "namedCapturing" || node.kind === "capturing") {
+  if (node.kind === 'namedCapturing' || node.kind === 'capturing') {
     return { kind: node.kind, name: node.name, index: node.index }
   }
   return { kind: node.kind }
@@ -42,20 +44,20 @@ const getContentInfo = (nodes: AST.Node[]): AST.Content | null => {
   if (nodes.length === 1) {
     const node = nodes[0]
     switch (node.type) {
-      case "character":
-        if (node.kind === "ranges") {
+      case 'character':
+        if (node.kind === 'ranges') {
           return { kind: node.kind, ranges: node.ranges, negate: node.negate }
         }
         return { kind: node.kind, value: node.value }
-      case "backReference":
-        return { kind: "backReference", ref: node.ref }
-      case "boundaryAssertion":
-        if (node.kind === "word") {
-          return { kind: "wordBoundaryAssertion", negate: node.negate }
-        } else if (node.kind === "beginning") {
-          return { kind: "beginningAssertion" }
+      case 'backReference':
+        return { kind: 'backReference', ref: node.ref }
+      case 'boundaryAssertion':
+        if (node.kind === 'word') {
+          return { kind: 'wordBoundaryAssertion', negate: node.negate }
+        } else if (node.kind === 'beginning') {
+          return { kind: 'beginningAssertion' }
         } else {
-          return { kind: "endAssertion" }
+          return { kind: 'endAssertion' }
         }
     }
   }
@@ -63,11 +65,11 @@ const getContentInfo = (nodes: AST.Node[]): AST.Content | null => {
 }
 
 const getQuantifierInfo = (
-  nodes: AST.Node[]
-): { hasQuantifier: boolean; quantifier: AST.Quantifier | null } => {
+  nodes: AST.Node[],
+): { hasQuantifier: boolean, quantifier: AST.Quantifier | null } => {
   if (nodes.length === 1) {
     const node = nodes[0]
-    if (node.type === "character" || node.type === "group") {
+    if (node.type === 'character' || node.type === 'group') {
       return { hasQuantifier: true, quantifier: node.quantifier }
     }
   }
@@ -75,11 +77,11 @@ const getQuantifierInfo = (
 }
 
 const getLookAroundInfo = (
-  nodes: AST.Node[]
-): { kind: "lookahead" | "lookbehind"; negate: boolean } | null => {
+  nodes: AST.Node[],
+): { kind: 'lookahead' | 'lookbehind', negate: boolean } | null => {
   if (nodes.length === 1) {
     const node = nodes[0]
-    if (node.type === "lookAroundAssertion") {
+    if (node.type === 'lookAroundAssertion') {
       const { kind, negate } = node
       return { kind, negate }
     }
@@ -87,11 +89,11 @@ const getLookAroundInfo = (
   return null
 }
 
-const getId = (nodes: AST.Node[]): string => {
+const getIdFromNodes = (nodes: AST.Node[]): string => {
   if (nodes.length === 1) {
     return nodes[0].id
   }
-  return ""
+  return ''
 }
 
 export function getInfoFromNodes(ast: AST.Regex, nodes: AST.Node[]): NodesInfo {
@@ -106,7 +108,7 @@ export function getInfoFromNodes(ast: AST.Regex, nodes: AST.Node[]): NodesInfo {
   const content = getContentInfo(nodes)
   const quantifierInfo = getQuantifierInfo(nodes)
   const lookAround = getLookAroundInfo(nodes)
-  const id = getId(nodes)
+  const id = getIdFromNodes(nodes)
   return {
     id,
     regex,

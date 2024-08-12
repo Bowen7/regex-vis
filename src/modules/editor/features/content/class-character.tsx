@@ -1,22 +1,32 @@
-import React, { useMemo } from "react"
-import { Spacer, Select, Code } from "@geist-ui/core"
-import { useSetAtom } from "jotai"
-import { useTranslation } from "react-i18next"
-import Input from "@/components/input"
-import Cell from "@/components/cell"
-import { characterClassTextMap, CharacterClassKey } from "@/parser"
-import { updateContentAtom } from "@/atom"
+import React, { useMemo } from 'react'
+import { useSetAtom } from 'jotai'
+import { useTranslation } from 'react-i18next'
+import { z } from 'zod'
+import { Input } from '@/components/ui/input'
+import Cell from '@/components/cell'
+import type { CharacterClassKey } from '@/parser'
+import { characterClassTextMap } from '@/parser'
+import { updateContentAtom } from '@/atom'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { Validation } from '@/components/validation'
 
-const classOptions: { value: CharacterClassKey; text: string }[] = []
-for (let key in characterClassTextMap) {
+const classOptions: { value: CharacterClassKey, text: string }[] = []
+for (const key in characterClassTextMap) {
   classOptions.push({
     value: key as CharacterClassKey,
     text: characterClassTextMap[key as CharacterClassKey],
   })
 }
 
-const xhhRegex = /^\\x[0-9a-fA-F]{2}$/
-const uhhhhRegex = /^\\u[0-9a-fA-F]{4}$/
+const xhhSchema = z.string().regex(/^\\x[0-9a-fA-F]{2}$/)
+const uhhhhSchema = z.string().regex(/^\\u[0-9a-fA-F]{4}$/)
 
 type Props = {
   value: string
@@ -26,65 +36,77 @@ const ClassCharacter: React.FC<Props> = ({ value }) => {
   const updateContent = useSetAtom(updateContentAtom)
 
   const classKind = useMemo(() => {
-    if (xhhRegex.test(value)) {
-      return "\\xhh"
-    } else if (uhhhhRegex.test(value)) {
-      return "\\uhhhh"
+    if (xhhSchema.safeParse(value).success) {
+      return '\\xhh'
+    } else if (uhhhhSchema.safeParse(value).success) {
+      return '\\uhhhh'
     }
     return value
   }, [value])
 
-  const handleSelectChange = (value: string | string[]) => {
+  const handleSelectChange = (value: string) => {
     value = value as string
-    if (value === "\\xhh") {
-      value = "\\x00"
-    } else if (value === "\\uhhhh") {
-      value = "\\u0000"
+    if (value === '\\xhh') {
+      value = '\\x00'
+    } else if (value === '\\uhhhh') {
+      value = '\\u0000'
     }
     updateContent({
-      kind: "class",
+      kind: 'class',
       value,
     })
   }
 
-  const handleInputChange = (value: string) =>
+  const onInputChange = (value: string) =>
     updateContent({
-      kind: "class",
-      value: value,
+      kind: 'class',
+      value,
     })
+
   return (
-    <Cell.Item label={t("Class")}>
-      <Select
-        value={classKind}
-        onChange={handleSelectChange}
-        getPopupContainer={() => document.getElementById("editor-content")}
-        disableMatchWidth
-      >
-        {classOptions.map(({ value, text }) => (
-          <Select.Option value={value} key={value}>
-            <div>
-              <Code>{value}</Code>
-              <Spacer w={0.5} inline />
-              {t(text)}
-            </div>
-          </Select.Option>
-        ))}
-      </Select>
-      <Spacer h={1} />
-      {classKind === "\\xhh" && (
-        <Input
-          value={value}
-          validation={xhhRegex}
-          onChange={handleInputChange}
-        />
-      )}
-      {classKind === "\\uhhhh" && (
-        <Input
-          value={value}
-          validation={uhhhhRegex}
-          onChange={handleInputChange}
-        />
-      )}
+    <Cell.Item label={t('Class')}>
+      <div className="space-y-2">
+        <Select
+          value={classKind}
+          onValueChange={handleSelectChange}
+        >
+          <SelectTrigger className="w-52">
+            <SelectValue placeholder={t('Choose one')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              {classOptions.map(({ value, text }) => (
+                <SelectItem value={value} key={value}>
+                  <span className="text-teal-400 font-mono text-sm mr-2">{value}</span>
+                  <span>{t(text)}</span>
+                </SelectItem>
+              ))}
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        {classKind === '\\xhh' && (
+          <Validation defaultValue={value} onChange={onInputChange} schema={xhhSchema}>
+            {(value: string, onChange: (value: string) => void) => (
+              <Input
+                className="w-52 font-mono"
+                value={value}
+                onChange={onChange}
+              />
+            )}
+          </Validation>
+        )}
+        {classKind === '\\uhhhh' && (
+          <Validation defaultValue={value} onChange={onInputChange} schema={uhhhhSchema}>
+            {(value: string, onChange: (value: string) => void) => (
+              <Input
+                className="w-52 font-mono"
+                value={value}
+                onChange={onChange}
+              />
+            )}
+          </Validation>
+        )}
+      </div>
     </Cell.Item>
   )
 }

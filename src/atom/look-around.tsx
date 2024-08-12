@@ -1,11 +1,11 @@
-import { atom } from "jotai"
+import { atom } from 'jotai'
+import { astAtom, selectedIdsAtom } from './atoms'
+import { validUndoAtom } from './utils'
 import {
-  updateLookAroundAssertion,
   lookAroundAssertionSelected,
   unLookAroundAssertion,
-} from "@/parser"
-import { selectedIdsAtom, astAtom } from "./atoms"
-import { validUndoAtom } from "./utils"
+  updateLookAroundAssertion,
+} from '@/parser'
 
 export const updateLookAroundAtom = atom(
   null,
@@ -13,35 +13,35 @@ export const updateLookAroundAtom = atom(
     get,
     set,
     lookAround: {
-      kind: "lookahead" | "lookbehind"
+      kind: 'lookahead' | 'lookbehind'
       negate: boolean
-    } | null
+    } | null,
   ) => {
     set(astAtom, (draft) => {
       const selectedIds = get(selectedIdsAtom)
       if (!lookAround) {
-        const nextSelecetedIds = unLookAroundAssertion(draft, selectedIds)
-        set(selectedIdsAtom, nextSelecetedIds)
+        const nextSelectedIds = unLookAroundAssertion(draft, selectedIds)
+        set(selectedIdsAtom, nextSelectedIds)
       } else {
         updateLookAroundAssertion(draft, selectedIds, lookAround)
       }
       set(validUndoAtom, draft)
     })
-  }
+  },
 )
 
 export const lookAroundSelectedAtom = atom(
   null,
-  (get, set, kind: "lookahead" | "lookbehind") => {
+  (get, set, kind: 'lookahead' | 'lookbehind') => {
     set(astAtom, (draft) => {
       const selectedIds = get(selectedIdsAtom)
       const nextSelectedIds = lookAroundAssertionSelected(
         draft,
         selectedIds,
-        kind
+        kind,
       )
       set(selectedIdsAtom, nextSelectedIds)
       set(validUndoAtom, draft)
     })
-  }
+  },
 )

@@ -1,21 +1,18 @@
-import React, { useEffect, useState } from "react"
-import { Divider, useTheme } from "@geist-ui/core"
-import { useAtomValue } from "jotai"
-import ContentEditor from "./features/content"
-import Group from "./features/group"
-import Expression from "./features/expression"
-import Quantifier from "./features/quantifier"
-import LookAround from "./features/look-around"
-import Insert from "./features/insert"
-import { getInfoFromNodes, genInitialNodesInfo } from "./utils"
-import { AST } from "@/parser"
-import { NodesInfo } from "./utils"
-import { getNodesByIds } from "@/parser/visit"
-import { astAtom, selectedIdsAtom } from "@/atom"
+import { useEffect, useState } from 'react'
+import { useAtomValue } from 'jotai'
+import ContentEditor from './features/content'
+import Group from './features/group'
+import Expression from './features/expression'
+import Quantifier from './features/quantifier'
+import LookAround from './features/look-around'
+import Insert from './features/insert'
+import type { NodesInfo } from './utils'
+import { genInitialNodesInfo, getInfoFromNodes } from './utils'
+import type { AST } from '@/parser'
+import { getNodesByIds } from '@/parser/visit'
+import { astAtom, selectedIdsAtom } from '@/atom'
 
-const InfoItem = () => {
-  const { layout } = useTheme()
-
+function EditTab() {
   const [nodes, setNodes] = useState<AST.Node[]>([])
   const selectedIds = useAtomValue(selectedIdsAtom)
   const ast = useAtomValue(astAtom)
@@ -47,64 +44,19 @@ const InfoItem = () => {
   }, [ast, nodes])
 
   return (
-    <>
-      <div className="container" data-testid="edit-tab">
-        <Insert nodes={nodes} />
-        <Divider mt="24px" />
-        <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
-        {content && (
-          <ContentEditor content={content} id={id} quantifier={quantifier} />
-        )}
-        {group && <Group group={group} />}
-        {hasQuantifier && <Quantifier quantifier={quantifier} />}
-        {lookAround && (
-          <LookAround kind={lookAround.kind} negate={lookAround.negate} />
-        )}
-      </div>
-      <style jsx>{`
-        .container {
-          padding: 12px;
-        }
-        .button {
-          text-align: center;
-        }
-
-        .container :global(h3) {
-          font-size: 1.15rem;
-        }
-
-        .container :global(input) {
-          font-size: 0.75rem;
-        }
-
-        .container :global(.btn-group) {
-          margin: 0;
-        }
-        .container :global(.btn-group .btn) {
-          width: 80px;
-          padding: 0;
-          display: inline-flex;
-          justify-content: center;
-          align-items: center;
-        }
-        .container :global(.btn-group .tooltip) {
-          line-height: 0;
-        }
-
-        .container :global(.btn-dropdown button) {
-          height: calc(1.687 * 16pt);
-        }
-
-        .container :global(details) {
-          border-radius: 0 ${layout.radius} ${layout.radius} 0;
-        }
-
-        .container :global(summary) {
-          height: calc(1.687 * 16pt);
-        }
-      `}</style>
-    </>
+    <div data-testid="edit-tab" className="space-y-6">
+      <Insert nodes={nodes} />
+      <Expression regex={regex} startIndex={startIndex} endIndex={endIndex} />
+      {content && (
+        <ContentEditor content={content} id={id} quantifier={quantifier} />
+      )}
+      {group && <Group group={group} />}
+      {hasQuantifier && <Quantifier quantifier={quantifier} key={id} />}
+      {lookAround && (
+        <LookAround kind={lookAround.kind} negate={lookAround.negate} />
+      )}
+    </div>
   )
 }
 
-export default InfoItem
+export default EditTab

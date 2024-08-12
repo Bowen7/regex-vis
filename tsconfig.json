@@ -1,28 +1,26 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "allowJs": true,
-    "skipLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "jsx": "react-jsx",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": ".",
     "module": "esnext",
     "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./src/*"],
+      "tests/*": ["../tests/*"]
+    },
     "resolveJsonModule": true,
-    "isolatedModules": true,
+    "types": ["vite/client"],
+    "allowJs": true,
+    "strict": true,
+    "noFallthroughCasesInSwitch": true,
     "noEmit": true,
-    "jsx": "react-jsx",
-    "noFallthroughCasesInSwitch": true
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "skipLibCheck": true
   },
-  "include": [
-    "src",
-    "tests"
-  ],
-  "extends": "./paths.json"
+  "include": ["src", "tests", "tailwind.config.ts"]
 }

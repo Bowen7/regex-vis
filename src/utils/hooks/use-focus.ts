@@ -1,8 +1,24 @@
-import { useState } from "react"
+import { type FocusEvent, useState } from 'react'
 
-export const useFocus = () => {
+type FocusOptions = {
+  onFocus?: (e: FocusEvent) => void
+  onBlur?: (e: FocusEvent) => void
+}
+export function useFocus(options: FocusOptions = {}) {
+  const { onFocus, onBlur } = options
   const [focused, setFocused] = useState(false)
-  const onFocus = () => setFocused(true)
-  const onBlur = () => setFocused(false)
-  return { focused, bindings: { onFocus, onBlur } }
+
+  return {
+    focusProps: {
+      onFocus: (e: FocusEvent) => {
+        setFocused(true)
+        onFocus?.(e)
+      },
+      onBlur: (e: FocusEvent) => {
+        setFocused(false)
+        onBlur?.(e)
+      },
+    },
+    focused,
+  }
 }

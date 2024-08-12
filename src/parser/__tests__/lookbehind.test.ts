@@ -1,21 +1,22 @@
-import parse from "../parse"
-import * as AST from "../ast"
+import { expect, it } from 'vitest'
+import parse from '../parse'
+import type * as AST from '../ast'
 
-test("parse should return correct ast when receiving lookbehind assertion", () => {
+it('parse should return correct ast when receiving lookbehind assertion', () => {
   const expected: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "lookAroundAssertion",
-        kind: "lookbehind",
+        id: '',
+        type: 'lookAroundAssertion',
+        kind: 'lookbehind',
         children: [
           {
-            id: "",
-            type: "character",
-            kind: "string",
-            value: "a",
+            id: '',
+            type: 'character',
+            kind: 'string',
+            value: 'a',
             quantifier: null,
           },
         ],
@@ -26,25 +27,25 @@ test("parse should return correct ast when receiving lookbehind assertion", () =
     literal: true,
     escapeBackslash: false,
   }
-  const result = parse("/(?<=a)/", { idGenerator: () => "" })
+  const result = parse('/(?<=a)/', { idGenerator: () => '' })
   expect(result).toEqual(expected)
 })
 
-test("parse should return correct ast when receiving negate lookbehind assertion", () => {
+it('parse should return correct ast when receiving negate lookbehind assertion', () => {
   const expected: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "lookAroundAssertion",
-        kind: "lookbehind",
+        id: '',
+        type: 'lookAroundAssertion',
+        kind: 'lookbehind',
         children: [
           {
-            id: "",
-            type: "character",
-            kind: "string",
-            value: "a",
+            id: '',
+            type: 'character',
+            kind: 'string',
+            value: 'a',
             quantifier: null,
           },
         ],
@@ -55,34 +56,34 @@ test("parse should return correct ast when receiving negate lookbehind assertion
     literal: true,
     escapeBackslash: false,
   }
-  const result = parse("/(?<!a)/", { idGenerator: () => "" })
+  const result = parse('/(?<!a)/', { idGenerator: () => '' })
   expect(result).toEqual(expected)
 })
 
-test("parse should return correct ast when receiving complex lookbehind assertion", () => {
+it('parse should return correct ast when receiving complex lookbehind assertion', () => {
   const cases = {
-    "/((?<=\\w{3}))f/": {
-      id: "",
-      type: "regex",
+    '/((?<=\\w{3}))f/': {
+      id: '',
+      type: 'regex',
       body: [
         {
-          id: "",
-          type: "group",
-          kind: "capturing",
-          name: "1",
+          id: '',
+          type: 'group',
+          kind: 'capturing',
+          name: '1',
           index: 1,
           children: [
             {
-              id: "",
-              type: "lookAroundAssertion",
-              kind: "lookbehind",
+              id: '',
+              type: 'lookAroundAssertion',
+              kind: 'lookbehind',
               children: [
                 {
-                  id: "",
-                  type: "character",
-                  kind: "class",
-                  value: "\\w",
-                  quantifier: { kind: "custom", min: 3, max: 3, greedy: true },
+                  id: '',
+                  type: 'character',
+                  kind: 'class',
+                  value: '\\w',
+                  quantifier: { kind: 'custom', min: 3, max: 3, greedy: true },
                 },
               ],
               negate: false,
@@ -91,10 +92,10 @@ test("parse should return correct ast when receiving complex lookbehind assertio
           quantifier: null,
         },
         {
-          id: "",
-          type: "character",
-          kind: "string",
-          value: "f",
+          id: '',
+          type: 'character',
+          kind: 'string',
+          value: 'f',
           quantifier: null,
         },
       ],
@@ -102,29 +103,29 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       literal: true,
       escapeBackslash: false,
     },
-    "/(?<a>(?<=\\w{3}))f/": {
-      id: "",
-      type: "regex",
+    '/(?<a>(?<=\\w{3}))f/': {
+      id: '',
+      type: 'regex',
       body: [
         {
-          id: "",
-          type: "group",
-          kind: "namedCapturing",
-          name: "a",
+          id: '',
+          type: 'group',
+          kind: 'namedCapturing',
+          name: 'a',
           index: 1,
           children: [
             {
-              id: "",
-              type: "lookAroundAssertion",
-              kind: "lookbehind",
+              id: '',
+              type: 'lookAroundAssertion',
+              kind: 'lookbehind',
               negate: false,
               children: [
                 {
-                  id: "",
-                  type: "character",
-                  kind: "class",
-                  value: "\\w",
-                  quantifier: { kind: "custom", min: 3, max: 3, greedy: true },
+                  id: '',
+                  type: 'character',
+                  kind: 'class',
+                  value: '\\w',
+                  quantifier: { kind: 'custom', min: 3, max: 3, greedy: true },
                 },
               ],
             },
@@ -132,10 +133,10 @@ test("parse should return correct ast when receiving complex lookbehind assertio
           quantifier: null,
         },
         {
-          id: "",
-          type: "character",
-          kind: "string",
-          value: "f",
+          id: '',
+          type: 'character',
+          kind: 'string',
+          value: 'f',
           quantifier: null,
         },
       ],
@@ -143,40 +144,40 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       literal: true,
       escapeBackslash: false,
     },
-    "/(?<!(?<a>\\d){3})f/": {
-      id: "",
-      type: "regex",
+    '/(?<!(?<a>\\d){3})f/': {
+      id: '',
+      type: 'regex',
       body: [
         {
-          id: "",
-          type: "lookAroundAssertion",
-          kind: "lookbehind",
+          id: '',
+          type: 'lookAroundAssertion',
+          kind: 'lookbehind',
           negate: true,
           children: [
             {
-              id: "",
-              type: "group",
-              kind: "namedCapturing",
-              name: "a",
+              id: '',
+              type: 'group',
+              kind: 'namedCapturing',
+              name: 'a',
               index: 1,
               children: [
                 {
-                  id: "",
-                  type: "character",
-                  kind: "class",
-                  value: "\\d",
+                  id: '',
+                  type: 'character',
+                  kind: 'class',
+                  value: '\\d',
                   quantifier: null,
                 },
               ],
-              quantifier: { kind: "custom", min: 3, max: 3, greedy: true },
+              quantifier: { kind: 'custom', min: 3, max: 3, greedy: true },
             },
           ],
         },
         {
-          id: "",
-          type: "character",
-          kind: "string",
-          value: "f",
+          id: '',
+          type: 'character',
+          kind: 'string',
+          value: 'f',
           quantifier: null,
         },
       ],
@@ -184,35 +185,35 @@ test("parse should return correct ast when receiving complex lookbehind assertio
       literal: true,
       escapeBackslash: false,
     },
-    "/(?<a>(?<!\\D{3}))f|f/": {
-      id: "",
-      type: "regex",
+    '/(?<a>(?<!\\D{3}))f|f/': {
+      id: '',
+      type: 'regex',
       body: [
         {
-          id: "",
-          type: "choice",
+          id: '',
+          type: 'choice',
           branches: [
             [
               {
-                id: "",
-                type: "group",
-                kind: "namedCapturing",
-                name: "a",
+                id: '',
+                type: 'group',
+                kind: 'namedCapturing',
+                name: 'a',
                 index: 1,
                 children: [
                   {
-                    id: "",
-                    type: "lookAroundAssertion",
-                    kind: "lookbehind",
+                    id: '',
+                    type: 'lookAroundAssertion',
+                    kind: 'lookbehind',
                     negate: true,
                     children: [
                       {
-                        id: "",
-                        type: "character",
-                        kind: "class",
-                        value: "\\D",
+                        id: '',
+                        type: 'character',
+                        kind: 'class',
+                        value: '\\D',
                         quantifier: {
-                          kind: "custom",
+                          kind: 'custom',
                           min: 3,
                           max: 3,
                           greedy: true,
@@ -224,19 +225,19 @@ test("parse should return correct ast when receiving complex lookbehind assertio
                 quantifier: null,
               },
               {
-                id: "",
-                type: "character",
-                kind: "string",
-                value: "f",
+                id: '',
+                type: 'character',
+                kind: 'string',
+                value: 'f',
                 quantifier: null,
               },
             ],
             [
               {
-                id: "",
-                type: "character",
-                kind: "string",
-                value: "f",
+                id: '',
+                type: 'character',
+                kind: 'string',
+                value: 'f',
                 quantifier: null,
               },
             ],
@@ -249,7 +250,7 @@ test("parse should return correct ast when receiving complex lookbehind assertio
     },
   }
   for (const [pattern, expected] of Object.entries(cases)) {
-    const result = parse(pattern, { idGenerator: () => "" })
+    const result = parse(pattern, { idGenerator: () => '' })
     expect(result).toEqual(expected)
   }
 })

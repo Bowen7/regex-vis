@@ -1,6 +1,19 @@
-import React, { Fragment } from "react"
-import { useTranslation, TFunction } from "react-i18next"
-import { AST, characterClassTextMap, CharacterClassKey } from "@/parser"
+import React, { Fragment } from 'react'
+import type { TFunction } from 'react-i18next'
+import { useTranslation } from 'react-i18next'
+import type { AST, CharacterClassKey } from '@/parser'
+import { characterClassTextMap } from '@/parser'
+import {
+  GRAPH_QUOTE_PADDING,
+} from '@/constants'
+
+function LeftQuote() {
+  return <span className="text-foreground/50 inline" style={{ paddingRight: `${GRAPH_QUOTE_PADDING}px` }}>"</span>
+}
+function RightQuote() {
+  return <span className="text-foreground/50 inline" style={{ paddingLeft: `${GRAPH_QUOTE_PADDING}px` }}>"</span>
+}
+
 type Props = {
   node:
     | AST.CharacterNode
@@ -11,86 +24,102 @@ type Props = {
 }
 
 const assertionTextMap = {
-  beginning: "Begin with",
-  end: "End with",
-  lookahead: ["Followed by:", "Not followed by:"],
-  lookbehind: ["Preceded by:", "Not Preceded by:"],
-  word: ["WordBoundary", "NonWordBoundary"],
+  beginning: 'Begin with',
+  end: 'End with',
+  lookahead: ['Followed by:', 'Not followed by:'],
+  lookbehind: ['Preceded by:', 'Not Preceded by:'],
+  word: ['WordBoundary', 'NonWordBoundary'],
 }
 
-const renderString = (value: string) => (
-  <div className="text">
-    <span className="with-quote">{value}</span>
-  </div>
-)
+function renderString(value: string) {
+  return (
+    <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle">
+      <span>
+        <LeftQuote />
+        {value}
+        <RightQuote />
+      </span>
+    </div>
+  )
+}
 
-const renderStringCharacter = (node: AST.StringCharacterNode) =>
-  renderString(node.value)
+function renderStringCharacter(node: AST.StringCharacterNode) {
+  return renderString(node.value)
+}
 
-const renderClassCharacter = (value: string, t: TFunction) => {
-  if (value === "") {
-    return <span className="second-text">{t("Empty")}</span>
+function renderClassCharacter(value: string, t: TFunction) {
+  if (value === '') {
+    return <span className="text-foreground/50">{t('Empty')}</span>
   } else if (value in characterClassTextMap) {
     return <span>{t(characterClassTextMap[value as CharacterClassKey])}</span>
   } else {
-    return <span className="with-quote">{value}</span>
+    return (
+      <span>
+        {value}
+      </span>
+    )
   }
 }
 
-const renderRangesCharacter = (node: AST.RangesCharacterNode, t: TFunction) => {
+function renderRangesCharacter(node: AST.RangesCharacterNode, t: TFunction) {
   const singleRangeSet = new Set<string>()
   const ranges = node.ranges
   const texts: JSX.Element[] = []
-  ranges.forEach(({ from, to }, index) => {
+  ranges.forEach(({ from, to, id }) => {
     if (from.length === 1) {
       if (from === to) {
         singleRangeSet.add(from)
       } else {
         texts.push(
-          <div className="text" key={index}>
-            <span className="with-quote">{from}</span>
-            <span className="second-text">{" - "}</span>
-            <span className="with-quote">{to}</span>
-          </div>
+          <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={id}>
+            <span>
+              <LeftQuote />
+              {from}
+              <RightQuote />
+            </span>
+            <span className="text-foreground/50">{' - '}</span>
+            <span>
+              <LeftQuote />
+              {to}
+              <RightQuote />
+            </span>
+          </div>,
         )
       }
     } else if (from === to) {
       texts.push(
-        <div className="text" key={index}>
+        <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={id}>
           {renderClassCharacter(from, t)}
-        </div>
+        </div>,
       )
     } else {
       texts.push(
-        <div className="text" key={index}>
+        <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle" key={id}>
           {renderClassCharacter(from, t)}
-          <span className="second-text">{" - "}</span>
+          <span className="text-foreground/50">{' - '}</span>
           {renderClassCharacter(to, t)}
-        </div>
+        </div>,
       )
     }
   })
   if (singleRangeSet.size > 0) {
-    const text = Array.from(singleRangeSet).join("")
+    const text = Array.from(singleRangeSet).join('')
     texts.push(<Fragment key="single-range">{renderString(text)}</Fragment>)
   }
   return <>{texts}</>
 }
 
-const renderBackReference = (node: AST.BackReferenceNode, t: TFunction) => {
-  const string = `${t("Back reference")} #${node.ref}`
-  return <div className="text">{string}</div>
+function renderBackReference(node: AST.BackReferenceNode, t: TFunction) {
+  const string = `${t('Back reference')} #${node.ref}`
+  return <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle">{string}</div>
 }
 
-const renderBoundaryAssertion = (
-  node:
-    | AST.BeginningBoundaryAssertionNode
-    | AST.EndBoundaryAssertionNode
-    | AST.WordBoundaryAssertionNode,
-  t: TFunction
-) => {
-  let string = ""
-  if (node.kind === "word") {
+function renderBoundaryAssertion(node:
+  | AST.BeginningBoundaryAssertionNode
+  | AST.EndBoundaryAssertionNode
+  | AST.WordBoundaryAssertionNode, t: TFunction) {
+  let string = ''
+  if (node.kind === 'word') {
     const negate = node.negate
     string = assertionTextMap.word[negate ? 1 : 0]
   } else {
@@ -98,36 +127,36 @@ const renderBoundaryAssertion = (
     string = assertionTextMap[kind]
   }
   string = t(string)
-  return <div className="text">{string}</div>
+  return <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle">{string}</div>
 }
 
 const TextNode = React.memo(({ node }: Props) => {
   const { t } = useTranslation()
 
   switch (node.type) {
-    case "character":
+    case 'character':
       switch (node.kind) {
-        case "string":
-          if (node.value === "") {
-            return <div className="second-text">{t("Empty")}</div>
+        case 'string':
+          if (node.value === '') {
+            return <div className="text-foreground/50">{t('Empty')}</div>
           }
           return renderStringCharacter(node)
-        case "class":
+        case 'class':
           return (
-            <div className="text">{renderClassCharacter(node.value, t)}</div>
+            <div className="text-center pointer-events-none whitespace-nowrap leading-normal text-foreground [&>span]:align-middle">{renderClassCharacter(node.value, t)}</div>
           )
-        case "ranges":
+        case 'ranges':
           return renderRangesCharacter(node, t)
         default:
           break
       }
       return null
-    case "backReference":
+    case 'backReference':
       return renderBackReference(node, t)
-    case "boundaryAssertion":
+    case 'boundaryAssertion':
       return renderBoundaryAssertion(node, t)
   }
 })
 
-TextNode.displayName = "TextNode"
+TextNode.displayName = 'TextNode'
 export default TextNode

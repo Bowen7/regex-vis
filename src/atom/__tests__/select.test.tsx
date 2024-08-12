@@ -1,19 +1,22 @@
-import { renderHook, act } from "@testing-library/react"
-import { useAtom, useSetAtom } from "jotai"
-import { selectedIdsAtom } from "../atoms"
-import { clearSelectedAtom } from "../select"
-jest.mock("nanoid")
+import { expect, it, vi } from 'vitest'
+import { act } from 'react'
+import { renderHook } from '@testing-library/react'
+import { useAtom, useSetAtom } from 'jotai'
+import { selectedIdsAtom } from '../atoms'
+import { clearSelectedAtom } from '../select'
 
-test("clear selected", async () => {
+vi.mock('nanoid')
+
+it('clear selected', async () => {
   const { result: selectedIdsAtomRef } = renderHook(() =>
-    useAtom(selectedIdsAtom)
+    useAtom(selectedIdsAtom),
   )
   const { result: setClearSelectedRef } = renderHook(() =>
-    useSetAtom(clearSelectedAtom)
+    useSetAtom(clearSelectedAtom),
   )
 
   act(() => {
-    selectedIdsAtomRef.current[1](["1"])
+    selectedIdsAtomRef.current[1](['1'])
   })
 
   act(() => {

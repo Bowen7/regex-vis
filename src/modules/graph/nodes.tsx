@@ -1,19 +1,21 @@
-import React, { useMemo, useEffect, ReactNode } from "react"
-import { useAtomValue } from "jotai"
-import * as AST from "@/parser/ast"
-import { GRAPH_NODE_MARGIN_HORIZONTAL } from "@/constants"
+import type { ReactNode } from 'react'
+import React, { useEffect, useMemo } from 'react'
+import { useAtomValue } from 'jotai'
+import ChoiceNode from './choice'
+import SimpleNode from './simple-node'
+import GroupLikeNode from './group-like'
+import MidConnect from './mid-connect'
+import { DEFAULT_SIZE } from './measure'
+import { useSize } from './utils'
 import {
+  isPrimaryGraphAtom,
   nodesBoxMap,
   selectedIdsAtom,
-  isPrimaryGraphAtom,
   sizeMapAtom,
-} from "@/atom"
-import ChoiceNode from "./choice"
-import SimpleNode from "./simple-node"
-import GroupLikeNode from "./group-like"
-import MidConnect from "./mid-connect"
-import { DEFAULT_SIZE } from "./measure"
-import { useSize } from "./utils"
+} from '@/atom'
+import { GRAPH_NODE_MARGIN_HORIZONTAL } from '@/constants'
+import type * as AST from '@/parser/ast'
+
 type Props = {
   id: string
   index: number
@@ -30,7 +32,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
 
   const boxes = useMemo(() => {
     let curX = x
-    return nodes.map((node, index) => {
+    return nodes.map((node) => {
       const [nodeWidth, nodeHeight] = (sizeMap.get(node) || DEFAULT_SIZE).box
       const nodeX = curX
       const nodeY = y + (boxHeight - nodeHeight) / 2
@@ -46,9 +48,9 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
 
   const contentBoxes = useMemo(() => {
     let curX = x
-    return nodes.map((node, index) => {
-      const { box: boxSize, content: contentSize } =
-        sizeMap.get(node) || DEFAULT_SIZE
+    return nodes.map((node) => {
+      const { box: boxSize, content: contentSize }
+        = sizeMap.get(node) || DEFAULT_SIZE
       const nodeX = curX + (boxSize[0] - contentSize[0]) / 2
       const nodeY = y + (boxHeight - contentSize[1]) / 2
       curX += boxSize[0] + GRAPH_NODE_MARGIN_HORIZONTAL
@@ -71,8 +73,8 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
   }, [index, id, contentBoxes, isPrimaryGraph])
 
   const startSelectedIndex = useMemo(
-    () => nodes.findIndex((node) => node.id === selectedIds[0]),
-    [selectedIds, nodes]
+    () => nodes.findIndex(node => node.id === selectedIds[0]),
+    [selectedIds, nodes],
   )
 
   const connectY = y + boxHeight / 2
@@ -82,13 +84,13 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
       {nodes.map((node, index) => {
         const { id } = node
         const box = boxes[index]
-        const selected =
-          startSelectedIndex >= 0 &&
-          index >= startSelectedIndex &&
-          index < startSelectedIndex + selectedIds.length
-        let Node: ReactNode = <></>
+        const selected
+          = startSelectedIndex >= 0
+          && index >= startSelectedIndex
+          && index < startSelectedIndex + selectedIds.length
+        let Node: ReactNode = null
         switch (node.type) {
-          case "choice":
+          case 'choice':
             Node = (
               <ChoiceNode
                 x={box.x1}
@@ -98,8 +100,8 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
               />
             )
             break
-          case "group":
-          case "lookAroundAssertion":
+          case 'group':
+          case 'lookAroundAssertion':
             Node = (
               <GroupLikeNode
                 x={box.x1}
@@ -109,7 +111,7 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
               />
             )
             break
-          case "root":
+          case 'root':
             Node = null
             break
           default:
@@ -138,6 +140,6 @@ const Nodes = React.memo(({ id, index, x, y, nodes }: Props) => {
     </>
   )
 })
-Nodes.displayName = "Nodes"
+Nodes.displayName = 'Nodes'
 
 export default Nodes

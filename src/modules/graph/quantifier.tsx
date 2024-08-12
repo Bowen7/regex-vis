@@ -1,8 +1,9 @@
-import React from "react"
-import { AST } from "@/parser"
-import InfinityIcon from "@geist-ui/icons/infinity"
-import { GRAPH_ICON_SIZE } from "@/constants"
-import { getQuantifierText } from "./utils"
+import React from 'react'
+import { Infinity as InfinityIcon } from '@phosphor-icons/react'
+import { getQuantifierText } from './utils'
+import type { AST } from '@/parser'
+import { GRAPH_ICON_SIZE } from '@/constants'
+
 type Props = {
   quantifier: AST.Quantifier
 }
@@ -14,7 +15,7 @@ const QuantifierNode = React.memo((props: Props) => {
   const text = getQuantifierText(quantifier)
 
   return (
-    <div className="text quantifier">
+    <div className="text-center pointer-events-none leading-normal text-foreground [&>span]:align-middle flex items-center justify-center whitespace-pre">
       <svg
         fill="none"
         stroke="currentColor"
@@ -29,8 +30,9 @@ const QuantifierNode = React.memo((props: Props) => {
         <path d="M17 1l4 4-4 4"></path>
         <path
           d="M3 11V9a4 4 0 014-4h14M21 13v2a4 4 0 01-4 4H3"
-          strokeDasharray={quantifier.greedy ? "" : "4, 4"}
-        ></path>
+          strokeDasharray={quantifier.greedy ? '' : '4, 4'}
+        >
+        </path>
         <path d="M7 23l-4-4 4-4"></path>
       </svg>
       <span>{text}</span>
@@ -38,5 +40,5 @@ const QuantifierNode = React.memo((props: Props) => {
     </div>
   )
 })
-QuantifierNode.displayName = "QuantifierNode"
+QuantifierNode.displayName = 'QuantifierNode'
 export default QuantifierNode

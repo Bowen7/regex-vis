@@ -1,7 +1,8 @@
-import { atom } from "jotai"
-import { groupSelected, updateGroup, AST } from "@/parser"
-import { astAtom, selectedIdsAtom } from "./atoms"
-import { refreshValidUndoAtom } from "./utils"
+import { atom } from 'jotai'
+import { astAtom, selectedIdsAtom } from './atoms'
+import { refreshValidUndoAtom } from './utils'
+import type { AST } from '@/parser'
+import { groupSelected, updateGroup } from '@/parser'
 
 export const updateGroupAtom = atom(
   null,
@@ -11,7 +12,7 @@ export const updateGroupAtom = atom(
       set(selectedIdsAtom, selectedIds)
       set(refreshValidUndoAtom, draft)
     })
-  }
+  },
 )
 
 export const groupSelectedAtom = atom(null, (get, set, group: AST.Group) => {

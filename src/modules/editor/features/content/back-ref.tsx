@@ -1,11 +1,20 @@
-import React, { useMemo } from "react"
-import { Select } from "@geist-ui/core"
-import { useAtomValue, useSetAtom } from "jotai"
-import { useTranslation } from "react-i18next"
-import Cell from "@/components/cell"
-import { updateContentAtom, groupNamesAtom } from "@/atom"
+import React, { useMemo } from 'react'
+import { useAtomValue, useSetAtom } from 'jotai'
+import { useTranslation } from 'react-i18next'
+import Cell from '@/components/cell'
+import { groupNamesAtom, updateContentAtom } from '@/atom'
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
 
-type Props = { reference: string }
+type Props = {
+  reference: string
+}
 const BackRef: React.FC<Props> = ({ reference }) => {
   const { t } = useTranslation()
   const groupNames = useAtomValue(groupNamesAtom)
@@ -18,22 +27,30 @@ const BackRef: React.FC<Props> = ({ reference }) => {
     return [reference, ...groupNames]
   }, [groupNames, reference])
 
-  const handleChange = (value: string | string[]) =>
-    updateContent({ kind: "backReference", ref: value as string })
+  const onChange = (value: string | string[]) =>
+    updateContent({ kind: 'backReference', ref: value as string })
+
   return (
-    <Cell.Item label={t("Back Reference")}>
+    <Cell.Item label={t('Back Reference')}>
       <Select
-        placeholder={t("Choose one")}
         value={reference}
-        onChange={handleChange}
-        getPopupContainer={() => document.getElementById("editor-content")}
-        disableMatchWidth
+        onValueChange={onChange}
       >
-        {options.map((option) => (
-          <Select.Option value={option} key={option}>
-            {t("Group")} #{option}
-          </Select.Option>
-        ))}
+        <SelectTrigger className="w-52">
+          <SelectValue placeholder={t('Choose one')} />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            {options.map(option => (
+              <SelectItem value={option} key={option}>
+                {t('Group')}
+                {' '}
+                #
+                {option}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
       </Select>
     </Cell.Item>
   )

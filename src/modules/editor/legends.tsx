@@ -1,39 +1,39 @@
-import SimpleGraph from "@/modules/graph/simple-graph"
+import SimpleGraph from '@/modules/graph/simple-graph'
 
 const legends = [
   {
-    name: "Characters",
+    name: 'Characters',
     infos: [
       {
         Icon: <SimpleGraph regex="abc" />,
-        desc: "Direct match characters",
+        desc: 'Direct match characters',
       },
     ],
   },
   {
-    name: "Character classes",
+    name: 'Character classes',
     infos: [
       {
-        Icon: <SimpleGraph regex={"\\d"} />,
-        desc: "Distinguish different types of characters",
+        Icon: <SimpleGraph regex={'\\d'} />,
+        desc: 'Distinguish different types of characters',
       },
     ],
   },
   {
-    name: "Ranges",
+    name: 'Ranges',
     infos: [
       {
         Icon: <SimpleGraph regex="[a-z]" />,
-        desc: "Matches any one of the enclosed characters",
+        desc: 'Matches any one of the enclosed characters',
       },
       {
         Icon: <SimpleGraph regex="[^a-z]" />,
-        desc: "Matches anything that is not enclosed in the brackets",
+        desc: 'Matches anything that is not enclosed in the brackets',
       },
     ],
   },
   {
-    name: "Choice",
+    name: 'Choice',
     infos: [
       {
         Icon: <SimpleGraph regex="a|b" />,
@@ -42,20 +42,20 @@ const legends = [
     ],
   },
   {
-    name: "Quantifier",
+    name: 'Quantifier',
     infos: [
       {
         Icon: <SimpleGraph regex="a*" />,
-        desc: "Indicate numbers of characters or expressions to match",
+        desc: 'Indicate numbers of characters or expressions to match',
       },
     ],
   },
   {
-    name: "Group",
+    name: 'Group',
     infos: [
       {
         Icon: <SimpleGraph regex="(x)" />,
-        desc: "Matches x and remembers the match",
+        desc: 'Matches x and remembers the match',
       },
       {
         Icon: <SimpleGraph regex="(?:x)" />,
@@ -68,24 +68,24 @@ const legends = [
     ],
   },
   {
-    name: "Back reference",
+    name: 'Back reference',
     infos: [
       {
-        Icon: <SimpleGraph regex={"\\1"} />,
-        desc: "A back reference to match group #1",
+        Icon: <SimpleGraph regex={'\\1'} />,
+        desc: 'A back reference to match group #1',
       },
       {
-        Icon: <SimpleGraph regex={"\\k<name>"} />,
+        Icon: <SimpleGraph regex={'\\k<name>'} />,
         desc: `A back reference to match group #Name`,
       },
     ],
   },
   {
-    name: "Assertion",
+    name: 'Assertion',
     infos: [
       {
         Icon: <SimpleGraph regex="^" />,
-        desc: "Matches the beginning of input",
+        desc: 'Matches the beginning of input',
       },
       {
         Icon: <SimpleGraph regex="x(?=y)" />,

@@ -1,6 +1,6 @@
-import { atom } from "jotai"
-import { undoStack, redoStack, astAtom } from "./atoms"
-import { clearSelectedAtom } from "./select"
+import { atom } from 'jotai'
+import { astAtom, redoStack, undoStack } from './atoms'
+import { clearSelectedAtom } from './select'
 
 export const undoAtom = atom(null, (get, set) => {
   if (undoStack.length > 0) {

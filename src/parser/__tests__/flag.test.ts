@@ -1,32 +1,33 @@
-import parse from "../parse"
-import * as AST from "../ast"
+import { expect, it } from 'vitest'
+import parse from '../parse'
+import type * as AST from '../ast'
 
-test("parse should return error when receiving invalid flags", () => {
+it('parse should return error when receiving invalid flags', () => {
   const expected = {
-    type: "error",
+    type: 'error',
     message: `Invalid flags supplied to RegExp constructor 'z'`,
   }
-  const result = parse("/(?:)/z", { idGenerator: () => "" })
+  const result = parse('/(?:)/z', { idGenerator: () => '' })
   expect(result).toEqual(expected)
 })
 
-test("parse should return correct ast when receiving flags", () => {
+it('parse should return correct ast when receiving flags', () => {
   const expected: AST.Regex = {
-    id: "",
-    type: "regex",
+    id: '',
+    type: 'regex',
     body: [
       {
-        id: "",
-        type: "group",
-        kind: "nonCapturing",
+        id: '',
+        type: 'group',
+        kind: 'nonCapturing',
         children: [],
         quantifier: null,
       },
     ],
-    flags: ["g"],
+    flags: ['g'],
     literal: true,
     escapeBackslash: false,
   }
-  const result = parse("/(?:)/g", { idGenerator: () => "" })
+  const result = parse('/(?:)/g', { idGenerator: () => '' })
   expect(result).toEqual(expected)
 })

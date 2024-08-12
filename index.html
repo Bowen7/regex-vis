@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Regex visualizer & editor, make the regular expression easier."
+    />
+    <meta name="keywords" content="editor,regex,regexp,visualizer" />
+    <link rel="icon" href="/favicon.png" />
+    <title>Regex Vis</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <div id="portal"></div>
+    <% if (!isDev) { %>
+      <!-- Cloudflare Web Analytics -->
+        <script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "f684c9449da14b2396a0a944c9acb39f"}'></script>
+      <!-- End Cloudflare Web Analytics -->
+    <% } %>
+    <script type="module" src="/src/index.tsx"></script>
+  </body>
+</html>

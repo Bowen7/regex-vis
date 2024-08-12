@@ -42,8 +42,8 @@
   "Multi-line": "多行",
   "Add A Case": "添加一个用例",
   "Insert around": "插入节点",
-  "Group selection": "分组所选项",
-  "Lookahead/LookBehind assertion selection": "向前/向后断言所选项",
+  "Group selection": "分组",
+  "Lookaround assertion": "向前/向后断言",
   "Before": "向前插入",
   "Parallel": "插入或",
   "After": "向后插入",
@@ -55,8 +55,8 @@
   "Non-capturing group": "非捕获组",
   "Named capturing group": "具名捕获组",
   "Capturing": "捕获组",
-  "Non-\ncapturing": "非捕获组",
-  "Named\ncapturing": "具名捕获组",
+  "Non-cap": "非捕获组",
+  "Named cap": "具名捕获组",
   "Lookahead assertion": "向前断言",
   "Lookbehind assertion": "向后断言",
   "Lookahead": "向前断言",
@@ -96,7 +96,6 @@
   "Back Reference": "反向引用",
   "Choose one": "选择一项",
   "UnGroup": "取消组",
-  "Lookahead/LookBehind assertion": "向前/向后断言",
   "Cancel assertion": "取消断言",
   "times": "次数",
   "custom": "自定义",
@@ -113,5 +112,6 @@
   "include escape ": "包括转义 ",
   "Copy permalink": "复制链接",
   "Permalink copied.": "链接已复制",
-  "Empty": "空"
+  "Empty": "空",
+  "Group's name": "组名"
 }

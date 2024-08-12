@@ -1,7 +1,9 @@
-import { atom } from "jotai"
-import { updateQuantifier, AST } from "@/parser"
-import { selectedIdsAtom, astAtom, toastsAtom } from "./atoms"
-import { refreshValidUndoAtom } from "./utils"
+import { atom } from 'jotai'
+import { astAtom, selectedIdsAtom } from './atoms'
+import { refreshValidUndoAtom } from './utils'
+import type { AST } from '@/parser'
+import { updateQuantifier } from '@/parser'
+import { toast } from '@/components/ui/use-toast'
 
 export const updateQuantifierAtom = atom(
   null,
@@ -12,15 +14,16 @@ export const updateQuantifierAtom = atom(
         const nextSelectedId = updateQuantifier(
           draft,
           selectedIds[0],
-          quantifier
+          quantifier,
         )
         if (nextSelectedId !== selectedIds[0]) {
           set(selectedIdsAtom, [nextSelectedId])
-          const toasts = get(toastsAtom)
-          toasts && toasts.setToast({ text: "Group selection automatically" })
+          toast({
+            description: 'Group selection automatically',
+          })
         }
       }
       set(refreshValidUndoAtom, draft)
     })
-  }
+  },
 )

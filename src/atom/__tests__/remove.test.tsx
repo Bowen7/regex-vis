@@ -1,26 +1,28 @@
-import { renderHook, act } from "@testing-library/react"
-import { useAtom, useSetAtom } from "jotai"
-import { AST } from "@/parser"
-import { removeAtom } from "../remove"
-import { astAtom, selectedIdsAtom } from "../atoms"
+import { expect, it } from 'vitest'
+import { act } from 'react'
+import { renderHook } from '@testing-library/react'
+import { useAtom, useSetAtom } from 'jotai'
+import { removeAtom } from '../remove'
+import { astAtom, selectedIdsAtom } from '../atoms'
+import type { AST } from '@/parser'
 
-test("remove selected", async () => {
+it('remove selected', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: selectedIdsAtomRef } = renderHook(() =>
-    useAtom(selectedIdsAtom)
+    useAtom(selectedIdsAtom),
   )
   const { result: setRemoveAtom } = renderHook(() => useSetAtom(removeAtom))
 
   act(() => {
     astAtomRef.current[1]({
-      id: "1",
-      type: "regex",
+      id: '1',
+      type: 'regex',
       body: [
         {
-          id: "2",
-          type: "character",
-          kind: "string",
-          value: "foo",
+          id: '2',
+          type: 'character',
+          kind: 'string',
+          value: 'foo',
           quantifier: null,
         },
       ],
@@ -29,7 +31,7 @@ test("remove selected", async () => {
       escapeBackslash: false,
     })
 
-    selectedIdsAtomRef.current[1](["2"])
+    selectedIdsAtomRef.current[1](['2'])
   })
 
   act(() => {
@@ -37,8 +39,8 @@ test("remove selected", async () => {
   })
 
   const expected: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [],
     flags: [],
     literal: true,
@@ -48,37 +50,37 @@ test("remove selected", async () => {
   expect(selectedIdsAtomRef.current[0]).toEqual([])
 })
 
-test("remove selected in a choice node", async () => {
+it('remove selected in a choice node', async () => {
   const { result: astAtomRef } = renderHook(() => useAtom(astAtom))
   const { result: selectedIdsAtomRef } = renderHook(() =>
-    useAtom(selectedIdsAtom)
+    useAtom(selectedIdsAtom),
   )
   const { result: setRemoveAtom } = renderHook(() => useSetAtom(removeAtom))
 
   act(() => {
     astAtomRef.current[1]({
-      id: "1",
-      type: "regex",
+      id: '1',
+      type: 'regex',
       body: [
         {
-          id: "2",
-          type: "choice",
+          id: '2',
+          type: 'choice',
           branches: [
             [
               {
-                id: "3",
-                type: "character",
-                kind: "string",
-                value: "foo",
+                id: '3',
+                type: 'character',
+                kind: 'string',
+                value: 'foo',
                 quantifier: null,
               },
             ],
             [
               {
-                id: "4",
-                type: "character",
-                kind: "string",
-                value: "foo",
+                id: '4',
+                type: 'character',
+                kind: 'string',
+                value: 'foo',
                 quantifier: null,
               },
             ],
@@ -90,7 +92,7 @@ test("remove selected in a choice node", async () => {
       escapeBackslash: false,
     })
 
-    selectedIdsAtomRef.current[1](["3"])
+    selectedIdsAtomRef.current[1](['3'])
   })
 
   act(() => {
@@ -98,14 +100,14 @@ test("remove selected in a choice node", async () => {
   })
 
   const expected: AST.Regex = {
-    id: "1",
-    type: "regex",
+    id: '1',
+    type: 'regex',
     body: [
       {
-        id: "4",
-        type: "character",
-        kind: "string",
-        value: "foo",
+        id: '4',
+        type: 'character',
+        kind: 'string',
+        value: 'foo',
         quantifier: null,
       },
     ],

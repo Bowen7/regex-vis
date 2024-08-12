@@ -1,18 +1,17 @@
-import React from "react"
-import { useAtomValue } from "jotai"
-import { useTheme } from "@geist-ui/core"
-import { AST } from "@/parser"
+import { useAtomValue } from 'jotai'
+import { NameAndQuantifier } from './name-quantifier'
+import Nodes from './nodes'
+import MidConnect from './mid-connect'
+import Content from './content'
+import { useSize } from './utils'
+import { sizeMapAtom } from '@/atom'
 import {
+  GRAPH_GROUP_NODE_PADDING_VERTICAL,
   GRAPH_NODE_BORDER_RADIUS,
   GRAPH_NODE_MARGIN_HORIZONTAL,
-  GRAPH_GROUP_NODE_PADDING_VERTICAL,
-} from "@/constants"
-import { sizeMapAtom } from "@/atom"
-import { NameAndQuantifier } from "./name-quantifier"
-import Nodes from "./nodes"
-import MidConnect from "./mid-connect"
-import Content from "./content"
-import { useSize } from "./utils"
+} from '@/constants'
+import type { AST } from '@/parser'
+
 type Props = {
   x: number
   y: number
@@ -20,13 +19,12 @@ type Props = {
   selected: boolean
 }
 
-const GroupLikeNode = ({ x, y, node, selected }: Props) => {
-  const { palette } = useTheme()
+function GroupLikeNode({ x, y, node, selected }: Props) {
   const sizeMap = useAtomValue(sizeMapAtom)
   const size = useSize(node, sizeMap)
   const { box: boxSize, content: contentSize } = size
 
-  if (node.type !== "group" && node.type !== "lookAroundAssertion") {
+  if (node.type !== 'group' && node.type !== 'lookAroundAssertion') {
     return null
   }
 
@@ -46,8 +44,7 @@ const GroupLikeNode = ({ x, y, node, selected }: Props) => {
         height={contentSize[1]}
         rx={GRAPH_NODE_BORDER_RADIUS}
         ry={GRAPH_NODE_BORDER_RADIUS}
-        stroke={palette.accents_3}
-        className="transparent-fill second-stroke"
+        className="stroke-[1.5] stroke-graph-group fill-transparent "
       >
         {nodeChildren.length > 0 && (
           <>
@@ -75,5 +72,5 @@ const GroupLikeNode = ({ x, y, node, selected }: Props) => {
     </>
   )
 }
-GroupLikeNode.displayName = "GroupLikeGroup"
+GroupLikeNode.displayName = 'GroupLikeGroup'
 export default GroupLikeNode

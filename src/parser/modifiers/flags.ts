@@ -1,4 +1,4 @@
-import * as AST from "../ast"
+import type * as AST from '../ast'
 
 export const updateFlags = (ast: AST.Regex, flags: string[]) => {
   ast.flags = flags as AST.Flag[]

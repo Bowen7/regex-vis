@@ -1,57 +1,46 @@
-import React, { useMemo } from "react"
-import { useTheme, Code, Dot } from "@geist-ui/core"
-import hexRgb from "hex-rgb"
-import { useSetAtom } from "jotai"
-import { AST } from "@/parser"
-import { selectNodesByBoxAtom } from "@/atom"
-import { useDragSelect } from "@/utils/hooks"
-import ASTGraph from "./ast-graph"
+import React from 'react'
+import { useSetAtom } from 'jotai'
+import { ExclamationTriangleIcon } from '@radix-ui/react-icons'
+import ASTGraph from './ast-graph'
+import type { AST } from '@/parser'
+import { selectNodesByBoxAtom } from '@/atom'
+import { useDragSelect } from '@/utils/hooks'
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
+
 type Props = {
   regex: string
   ast: AST.Regex
   errorMsg?: string | null
 }
 
-const Graph: React.FC<Props> = ({ regex, ast, errorMsg = null }) => {
+const Graph: React.FC<Props> = ({ ast, errorMsg = null }) => {
   const selectNodesByBox = useSetAtom(selectNodesByBoxAtom)
-  const { palette } = useTheme()
-  const selectionColor = useMemo(
-    () => hexRgb(palette.success, { format: "css", alpha: 0.5 }),
-    [palette.success]
-  )
 
   const [bindings, Selection] = useDragSelect({
     disabled: !!errorMsg,
-    style: {
-      backgroundColor: selectionColor,
-      border: `1.5px solid ${palette.success}`,
-      borderRadius: "4px",
-    },
-    onSelect: (box) => selectNodesByBox(box),
+    className: 'rounded bg-blue-500/50 border border-blue-500',
+    onSelect: box => selectNodesByBox(box),
   })
 
   return (
-    <>
-      <div className="graph" {...bindings}>
-        {errorMsg ? (
-          <p>
-            <Dot type="error">Error</Dot>(<Code>{regex}</Code>) {errorMsg}
-          </p>
-        ) : (
-          <>
-            {ast.body.length > 0 && <ASTGraph ast={ast} />}
-            {Selection}
-          </>
-        )}
-      </div>
-      <style jsx>{`
-        .graph {
-          display: inline-block;
-          position: relative;
-          font-size: ${errorMsg ? "1em" : "0"};
-        }
-      `}</style>
-    </>
+    <div className="relative inline-block" {...bindings}>
+      {errorMsg
+        ? (
+            <Alert>
+              <ExclamationTriangleIcon className="h-6 w-6" />
+              <AlertTitle className="!pl-10">Error</AlertTitle>
+              <AlertDescription className="!pl-10">
+                {errorMsg}
+              </AlertDescription>
+            </Alert>
+          )
+        : (
+            <>
+              {ast.body.length > 0 && <ASTGraph ast={ast} />}
+              {Selection}
+            </>
+          )}
+    </div>
   )
 }
 

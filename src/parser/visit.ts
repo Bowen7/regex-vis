@@ -1,4 +1,4 @@
-import * as AST from "./ast"
+import type * as AST from './ast'
 
 export function visit(
   node: AST.Regex | AST.Node,
@@ -7,14 +7,14 @@ export function visit(
     nodeList: AST.Node[],
     index: number,
     parent: AST.ParentNode
-  ) => void | boolean
+  ) => void | boolean,
 ) {
   let found = false
   const _callback = (
     node: AST.Node,
     nodeList: AST.Node[],
     index: number,
-    parent: AST.ParentNode
+    parent: AST.ParentNode,
   ) => {
     if (found) {
       return true
@@ -24,10 +24,10 @@ export function visit(
 
   const _visit = (node: AST.Regex | AST.Node) => {
     switch (node.type) {
-      case "regex":
-      case "group":
-      case "lookAroundAssertion":
-        const children = node.type === "regex" ? node.body : node.children
+      case 'regex':
+      case 'group':
+      case 'lookAroundAssertion':{
+        const children = node.type === 'regex' ? node.body : node.children
         for (let index = 0; index < children.length; index++) {
           const child = children[index]
           if (_callback(child, children, index, node)) {
@@ -37,7 +37,8 @@ export function visit(
           _visit(child)
         }
         break
-      case "choice":
+      }
+      case 'choice':{
         const { branches } = node
         for (const branch of branches) {
           for (let index = 0; index < branch.length; index++) {
@@ -50,6 +51,7 @@ export function visit(
           }
         }
         break
+      }
       default:
         break
     }
@@ -60,7 +62,7 @@ export function visit(
 
 export const visitNodes = (
   node: AST.Regex | AST.Node,
-  callback: (id: string, index: number, nodes: AST.Node[]) => void | boolean
+  callback: (id: string, index: number, nodes: AST.Node[]) => void | boolean,
 ) => {
   let found = false
   const _callback = (id: string, index: number, nodes: AST.Node[]) => {
@@ -72,10 +74,10 @@ export const visitNodes = (
 
   const _visitNodes = (node: AST.Regex | AST.Node) => {
     switch (node.type) {
-      case "regex":
-      case "group":
-      case "lookAroundAssertion":
-        const children = node.type === "regex" ? node.body : node.children
+      case 'regex':
+      case 'group':
+      case 'lookAroundAssertion':{
+        const children = node.type === 'regex' ? node.body : node.children
         if (_callback(node.id, 0, children)) {
           found = true
           return
@@ -84,7 +86,8 @@ export const visitNodes = (
           _visitNodes(child)
         }
         break
-      case "choice":
+      }
+      case 'choice':{
         const { branches } = node
         for (let index = 0; index < branches.length; index++) {
           const branch = branches[index]
@@ -97,6 +100,7 @@ export const visitNodes = (
           }
         }
         break
+      }
       default:
         break
     }
@@ -107,13 +111,13 @@ export const visitNodes = (
 
 export function getNodeById(
   ast: AST.Regex,
-  id: string
+  id: string,
 ): {
-  node: AST.Node
-  parent: AST.ParentNode
-  nodeList: AST.Node[]
-  index: number
-} {
+    node: AST.Node
+    parent: AST.ParentNode
+    nodeList: AST.Node[]
+    index: number
+  } {
   let ret: {
     node: AST.Node
     parent: AST.ParentNode
@@ -139,13 +143,13 @@ export function getNodeById(
 
 export function getNodesByIds(
   ast: AST.Regex,
-  ids: string[]
+  ids: string[],
 ): {
-  nodes: AST.Node[]
-  parent: AST.ParentNode
-  nodeList: AST.Node[]
-  index: number
-} {
+    nodes: AST.Node[]
+    parent: AST.ParentNode
+    nodeList: AST.Node[]
+    index: number
+  } {
   const { parent, nodeList, index } = getNodeById(ast, ids[0])
   return {
     nodes: nodeList.slice(index, index + ids.length),
@@ -157,19 +161,19 @@ export function getNodesByIds(
 
 export function lrd(
   node: AST.Regex | AST.Node,
-  callback: (node: AST.Regex | AST.Node) => void
+  callback: (node: AST.Regex | AST.Node) => void,
 ) {
   switch (node.type) {
-    case "regex":
-      node.body.forEach((child) => lrd(child, callback))
+    case 'regex':
+      node.body.forEach(child => lrd(child, callback))
       break
-    case "group":
-    case "lookAroundAssertion":
-      node.children.forEach((child) => lrd(child, callback))
+    case 'group':
+    case 'lookAroundAssertion':
+      node.children.forEach(child => lrd(child, callback))
       break
-    case "choice":
+    case 'choice':
       node.branches.forEach((branch) => {
-        branch.forEach((child) => lrd(child, callback))
+        branch.forEach(child => lrd(child, callback))
       })
       break
     default:

@@ -1,101 +1,73 @@
-import React from "react"
-import { useTheme } from "@geist-ui/core"
-import QuestionCircle from "@geist-ui/icons/questionCircle"
-import mdnLinks, { MdnLinkKey } from "@/utils/links"
+import React from 'react'
+import { Question as QuestionIcon } from '@phosphor-icons/react'
+import clsx from 'clsx'
+import type { MdnLinkKey } from '@/utils/links'
+import mdnLinks from '@/utils/links'
+import { Button } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 type ItemProps = {
   label: string
   children: React.ReactNode
 }
-const CellItem = ({ label, children }: ItemProps) => {
-  const { palette } = useTheme()
+function CellItem({ label, children }: ItemProps) {
   return (
-    <>
-      <h6>{label}</h6>
+    <div>
+      <h6 className="text-foreground/60 font-semibold mb-2 text-sm">{label}</h6>
       {children}
-      <style jsx>{`
-        h6 {
-          color: ${palette.secondary};
-        }
-      `}</style>
-    </>
+    </div>
   )
 }
 
 type Props = {
+  className?: string
   label: string
   mdnLinkKey?: MdnLinkKey
-  rightLabel?: string
+  rightIcon?: React.ReactNode
+  rightTooltip?: string
+  onRightIconClick?: () => void
   children: React.ReactNode
-  onRightLabelClick?: () => void
 }
-const Cell = ({
+function Cell({
+  className,
   label,
   mdnLinkKey,
   children,
-  rightLabel,
-  onRightLabelClick,
-}: Props) => {
-  const { palette } = useTheme()
+  rightIcon,
+  rightTooltip,
+  onRightIconClick,
+}: Props) {
   return (
-    <>
-      <div className="container">
-        <div className="title">
-          <div className="left">
-            <h5>{label}</h5>
-            {mdnLinkKey && (
-              <a href={mdnLinks[mdnLinkKey]} target="_blank" rel="noreferrer">
-                <QuestionCircle size={16} />
-              </a>
-            )}
-          </div>
-          {rightLabel && (
-            <span className="right" onClick={onRightLabelClick}>
-              {rightLabel}
-            </span>
-          )}
-        </div>
-        <div className="content">{children}</div>
+    <div>
+      <div className={clsx('flex items-center mb-2.5', { 'justify-between': !!rightIcon })}>
+        <h5 className="font-semibold">{label}</h5>
+        {mdnLinkKey && (
+          <a href={mdnLinks[mdnLinkKey]} target="_blank" rel="noreferrer" className="ml-2">
+            <QuestionIcon className="w-4 h-4" />
+          </a>
+        )}
+        {rightIcon && (
+          <TooltipProvider delayDuration={500}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button onClick={onRightIconClick} variant="outline" size="icon" className="px-2 h-7">
+                  {rightIcon}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{rightTooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
       </div>
-      <style jsx>{`
-        .container:not(:last-of-type) {
-          margin-bottom: 30px;
-        }
-        .title {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          margin-bottom: 0.625rem;
-        }
-        h5 {
-          margin: 0;
-        }
-        h5 + :global(a) {
-          margin-left: 6px;
-          cursor: pointer;
-          color: ${palette.foreground};
-          line-height: 0;
-        }
-        .left {
-          display: flex;
-          align-items: center;
-        }
-        .right {
-          font-size: 0.75rem;
-          color: ${palette.secondary};
-          cursor: pointer;
-          text-align: right;
-        }
-
-        .content {
-          font-size: 14px;
-        }
-
-        .content > :global(h6:not(:first-of-type)) {
-          margin-top: calc(7.625pt - 0.5px);
-        }
-      `}</style>
-    </>
+      <div className={className}>{children}</div>
+    </div>
   )
 }
 
