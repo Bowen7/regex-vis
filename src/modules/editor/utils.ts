@@ -1,6 +1,5 @@
-import { checkQuantifier } from '@/modules/graph/utils'
 import type { AST } from '@/parser'
-import { genWithSelected } from '@/parser'
+import { checkQuantifier, genWithSelected } from '@/parser'
 
 export type NodesInfo = {
   id: string

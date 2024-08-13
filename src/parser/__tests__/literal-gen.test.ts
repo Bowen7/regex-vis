@@ -121,7 +121,7 @@ it('gen with literal = false', () => {
       ],
       flags: [],
       literal: false,
-      escapeBackslash: true,
+      escapeBackslash: false,
     }),
   ).toBe('\\k<name>?')
 })

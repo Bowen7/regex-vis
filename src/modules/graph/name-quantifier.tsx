@@ -1,7 +1,7 @@
 import { useTranslation } from 'react-i18next'
 import QuantifierNode from './quantifier'
 import MidConnect from './mid-connect'
-import { getNameText, getQuantifier } from './utils'
+import { getNameText } from './utils'
 import type { NodeSize } from './measure'
 import {
   GRAPH_NAME_HEIGHT,
@@ -10,6 +10,7 @@ import {
   GRAPH_QUANTIFIER_TEXT_FONTSIZE,
 } from '@/constants'
 import type { AST } from '@/parser'
+import { getQuantifier } from '@/parser'
 
 type Props = {
   node: AST.Node

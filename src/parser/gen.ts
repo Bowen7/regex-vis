@@ -1,5 +1,5 @@
 import type * as AST from './ast'
-import { checkQuantifier } from '@/modules/graph/utils'
+import { checkQuantifier } from './utils'
 
 const digitRegex = /\d+/
 

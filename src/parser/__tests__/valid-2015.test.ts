@@ -4282,6 +4282,51 @@ const tests: Tests = {
     literal: true,
     escapeBackslash: false,
   },
+  '/\\1+/': {
+    id: '',
+    type: 'regex',
+    body: [
+      {
+        id: '',
+        type: 'backReference',
+        ref: '1',
+        quantifier: { kind: '+', min: 1, max: Infinity, greedy: true },
+      },
+    ],
+    flags: [],
+    literal: true,
+    escapeBackslash: false,
+  },
+  '/\\1+?/': {
+    id: '',
+    type: 'regex',
+    body: [
+      {
+        id: '',
+        type: 'backReference',
+        ref: '1',
+        quantifier: { kind: '+', min: 1, max: Infinity, greedy: false },
+      },
+    ],
+    flags: [],
+    literal: true,
+    escapeBackslash: false,
+  },
+  '/\\k<name>{1,10}/': {
+    id: '',
+    type: 'regex',
+    body: [
+      {
+        id: '',
+        type: 'backReference',
+        ref: 'name',
+        quantifier: { kind: 'custom', min: 1, max: 10, greedy: true },
+      },
+    ],
+    flags: [],
+    literal: true,
+    escapeBackslash: false,
+  },
 }
 
 const withoutGenRegex = [

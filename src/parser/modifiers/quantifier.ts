@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid'
 import type * as AST from '../ast'
 import { getNodeById } from '../visit'
 import { replaceFromLists } from './replace'
-import { checkQuantifier } from '@/modules/graph/utils'
+import { checkQuantifier } from '@/parser'
 
 export const updateQuantifier = (
   ast: AST.Regex,

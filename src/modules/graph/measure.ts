@@ -2,13 +2,12 @@ import {
   getBackReferenceText,
   getBoundaryAssertionText,
   getNameText,
-  getQuantifier,
   getQuantifierText,
   tryCharacterClassText,
 } from './utils'
 import i18n from '@/i18n'
 import type { AST, CharacterClassKey } from '@/parser'
-import { characterClassTextMap } from '@/parser'
+import { characterClassTextMap, getQuantifier } from '@/parser'
 import {
   GRAPH_ICON_SIZE,
   GRAPH_NAME_MEASURE_HEIGHT,

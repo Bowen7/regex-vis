@@ -6,4 +6,5 @@ export * from './visit'
 export * from './modifiers'
 export * from './character-class'
 export * from './gen-with-selected'
+export * from './utils'
 export { AST }
