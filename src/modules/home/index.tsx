@@ -123,7 +123,7 @@ function Home() {
     <div
       className="flex-1 flex min-h-0"
     >
-      <div className={clsx('flex-1 relative flex flex-col min-w-0', { 'justify-center': !graphShow })}>
+      <div className={clsx('flex-1 relative flex flex-col min-w-0 bg-graph-bg', { 'justify-center': !graphShow })}>
         {graphShow && (
           <ScrollArea className="flex-1 min-h-0 h-full">
             <div className="flex items-center justify-center p-8 h-full">

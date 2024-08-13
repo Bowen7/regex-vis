@@ -4,7 +4,7 @@ import legends from './legends'
 function Legend() {
   const { t } = useTranslation()
   return (
-    <div className="divide-y-2 *:py-4 first:*:pt-0 last:*:pb-0">
+    <div className="divide-y *:py-4 first:*:pt-0 last:*:pb-0">
       {/* TODO move the tip to the graph */}
       {/* <div className="tip">
           <ArrowLeftCircle size={14} />
