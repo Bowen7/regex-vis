@@ -2,6 +2,7 @@ import {
   getBackReferenceText,
   getBoundaryAssertionText,
   getNameText,
+  getQuantifier,
   getQuantifierText,
   tryCharacterClassText,
 } from './utils'
@@ -67,8 +68,8 @@ export function measureText(text: string, fontSize: number, fontFamily = REGEX_F
 }
 
 function measureQuantifier(node: AST.Node): [number, number] {
-  if ((node.type === 'group' || node.type === 'character') && node.quantifier) {
-    const { quantifier } = node
+  const quantifier = getQuantifier(node)
+  if (quantifier) {
     const text = getQuantifierText(quantifier)
     const [textWidth] = measureText(text, GRAPH_QUANTIFIER_TEXT_FONTSIZE)
     const width

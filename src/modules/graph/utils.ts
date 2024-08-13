@@ -6,7 +6,10 @@ import type { AST, CharacterClassKey } from '@/parser'
 import { characterClassTextMap } from '@/parser'
 
 export const getQuantifier = (node: AST.Node) =>
-  node.type === 'character' || node.type === 'group' ? node.quantifier : null
+  (node.type === 'character' || node.type === 'group' || node.type === 'backReference') ? node.quantifier : null
+
+export const checkQuantifier = (node: AST.Node): node is (AST.CharacterNode | AST.GroupNode | AST.BackReferenceNode) =>
+  (node.type === 'character' || node.type === 'group' || node.type === 'backReference')
 
 const assertionTextMap = {
   beginning: 'Begin with',

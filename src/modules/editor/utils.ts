@@ -1,8 +1,8 @@
-import { nanoid } from 'nanoid'
+import { checkQuantifier } from '@/modules/graph/utils'
 import type { AST } from '@/parser'
 import { genWithSelected } from '@/parser'
 
-export interface NodesInfo {
+export type NodesInfo = {
   id: string
   regex: string
   startIndex: number
@@ -69,7 +69,7 @@ const getQuantifierInfo = (
 ): { hasQuantifier: boolean, quantifier: AST.Quantifier | null } => {
   if (nodes.length === 1) {
     const node = nodes[0]
-    if (node.type === 'character' || node.type === 'group') {
+    if (checkQuantifier(node)) {
       return { hasQuantifier: true, quantifier: node.quantifier }
     }
   }

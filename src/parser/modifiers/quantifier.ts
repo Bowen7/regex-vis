@@ -2,6 +2,7 @@ import { nanoid } from 'nanoid'
 import type * as AST from '../ast'
 import { getNodeById } from '../visit'
 import { replaceFromLists } from './replace'
+import { checkQuantifier } from '@/modules/graph/utils'
 
 export const updateQuantifier = (
   ast: AST.Regex,
@@ -24,7 +25,7 @@ export const updateQuantifier = (
     }
     nextSelectedId = groupNode.id
     replaceFromLists(nodeList, [node], [groupNode])
-  } else if (node.type === 'character' || node.type === 'group') {
+  } else if (checkQuantifier(node)) {
     node.quantifier = quantifier
   }
   return nextSelectedId

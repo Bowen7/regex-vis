@@ -161,6 +161,7 @@ export type AssertionNode =
 export type BackReferenceNode = {
   type: 'backReference'
   ref: string
+  quantifier: Quantifier | null
 } & NodeBase
 
 export type Content =
