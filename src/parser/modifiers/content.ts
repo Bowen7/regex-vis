@@ -50,7 +50,7 @@ const updateContent = (ast: AST.Regex, id: string, content: AST.Content) => {
     }
     case 'backReference': {
       const { ref } = content
-      nodeList[index] = { id, type: 'backReference', ref }
+      nodeList[index] = { id, type: 'backReference', ref, quantifier }
       break
     }
     case 'beginningAssertion': {

@@ -101,6 +101,29 @@ it('gen with literal = false', () => {
       escapeBackslash: false,
     }),
   ).toBe('/')
+
+  expect(
+    gen({
+      id: '',
+      type: 'regex',
+      body: [
+        {
+          id: '',
+          type: 'backReference',
+          ref: 'name',
+          quantifier: {
+            kind: '?',
+            min: 0,
+            max: 1,
+            greedy: true,
+          },
+        },
+      ],
+      flags: [],
+      literal: false,
+      escapeBackslash: true,
+    }),
+  ).toBe('\\k<name>?')
 })
 
 it('gen with escapeBackslash = false', () => {
@@ -132,6 +155,7 @@ it('gen with escapeBackslash = false', () => {
           id: '',
           type: 'backReference',
           ref: '123',
+          quantifier: null,
         },
       ],
       flags: [],
@@ -149,6 +173,7 @@ it('gen with escapeBackslash = false', () => {
           id: '',
           type: 'backReference',
           ref: 'name',
+          quantifier: null,
         },
       ],
       flags: [],
@@ -206,6 +231,7 @@ it('gen with escapeBackslash = true', () => {
           id: '',
           type: 'backReference',
           ref: '123',
+          quantifier: null,
         },
       ],
       flags: [],
@@ -223,6 +249,7 @@ it('gen with escapeBackslash = true', () => {
           id: '',
           type: 'backReference',
           ref: 'name',
+          quantifier: null,
         },
       ],
       flags: [],
