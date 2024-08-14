@@ -7,7 +7,7 @@ import {
 } from './utils'
 import i18n from '@/i18n'
 import type { AST, CharacterClassKey } from '@/parser'
-import { characterClassTextMap } from '@/parser'
+import { characterClassTextMap, getQuantifier } from '@/parser'
 import {
   GRAPH_ICON_SIZE,
   GRAPH_NAME_MEASURE_HEIGHT,
@@ -67,8 +67,8 @@ export function measureText(text: string, fontSize: number, fontFamily = REGEX_F
 }
 
 function measureQuantifier(node: AST.Node): [number, number] {
-  if ((node.type === 'group' || node.type === 'character') && node.quantifier) {
-    const { quantifier } = node
+  const quantifier = getQuantifier(node)
+  if (quantifier) {
     const text = getQuantifierText(quantifier)
     const [textWidth] = measureText(text, GRAPH_QUANTIFIER_TEXT_FONTSIZE)
     const width

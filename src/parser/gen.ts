@@ -1,4 +1,5 @@
 import type * as AST from './ast'
+import { checkQuantifier } from './utils'
 
 const digitRegex = /\d+/
 
@@ -88,7 +89,7 @@ export class CodeGen {
       default:
         break
     }
-    if (node.type === 'character' || node.type === 'group') {
+    if (checkQuantifier(node)) {
       this.genQuantifier(node)
     }
   }
@@ -174,7 +175,7 @@ export class CodeGen {
     }
   }
 
-  genQuantifier(node: AST.CharacterNode | AST.GroupNode) {
+  genQuantifier(node: AST.CharacterNode | AST.GroupNode | AST.BackReferenceNode) {
     const { quantifier } = node
     if (!quantifier) {
       return

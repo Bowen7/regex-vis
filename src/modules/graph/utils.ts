@@ -5,9 +5,6 @@ import { DEFAULT_SIZE } from './measure'
 import type { AST, CharacterClassKey } from '@/parser'
 import { characterClassTextMap } from '@/parser'
 
-export const getQuantifier = (node: AST.Node) =>
-  node.type === 'character' || node.type === 'group' ? node.quantifier : null
-
 const assertionTextMap = {
   beginning: 'Begin with',
   end: 'End with',

@@ -142,10 +142,12 @@ export class Parser {
             = this.regex[start + 1] === 'k'
               ? this.regex.slice(start + 3, end - 1)
               : this.regex.slice(start + 1, end)
+          const quantifier = this.parseQuantifier()
           nodes.push({
             id: this.id(),
             type: 'backReference',
             ref,
+            quantifier,
           })
           break
         }
