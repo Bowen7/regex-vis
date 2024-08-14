@@ -37,8 +37,8 @@ function Samples() {
   const { t } = useTranslation()
   return (
     <ScrollArea className="flex-1">
-      <div>
-        <div className="max-w-7xl my-0 mx-auto p-6 flex flex-col space-y-12">
+      <div className="bg-graph-bg">
+        <div className="max-w-7xl my-0 mx-auto p-6 flex flex-col space-y-14">
           {samples.map(({ desc, label, regex }) => {
             const linkTo = `/?r=${encodeURIComponent(`/${regex}/`)}`
             return (

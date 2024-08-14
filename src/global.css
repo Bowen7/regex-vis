@@ -31,6 +31,7 @@
     --chart-5: 27 87% 67%;
     --graph: #3f3f46;
     --graph-group: #a1a1aa;
+    --graph-bg: #fafafa;
   }
 
   .dark {
@@ -60,6 +61,7 @@
     --chart-5: 340 75% 55%;
     --graph: #d4d4d8;
     --graph-group: #52525b;
+    --graph-bg: #111111;
   }
 }
 

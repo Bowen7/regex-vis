@@ -55,6 +55,7 @@ export default {
         },
         'graph': 'var(--graph)',
         'graph-group': 'var(--graph-group)',
+        'graph-bg': 'var(--graph-bg)',
       },
       borderRadius: {
         lg: 'var(--radius)',
