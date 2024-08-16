@@ -6,7 +6,7 @@ import { Toaster } from '@/components/ui/toaster'
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="dark" storageKey="theme">
+    <ThemeProvider>
       <Router>
         <div className="h-screen w-screen flex flex-col">
           <Header />
