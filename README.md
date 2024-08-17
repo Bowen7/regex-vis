@@ -27,6 +27,10 @@
 
 [MIT](https://choosealicense.com/licenses/mit/)
 
+## Thanks
+
+This project is tested with BrowserStack.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=bowen7/regex-vis&type=Date)](https://star-history.com/#bowen7/regex-vis&Date)
