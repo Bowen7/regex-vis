@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ViewVerticalIcon } from '@radix-ui/react-icons'
-import { useAtom, useSetAtom, useAtomValue } from 'jotai'
+import { ArrowUpIcon, ViewVerticalIcon } from '@radix-ui/react-icons'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffectOnce, useLocalStorage, useUpdateEffect } from 'react-use'
 import { useCopyToClipboard } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
@@ -16,19 +16,18 @@ import { genPermalink } from '@/utils/helpers'
 import {
   SEARCH_PARAM_REGEX,
   SEARCH_PARAM_TESTS,
+  STORAGE_GRAPH_TIP_VISIBLE,
   STORAGE_TEST_CASES,
-  STORAGE_GRAPH_TIP_VISIBLE
 } from '@/constants'
 import {
   astAtom,
   clearSelectedAtom,
+  selectedIdsAtom,
   updateFlagsAtom,
-  selectedIdsAtom
 } from '@/atom'
 import { useToast } from '@/components/ui/use-toast'
 import { Toggle } from '@/components/ui/toggle'
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area'
-import { ArrowUpIcon } from "@radix-ui/react-icons"
 
 function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -116,7 +115,7 @@ function Home() {
   }, [ast])
 
   useEffect(() => {
-    if(graphTipVisible && selectIds.length > 0) {
+    if (graphTipVisible && selectIds.length > 0) {
       setGraphTipVisible(false)
     }
   }, [selectIds, graphTipVisible, setGraphTipVisible])
@@ -136,18 +135,19 @@ function Home() {
     >
       <div className={clsx('flex-1 relative flex flex-col min-w-0 bg-graph-bg', { 'justify-center': !graphShow })}>
         {graphShow && (
-            <ScrollArea className="flex-1 min-h-0 h-full relative">
-              {graphTipVisible && 
-                <div className="absolute bg-graph-bg bottom-0 left-1/2 -translate-x-1/2 z-10 text-sm inline-flex items-center py-1">
-                  <ArrowUpIcon className='w-4 h-4 mr-2'/>
-                  {t('You can select nodes by dragging or clicking in the graph')}
-                </div>
-              }
-              <div className="flex items-center justify-center p-8 h-full">
-                <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
+          <ScrollArea className="flex-1 min-h-0 h-full relative">
+            {graphTipVisible
+            && (
+              <div className="absolute bg-graph-bg bottom-0 left-1/2 -translate-x-1/2 z-10 text-sm inline-flex items-center py-1">
+                <ArrowUpIcon className="w-4 h-4 mr-2" />
+                {t('You can select nodes by dragging or clicking on the graph')}
               </div>
-              <ScrollBar orientation="horizontal" />
-            </ScrollArea>
+            )}
+            <div className="flex items-center justify-center p-8 h-full">
+              <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
+            </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         )}
         <RegexInput
           regex={regex}
