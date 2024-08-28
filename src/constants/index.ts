@@ -38,6 +38,7 @@ export const GRAPH_WITHOUT_ROOT_PADDING_HORIZONTAL = 5
 
 // storage key
 export const STORAGE_TEST_CASES = 'test-cases'
+export const STORAGE_GRAPH_TIP_VISIBLE = 'graph-tip-visible'
 
 // url search param
 export const SEARCH_PARAM_REGEX = 'r'
