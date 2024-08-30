@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ViewVerticalIcon } from '@radix-ui/react-icons'
-import { useAtom, useSetAtom } from 'jotai'
+import { ArrowUpIcon, ViewVerticalIcon } from '@radix-ui/react-icons'
+import { useAtom, useAtomValue, useSetAtom } from 'jotai'
 import { useEffectOnce, useLocalStorage, useUpdateEffect } from 'react-use'
 import { useCopyToClipboard } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
@@ -16,11 +16,13 @@ import { genPermalink } from '@/utils/helpers'
 import {
   SEARCH_PARAM_REGEX,
   SEARCH_PARAM_TESTS,
+  STORAGE_GRAPH_TIP_VISIBLE,
   STORAGE_TEST_CASES,
 } from '@/constants'
 import {
   astAtom,
   clearSelectedAtom,
+  selectedIdsAtom,
   updateFlagsAtom,
 } from '@/atom'
 import { useToast } from '@/components/ui/use-toast'
@@ -31,6 +33,7 @@ function Home() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [editorCollapsed, setEditorCollapsed] = useState(false)
   const [ast, setAst] = useAtom(astAtom)
+  const selectIds = useAtomValue(selectedIdsAtom)
   const clearSelected = useSetAtom(clearSelectedAtom)
   const updateFlags = useSetAtom(updateFlagsAtom)
   const { t } = useTranslation()
@@ -38,6 +41,7 @@ function Home() {
   const [, copy] = useCopyToClipboard()
 
   const [, setCases] = useLocalStorage<string[]>(STORAGE_TEST_CASES, [''])
+  const [graphTipVisible, setGraphTipVisible] = useLocalStorage<boolean>(STORAGE_GRAPH_TIP_VISIBLE, true)
   const shouldGenAst = useRef(true)
   const shouldParseRegex = useRef(true)
 
@@ -110,6 +114,12 @@ function Home() {
     }
   }, [ast])
 
+  useEffect(() => {
+    if (graphTipVisible && selectIds.length > 0) {
+      setGraphTipVisible(false)
+    }
+  }, [selectIds, graphTipVisible, setGraphTipVisible])
+
   const handleFlagsChange = (flags: string[]) => updateFlags(flags)
 
   const handleCopyPermalink = () => {
@@ -125,7 +135,14 @@ function Home() {
     >
       <div className={clsx('flex-1 relative flex flex-col min-w-0 bg-graph-bg', { 'justify-center': !graphShow })}>
         {graphShow && (
-          <ScrollArea className="flex-1 min-h-0 h-full">
+          <ScrollArea className="flex-1 min-h-0 h-full relative">
+            {graphTipVisible
+            && (
+              <div className="absolute bg-graph-bg bottom-0 left-1/2 -translate-x-1/2 z-10 text-sm inline-flex items-center py-1">
+                <ArrowUpIcon className="w-4 h-4 mr-2" />
+                {t('You can select nodes by dragging or clicking on the graph')}
+              </div>
+            )}
             <div className="flex items-center justify-center p-8 h-full">
               <Graph regex={regex} ast={ast} errorMsg={errorMsg} />
             </div>
