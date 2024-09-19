@@ -19,7 +19,7 @@ export const characterClassTextMap = {
   '\\cK': '\\v Vertical Tab',
   '\\cL': '\\f Form Feed',
   '\\cM': '\\r Carriage Return',
-  '\\xhh': '',
-  '\\uhhhh': '',
+  '\\xhh': 'ASCII symbol',
+  '\\uhhhh': 'Unicode symbol',
 }
 export type CharacterClassKey = keyof typeof characterClassTextMap
