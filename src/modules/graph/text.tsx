@@ -24,10 +24,10 @@ type Props = {
 }
 
 const assertionTextMap = {
-  beginning: 'Begin with',
-  end: 'End with',
+  beginning: 'Begins with',
+  end: 'Ends with',
   lookahead: ['Followed by:', 'Not followed by:'],
-  lookbehind: ['Preceded by:', 'Not Preceded by:'],
+  lookbehind: ['Preceded by:', 'Not preceded by:'],
   word: ['WordBoundary', 'NonWordBoundary'],
 }
 

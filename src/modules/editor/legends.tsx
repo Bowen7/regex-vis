@@ -36,7 +36,7 @@ const legends = [
     name: 'Choice',
     infos: [
       {
-        Icon: <SimpleGraph regex="a|b" />,
+        Icon: <SimpleGraph regex="x|y" />,
         desc: `Matches either "x" or "y"`,
       },
     ],
@@ -75,7 +75,7 @@ const legends = [
         desc: 'A back reference to match group #1',
       },
       {
-        Icon: <SimpleGraph regex={'\\k<name>'} />,
+        Icon: <SimpleGraph regex={'\\k<Name>'} />,
         desc: `A back reference to match group #Name`,
       },
     ],
