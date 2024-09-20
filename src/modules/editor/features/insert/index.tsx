@@ -79,7 +79,7 @@ const Insert: React.FC<Props> = ({ nodes }) => {
     }
     return [
       { value: 'lookahead', label: 'Lookahead' },
-      { value: 'lookbehind', label: 'Lookahead' },
+      { value: 'lookbehind', label: 'Lookbehind' },
     ]
   }, [nodes])
 
