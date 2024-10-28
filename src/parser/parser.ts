@@ -72,7 +72,6 @@ export class Parser {
         ) {
           lastNode.value += str
           str = ''
-          return
         }
       }
       if (str) {

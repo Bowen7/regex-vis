@@ -4327,6 +4327,26 @@ const tests: Tests = {
     literal: true,
     escapeBackslash: false,
   },
+  '/\\aaa?/': {
+    id: '',
+    type: 'regex',
+    body: [{
+      id: '',
+      type: 'character',
+      kind: 'string',
+      value: 'aa',
+      quantifier: null,
+    }, {
+      id: '',
+      type: 'character',
+      kind: 'string',
+      value: 'a',
+      quantifier: { kind: '?', min: 0, max: 1, greedy: true },
+    }],
+    flags: [],
+    literal: true,
+    escapeBackslash: false,
+  },
 }
 
 const withoutGenRegex = [
@@ -4397,6 +4417,7 @@ const withoutGenRegex = [
   '/[\\c_]/',
   '/^[a-zA-Z0-9!-/:-@\\[-`{-~]*$/',
   '/^[ｧ-ﾝﾞﾟ\\-]*$/',
+  '/\\aaa?/',
 ]
 
 it('parse es2015 regex', () => {
