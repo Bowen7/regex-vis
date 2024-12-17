@@ -75,8 +75,8 @@ importers:
         specifier: ^0.4.1
         version: 0.4.1(immer@9.0.21)(jotai@2.9.0(@types/react@18.3.3)(react@18.3.1))
       nanoid:
-        specifier: ^3.1.16
-        version: 3.3.7
+        specifier: ^3.3.8
+        version: 3.3.8
       react:
         specifier: ^18.1.0
         version: 18.3.1
@@ -97,10 +97,10 @@ importers:
         version: 2.4.0
       tailwindcss:
         specifier: ^3.4.4
-        version: 3.4.4(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3))
+        version: 3.4.4(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3))
       tailwindcss-animate:
         specifier: ^1.0.7
-        version: 1.0.7(tailwindcss@3.4.4(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3)))
+        version: 1.0.7(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3)))
       typescript:
         specifier: ^5.5.0
         version: 5.5.3
@@ -122,7 +122,7 @@ importers:
     devDependencies:
       '@antfu/eslint-config':
         specifier: ^2.22.2
-        version: 2.22.2(@eslint-react/eslint-plugin@1.5.25(eslint@9.7.0)(typescript@5.5.3))(@vue/compiler-sfc@3.4.31)(eslint-plugin-react-hooks@5.1.0-rc-df5f2736-20240712(eslint@9.7.0))(eslint-plugin-react-refresh@0.4.8(eslint@9.7.0))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1))
+        version: 2.22.2(@eslint-react/eslint-plugin@1.5.25(eslint@9.7.0)(typescript@5.5.3))(@vue/compiler-sfc@3.4.31)(eslint-plugin-react-hooks@5.1.0-rc-df5f2736-20240712(eslint@9.7.0))(eslint-plugin-react-refresh@0.4.8(eslint@9.7.0))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5)
       '@testing-library/dom':
         specifier: ^10.4.0
         version: 10.4.0
@@ -176,7 +176,7 @@ importers:
         version: 2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1)
       vitest-canvas-mock:
         specifier: ^0.3.3
-        version: 0.3.3(vitest@2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1))
+        version: 0.3.3(vitest@2.0.5)
 
 packages:
 
@@ -2599,8 +2599,8 @@ packages:
       react: '*'
       react-dom: '*'
 
-  nanoid@3.3.7:
-    resolution: {integrity: sha512-eSRppjcPIatRIMC1U6UngP8XFcz8MQWGQdt1MTBQ7NaAmvXDfvNxbvWV3x2y6CdEUciCSsDHDQZbhYaB8QEo2g==}
+  nanoid@3.3.8:
+    resolution: {integrity: sha512-WNLf5Sd8oZxOm+TzppcYk8gVOgP+l58xNy58D0nbUnOxOWRWvlcCV4kUF7ltmI6PsrLl/BgKEyS4mqsGChFN0w==}
     engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
     hasBin: true
 
@@ -3597,7 +3597,7 @@ snapshots:
       '@jridgewell/gen-mapping': 0.3.5
       '@jridgewell/trace-mapping': 0.3.25
 
-  '@antfu/eslint-config@2.22.2(@eslint-react/eslint-plugin@1.5.25(eslint@9.7.0)(typescript@5.5.3))(@vue/compiler-sfc@3.4.31)(eslint-plugin-react-hooks@5.1.0-rc-df5f2736-20240712(eslint@9.7.0))(eslint-plugin-react-refresh@0.4.8(eslint@9.7.0))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1))':
+  '@antfu/eslint-config@2.22.2(@eslint-react/eslint-plugin@1.5.25(eslint@9.7.0)(typescript@5.5.3))(@vue/compiler-sfc@3.4.31)(eslint-plugin-react-hooks@5.1.0-rc-df5f2736-20240712(eslint@9.7.0))(eslint-plugin-react-refresh@0.4.8(eslint@9.7.0))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5)':
     dependencies:
       '@antfu/install-pkg': 0.3.3
       '@clack/prompts': 0.7.0
@@ -3622,7 +3622,7 @@ snapshots:
       eslint-plugin-toml: 0.11.1(eslint@9.7.0)
       eslint-plugin-unicorn: 54.0.0(eslint@9.7.0)
       eslint-plugin-unused-imports: 4.0.0(@typescript-eslint/eslint-plugin@8.0.0-alpha.40(@typescript-eslint/parser@8.0.0-alpha.40(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)
-      eslint-plugin-vitest: 0.5.4(@typescript-eslint/eslint-plugin@8.0.0-alpha.40(@typescript-eslint/parser@8.0.0-alpha.40(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1))
+      eslint-plugin-vitest: 0.5.4(@typescript-eslint/eslint-plugin@8.0.0-alpha.40(@typescript-eslint/parser@8.0.0-alpha.40(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5)
       eslint-plugin-vue: 9.27.0(eslint@9.7.0)
       eslint-plugin-yml: 1.14.0(eslint@9.7.0)
       eslint-processor-vue-blocks: 0.1.2(@vue/compiler-sfc@3.4.31)(eslint@9.7.0)
@@ -5596,7 +5596,7 @@ snapshots:
     optionalDependencies:
       '@typescript-eslint/eslint-plugin': 8.0.0-alpha.40(@typescript-eslint/parser@8.0.0-alpha.40(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3)
 
-  eslint-plugin-vitest@0.5.4(@typescript-eslint/eslint-plugin@8.0.0-alpha.40(@typescript-eslint/parser@8.0.0-alpha.40(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1)):
+  eslint-plugin-vitest@0.5.4(@typescript-eslint/eslint-plugin@8.0.0-alpha.40(@typescript-eslint/parser@8.0.0-alpha.40(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3))(eslint@9.7.0)(typescript@5.5.3)(vitest@2.0.5):
     dependencies:
       '@typescript-eslint/utils': 7.16.0(eslint@9.7.0)(typescript@5.5.3)
       eslint: 9.7.0
@@ -6237,7 +6237,7 @@ snapshots:
       stacktrace-js: 2.0.2
       stylis: 4.3.2
 
-  nanoid@3.3.7: {}
+  nanoid@3.3.8: {}
 
   natural-compare-lite@1.4.0: {}
 
@@ -6397,13 +6397,13 @@ snapshots:
       camelcase-css: 2.0.1
       postcss: 8.4.39
 
-  postcss-load-config@4.0.2(postcss@8.4.39)(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3)):
+  postcss-load-config@4.0.2(postcss@8.4.39)(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3)):
     dependencies:
       lilconfig: 3.1.2
       yaml: 2.4.5
     optionalDependencies:
       postcss: 8.4.39
-      ts-node: 10.9.2(@types/node@18.19.39)(typescript@5.5.3)
+      ts-node: 10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3)
 
   postcss-nested@6.0.1(postcss@8.4.39):
     dependencies:
@@ -6419,7 +6419,7 @@ snapshots:
 
   postcss@8.4.39:
     dependencies:
-      nanoid: 3.3.7
+      nanoid: 3.3.8
       picocolors: 1.0.1
       source-map-js: 1.2.0
 
@@ -6785,11 +6785,11 @@ snapshots:
 
   tailwind-merge@2.4.0: {}
 
-  tailwindcss-animate@1.0.7(tailwindcss@3.4.4(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3))):
+  tailwindcss-animate@1.0.7(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3))):
     dependencies:
-      tailwindcss: 3.4.4(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3))
+      tailwindcss: 3.4.4(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3))
 
-  tailwindcss@3.4.4(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3)):
+  tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -6808,7 +6808,7 @@ snapshots:
       postcss: 8.4.39
       postcss-import: 15.1.0(postcss@8.4.39)
       postcss-js: 4.0.1(postcss@8.4.39)
-      postcss-load-config: 4.0.2(postcss@8.4.39)(ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3))
+      postcss-load-config: 4.0.2(postcss@8.4.39)(ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3))
       postcss-nested: 6.0.1(postcss@8.4.39)
       postcss-selector-parser: 6.1.1
       resolve: 1.22.8
@@ -6879,7 +6879,7 @@ snapshots:
 
   ts-interface-checker@0.1.13: {}
 
-  ts-node@10.9.2(@types/node@18.19.39)(typescript@5.5.3):
+  ts-node@10.9.2(@swc/core@1.6.13(@swc/helpers@0.5.12))(@types/node@18.19.39)(typescript@5.5.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -6896,6 +6896,8 @@ snapshots:
       typescript: 5.5.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+    optionalDependencies:
+      '@swc/core': 1.6.13(@swc/helpers@0.5.12)
     optional: true
 
   tsconfck@3.1.1(typescript@5.5.3):
@@ -7020,7 +7022,7 @@ snapshots:
       '@types/node': 18.19.39
       fsevents: 2.3.3
 
-  vitest-canvas-mock@0.3.3(vitest@2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1)):
+  vitest-canvas-mock@0.3.3(vitest@2.0.5):
     dependencies:
       jest-canvas-mock: 2.5.2
       vitest: 2.0.5(@types/node@18.19.39)(@vitest/ui@2.0.5)(happy-dom@14.12.3)(jsdom@24.1.1)
