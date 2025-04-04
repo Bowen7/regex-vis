@@ -22,6 +22,7 @@ export function LanguageSelect() {
           <SelectItem value="en" className="text-xs">English</SelectItem>
           <SelectItem value="cn" className="text-xs">简体中文</SelectItem>
           <SelectItem value="ru" className="text-xs">Русский</SelectItem>
+          <SelectItem value="jp" className="text-xs">日本語</SelectItem>
         </SelectGroup>
       </SelectContent>
     </Select>
