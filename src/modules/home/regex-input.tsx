@@ -100,7 +100,7 @@ const RegexInput: React.FC<Props> = ({
                   >
                     <div className="flex items-center space-x-2">
                       <CheckboxItem value={value} />
-                      <span>{label}</span>
+                      <span>{t(label)}</span>
                     </div>
                   </label>
                 )
