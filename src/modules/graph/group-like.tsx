@@ -44,7 +44,7 @@ function GroupLikeNode({ x, y, node, selected }: Props) {
         height={contentSize[1]}
         rx={GRAPH_NODE_BORDER_RADIUS}
         ry={GRAPH_NODE_BORDER_RADIUS}
-        className="stroke-[1.5] stroke-graph-group fill-transparent "
+        className={`stroke-[1.5] fill-transparent ${('negate' in node && node.negate ? 'stroke-red-500 [stroke-dasharray:4_2]' : 'stroke-graph-group')}`}
       >
         {nodeChildren.length > 0 && (
           <>

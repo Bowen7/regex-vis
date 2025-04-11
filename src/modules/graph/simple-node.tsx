@@ -43,7 +43,7 @@ function SimpleNode({ x, y, node, selected }: Props) {
         rx={GRAPH_NODE_BORDER_RADIUS}
         ry={GRAPH_NODE_BORDER_RADIUS}
         fill="transparent"
-        className="stroke-[1.5] stroke-graph"
+        className={`stroke-[1.5] ${('negate' in node && node.negate ? 'stroke-red-500 [stroke-dasharray:4_2]' : 'stroke-graph')}`}
       >
         <foreignObject
           x={contentX + GRAPH_NODE_PADDING_HORIZONTAL}
