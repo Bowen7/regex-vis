@@ -1,4 +1,4 @@
-FROM node:18
+FROM node:18 AS builder
 
 # Install pnpm
 RUN npm install -g pnpm
@@ -6,17 +6,21 @@ RUN npm install -g pnpm
 # Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the working directory
-COPY . ./
+# Copy package.json and pnpm-lock.yaml to the working directory
+COPY package.json pnpm-lock.yaml ./
+
+RUN pnpm set registry https://nexus.helllord77.duckdns.org/repository/npm-proxy/
 
 # Install dependencies
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Copy the rest of the application code
 COPY . .
 
-# Expose port 3000
-EXPOSE 3000
+# Build the application
+RUN pnpm build
 
-# Start the application
-CMD [ "pnpm", "start"]
+FROM nginx:alpine
+
+# Copy the built application
+COPY --from=builder /app/dist /usr/share/nginx/html
