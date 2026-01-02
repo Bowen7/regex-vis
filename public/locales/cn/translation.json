@@ -38,7 +38,7 @@
   "NonWordBoundary": "非单词边界",
   "Matches \"x\" only if \"x\" is followed by \"y\"": "x 被 y 跟随时匹配 x",
   "Global search": "全局搜索",
-  "Case-insensitive": "区分大小写",
+  "Case-insensitive": "忽略大小写",
   "Multi-line": "多行",
   "Add A Case": "添加一个用例",
   "Insert around": "插入节点",
