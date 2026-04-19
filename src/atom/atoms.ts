@@ -24,3 +24,6 @@ export const groupNamesAtom = atom<string[]>([])
 
 export const sizeMapAtom = atom<Map<AST.Node | AST.Node[], NodeSize>>(new Map())
 export const isPrimaryGraphAtom = atom<boolean>(true)
+
+export const highlightNodeIdAtom = atom<string | null>(null)
+export const stringPositionAtom = atom<number>(0)

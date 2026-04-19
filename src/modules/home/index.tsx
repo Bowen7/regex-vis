@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { ArrowUpIcon, ViewVerticalIcon } from '@radix-ui/react-icons'
 import { useAtom, useAtomValue, useSetAtom } from 'jotai'
@@ -52,6 +52,14 @@ function Home() {
   )
 
   const { literal } = ast
+
+  const handleLoadRegex = useCallback((newRegex: string, newFlags: string[]) => {
+    clearSelected()
+    setRegex(newRegex)
+    updateFlags(newFlags)
+    toast({ description: t('Regex loaded from library') })
+    setEditorDefaultTab('legend')
+  }, [clearSelected, setRegex, updateFlags, toast, t])
 
   useEffect(() => {
     if (searchParams.get(SEARCH_PARAM_REGEX) === null) {
@@ -167,7 +175,13 @@ function Home() {
           <ViewVerticalIcon />
         </Toggle>
       </div>
-      {regex !== null && <Editor defaultTab={editorDefaultTab} collapsed={editorCollapsed} />}
+      {regex !== null && (
+        <Editor
+          defaultTab={editorDefaultTab}
+          collapsed={editorCollapsed}
+          onLoadRegex={handleLoadRegex}
+        />
+      )}
     </div>
   )
 }
