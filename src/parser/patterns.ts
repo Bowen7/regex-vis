@@ -11,7 +11,7 @@ export const quantifier = /^\{(\d+)(,|,(\d+))?\}/
 export const specialCharacterInLiteral = /[/()[|\\.^$?+*]|\{(\d+)(,|,(\d+))?\}/
 export const specialCharacter = /[()[|\\.^$?+*]|\{(\d+)(,|,(\d+))?\}/
 export const characterClass
-  = /^\\(?:[dDwWsStrnvf0]|c[A-Za-z]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4})/
+  = /^\\(?:[dDwWsStrnvf0]|c[A-Za-z]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|u\{[0-9A-Fa-f]{1,6}\}|x\{[0-9A-Fa-f]{1,6}\})/
 export const backReference = /^\\(\d+|k<(\w+)>)/
 export const escapeSequences
-  = /^\\(?:[0nrtbfv]|u[0-9A-Fa-f]{4}|x[0-9A-Fa-f]{2}|u\{[0-9A-Fa-f]{1,6}\})/
+  = /^\\(?:[0nrtbfv]|u[0-9A-Fa-f]{4}|x[0-9A-Fa-f]{2}|u\{[0-9A-Fa-f]{1,6}\}|x\{[0-9A-Fa-f]{1,6}\})/
